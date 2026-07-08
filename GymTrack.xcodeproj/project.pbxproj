@@ -6,11 +6,6 @@
 	objectVersion = 77;
 	objects = {
 
-/* Begin PBXBuildFile section */
-		CA2B04012FFE34E9001BC035 /* AGENTS.md in Resources */ = {isa = PBXBuildFile; fileRef = CA2B04002FFE34E9001BC035 /* AGENTS.md */; };
-		CA2B04032FFE35AD001BC035 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = CA2B04022FFE35AD001BC035 /* .gitignore */; };
-/* End PBXBuildFile section */
-
 /* Begin PBXFileReference section */
 		CA2B04002FFE34E9001BC035 /* AGENTS.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = AGENTS.md; sourceTree = "<group>"; };
 		CA2B04022FFE35AD001BC035 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
@@ -120,8 +115,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CA2B04012FFE34E9001BC035 /* AGENTS.md in Resources */,
-				CA2B04032FFE35AD001BC035 /* .gitignore in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

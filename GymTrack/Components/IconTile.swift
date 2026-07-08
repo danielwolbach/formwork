@@ -17,7 +17,10 @@ struct IconTile: View {
             .font(.system(size: size.fontSize))
             .foregroundStyle(color)
             .frame(width: size.size, height: size.size)
-            .glassEffect(.regular.tint(color.opacity(0.2)), in: .rect(cornerRadius: size.cornerRadius))
+            .glassEffect(
+                .regular.tint(color.opacity(0.2)),
+                in: .rect(cornerRadius: size.cornerRadius, style: .continuous)
+            )
             .background(.background, in: .rect(cornerRadius: size.cornerRadius))
     }
 }

@@ -29,7 +29,7 @@ struct ContentView: View {
 
             Tab("Catalog", systemImage: "magazine") {
                 NavigationStack {
-                    ContentUnavailableView("Catalog", systemImage: "magazine")
+                    DisciplineGridScreen()
                 }
             }
 

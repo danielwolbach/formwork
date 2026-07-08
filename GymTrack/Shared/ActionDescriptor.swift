@@ -9,6 +9,7 @@ import SwiftUI
 
 enum ActionDescriptor {
     case createWorkout
+    case createExercise
     case addWorkoutExercise
     case startSession
     case seeStats
@@ -23,6 +24,7 @@ enum ActionDescriptor {
     var title: LocalizedStringKey {
         switch self {
         case .createWorkout: "Create Workout"
+        case .createExercise: "Create Exercise"
         case .addWorkoutExercise: "Add Exercise"
         case .startSession: "Start Session"
         case .seeStats: "See Stats"
@@ -39,6 +41,7 @@ enum ActionDescriptor {
     var systemImage: String {
         switch self {
         case .createWorkout: "plus"
+        case .createExercise: "plus"
         case .addWorkoutExercise: "text.badge.plus"
         case .startSession: "play.fill"
         case .seeStats: "chart.pie"
