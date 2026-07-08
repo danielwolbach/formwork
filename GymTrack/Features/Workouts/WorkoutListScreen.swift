@@ -10,6 +10,7 @@ import SwiftUI
 
 struct WorkoutListScreen: View {
     @Query(sort: \Workout.name) private var workouts: [Workout]
+    @State private var sheet: WorkoutSheet?
     
     var body: some View {
         WorkoutList(workouts: workouts)
@@ -20,10 +21,11 @@ struct WorkoutListScreen: View {
             .toolbar {
                 ToolbarItem {
                     Button(.createWorkout) {
-                        // TODO
+                        sheet = .createWorkout
                     }
                 }
             }
+            .workoutSheet(item: $sheet)
     }
 }
 

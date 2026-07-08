@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct WorkoutDetailScreen: View {
+    @State private var sheet: WorkoutSheet?
+    
     let workout: Workout
     
     var body: some View {
@@ -67,7 +69,7 @@ struct WorkoutDetailScreen: View {
                 
                 Section {
                     Button(.edit) {
-                        // TODO
+                        sheet = .editWorkout(workout)
                     }
                 }
                 
@@ -78,6 +80,7 @@ struct WorkoutDetailScreen: View {
                 }
             }
         }
+        .workoutSheet(item: $sheet)
     }
 }
 

@@ -17,6 +17,8 @@ enum ActionDescriptor {
     case remove
     case metric
     case moreOptions
+    case confirm
+    case cancel
 
     var title: LocalizedStringKey {
         switch self {
@@ -29,6 +31,8 @@ enum ActionDescriptor {
         case .remove: "Remove"
         case .metric: "Metric"
         case .moreOptions: "More Options"
+        case .confirm: "Confirm"
+        case .cancel: "Cancel"
         }
     }
 
@@ -43,12 +47,16 @@ enum ActionDescriptor {
         case .remove: "minus.circle"
         case .metric: "lines.measurement.horizontal"
         case .moreOptions: "ellipsis"
+        case .confirm: "checkmark"
+        case .cancel: "xmark"
         }
     }
 
     var role: ButtonRole? {
         switch self {
         case .delete, .remove: .destructive
+        case .confirm: .confirm
+        case .cancel: .cancel
         default: nil
         }
     }
