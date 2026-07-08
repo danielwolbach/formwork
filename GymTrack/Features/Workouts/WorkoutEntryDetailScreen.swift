@@ -14,28 +14,30 @@ struct WorkoutEntryDetailScreen: View {
 
     @State private var deleteAlert = false
 
-    let entry: WorkoutEntry
+    @Bindable var entry: WorkoutEntry
 
     var body: some View {
         ScrollView {
             ScreenStack {
                 DetailHero(
                     title: entry.exercise.name,
-                    subtitle: entry.exercise.metric.description,
+                    subtitle: entry.target.metric.description,
                     systemImage: entry.exercise.systemImage,
                     color: entry.exercise.color
                 )
 
-                // TODO:
+                ExerciseTargetEditor(target: $entry.target)
+                    .padding(.horizontal)
             }
         }
         .toolbar {
             Menu(.moreOptions) {
                 Section {
                     Menu(.metric) {
-                        Picker(ActionDescriptor.metric.title, selection: .constant(ExerciseMetric.weight)) { // TODO:
+                        Picker(ActionDescriptor.metric.title, selection: metric) {
                             ForEach(ExerciseMetric.allCases) { metric in
                                 Label(metric.description, systemImage: metric.systemImage)
+                                    .tag(metric)
                             }
                         }
                     }
@@ -48,6 +50,9 @@ struct WorkoutEntryDetailScreen: View {
                 }
             }
         }
+        .onChange(of: entry.target) {
+            save()
+        }
         .alert("Remove Exercise?", isPresented: $deleteAlert) {
             Button(.remove) {
                 remove()
@@ -56,6 +61,22 @@ struct WorkoutEntryDetailScreen: View {
             Button(.cancel) {}
         } message: {
             Text("This will remove the exercise from the workout. This cannot be undone.")
+        }
+    }
+
+    private var metric: Binding<ExerciseMetric> {
+        Binding {
+            entry.target.metric
+        } set: { metric in
+            entry.target = .defaults(for: metric)
+        }
+    }
+
+    private func save() {
+        do {
+            try modelContext.save()
+        } catch {
+            fatalError("Failed to save workout entry: \(error)")
         }
     }
 

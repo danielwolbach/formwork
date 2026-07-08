@@ -11,7 +11,7 @@ import SwiftUI
 struct WorkoutDetailScreen: View {
     @Environment(\.modelContext) private var modelContext: ModelContext
     @Environment(\.dismiss) private var dismiss: DismissAction
-    
+
     @State private var sheet: WorkoutSheet?
     @State private var deleteAlert = false
 
@@ -95,10 +95,10 @@ struct WorkoutDetailScreen: View {
             Text("This will delete the workout and all of its entries. This cannot be undone.")
         }
     }
-    
+
     private func delete() {
         modelContext.delete(workout)
-        
+
         do {
             try modelContext.save()
             dismiss()

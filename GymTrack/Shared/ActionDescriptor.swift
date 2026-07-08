@@ -18,6 +18,8 @@ enum ActionDescriptor {
     case remove
     case metric
     case moreOptions
+    case increase
+    case decrease
     case confirm
     case cancel
 
@@ -33,6 +35,8 @@ enum ActionDescriptor {
         case .remove: "Remove"
         case .metric: "Metric"
         case .moreOptions: "More Options"
+        case .increase: "Increase"
+        case .decrease: "Decrease"
         case .confirm: "Confirm"
         case .cancel: "Cancel"
         }
@@ -50,6 +54,8 @@ enum ActionDescriptor {
         case .remove: "minus.circle"
         case .metric: "lines.measurement.horizontal"
         case .moreOptions: "ellipsis"
+        case .increase: "plus"
+        case .decrease: "minus"
         case .confirm: "checkmark"
         case .cancel: "xmark"
         }
