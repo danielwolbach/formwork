@@ -21,7 +21,7 @@ struct WorkoutEntryDetailScreen: View {
             ScreenStack {
                 DetailHero(
                     title: entry.exercise.name,
-                    subtitle: entry.target.metric.description,
+                    subtitle: entry.exercise.disciplinesDescription,
                     systemImage: entry.exercise.systemImage,
                     color: entry.exercise.color
                 )
@@ -34,12 +34,7 @@ struct WorkoutEntryDetailScreen: View {
             Menu(.moreOptions) {
                 Section {
                     Menu(.metric) {
-                        Picker(ActionDescriptor.metric.title, selection: metric) {
-                            ForEach(ExerciseMetric.allCases) { metric in
-                                Label(metric.description, systemImage: metric.systemImage)
-                                    .tag(metric)
-                            }
-                        }
+                        ExerciseMetricPicker(selection: metric)
                     }
                 }
 
