@@ -5,6 +5,7 @@
 //  Created by Daniel Wolbach on 08.07.26.
 //
 
+import SwiftData
 import SwiftUI
 
 @main
@@ -13,15 +14,16 @@ struct GymTrackApp: App {
         WindowGroup {
             ContentView()
         }
+        .modelContainer(for: [Exercise.self, Workout.self, WorkoutEntry.self, Session.self, SessionEntry.self])
     }
 }
 
 struct ContentView: View {
     var body: some View {
         TabView {
-            Tab("Wrokouts", systemImage: "clipboard") {
+            Tab("Workouts", systemImage: "clipboard") {
                 NavigationStack {
-                    ContentUnavailableView("Workouts", systemImage: "clipboard")
+                    WorkoutListScreen()
                 }
             }
             
@@ -42,5 +44,6 @@ struct ContentView: View {
 
 #Preview {
     ContentView()
+        .sampleData()
 }
 
