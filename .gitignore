@@ -1,0 +1,11 @@
+build/
+xcuserdata/
+*.xcuserstate
+*.xcscmblueprint
+*.xcworkspace/xcuserdata/
+*.xcconfig.local
+
+.build/
+.swiftpm/
+
+.DS_Store
