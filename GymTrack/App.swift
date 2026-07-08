@@ -1,5 +1,5 @@
 //
-//  GymTrackApp.swift
+//  App.swift
 //  GymTrack
 //
 //  Created by Daniel Wolbach on 08.07.26.
@@ -26,13 +26,13 @@ struct ContentView: View {
                     WorkoutListScreen()
                 }
             }
-            
+
             Tab("Catalog", systemImage: "magazine") {
                 NavigationStack {
                     ContentUnavailableView("Catalog", systemImage: "magazine")
                 }
             }
-            
+
             Tab("Stats", systemImage: "sparkles") {
                 NavigationStack {
                     ContentUnavailableView("Stats", systemImage: "sparkles")
@@ -46,4 +46,3 @@ struct ContentView: View {
     ContentView()
         .sampleData()
 }
-

@@ -16,7 +16,7 @@ enum WorkoutSheet: Identifiable {
         switch self {
         case .createWorkout:
             "createWorkout"
-        case .editWorkout(let workout):
+        case let .editWorkout(workout):
             "editWorkout-\(workout.persistentModelID)"
         }
     }
@@ -29,7 +29,7 @@ extension View {
                 switch sheet {
                 case .createWorkout:
                     WorkoutFormScreen()
-                case .editWorkout(let workout):
+                case let .editWorkout(workout):
                     WorkoutFormScreen(workout: workout)
                 }
             }

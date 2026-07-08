@@ -15,7 +15,7 @@ extension Exercise {
             Exercise(name: "Back Squat", metric: .weight, disciplines: [.legs]),
             Exercise(name: "Plank", metric: .duration, disciplines: [.core]),
             Exercise(name: "Treadmill", metric: .distance, disciplines: [.legs]),
-            Exercise(name: "Hyperextensions", metric: .bodyweight, disciplines: [.back])
+            Exercise(name: "Hyperextensions", metric: .bodyweight, disciplines: [.back]),
         ]
     }
 }
@@ -35,7 +35,7 @@ extension WorkoutEntry {
 extension Workout {
     static var samples: [Workout] {
         return [
-            Workout(name: "Full Body", entries: WorkoutEntry.samples)
+            Workout(name: "Full Body", entries: WorkoutEntry.samples),
         ]
     }
 }
@@ -58,21 +58,21 @@ extension Session {
 
 private struct SampleDataModifier: ViewModifier {
     let container: ModelContainer
-    
+
     init() {
         let schema = Schema([Exercise.self, Workout.self, WorkoutEntry.self, Session.self, SessionEntry.self])
         let configuration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
-        
+
         do {
             container = try ModelContainer(for: schema, configurations: [configuration])
         } catch {
             fatalError("Failed to create sample data container: \(error)")
         }
-        
+
         Workout.samples.forEach(container.mainContext.insert)
         Session.samples.forEach(container.mainContext.insert)
     }
-    
+
     func body(content: Content) -> some View {
         content.modelContainer(container)
     }

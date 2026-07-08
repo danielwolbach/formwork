@@ -1,5 +1,5 @@
 //
-//  ScreenStack\.swift
+//  ScreenStack.swift
 //  GymTrack
 //
 //  Created by Daniel Wolbach on 08.07.26.
@@ -19,7 +19,7 @@ struct ScreenStack<Content: View>: View {
 }
 
 #Preview {
-    ScreenStack() {
+    ScreenStack {
         Text("Hello")
         Text("World")
     }

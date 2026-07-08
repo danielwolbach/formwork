@@ -1,5 +1,5 @@
 //
-//  SummaryRow.swift
+//  NavigationRow.swift
 //  GymTrack
 //
 //  Created by Daniel Wolbach on 08.07.26.

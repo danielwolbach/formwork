@@ -10,23 +10,23 @@ import SwiftData
 @Model
 final class SessionEntry: Comparable {
     var order: Int
-    
+
     var current: Int
-    
+
     var status: Status
-    
+
     var exercise: Exercise
-    
+
     var target: ExerciseTarget
-    
+
     init(order: Int, exercise: Exercise, target: ExerciseTarget) {
         self.order = order
-        self.current = 0
-        self.status = .pending
+        current = 0
+        status = .pending
         self.exercise = exercise
         self.target = target
     }
-    
+
     static func < (lhs: SessionEntry, rhs: SessionEntry) -> Bool {
         lhs.order < rhs.order
     }

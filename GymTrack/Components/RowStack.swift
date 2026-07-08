@@ -10,10 +10,6 @@ import SwiftUI
 struct RowStack<Content: View>: View {
     @ViewBuilder let content: Content
 
-    init(@ViewBuilder content: () -> Content) {
-        self.content = content()
-    }
-
     var body: some View {
         LazyVStack(spacing: 0) {
             content

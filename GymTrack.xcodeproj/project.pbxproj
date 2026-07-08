@@ -14,6 +14,7 @@
 /* Begin PBXFileReference section */
 		CA2B04002FFE34E9001BC035 /* AGENTS.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = AGENTS.md; sourceTree = "<group>"; };
 		CA2B04022FFE35AD001BC035 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
+		CA2B04632FFE7941001BC035 /* .swiftformat */ = {isa = PBXFileReference; lastKnownFileType = text; path = .swiftformat; sourceTree = "<group>"; };
 		CA9FC0CB2FFE32DF00F857C8 /* GymTrack.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GymTrack.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -39,6 +40,7 @@
 		CA9FC0C22FFE32DF00F857C8 = {
 			isa = PBXGroup;
 			children = (
+				CA2B04632FFE7941001BC035 /* .swiftformat */,
 				CA2B04022FFE35AD001BC035 /* .gitignore */,
 				CA2B04002FFE34E9001BC035 /* AGENTS.md */,
 				CA9FC0CD2FFE32DF00F857C8 /* GymTrack */,

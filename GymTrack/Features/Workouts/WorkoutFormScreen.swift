@@ -11,31 +11,31 @@ import SwiftUI
 struct WorkoutFormScreen: View {
     @Environment(\.modelContext) private var modelContext: ModelContext
     @Environment(\.dismiss) private var dismiss: DismissAction
-    
+
     @State private var name: String
     @State private var entries: [WorkoutEntry]
-    
+
     let workout: Workout?
-    
+
     init(workout: Workout? = nil) {
         _name = State(initialValue: workout?.name ?? "")
         _entries = State(initialValue: workout?.entries.sorted() ?? [])
         self.workout = workout
     }
-    
+
     var body: some View {
         Form {
             Section("Name") {
                 TextField("Bench Press", text: $name)
             }
-            
+
             if !entries.isEmpty {
                 Section("Exercises") {
                     ForEach(entries) { entry in
                         HStack {
                             VStack(alignment: .leading) {
                                 Text(entry.exercise.name)
-                                
+
                                 Text(entry.target.description)
                                     .font(.caption)
                                     .foregroundStyle(.secondary)
@@ -56,7 +56,7 @@ struct WorkoutFormScreen: View {
                 }
                 .disabled(!valid)
             }
-            
+
             ToolbarItem(placement: .cancellationAction) {
                 Button(.cancel) {
                     dismiss()
@@ -64,18 +64,18 @@ struct WorkoutFormScreen: View {
             }
         }
     }
-    
+
     private var title: String {
         workout == nil ? "Create Workout" : "Edit Workout"
     }
-    
+
     private var valid: Bool {
         !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
-    
+
     private func save() {
         let name = name.trimmingCharacters(in: .whitespacesAndNewlines)
-        
+
         if let workout {
             workout.name = name
             workout.entries = entries
@@ -83,11 +83,11 @@ struct WorkoutFormScreen: View {
             let workout = Workout(name: name, entries: entries)
             modelContext.insert(workout)
         }
-        
+
         for (index, entry) in entries.enumerated() {
             entry.order = index
         }
-        
+
         do {
             try modelContext.save()
             dismiss()
@@ -95,7 +95,7 @@ struct WorkoutFormScreen: View {
             fatalError("Failed to save workout: \(error)")
         }
     }
-    
+
     private func move(from source: IndexSet, to destination: Int) {
         entries.move(fromOffsets: source, toOffset: destination)
     }

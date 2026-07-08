@@ -1,5 +1,5 @@
 //
-//  WorkoutDetail.swift
+//  WorkoutDetailScreen.swift
 //  GymTrack
 //
 //  Created by Daniel Wolbach on 08.07.26.
@@ -9,9 +9,9 @@ import SwiftUI
 
 struct WorkoutDetailScreen: View {
     @State private var sheet: WorkoutSheet?
-    
+
     let workout: Workout
-    
+
     var body: some View {
         ScrollView {
             ScreenStack {
@@ -21,34 +21,33 @@ struct WorkoutDetailScreen: View {
                     systemImage: workout.systemImage,
                     color: workout.color
                 )
-                
+
                 HStack {
                     Button(.addWorkoutExercise) {
-                        // TODO
+                        // TODO:
                     }
                     .labelStyle(.iconOnly)
                     .buttonStyle(.glass)
                     .controlSize(.large)
                     .buttonBorderShape(.circle)
-                    
-                    
+
                     Button(.startSession) {
-                        // TODO
+                        // TODO:
                     }
                     .tint(.green)
                     .fontWeight(.semibold)
                     .buttonStyle(.glassProminent)
                     .controlSize(.large)
-                    
+
                     Button(.seeStats) {
-                        // TODO
+                        // TODO:
                     }
                     .labelStyle(.iconOnly)
                     .buttonStyle(.glass)
                     .controlSize(.large)
                     .buttonBorderShape(.circle)
                 }
-                
+
                 WorkoutEntryList(entries: workout.entries.sorted())
             }
         }
@@ -59,23 +58,23 @@ struct WorkoutDetailScreen: View {
             Menu(.moreOptions) {
                 Section {
                     Button(.addWorkoutExercise) {
-                        // TODO
+                        // TODO:
                     }
-                    
+
                     Button(.seeStats) {
-                        // TODO
+                        // TODO:
                     }
                 }
-                
+
                 Section {
                     Button(.edit) {
                         sheet = .editWorkout(workout)
                     }
                 }
-                
+
                 Section {
                     Button(.delete) {
-                        // TODO
+                        // TODO:
                     }
                 }
             }

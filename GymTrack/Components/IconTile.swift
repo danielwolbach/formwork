@@ -11,7 +11,7 @@ struct IconTile: View {
     let systemImage: String
     let color: Color
     let size: Size
-    
+
     var body: some View {
         Image(systemName: systemImage)
             .font(.system(size: size.fontSize))
@@ -26,22 +26,22 @@ extension IconTile {
     enum Size {
         case regular
         case large
-        
+
         var size: CGFloat {
             switch self {
             case .regular: 64
             case .large: 256
             }
         }
-        
+
         var fontSize: CGFloat {
             0.375 * size
         }
-        
+
         var cornerRadius: CGFloat {
             switch self {
-                case .regular: 12
-                case .large: 24
+            case .regular: 12
+            case .large: 24
             }
         }
     }

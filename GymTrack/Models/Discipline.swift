@@ -18,12 +18,12 @@ nonisolated enum Discipline: String, Identifiable, Codable, Hashable, CaseIterab
     case flexibility
     case mindfulness
     case other
-    
+
     var id: Self {
         self
     }
-    
+
     var name: String {
-        self.rawValue.capitalized
+        rawValue.capitalized
     }
 }

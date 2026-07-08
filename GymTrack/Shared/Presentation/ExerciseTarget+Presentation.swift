@@ -8,10 +8,10 @@
 extension ExerciseTarget {
     var description: String {
         switch self {
-        case .weight(weight: let weight, sets: let sets, reps: let reps): "\(weight) kg, \(sets) sets, \(reps) reps"
-        case .bodyweight(sets: let sets, reps: let reps): "\(sets) sets, \(reps) reps"
-        case .duration(minutes: let minutes): "\(minutes) min"
-        case .distance(meters: let meters): "\(meters) m"
+        case let .weight(weight: weight, sets: sets, reps: reps): "\(weight) kg, \(sets) sets, \(reps) reps"
+        case let .bodyweight(sets: sets, reps: reps): "\(sets) sets, \(reps) reps"
+        case let .duration(minutes: minutes): "\(minutes) min"
+        case let .distance(meters: meters): "\(meters) m"
         }
     }
 }

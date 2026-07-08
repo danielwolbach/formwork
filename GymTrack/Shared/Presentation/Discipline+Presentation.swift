@@ -8,20 +8,20 @@
 import SwiftUI
 
 extension Discipline {
-       var systemImage: String {
-           switch self {
-           case .arms: "figure.dance"
-           case .legs: "figure.walk"
-           case .chest: "figure.arms.open"
-           case .shoulders: "figure.play"
-           case .core: "figure.core.training"
-           case .back: "figure.indoor.rowing"
-           case .cardio: "figure.run"
-           case .flexibility: "figure.yoga"
-           case .mindfulness: "figure.mind.and.body"
-           case .other: "ellipsis.circle"
-           }
-       }
+    var systemImage: String {
+        switch self {
+        case .arms: "figure.dance"
+        case .legs: "figure.walk"
+        case .chest: "figure.arms.open"
+        case .shoulders: "figure.play"
+        case .core: "figure.core.training"
+        case .back: "figure.indoor.rowing"
+        case .cardio: "figure.run"
+        case .flexibility: "figure.yoga"
+        case .mindfulness: "figure.mind.and.body"
+        case .other: "ellipsis.circle"
+        }
+    }
 }
 
 extension Discipline {

@@ -11,15 +11,16 @@ import SwiftData
 @Model
 final class Session {
     var started: Date
-    
+
     @Relationship(deleteRule: .cascade)
-    var entries: Array<SessionEntry>
-    
+    var entries: [SessionEntry]
+
     var current: SessionEntry?
-    
+
     init(workout: Workout) {
-        self.started = Date.now
-        self.entries = workout.entries.sorted().map { SessionEntry(order: $0.order, exercise: $0.exercise, target: $0.target) }
-        self.current = entries.first
+        started = Date.now
+        entries = workout.entries.sorted()
+            .map { SessionEntry(order: $0.order, exercise: $0.exercise, target: $0.target) }
+        current = entries.first
     }
 }
