@@ -20,6 +20,15 @@ extension Exercise {
 }
 
 extension Exercise {
+    var disciplinesDescription: String {
+        Discipline.allCases
+            .filter { disciplines.contains($0) }
+            .map(\.name)
+            .joined(separator: ", ")
+    }
+}
+
+extension Exercise {
     static let systemImage = "dumbbell"
 }
 

@@ -68,7 +68,9 @@ struct WorkoutEntryDetailScreen: View {
         Binding {
             entry.target.metric
         } set: { metric in
-            entry.target = .defaults(for: metric)
+            withAnimation(.snappy(duration: 0.25)) {
+                entry.target = .defaults(for: metric)
+            }
         }
     }
 

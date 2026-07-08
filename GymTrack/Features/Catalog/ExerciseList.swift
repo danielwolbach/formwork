@@ -21,7 +21,7 @@ struct ExerciseList: View {
                             NavigationLink(value: exercise) {
                                 NavigationRow(
                                     title: exercise.name,
-                                    subtitle: exercise.metric.description,
+                                    subtitle: exercise.disciplinesDescription,
                                     systemImage: exercise.systemImage,
                                     color: exercise.color
                                 )

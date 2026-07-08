@@ -11,6 +11,16 @@ struct ExerciseTargetEditor: View {
     @Binding var target: ExerciseTarget
 
     var body: some View {
+        ZStack {
+            editor
+                .id(target.metric)
+                .transition(.opacity.combined(with: .scale(scale: 0.98)))
+        }
+        .animation(.snappy(duration: 0.25), value: target.metric)
+    }
+
+    @ViewBuilder
+    private var editor: some View {
         switch target {
         case let .weight(weight, sets, reps):
             WeightTargetEditor(

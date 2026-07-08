@@ -9,9 +9,16 @@ import SwiftUI
 
 struct DetailHero: View {
     let title: String
-    let subtitle: String
+    let subtitle: String?
     let systemImage: String
     let color: Color
+
+    init(title: String, subtitle: String? = nil, systemImage: String, color: Color) {
+        self.title = title
+        self.subtitle = subtitle
+        self.systemImage = systemImage
+        self.color = color
+    }
 
     var body: some View {
         VStack(spacing: 32) {
@@ -21,9 +28,11 @@ struct DetailHero: View {
                 Text(title)
                     .font(.headline)
 
-                Text(subtitle)
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                if let subtitle {
+                    Text(subtitle)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
             }
         }
     }

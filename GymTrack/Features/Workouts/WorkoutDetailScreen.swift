@@ -29,7 +29,7 @@ struct WorkoutDetailScreen: View {
 
                 HStack {
                     Button(.addWorkoutExercise) {
-                        // TODO:
+                        sheet = .addWorkoutExercise(workout)
                     }
                     .labelStyle(.iconOnly)
                     .buttonStyle(.glass)
@@ -63,7 +63,7 @@ struct WorkoutDetailScreen: View {
             Menu(.moreOptions) {
                 Section {
                     Button(.addWorkoutExercise) {
-                        // TODO:
+                        sheet = .addWorkoutExercise(workout)
                     }
 
                     Button(.seeStats) {

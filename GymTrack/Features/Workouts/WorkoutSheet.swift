@@ -11,6 +11,7 @@ import SwiftUI
 enum WorkoutSheet: Identifiable {
     case createWorkout
     case editWorkout(Workout)
+    case addWorkoutExercise(Workout)
 
     var id: String {
         switch self {
@@ -18,6 +19,8 @@ enum WorkoutSheet: Identifiable {
             "createWorkout"
         case let .editWorkout(workout):
             "editWorkout-\(workout.persistentModelID)"
+        case let .addWorkoutExercise(workout):
+            "addWorkoutExercise-\(workout.persistentModelID)"
         }
     }
 }
@@ -31,6 +34,8 @@ extension View {
                     WorkoutFormScreen()
                 case let .editWorkout(workout):
                     WorkoutFormScreen(workout: workout)
+                case let .addWorkoutExercise(workout):
+                    WorkoutExercisePicker(workout: workout)
                 }
             }
         }
