@@ -22,7 +22,7 @@ struct ExerciseDetailScreen: View {
             ScreenStack {
                 DetailHero(
                     title: exercise.name,
-                    subtitle: exercise.metric.description,
+                    subtitle: Text(exercise.metric.title),
                     systemImage: exercise.systemImage,
                     color: exercise.color
                 )
@@ -67,4 +67,8 @@ struct ExerciseDetailScreen: View {
             fatalError("Failed to delete exercise: \(error)")
         }
     }
+}
+
+#Preview {
+    ExerciseDetailScreen(exercise: Exercise.samples[0])
 }

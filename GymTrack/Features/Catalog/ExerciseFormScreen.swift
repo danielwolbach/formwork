@@ -41,7 +41,7 @@ struct ExerciseFormScreen: View {
             Section("Metric") {
                 Picker("Metric", selection: $metric) {
                     ForEach(ExerciseMetric.allCases) { metric in
-                        Label(metric.description, systemImage: metric.systemImage)
+                        Label(metric.title, systemImage: metric.systemImage)
                             .tag(metric)
                     }
                 }
@@ -50,13 +50,14 @@ struct ExerciseFormScreen: View {
             Section("Disciplines") {
                 ForEach(Discipline.allCases) { discipline in
                     Toggle(isOn: selected(discipline)) {
-                        Label(discipline.name, systemImage: discipline.systemImage)
+                        Label(discipline.title, systemImage: discipline.systemImage)
                     }
                 }
             }
         }
         .navigationTitle(title)
         .navigationBarTitleDisplayMode(.inline)
+        .scrollDismissesKeyboard(.immediately)
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 Button(.confirm) {
@@ -73,7 +74,7 @@ struct ExerciseFormScreen: View {
         }
     }
 
-    private var title: String {
+    private var title: LocalizedStringKey {
         exercise == nil ? "Create Exercise" : "Edit Exercise"
     }
 

@@ -9,9 +9,23 @@ import SwiftUI
 
 struct NavigationRow: View {
     let title: String
-    let subtitle: String
+    let subtitle: Text
     let systemImage: String
     let color: Color
+
+    init(title: String, subtitle: String, systemImage: String, color: Color) {
+        self.title = title
+        self.subtitle = Text(subtitle)
+        self.systemImage = systemImage
+        self.color = color
+    }
+
+    init(title: String, subtitle: Text, systemImage: String, color: Color) {
+        self.title = title
+        self.subtitle = subtitle
+        self.systemImage = systemImage
+        self.color = color
+    }
 
     var body: some View {
         HStack {
@@ -20,7 +34,7 @@ struct NavigationRow: View {
             VStack(alignment: .leading) {
                 Text(title).font(.headline)
 
-                Text(subtitle)
+                subtitle
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
             }

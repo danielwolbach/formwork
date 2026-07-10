@@ -8,6 +8,12 @@
 import SwiftUI
 
 extension Workout {
+    var entriesText: Text {
+        Text("\(entries.count) Exercises")
+    }
+}
+
+extension Workout {
     var systemImage: String {
         Workout.systemImage
     }

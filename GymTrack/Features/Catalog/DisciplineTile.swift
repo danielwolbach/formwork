@@ -22,7 +22,7 @@ struct DisciplineTile: View {
                 VStack(alignment: .leading, spacing: 0) {
                     Spacer()
 
-                    Text(discipline.name)
+                    Text(discipline.title)
                         .font(.headline)
                         .fontWeight(.semibold)
 

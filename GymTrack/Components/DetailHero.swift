@@ -9,11 +9,18 @@ import SwiftUI
 
 struct DetailHero: View {
     let title: String
-    let subtitle: String?
+    let subtitle: Text?
     let systemImage: String
     let color: Color
 
     init(title: String, subtitle: String? = nil, systemImage: String, color: Color) {
+        self.title = title
+        self.subtitle = subtitle.map(Text.init)
+        self.systemImage = systemImage
+        self.color = color
+    }
+
+    init(title: String, subtitle: Text, systemImage: String, color: Color) {
         self.title = title
         self.subtitle = subtitle
         self.systemImage = systemImage
@@ -29,12 +36,13 @@ struct DetailHero: View {
                     .font(.headline)
 
                 if let subtitle {
-                    Text(subtitle)
+                    subtitle
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }
             }
         }
+        .frame(maxWidth: .infinity)
     }
 }
 

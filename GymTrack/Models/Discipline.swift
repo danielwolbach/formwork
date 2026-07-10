@@ -22,8 +22,4 @@ nonisolated enum Discipline: String, Identifiable, Codable, Hashable, CaseIterab
     var id: Self {
         self
     }
-
-    var name: String {
-        rawValue.capitalized
-    }
 }

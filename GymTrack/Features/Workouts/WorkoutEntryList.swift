@@ -19,9 +19,9 @@ struct WorkoutEntryList: View {
                     NavigationLink(value: entry) {
                         NavigationRow(
                             title: entry.exercise.name,
-                            subtitle: entry.target.description,
-                            systemImage: entry.exercise.systemImage,
-                            color: entry.exercise.color
+                            subtitle: entry.target.summary,
+                            systemImage: entry.target.systemImage,
+                            color: entry.target.color
                         )
                     }
                     .buttonStyle(.plain)

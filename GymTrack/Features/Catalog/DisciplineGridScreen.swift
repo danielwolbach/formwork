@@ -29,7 +29,7 @@ struct DisciplineGridScreen: View {
         .navigationTitle("Catalog")
         .navigationDestination(for: Discipline.self) { discipline in
             ExerciseList(exercises: exercises(for: discipline))
-                .navigationTitle(discipline.name)
+                .navigationTitle(discipline.title)
                 .toolbar {
                     ToolbarItem {
                         Button(.createExercise) {

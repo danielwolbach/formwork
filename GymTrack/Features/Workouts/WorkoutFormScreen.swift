@@ -36,7 +36,7 @@ struct WorkoutFormScreen: View {
                             VStack(alignment: .leading) {
                                 Text(entry.exercise.name)
 
-                                Text(entry.target.description)
+                                entry.target.summary
                                     .font(.caption)
                                     .foregroundStyle(.secondary)
                             }
@@ -49,6 +49,7 @@ struct WorkoutFormScreen: View {
         .navigationTitle(title)
         .navigationBarTitleDisplayMode(.inline)
         .environment(\.editMode, .constant(.active))
+        .scrollDismissesKeyboard(.immediately)
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 Button(.confirm) {
@@ -65,7 +66,7 @@ struct WorkoutFormScreen: View {
         }
     }
 
-    private var title: String {
+    private var title: LocalizedStringKey {
         workout == nil ? "Create Workout" : "Edit Workout"
     }
 

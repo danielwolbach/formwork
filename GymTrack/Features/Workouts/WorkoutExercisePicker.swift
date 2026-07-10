@@ -14,6 +14,7 @@ struct WorkoutExercisePicker: View {
 
     @State private var selectedDisciplines: Set<Discipline> = []
     @State private var searchText = ""
+    @State private var createSheet = false
 
     let workout: Workout
 
@@ -29,6 +30,12 @@ struct WorkoutExercisePicker: View {
                 }
             }
             .toolbar {
+                ToolbarItem {
+                    Button(.createWorkout) {
+                        createSheet = true
+                    }
+                }
+
                 ToolbarItem(placement: .cancellationAction) {
                     Button(.cancel) {
                         dismiss()
@@ -41,6 +48,11 @@ struct WorkoutExercisePicker: View {
                     workout: workout,
                     dismissPicker: dismiss
                 )
+            }
+            .sheet(isPresented: $createSheet) {
+                NavigationStack {
+                    ExerciseFormScreen(disciplines: selectedDisciplines.isEmpty ? nil : selectedDisciplines)
+                }
             }
     }
 
@@ -110,7 +122,7 @@ private struct ExercisePickerRow: View {
         NavigationLink(value: exercise) {
             NavigationRow(
                 title: exercise.name,
-                subtitle: exercise.disciplinesDescription,
+                subtitle: exercise.disciplinesText,
                 systemImage: exercise.systemImage,
                 color: exercise.color
             )
@@ -164,23 +176,19 @@ private struct DisciplineFilterButton: View {
 
     var body: some View {
         if isHighlighted {
-            button
-                .buttonStyle(.glassProminent)
-                .tint(discipline.color)
+            LabelButton(
+                discipline.title,
+                systemImage: discipline.systemImage,
+                style: .glassProminent
+            ) {
+                action()
+            }
+            .tint(discipline.color)
         } else {
-            button
-                .buttonStyle(.glass)
+            LabelButton(discipline.title, systemImage: discipline.systemImage) {
+                action()
+            }
         }
-    }
-
-    private var button: some View {
-        Button {
-            action()
-        } label: {
-            Label(discipline.name, systemImage: discipline.systemImage)
-                .frame(height: 22)
-        }
-        .fontWeight(.semibold)
     }
 }
 
@@ -205,15 +213,14 @@ private struct WorkoutExerciseTargetScreen: View {
             ScreenStack {
                 DetailHero(
                     title: exercise.name,
-                    subtitle: exercise.disciplinesDescription,
-                    systemImage: exercise.systemImage,
-                    color: exercise.color
+                    subtitle: exercise.disciplinesText,
+                    systemImage: target.systemImage,
+                    color: target.color
                 )
 
                 metricMenu
 
                 ExerciseTargetEditor(target: $target)
-                    .padding(.horizontal)
             }
         }
         .navigationTitle("Add Exercise")
@@ -232,7 +239,7 @@ private struct WorkoutExerciseTargetScreen: View {
         Menu {
             ExerciseMetricPicker(selection: metric)
         } label: {
-            Label(target.metric.description, systemImage: target.metric.systemImage)
+            Label(target.metric.title, systemImage: target.metric.systemImage)
         }
         .fontWeight(.semibold)
         .buttonStyle(.glass)

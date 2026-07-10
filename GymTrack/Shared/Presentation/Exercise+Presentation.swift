@@ -20,11 +20,16 @@ extension Exercise {
 }
 
 extension Exercise {
-    var disciplinesDescription: String {
-        Discipline.allCases
-            .filter { disciplines.contains($0) }
-            .map(\.name)
-            .joined(separator: ", ")
+    var disciplinesText: Text {
+        let selectedDisciplines = Discipline.allCases.filter { disciplines.contains($0) }
+
+        guard let first = selectedDisciplines.first else {
+            return Text("No Disciplines")
+        }
+
+        return selectedDisciplines.dropFirst().reduce(Text(first.title)) { text, discipline in
+            Text("\(text), \(Text(discipline.title))")
+        }
     }
 }
 

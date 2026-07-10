@@ -13,9 +13,13 @@ struct ExerciseMetricPicker: View {
     var body: some View {
         Picker(ActionDescriptor.metric.title, selection: $selection) {
             ForEach(ExerciseMetric.allCases) { metric in
-                Label(metric.description, systemImage: metric.systemImage)
+                Label(metric.title, systemImage: metric.systemImage)
                     .tag(metric)
             }
         }
     }
+}
+
+#Preview {
+    ExerciseMetricPicker(selection: .constant(ExerciseMetric.weight))
 }

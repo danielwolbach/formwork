@@ -21,9 +21,9 @@ struct WorkoutEntryDetailScreen: View {
             ScreenStack {
                 DetailHero(
                     title: entry.exercise.name,
-                    subtitle: entry.exercise.disciplinesDescription,
-                    systemImage: entry.exercise.systemImage,
-                    color: entry.exercise.color
+                    subtitle: entry.exercise.disciplinesText,
+                    systemImage: entry.target.systemImage,
+                    color: entry.target.color
                 )
 
                 ExerciseTargetEditor(target: $entry.target)

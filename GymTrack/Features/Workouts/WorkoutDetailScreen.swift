@@ -22,36 +22,27 @@ struct WorkoutDetailScreen: View {
             ScreenStack {
                 DetailHero(
                     title: workout.name,
-                    subtitle: "\(workout.entries.count) Exercises",
+                    subtitle: workout.entriesText,
                     systemImage: workout.systemImage,
                     color: workout.color
                 )
 
                 HStack {
-                    Button(.addWorkoutExercise) {
+                    IconButton(.addWorkoutExercise) {
                         sheet = .addWorkoutExercise(workout)
                     }
-                    .labelStyle(.iconOnly)
-                    .buttonStyle(.glass)
-                    .controlSize(.large)
-                    .buttonBorderShape(.circle)
 
-                    Button(.startSession) {
+                    LabelButton(.startSession, style: .glassProminent) {
                         // TODO:
                     }
                     .tint(.green)
                     .fontWeight(.semibold)
-                    .buttonStyle(.glassProminent)
-                    .controlSize(.large)
 
-                    Button(.seeStats) {
+                    IconButton(.seeStats) {
                         // TODO:
                     }
-                    .labelStyle(.iconOnly)
-                    .buttonStyle(.glass)
-                    .controlSize(.large)
-                    .buttonBorderShape(.circle)
                 }
+                .controlSize(.large)
 
                 WorkoutEntryList(entries: workout.entries.sorted())
             }

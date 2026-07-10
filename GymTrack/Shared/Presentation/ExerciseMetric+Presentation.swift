@@ -8,6 +8,17 @@
 import SwiftUI
 
 extension ExerciseMetric {
+    var title: LocalizedStringKey {
+        switch self {
+        case .weight: "Weight"
+        case .bodyweight: "Bodyweight"
+        case .duration: "Duration"
+        case .distance: "Distance"
+        }
+    }
+}
+
+extension ExerciseMetric {
     var systemImage: String {
         switch self {
         case .weight: "scalemass"

@@ -8,6 +8,23 @@
 import SwiftUI
 
 extension Discipline {
+    var title: LocalizedStringKey {
+        switch self {
+        case .arms: "Arms"
+        case .legs: "Legs"
+        case .chest: "Chest"
+        case .shoulders: "Shoulders"
+        case .core: "Core"
+        case .back: "Back"
+        case .cardio: "Cardio"
+        case .flexibility: "Flexibility"
+        case .mindfulness: "Mindfulness"
+        case .other: "Other"
+        }
+    }
+}
+
+extension Discipline {
     var systemImage: String {
         switch self {
         case .arms: "figure.dance"

@@ -16,8 +16,4 @@ nonisolated enum ExerciseMetric: String, Identifiable, Codable, Hashable, CaseIt
     var id: Self {
         self
     }
-
-    var description: String {
-        rawValue.capitalized
-    }
 }

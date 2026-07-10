@@ -21,7 +21,7 @@ struct WorkoutList: View {
                             NavigationLink(value: workout) {
                                 NavigationRow(
                                     title: workout.name,
-                                    subtitle: "\(workout.entries.count) Exercises",
+                                    subtitle: workout.entriesText,
                                     systemImage: workout.systemImage,
                                     color: workout.color
                                 )

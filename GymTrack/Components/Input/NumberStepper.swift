@@ -13,7 +13,7 @@ struct NumberStepper: View {
 
     @Binding private var value: Double
 
-    let title: String
+    let title: LocalizedStringKey
     let step: Double?
     let range: ClosedRange<Double>
     let suffix: String?
@@ -21,7 +21,7 @@ struct NumberStepper: View {
 
     init(
         value: Binding<Int>,
-        title: String,
+        title: LocalizedStringKey,
         step: Int? = nil,
         range: ClosedRange<Int> = 0 ... 1_000_000,
         suffix: String? = nil
@@ -40,7 +40,7 @@ struct NumberStepper: View {
 
     init(
         value: Binding<Double>,
-        title: String,
+        title: LocalizedStringKey,
         step: Double? = nil,
         range: ClosedRange<Double> = 0 ... 1_000_000,
         suffix: String? = nil,
@@ -154,15 +154,9 @@ struct NumberStepper: View {
     }
 
     private func stepButton(_ descriptor: ActionDescriptor, disabled: Bool, action: @escaping () -> Void) -> some View {
-        Button(action: action) {
-            Image(systemName: descriptor.systemImage)
-                .font(.headline)
-                .frame(width: 32, height: 32)
-                .contentShape(.circle)
+        IconButton(descriptor) {
+            action()
         }
-        .accessibilityLabel(descriptor.title)
-        .buttonStyle(.glass)
-        .buttonBorderShape(.circle)
         .disabled(disabled)
     }
 }
@@ -170,7 +164,7 @@ struct NumberStepper: View {
 private struct NumberInputSheet: View {
     @Binding var draft: String
 
-    let title: String
+    let title: LocalizedStringKey
     let formattedValue: String
     let suffix: String?
     let allowsDecimal: Bool
