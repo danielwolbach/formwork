@@ -11,9 +11,12 @@ import SwiftUI
 struct WorkoutDetailScreen: View {
     @Environment(\.modelContext) private var modelContext: ModelContext
     @Environment(\.dismiss) private var dismiss: DismissAction
+    @Environment(\.presentSession) private var presentSession: PresentSessionAction
+    @Query private var sessions: [Session]
 
     @State private var sheet: WorkoutSheet?
     @State private var deleteAlert = false
+    @State private var replaceSessionAlert = false
 
     let workout: Workout
 
@@ -33,10 +36,11 @@ struct WorkoutDetailScreen: View {
                     }
 
                     LabelButton(.startSession, style: .glassProminent) {
-                        // TODO:
+                        startSession()
                     }
                     .tint(.green)
                     .fontWeight(.semibold)
+                    .disabled(workout.entries.isEmpty)
 
                     IconButton(.seeStats) {
                         // TODO:
@@ -76,6 +80,21 @@ struct WorkoutDetailScreen: View {
             }
         }
         .workoutSheet(item: $sheet)
+        .alert("Replace Active Session?", isPresented: $replaceSessionAlert) {
+            Button(.replaceSession) {
+                replaceSession()
+            }
+
+            if let activeSession {
+                Button(.resumeSession) {
+                    presentSession(activeSession)
+                }
+            }
+
+            Button(.cancel) {}
+        } message: {
+            Text("Starting this workout will replace the active session.")
+        }
         .alert("Delete Workout?", isPresented: $deleteAlert) {
             Button(.delete) {
                 delete()
@@ -84,6 +103,31 @@ struct WorkoutDetailScreen: View {
             Button(.cancel) {}
         } message: {
             Text("This will delete the workout and all of its entries. This cannot be undone.")
+        }
+    }
+
+    private var activeSession: Session? {
+        sessions.first { !$0.entries.isEmpty }
+    }
+
+    private func startSession() {
+        guard !workout.entries.isEmpty else {
+            return
+        }
+
+        guard activeSession == nil else {
+            replaceSessionAlert = true
+            return
+        }
+
+        replaceSession()
+    }
+
+    private func replaceSession() {
+        do {
+            try presentSession(modelContext.startSession(for: workout))
+        } catch {
+            fatalError("Failed to start session: \(error)")
         }
     }
 

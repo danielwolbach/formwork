@@ -22,6 +22,16 @@ enum ActionDescriptor {
     case decrease
     case confirm
     case cancel
+    case backward
+    case forward
+    case complete
+    case skip
+    case queue
+    case undo
+    case cancelSession
+    case finishSession
+    case replaceSession
+    case resumeSession
 
     var title: LocalizedStringKey {
         switch self {
@@ -39,6 +49,16 @@ enum ActionDescriptor {
         case .decrease: "Decrease"
         case .confirm: "Confirm"
         case .cancel: "Cancel"
+        case .backward: "Backward"
+        case .forward: "Forward"
+        case .complete: "Complete"
+        case .skip: "Skip"
+        case .queue: "Queue"
+        case .undo: "Undo"
+        case .cancelSession: "Cancel Session"
+        case .finishSession: "Finish"
+        case .replaceSession: "Replace Session"
+        case .resumeSession: "Resume Active Session"
         }
     }
 
@@ -58,12 +78,22 @@ enum ActionDescriptor {
         case .decrease: "minus"
         case .confirm: "checkmark"
         case .cancel: "xmark"
+        case .backward: "backward.fill"
+        case .forward: "forward.fill"
+        case .complete: "checkmark"
+        case .skip: "arrow.turn.up.right"
+        case .queue: "line.3.horizontal.decrease"
+        case .undo: "arrow.uturn.backward"
+        case .cancelSession: "xmark"
+        case .finishSession: "flag.pattern.checkered"
+        case .replaceSession: "restart"
+        case .resumeSession: "arrowshape.turn.up.forward"
         }
     }
 
     var role: ButtonRole? {
         switch self {
-        case .delete, .remove: .destructive
+        case .delete, .remove, .cancelSession, .replaceSession: .destructive
         case .confirm: .confirm
         case .cancel: .cancel
         default: nil

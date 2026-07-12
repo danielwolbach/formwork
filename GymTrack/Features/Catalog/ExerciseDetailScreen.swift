@@ -53,15 +53,15 @@ struct ExerciseDetailScreen: View {
 
             Button(.cancel) {}
         } message: {
-            Text("This will delete the exercise and remove it from all workouts. This cannot be undone.")
+            Text(
+                "This will delete the exercise and remove it from all workouts and active sessions. This cannot be undone."
+            )
         }
     }
 
     private func delete() {
-        modelContext.delete(exercise)
-
         do {
-            try modelContext.save()
+            try modelContext.deleteExercise(exercise)
             dismiss()
         } catch {
             fatalError("Failed to delete exercise: \(error)")

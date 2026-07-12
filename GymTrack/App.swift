@@ -19,6 +19,42 @@ struct GymTrackApp: App {
 }
 
 struct ContentView: View {
+    @Query private var sessions: [Session]
+    @Namespace private var sessionTransitionNamespace
+    @State private var presentedSession: Session?
+
+    var body: some View {
+        MainTabs(
+            activeSession: activeSession,
+            sessionTransitionNamespace: sessionTransitionNamespace,
+            presentedSession: $presentedSession
+        )
+        .equatable()
+        .fullScreenCover(item: $presentedSession) { session in
+            NavigationStack {
+                SessionPlayerScreen(session: session)
+            }
+            .navigationTransition(
+                .zoom(sourceID: session.persistentModelID, in: sessionTransitionNamespace)
+            )
+        }
+    }
+
+    private var activeSession: Session? {
+        sessions.first { !$0.entries.isEmpty }
+    }
+}
+
+private struct MainTabs: View, Equatable {
+    let activeSession: Session?
+    let sessionTransitionNamespace: Namespace.ID
+    @Binding var presentedSession: Session?
+
+    static func == (lhs: Self, rhs: Self) -> Bool {
+        // Keep the UIKit-backed accessory mounted while the active session mutates.
+        lhs.activeSession?.persistentModelID == rhs.activeSession?.persistentModelID
+    }
+
     var body: some View {
         TabView {
             Tab("Workouts", systemImage: "clipboard") {
@@ -39,6 +75,18 @@ struct ContentView: View {
                 }
             }
         }
+        .environment(\.presentSession, PresentSessionAction { session in
+            presentedSession = session
+        })
+        .tabViewBottomAccessory(isEnabled: activeSession != nil) {
+            if let activeSession {
+                SessionMiniPlayer(
+                    session: activeSession,
+                    transitionNamespace: sessionTransitionNamespace
+                )
+            }
+        }
+        .tabBarMinimizeBehavior(.onScrollDown)
     }
 }
 

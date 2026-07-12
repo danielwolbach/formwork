@@ -97,6 +97,16 @@
         }
       }
     },
+    "Backward" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zurück"
+          }
+        }
+      }
+    },
     "Bench Press" : {
       "localizations" : {
         "de" : {
@@ -127,6 +137,26 @@
         }
       }
     },
+    "Cancel Session" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Session abbrechen"
+          }
+        }
+      }
+    },
+    "Cancel Session?" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Session abbrechen?"
+          }
+        }
+      }
+    },
     "Cardio" : {
       "localizations" : {
         "de" : {
@@ -153,6 +183,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Brust"
+          }
+        }
+      }
+    },
+    "Complete" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abschließen"
+          }
+        }
+      }
+    },
+    "Completed" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abgeschlossen"
           }
         }
       }
@@ -257,6 +307,26 @@
         }
       }
     },
+    "Done" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erledigt"
+          }
+        }
+      }
+    },
+    "Done · %@" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erledigt · %@"
+          }
+        }
+      }
+    },
     "Duration" : {
       "localizations" : {
         "de" : {
@@ -307,12 +377,42 @@
         }
       }
     },
+    "Finish" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beenden"
+          }
+        }
+      }
+    },
+    "Finish Session?" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Session beenden?"
+          }
+        }
+      }
+    },
     "Flexibility" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Flexibilität"
+          }
+        }
+      }
+    },
+    "Forward" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weiter"
           }
         }
       }
@@ -363,6 +463,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Achtsamkeit"
+          }
+        }
+      }
+    },
+    "Minimize" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minimieren"
           }
         }
       }
@@ -447,6 +557,26 @@
         }
       }
     },
+    "Pending" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ausstehend"
+          }
+        }
+      }
+    },
+    "Queue" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Warteschlange"
+          }
+        }
+      }
+    },
     "Remove" : {
       "localizations" : {
         "de" : {
@@ -467,12 +597,42 @@
         }
       }
     },
+    "Replace Active Session?" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktive Session ersetzen?"
+          }
+        }
+      }
+    },
+    "Replace Session" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Session ersetzen"
+          }
+        }
+      }
+    },
     "Reps" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Reps"
+          }
+        }
+      }
+    },
+    "Resume Active Session" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktive Session fortsetzen"
           }
         }
       }
@@ -517,12 +677,52 @@
         }
       }
     },
+    "Skip" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Überspringen"
+          }
+        }
+      }
+    },
+    "Skipped" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Übersprungen"
+          }
+        }
+      }
+    },
+    "Skipped · %@" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Übersprungen · %@"
+          }
+        }
+      }
+    },
     "Start Session" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Session starten"
+          }
+        }
+      }
+    },
+    "Starting this workout will replace the active session." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beim Starten dieses Workouts wird die aktive Session ersetzt."
           }
         }
       }
@@ -537,12 +737,12 @@
         }
       }
     },
-    "This will delete the exercise and remove it from all workouts. This cannot be undone." : {
+    "This will delete the exercise and remove it from all workouts and active sessions. This cannot be undone." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dadurch wird die Übung gelöscht und aus allen Trainingseinheiten entfernt. Dieser Vorgang kann nicht rückgängig gemacht werden."
+            "value" : "Dadurch wird die Übung gelöscht und aus allen Workouts und aktiven Sessions entfernt. Dieser Vorgang kann nicht rückgängig gemacht werden."
           }
         }
       }
@@ -553,6 +753,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Dadurch werden das Workout und alle dazugehörigen Einträge gelöscht. Dieser Vorgang kann nicht rückgängig gemacht werden."
+          }
+        }
+      }
+    },
+    "This will discard the active session." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dadurch wird die aktive Session verworfen."
+          }
+        }
+      }
+    },
+    "This will end the active session." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dadurch wird die aktive Session beendet."
           }
         }
       }
@@ -573,6 +793,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Probiere andere Filter."
+          }
+        }
+      }
+    },
+    "Undo" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rückgängig"
           }
         }
       }

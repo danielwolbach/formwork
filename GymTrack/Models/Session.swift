@@ -15,12 +15,16 @@ final class Session {
     @Relationship(deleteRule: .cascade)
     var entries: [SessionEntry]
 
-    var current: SessionEntry?
+    var current: SessionEntry
 
     init(workout: Workout) {
-        started = Date.now
-        entries = workout.entries.sorted()
+        let entries = workout.entries.sorted()
             .map { SessionEntry(order: $0.order, exercise: $0.exercise, target: $0.target) }
-        current = entries.first
+
+        precondition(!entries.isEmpty, "Cannot create a session for an empty workout.")
+
+        started = Date.now
+        self.entries = entries
+        current = entries[0]
     }
 }

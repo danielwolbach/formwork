@@ -27,11 +27,13 @@ struct IconTile: View {
 
 extension IconTile {
     enum Size {
+        case small
         case regular
         case large
 
         var size: CGFloat {
             switch self {
+            case .small: 32
             case .regular: 64
             case .large: 256
             }
@@ -43,6 +45,7 @@ extension IconTile {
 
         var cornerRadius: CGFloat {
             switch self {
+            case .small: 6
             case .regular: 12
             case .large: 24
             }

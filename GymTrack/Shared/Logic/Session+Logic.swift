@@ -1,0 +1,158 @@
+//
+//  Session+Logic.swift
+//  GymTrack
+//
+//  Created by Daniel Wolbach on 08.07.26.
+//
+
+import Foundation
+import SwiftData
+
+extension ModelContext {
+    @discardableResult
+    func startSession(for workout: Workout) throws -> Session {
+        precondition(!workout.entries.isEmpty, "Cannot start a session for an empty workout.")
+
+        let sessions = try fetch(FetchDescriptor<Session>(sortBy: [SortDescriptor(\.started, order: .reverse)]))
+
+        if let session = sessions.first {
+            for extraSession in sessions.dropFirst() {
+                delete(extraSession)
+            }
+
+            let oldEntries = session.entries
+            session.reset(for: workout)
+            oldEntries.forEach(delete)
+            try save()
+            return session
+        }
+
+        let session = Session(workout: workout)
+        insert(session)
+        try save()
+        return session
+    }
+
+    func finishSession(_ session: Session) throws {
+        try stopSession(session)
+    }
+
+    func cancelSession(_ session: Session) throws {
+        try stopSession(session)
+    }
+
+    private func stopSession(_ session: Session) throws {
+        delete(session)
+        try save()
+    }
+}
+
+extension Session {
+    func reset(for workout: Workout) {
+        let entries = workout.entries.sorted()
+            .map { SessionEntry(order: $0.order, exercise: $0.exercise, target: $0.target) }
+
+        precondition(!entries.isEmpty, "Cannot reset a session for an empty workout.")
+
+        started = Date.now
+        self.entries = entries
+        current = entries[0]
+    }
+
+    var pending: [SessionEntry] {
+        entries.sorted().filter { $0.status == .pending }
+    }
+
+    var previous: SessionEntry? {
+        let sorted = entries.sorted()
+
+        guard let currentIndex = sorted.firstIndex(where: { $0.id == current.id }), currentIndex > 0 else {
+            return nil
+        }
+
+        return sorted[currentIndex - 1]
+    }
+
+    var next: SessionEntry? {
+        let sorted = entries.sorted()
+
+        guard let currentIndex = sorted.firstIndex(where: { $0.id == current.id }) else {
+            return nil
+        }
+
+        let nextIndex = currentIndex + 1
+
+        guard sorted.indices.contains(nextIndex) else {
+            return nil
+        }
+
+        return sorted[nextIndex]
+    }
+
+    func moveToPrevious() {
+        guard let previous else {
+            return
+        }
+
+        current = previous
+    }
+
+    func moveToNext() {
+        guard let next else {
+            return
+        }
+
+        current = next
+    }
+
+    func completeAndAdvance() {
+        advanceCurrent(as: .done)
+    }
+
+    func skipAndAdvance() {
+        advanceCurrent(as: .skipped)
+    }
+
+    func undoStatusChange(for entry: SessionEntry) {
+        entry.status = .pending
+        reposition(entry)
+    }
+
+    func reorderPending(_ entries: [SessionEntry]) {
+        let completed = self.entries.sorted().filter { $0.status != .pending }
+
+        for (index, entry) in (completed + entries).enumerated() {
+            entry.order = index
+        }
+    }
+
+    private func advanceCurrent(as status: SessionEntry.Status) {
+        let nextPending = pending.first { $0.id != current.id }
+
+        current.status = status
+        reposition(current)
+        current = nextPending ?? current
+    }
+
+    func undoStatusChange() {
+        undoStatusChange(for: current)
+    }
+
+    func reposition(_ entry: SessionEntry) {
+        var sorted = entries.sorted()
+
+        guard let currentIndex = sorted.firstIndex(where: { $0.id == entry.id }) else {
+            return
+        }
+
+        sorted.remove(at: currentIndex)
+
+        let insertIndex = sorted.firstIndex { $0.status == .pending } ?? sorted.count
+
+        sorted.insert(entry, at: insertIndex)
+
+        for (index, entry) in sorted.enumerated() {
+            entry.order = index
+        }
+    }
+}
