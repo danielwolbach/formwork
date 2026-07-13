@@ -8,6 +8,12 @@
 import Foundation
 import SwiftData
 
+extension Collection where Element == Session {
+    var activeSession: Session? {
+        first { !$0.entries.isEmpty }
+    }
+}
+
 extension ModelContext {
     @discardableResult
     func startSession(for workout: Workout) throws -> Session {
@@ -48,6 +54,14 @@ extension ModelContext {
 }
 
 extension Session {
+    var orderedEntries: [SessionEntry] {
+        entries.sorted()
+    }
+
+    var firstEntry: SessionEntry? {
+        orderedEntries.first
+    }
+
     func reset(for workout: Workout) {
         let entries = workout.entries.sorted()
             .map { SessionEntry(order: $0.order, exercise: $0.exercise, target: $0.target) }
@@ -60,11 +74,15 @@ extension Session {
     }
 
     var pending: [SessionEntry] {
-        entries.sorted().filter { $0.status == .pending }
+        orderedEntries.filter { $0.status == .pending }
+    }
+
+    var completed: [SessionEntry] {
+        orderedEntries.filter { $0.status != .pending }
     }
 
     var previous: SessionEntry? {
-        let sorted = entries.sorted()
+        let sorted = orderedEntries
 
         guard let currentIndex = sorted.firstIndex(where: { $0.id == current.id }), currentIndex > 0 else {
             return nil
@@ -74,7 +92,7 @@ extension Session {
     }
 
     var next: SessionEntry? {
-        let sorted = entries.sorted()
+        let sorted = orderedEntries
 
         guard let currentIndex = sorted.firstIndex(where: { $0.id == current.id }) else {
             return nil
@@ -119,9 +137,9 @@ extension Session {
     }
 
     func reorderPending(_ entries: [SessionEntry]) {
-        let completed = self.entries.sorted().filter { $0.status != .pending }
+        let completedEntries = completed
 
-        for (index, entry) in (completed + entries).enumerated() {
+        for (index, entry) in (completedEntries + entries).enumerated() {
             entry.order = index
         }
     }
@@ -139,7 +157,7 @@ extension Session {
     }
 
     func reposition(_ entry: SessionEntry) {
-        var sorted = entries.sorted()
+        var sorted = orderedEntries
 
         guard let currentIndex = sorted.firstIndex(where: { $0.id == entry.id }) else {
             return

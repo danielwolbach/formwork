@@ -12,7 +12,7 @@ struct WorkoutDetailScreen: View {
     @Environment(\.modelContext) private var modelContext: ModelContext
     @Environment(\.dismiss) private var dismiss: DismissAction
     @Environment(\.presentSession) private var presentSession: PresentSessionAction
-    @Query private var sessions: [Session]
+    @Query(sort: \Session.started, order: .reverse) private var sessions: [Session]
 
     @State private var sheet: WorkoutSheet?
     @State private var deleteAlert = false
@@ -85,7 +85,7 @@ struct WorkoutDetailScreen: View {
                 replaceSession()
             }
 
-            if let activeSession {
+            if let activeSession = sessions.activeSession {
                 Button(.resumeSession) {
                     presentSession(activeSession)
                 }
@@ -106,16 +106,12 @@ struct WorkoutDetailScreen: View {
         }
     }
 
-    private var activeSession: Session? {
-        sessions.first { !$0.entries.isEmpty }
-    }
-
     private func startSession() {
         guard !workout.entries.isEmpty else {
             return
         }
 
-        guard activeSession == nil else {
+        guard sessions.activeSession == nil else {
             replaceSessionAlert = true
             return
         }

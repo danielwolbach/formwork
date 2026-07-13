@@ -11,7 +11,6 @@ import SwiftUI
 struct WorkoutExercisePicker: View {
     @Environment(\.dismiss) private var dismiss: DismissAction
     @Query(sort: \Exercise.name) private var exercises: [Exercise]
-
     @State private var selectedDisciplines: Set<Discipline> = []
     @State private var searchText = ""
     @State private var createSheet = false
@@ -31,7 +30,7 @@ struct WorkoutExercisePicker: View {
             }
             .toolbar {
                 ToolbarItem {
-                    Button(.createWorkout) {
+                    Button(.createExercise) {
                         createSheet = true
                     }
                 }
@@ -188,84 +187,6 @@ private struct DisciplineFilterButton: View {
             LabelButton(discipline.title, systemImage: discipline.systemImage) {
                 action()
             }
-        }
-    }
-}
-
-private struct WorkoutExerciseTargetScreen: View {
-    @Environment(\.modelContext) private var modelContext: ModelContext
-
-    @State private var target: ExerciseTarget
-
-    let exercise: Exercise
-    let workout: Workout
-    let dismissPicker: DismissAction
-
-    init(exercise: Exercise, workout: Workout, dismissPicker: DismissAction) {
-        self.exercise = exercise
-        self.workout = workout
-        self.dismissPicker = dismissPicker
-        _target = State(initialValue: .defaults(for: exercise.metric))
-    }
-
-    var body: some View {
-        ScrollView {
-            ScreenStack {
-                DetailHero(
-                    title: exercise.name,
-                    subtitle: exercise.disciplinesText,
-                    systemImage: target.systemImage,
-                    color: target.color
-                )
-
-                metricMenu
-
-                ExerciseTargetEditor(target: $target)
-            }
-        }
-        .navigationTitle("Add Exercise")
-        .navigationSubtitle(workout.name)
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            ToolbarItem(placement: .confirmationAction) {
-                Button(.confirm) {
-                    save()
-                }
-            }
-        }
-    }
-
-    private var metricMenu: some View {
-        Menu {
-            ExerciseMetricPicker(selection: metric)
-        } label: {
-            Label(target.metric.title, systemImage: target.metric.systemImage)
-        }
-        .fontWeight(.semibold)
-        .buttonStyle(.glass)
-        .controlSize(.large)
-    }
-
-    private var metric: Binding<ExerciseMetric> {
-        Binding {
-            target.metric
-        } set: { metric in
-            withAnimation(.snappy(duration: 0.25)) {
-                target = .defaults(for: metric)
-            }
-        }
-    }
-
-    private func save() {
-        let order = (workout.entries.map(\.order).max() ?? -1) + 1
-        let entry = WorkoutEntry(order: order, exercise: exercise, target: target)
-        workout.entries.append(entry)
-
-        do {
-            try modelContext.save()
-            dismissPicker()
-        } catch {
-            fatalError("Failed to add workout exercise: \(error)")
         }
     }
 }

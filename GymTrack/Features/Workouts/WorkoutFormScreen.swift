@@ -11,7 +11,6 @@ import SwiftUI
 struct WorkoutFormScreen: View {
     @Environment(\.modelContext) private var modelContext: ModelContext
     @Environment(\.dismiss) private var dismiss: DismissAction
-
     @State private var name: String
     @State private var entries: [WorkoutEntry]
 

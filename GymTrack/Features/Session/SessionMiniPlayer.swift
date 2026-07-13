@@ -10,7 +10,6 @@ import SwiftUI
 
 struct SessionMiniPlayer: View {
     @Environment(\.presentSession) private var presentSession: PresentSessionAction
-
     let session: Session
     let transitionNamespace: Namespace.ID
 
@@ -56,10 +55,12 @@ struct SessionMiniPlayer: View {
 
                 IconButton(.forward) {
                     navigate {
-                        if session.next == nil {
-                            session.current = session.entries.sorted()[0]
+                        if let next = session.next {
+                            session.current = next
+                        } else if let firstEntry = session.firstEntry {
+                            session.current = firstEntry
                         } else {
-                            session.moveToNext()
+                            return
                         }
                     }
                 }
@@ -105,13 +106,13 @@ private struct SessionMiniPlayerEntry: View {
 }
 
 private struct SessionMiniPlayerPreview: View {
-    @Query private var sessions: [Session]
+    @Query(sort: \Session.started, order: .reverse) private var sessions: [Session]
     @Namespace private var namespace
 
     var body: some View {
         TabView {}
             .tabViewBottomAccessory(isEnabled: !sessions.isEmpty) {
-                if let session = sessions.first {
+                if let session = sessions.activeSession {
                     SessionMiniPlayer(
                         session: session,
                         transitionNamespace: namespace

@@ -20,6 +20,24 @@ struct ExerciseMetricPicker: View {
     }
 }
 
+struct ExerciseTargetMetricPicker: View {
+    @Binding var target: ExerciseTarget
+
+    var body: some View {
+        ExerciseMetricPicker(selection: metric)
+    }
+
+    private var metric: Binding<ExerciseMetric> {
+        Binding {
+            target.metric
+        } set: { metric in
+            withAnimation(.snappy(duration: 0.25)) {
+                target = .defaults(for: metric)
+            }
+        }
+    }
+}
+
 #Preview {
     ExerciseMetricPicker(selection: .constant(ExerciseMetric.weight))
 }

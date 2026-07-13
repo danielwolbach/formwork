@@ -19,7 +19,7 @@ struct GymTrackApp: App {
 }
 
 struct ContentView: View {
-    @Query private var sessions: [Session]
+    @Query(sort: \Session.started, order: .reverse) private var sessions: [Session]
     @Namespace private var sessionTransitionNamespace
     @State private var presentedSession: Session?
 
@@ -29,7 +29,6 @@ struct ContentView: View {
             sessionTransitionNamespace: sessionTransitionNamespace,
             presentedSession: $presentedSession
         )
-        .equatable()
         .fullScreenCover(item: $presentedSession) { session in
             NavigationStack {
                 SessionPlayerScreen(session: session)
@@ -41,19 +40,14 @@ struct ContentView: View {
     }
 
     private var activeSession: Session? {
-        sessions.first { !$0.entries.isEmpty }
+        sessions.activeSession
     }
 }
 
-private struct MainTabs: View, Equatable {
+private struct MainTabs: View {
     let activeSession: Session?
     let sessionTransitionNamespace: Namespace.ID
     @Binding var presentedSession: Session?
-
-    static func == (lhs: Self, rhs: Self) -> Bool {
-        // Keep the UIKit-backed accessory mounted while the active session mutates.
-        lhs.activeSession?.persistentModelID == rhs.activeSession?.persistentModelID
-    }
 
     var body: some View {
         TabView {

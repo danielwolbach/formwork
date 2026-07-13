@@ -11,9 +11,7 @@ import SwiftUI
 struct WorkoutEntryDetailScreen: View {
     @Environment(\.modelContext) private var modelContext: ModelContext
     @Environment(\.dismiss) private var dismiss: DismissAction
-
     @State private var deleteAlert = false
-
     @Bindable var entry: WorkoutEntry
 
     var body: some View {
@@ -34,7 +32,7 @@ struct WorkoutEntryDetailScreen: View {
             Menu(.moreOptions) {
                 Section {
                     Menu(.metric) {
-                        ExerciseMetricPicker(selection: metric)
+                        ExerciseTargetMetricPicker(target: $entry.target)
                     }
                 }
 
@@ -56,16 +54,6 @@ struct WorkoutEntryDetailScreen: View {
             Button(.cancel) {}
         } message: {
             Text("This will remove the exercise from the workout. This cannot be undone.")
-        }
-    }
-
-    private var metric: Binding<ExerciseMetric> {
-        Binding {
-            entry.target.metric
-        } set: { metric in
-            withAnimation(.snappy(duration: 0.25)) {
-                entry.target = .defaults(for: metric)
-            }
         }
     }
 

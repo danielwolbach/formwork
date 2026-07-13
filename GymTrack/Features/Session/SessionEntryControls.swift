@@ -62,7 +62,6 @@ struct SessionEntryControls: View {
                     systemImage: session.current.status.systemImage
                 ) {}
                     .fontWeight(.semibold)
-                    .tint(.green)
                     .disabled(true)
             }
         }
@@ -122,4 +121,12 @@ enum SessionNavigationDirection {
             )
         }
     }
+}
+
+#Preview {
+    SessionEntryControls(
+        session: Session.samples[0],
+        navigationDirection: .constant(.forward),
+        finishSessionAlert: .constant(false)
+    )
 }

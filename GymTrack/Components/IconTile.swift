@@ -57,5 +57,6 @@ extension IconTile {
     VStack(spacing: 32) {
         IconTile(systemImage: "sparkles", color: .accentColor, size: .large)
         IconTile(systemImage: "sparkles", color: .accentColor, size: .regular)
+        IconTile(systemImage: "sparkles", color: .accentColor, size: .small)
     }
 }

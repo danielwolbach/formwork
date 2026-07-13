@@ -11,7 +11,6 @@ import SwiftUI
 struct SessionQueueScreen: View {
     @Environment(\.dismiss) private var dismiss: DismissAction
     @Environment(\.modelContext) private var modelContext: ModelContext
-
     @Bindable var session: Session
 
     var body: some View {
@@ -23,9 +22,9 @@ struct SessionQueueScreen: View {
                 .onMove(perform: movePending)
             }
 
-            if !completedEntries.isEmpty {
+            if !session.completed.isEmpty {
                 Section("Completed") {
-                    ForEach(completedEntries) { entry in
+                    ForEach(session.completed) { entry in
                         HStack {
                             SessionQueueRow(entry: entry)
 
@@ -49,10 +48,6 @@ struct SessionQueueScreen: View {
                 }
             }
         }
-    }
-
-    private var completedEntries: [SessionEntry] {
-        session.entries.sorted().filter { $0.status != .pending }
     }
 
     private func movePending(from source: IndexSet, to destination: Int) {
@@ -108,11 +103,11 @@ private struct SessionQueueRow: View {
 }
 
 private struct SessionQueueScreenPreview: View {
-    @Query private var sessions: [Session]
+    @Query(sort: \Session.started, order: .reverse) private var sessions: [Session]
 
     var body: some View {
         NavigationStack {
-            if let session = sessions.first {
+            if let session = sessions.activeSession {
                 SessionQueueScreen(session: session)
             }
         }
