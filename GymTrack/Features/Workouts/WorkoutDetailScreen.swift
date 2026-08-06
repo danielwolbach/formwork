@@ -9,11 +9,10 @@ import SwiftData
 import SwiftUI
 
 struct WorkoutDetailScreen: View {
-    @Environment(\.modelContext) private var modelContext: ModelContext
     @Environment(\.dismiss) private var dismiss: DismissAction
+    @Environment(\.modelContext) private var modelContext: ModelContext
     @Environment(\.presentSession) private var presentSession: PresentSessionAction
     @Query(sort: \Session.started, order: .reverse) private var sessions: [Session]
-
     @State private var sheet: WorkoutSheet?
     @State private var deleteAlert = false
     @State private var replaceSessionAlert = false
@@ -21,88 +20,98 @@ struct WorkoutDetailScreen: View {
     let workout: Workout
 
     var body: some View {
-        ScrollView {
-            ScreenStack {
-                DetailHero(
-                    title: workout.name,
-                    subtitle: workout.entriesText,
-                    systemImage: workout.systemImage,
-                    color: workout.color
-                )
+        content
+            .navigationDestination(for: WorkoutEntry.self) { entry in
+                WorkoutEntryDetailScreen(entry: entry)
+            }
+            .toolbar {
+                Menu(.moreOptions) {
+                    Section {
+                        Button(.addWorkoutExercise) {
+                            sheet = .addWorkoutExercise(workout)
+                        }
 
-                HStack {
-                    IconButton(.addWorkoutExercise) {
-                        sheet = .addWorkoutExercise(workout)
+                        Button(.seeStats) {
+                            // TODO:
+                        }
                     }
 
-                    LabelButton(.startSession, style: .glassProminent) {
+                    Section {
+                        Button(.edit) {
+                            sheet = .editWorkout(workout)
+                        }
+                    }
+
+                    Section {
+                        Button(.delete) {
+                            deleteAlert = true
+                        }
+                    }
+                }
+            }
+            .workoutSheet(item: $sheet)
+            .alert(.alertReplaceSessionTitle, isPresented: $replaceSessionAlert) {
+                Button(.replaceSession) {
+                    replaceSession()
+                }
+
+                if let activeSession = sessions.activeSession {
+                    Button(.resumeSession) {
+                        presentSession(activeSession)
+                    }
+                }
+
+                Button(.cancel) {}
+            } message: {
+                Text(.alertReplaceSessionMessage)
+            }
+            .alert(.alertDeleteWorkoutTitle, isPresented: $deleteAlert) {
+                Button(.delete) {
+                    delete()
+                }
+
+                Button(.cancel) {}
+            } message: {
+                Text(.alertDeleteWorkoutMessage)
+            }
+    }
+
+    private var content: some View {
+        ScrollView {
+            ScreenStack {
+                IconHero(icon: workout.icon, color: workout.color, title: workout.title, subtitle: workout.subtitle)
+
+                ButtonStack {
+                    Button(.addWorkoutExercise) {
+                        sheet = .addWorkoutExercise(workout)
+                    }
+                    .labelStyle(.fixedIconOnly)
+                    .buttonStyle(.glass)
+                    .buttonBorderShape(.circle)
+
+                    Button(.startSession) {
                         startSession()
                     }
                     .tint(.green)
                     .fontWeight(.semibold)
                     .disabled(workout.entries.isEmpty)
-
-                    IconButton(.seeStats) {
-                        // TODO:
-                    }
-                }
-                .controlSize(.large)
-
-                WorkoutEntryList(entries: workout.entries.sorted())
-            }
-        }
-        .navigationDestination(for: WorkoutEntry.self) { entry in
-            WorkoutEntryDetailScreen(entry: entry)
-        }
-        .toolbar {
-            Menu(.moreOptions) {
-                Section {
-                    Button(.addWorkoutExercise) {
-                        sheet = .addWorkoutExercise(workout)
-                    }
+                    .labelStyle(.fixedTitleAndIcon)
+                    .buttonStyle(.glassProminent)
 
                     Button(.seeStats) {
                         // TODO:
                     }
+                    .labelStyle(.fixedIconOnly)
+                    .buttonStyle(.glass)
+                    .buttonBorderShape(.circle)
                 }
 
-                Section {
-                    Button(.edit) {
-                        sheet = .editWorkout(workout)
-                    }
-                }
-
-                Section {
-                    Button(.delete) {
-                        deleteAlert = true
-                    }
+                if workout.entries.isEmpty {
+                    ContentUnavailableView(.emptyNoExercises, systemImage: Exercise.genericIcon)
+                } else {
+                    WorkoutEntryList(entries: workout.entries.sorted())
                 }
             }
-        }
-        .workoutSheet(item: $sheet)
-        .alert("Replace Active Session?", isPresented: $replaceSessionAlert) {
-            Button(.replaceSession) {
-                replaceSession()
-            }
-
-            if let activeSession = sessions.activeSession {
-                Button(.resumeSession) {
-                    presentSession(activeSession)
-                }
-            }
-
-            Button(.cancel) {}
-        } message: {
-            Text("Starting this workout will replace the active session.")
-        }
-        .alert("Delete Workout?", isPresented: $deleteAlert) {
-            Button(.delete) {
-                delete()
-            }
-
-            Button(.cancel) {}
-        } message: {
-            Text("This will delete the workout and all of its entries. This cannot be undone.")
         }
     }
 
@@ -128,9 +137,8 @@ struct WorkoutDetailScreen: View {
     }
 
     private func delete() {
-        modelContext.delete(workout)
-
         do {
+            modelContext.delete(workout)
             try modelContext.save()
             dismiss()
         } catch {

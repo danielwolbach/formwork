@@ -11,38 +11,22 @@ struct WorkoutList: View {
     let workouts: [Workout]
 
     var body: some View {
-        if workouts.isEmpty {
-            ContentUnavailableView("No Workouts", systemImage: Workout.systemImage)
-        } else {
-            ScrollView {
-                ScreenStack {
-                    RowStack {
-                        ForEach(workouts) { workout in
-                            NavigationLink(value: workout) {
-                                NavigationRow(
-                                    title: workout.name,
-                                    subtitle: workout.entriesText,
-                                    systemImage: workout.systemImage,
-                                    color: workout.color
-                                )
-                            }
-                            .buttonStyle(.plain)
-                        }
-                    }
-                }
+        RowStack {
+            ForEach(workouts) { workout in
+                IconNavigationRow(
+                    value: workout,
+                    icon: workout.icon,
+                    color: workout.color,
+                    title: workout.title,
+                    subtitle: workout.subtitle
+                )
             }
         }
     }
 }
 
-#Preview("Samples") {
+#Preview {
     NavigationStack {
         WorkoutList(workouts: Workout.samples)
-    }
-}
-
-#Preview("Empty") {
-    NavigationStack {
-        WorkoutList(workouts: [])
     }
 }

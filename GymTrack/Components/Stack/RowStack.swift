@@ -14,14 +14,14 @@ struct RowStack<Content: View>: View {
         LazyVStack(spacing: 0) {
             content
         }
-        .padding(.horizontal, 8)
     }
 }
 
 #Preview {
     RowStack {
-        ForEach(["First", "Second", "Third"], id: \.self) { title in
-            NavigationRow(title: title, subtitle: "Subtitle", systemImage: "sparkles", color: .accentColor)
-        }
+        Text("First row")
+        Divider()
+        Text("Second row")
     }
+    .padding()
 }

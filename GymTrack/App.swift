@@ -51,21 +51,21 @@ private struct MainTabs: View {
 
     var body: some View {
         TabView {
-            Tab("Workouts", systemImage: "clipboard") {
+            Tab(.screenWorkouts, systemImage: "clipboard") {
                 NavigationStack {
                     WorkoutListScreen()
                 }
             }
 
-            Tab("Catalog", systemImage: "magazine") {
+            Tab(.screenCatalog, systemImage: "magazine") {
                 NavigationStack {
                     DisciplineGridScreen()
                 }
             }
 
-            Tab("Stats", systemImage: "sparkles") {
+            Tab(.screenStats, systemImage: "sparkles") {
                 NavigationStack {
-                    ContentUnavailableView("Stats", systemImage: "sparkles")
+                    ContentUnavailableView(.emptyStats, systemImage: "sparkles")
                 }
             }
         }
@@ -80,7 +80,7 @@ private struct MainTabs: View {
                 )
             }
         }
-        .tabBarMinimizeBehavior(.onScrollDown)
+        .tabBarMinimizeBehavior(activeSession == nil ? .automatic : .onScrollDown)
     }
 }
 

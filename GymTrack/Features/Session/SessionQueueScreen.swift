@@ -15,30 +15,22 @@ struct SessionQueueScreen: View {
 
     var body: some View {
         Form {
-            Section("Pending") {
-                ForEach(session.pending) { entry in
+            Section(.sectionPending) {
+                ForEach(session.pending, id: \.id) { entry in
                     SessionQueueRow(entry: entry)
                 }
                 .onMove(perform: movePending)
             }
 
-            if !session.completed.isEmpty {
-                Section("Completed") {
-                    ForEach(session.completed) { entry in
-                        HStack {
-                            SessionQueueRow(entry: entry)
-
-                            IconButton(.undo, style: .plain) {
-                                undo(entry)
-                            }
-                            .foregroundStyle(.tertiary)
-                            .padding(.horizontal, 6)
-                        }
+            if !completedEntries.isEmpty {
+                Section(.sectionCompleted) {
+                    ForEach(completedEntries, id: \.id) { entry in
+                        CompletedEntryRow(entry: entry, undo: undo)
                     }
                 }
             }
         }
-        .navigationTitle("Queue")
+        .navigationTitle(.screenQueue)
         .navigationBarTitleDisplayMode(.inline)
         .environment(\.editMode, .constant(.active))
         .toolbar {
@@ -57,15 +49,17 @@ struct SessionQueueScreen: View {
         withAnimation(.snappy) {
             session.reorderPending(entries)
         }
-
         save()
+    }
+
+    private var completedEntries: [SessionEntry] {
+        session.completed
     }
 
     private func undo(_ entry: SessionEntry) {
         withAnimation(.snappy) {
             session.undoStatusChange(for: entry)
         }
-
         save()
     }
 
@@ -83,21 +77,25 @@ private struct SessionQueueRow: View {
 
     var body: some View {
         HStack {
-            IconTile(
-                systemImage: entry.systemImage,
-                color: entry.color,
-                size: .small
-            )
+            IconRow(icon: entry.icon, color: entry.color, title: entry.title, subtitle: entry.subtitle)
+        }
+    }
+}
 
-            VStack(alignment: .leading, spacing: 0) {
-                Text(entry.exercise.name)
+private struct CompletedEntryRow: View {
+    let entry: SessionEntry
+    let undo: (SessionEntry) -> Void
 
-                entry.subtitle
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+    var body: some View {
+        HStack {
+            SessionQueueRow(entry: entry)
+
+            Button(.undo) {
+                undo(entry)
             }
-
-            Spacer()
+            .buttonStyle(.plain)
+            .foregroundStyle(.tertiary)
+            .padding(.horizontal, 6)
         }
     }
 }

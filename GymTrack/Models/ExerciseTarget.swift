@@ -15,7 +15,7 @@ nonisolated enum ExerciseTarget: Identifiable, Codable, Hashable {
         self
     }
 
-    var metric: ExerciseMetric {
+    var type: ExerciseType {
         switch self {
         case .weight: .weight
         case .bodyweight: .bodyweight
@@ -24,10 +24,10 @@ nonisolated enum ExerciseTarget: Identifiable, Codable, Hashable {
         }
     }
 
-    static func defaults(for metric: ExerciseMetric) -> Self {
-        switch metric {
+    static func defaults(for type: ExerciseType) -> Self {
+        switch type {
         case .weight: .weight(weight: 10, sets: 3, reps: 10)
-        case .bodyweight: .bodyweight(sets: 10, reps: 10)
+        case .bodyweight: .bodyweight(sets: 3, reps: 10)
         case .duration: .duration(minutes: 10)
         case .distance: .distance(meters: 1000)
         }

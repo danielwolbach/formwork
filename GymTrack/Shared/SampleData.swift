@@ -1,5 +1,5 @@
 //
-//  Samples.swift
+//  SampleData.swift
 //  GymTrack
 //
 //  Created by Daniel Wolbach on 08.07.26.
@@ -11,11 +11,11 @@ import SwiftUI
 extension Exercise {
     static var samples: [Exercise] {
         [
-            Exercise(name: "Bench Press", metric: .weight, disciplines: [.chest, .arms]),
-            Exercise(name: "Back Squat", metric: .weight, disciplines: [.legs]),
-            Exercise(name: "Plank", metric: .duration, disciplines: [.core]),
-            Exercise(name: "Treadmill", metric: .distance, disciplines: [.legs]),
-            Exercise(name: "Hyperextensions", metric: .bodyweight, disciplines: [.back]),
+            Exercise(name: "Bench Press", type: .weight, disciplines: [.chest, .arms]),
+            Exercise(name: "Back Squat", type: .weight, disciplines: [.legs]),
+            Exercise(name: "Plank", type: .duration, disciplines: [.core]),
+            Exercise(name: "Treadmill", type: .distance, disciplines: [.legs]),
+            Exercise(name: "Hyperextensions", type: .bodyweight, disciplines: [.back]),
         ]
     }
 }
@@ -34,7 +34,7 @@ extension WorkoutEntry {
 
 extension Workout {
     static var samples: [Workout] {
-        return [
+        [
             Workout(name: "Full Body", entries: WorkoutEntry.samples),
         ]
     }
@@ -74,7 +74,8 @@ private struct SampleDataModifier: ViewModifier {
     }
 
     func body(content: Content) -> some View {
-        content.modelContainer(container)
+        content
+            .modelContainer(container)
     }
 }
 

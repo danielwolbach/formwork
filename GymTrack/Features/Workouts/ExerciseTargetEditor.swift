@@ -13,10 +13,10 @@ struct ExerciseTargetEditor: View {
     var body: some View {
         ZStack {
             editor
-                .id(target.metric)
+                .id(target.type)
                 .transition(.opacity.combined(with: .scale(scale: 0.98)))
         }
-        .animation(.snappy(duration: 0.25), value: target.metric)
+        .animation(.snappy(duration: 0.25), value: target.type)
     }
 
     @ViewBuilder
@@ -54,9 +54,9 @@ struct ExerciseTargetEditor: View {
                     get: { minutes },
                     set: { .duration(minutes: $0) }
                 ),
-                title: "Minutes",
+                title: .exerciseTargetFieldMinutes,
                 step: 5,
-                suffix: "min"
+                suffix: .unitMinutes
             )
         case let .distance(meters):
             NumberStepper(
@@ -64,15 +64,15 @@ struct ExerciseTargetEditor: View {
                     get: { meters },
                     set: { .distance(meters: $0) }
                 ),
-                title: "Meters",
+                title: .exerciseTargetFieldMeters,
                 step: 100,
-                suffix: "m"
+                suffix: .unitMeters
             )
         }
     }
 
-    private func binding<Value>(
-        get: @escaping () -> Value,
+    private func binding<Value: Sendable>(
+        get: @escaping @Sendable () -> Value,
         set: @escaping (Value) -> ExerciseTarget
     ) -> Binding<Value> {
         Binding(
@@ -89,7 +89,7 @@ private struct WeightTargetEditor: View {
 
     var body: some View {
         VStack(spacing: 24) {
-            NumberStepper(value: $weight, title: "Weight", step: 5, suffix: "kg")
+            NumberStepper(value: $weight, title: .exerciseTargetFieldWeight, step: 5, suffix: .unitKilograms)
             SetsRepsTargetEditor(sets: $sets, reps: $reps)
         }
     }
@@ -101,12 +101,12 @@ private struct SetsRepsTargetEditor: View {
 
     var body: some View {
         HStack(spacing: 24) {
-            NumberStepper(value: $sets, title: "Sets")
+            NumberStepper(value: $sets, title: .exerciseTargetFieldSets)
 
             Divider()
                 .frame(height: 48)
 
-            NumberStepper(value: $reps, title: "Reps")
+            NumberStepper(value: $reps, title: .exerciseTargetFieldReps)
         }
     }
 }

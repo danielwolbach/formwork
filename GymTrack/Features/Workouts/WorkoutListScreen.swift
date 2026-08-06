@@ -13,8 +13,8 @@ struct WorkoutListScreen: View {
     @State private var sheet: WorkoutSheet?
 
     var body: some View {
-        WorkoutList(workouts: workouts)
-            .navigationTitle("Workouts")
+        content
+            .navigationTitle(.screenWorkouts)
             .navigationDestination(for: Workout.self) { workout in
                 WorkoutDetailScreen(workout: workout)
             }
@@ -26,6 +26,19 @@ struct WorkoutListScreen: View {
                 }
             }
             .workoutSheet(item: $sheet)
+    }
+
+    @ViewBuilder
+    private var content: some View {
+        if workouts.isEmpty {
+            ContentUnavailableView(.emptyNoWorkouts, systemImage: Workout.genericIcon)
+        } else {
+            ScrollView {
+                ScreenStack {
+                    WorkoutList(workouts: workouts)
+                }
+            }
+        }
     }
 }
 

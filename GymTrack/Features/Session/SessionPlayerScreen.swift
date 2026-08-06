@@ -1,5 +1,5 @@
 //
-//  SessionScreen.swift
+//  SessionPlayerScreen.swift
 //  GymTrack
 //
 //  Created by Daniel Wolbach on 12.07.26.
@@ -9,8 +9,8 @@ import SwiftData
 import SwiftUI
 
 struct SessionPlayerScreen: View {
-    @Environment(\.modelContext) private var modelContext: ModelContext
     @Environment(\.dismiss) private var dismiss: DismissAction
+    @Environment(\.modelContext) private var modelContext: ModelContext
     @State private var navigationDirection: SessionNavigationDirection = .forward
     @State private var queuePresented = false
     @State private var finishSessionAlert = false
@@ -34,7 +34,7 @@ struct SessionPlayerScreen: View {
         }
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
-                Button("Minimize", systemImage: "chevron.down") {
+                Button(.actionMinimize, systemImage: "chevron.down") {
                     dismiss()
                 }
             }
@@ -64,23 +64,23 @@ struct SessionPlayerScreen: View {
                 SessionQueueScreen(session: session)
             }
         }
-        .alert("Finish Session?", isPresented: $finishSessionAlert) {
+        .alert(.alertFinishSessionTitle, isPresented: $finishSessionAlert) {
             Button(.finishSession) {
                 finishSession()
             }
 
             Button(.cancel) {}
         } message: {
-            Text("This will end the active session.")
+            Text(.alertFinishSessionMessage)
         }
-        .alert("Cancel Session?", isPresented: $cancelSessionAlert) {
-            Button("Cancel Session", role: .destructive) {
+        .alert(.alertCancelSessionTitle, isPresented: $cancelSessionAlert) {
+            Button(.actionSessionCancel, role: .destructive) {
                 cancelSession()
             }
 
             Button(.cancel) {}
         } message: {
-            Text("This will discard the active session.")
+            Text(.alertCancelSessionMessage)
         }
     }
 
@@ -105,4 +105,84 @@ struct SessionPlayerScreen: View {
 
 #Preview {
     SessionPlayerScreen(session: Session.samples[0])
+}
+
+private struct SessionEntryControls: View {
+    @Bindable var session: Session
+    @Binding var navigationDirection: SessionNavigationDirection
+    @Binding var finishSessionAlert: Bool
+
+    var body: some View {
+        VStack(spacing: 32) {
+            ButtonStack {
+                Button(.backward) {
+                    navigate(.backward) { session.moveToPrevious() }
+                }
+                .disabled(session.previous == nil)
+                .buttonStyle(.glass)
+                .labelStyle(.fixedIconOnly)
+                .buttonBorderShape(.circle)
+
+                primaryAction
+                    .buttonStyle(.glassProminent)
+                    .labelStyle(.fixedTitleAndIcon)
+
+                Button(.forward) {
+                    navigate(.forward) { session.moveToNext() }
+                }
+                .disabled(session.next == nil)
+                .buttonStyle(.glass)
+                .labelStyle(.fixedIconOnly)
+                .buttonBorderShape(.circle)
+            }
+
+            secondaryAction
+                .buttonStyle(.glass)
+                .labelStyle(.fixedTitleAndIcon)
+                .controlSize(.small)
+        }
+        .padding(.horizontal)
+    }
+
+    @ViewBuilder
+    private var primaryAction: some View {
+        if session.pending.isEmpty {
+            Button(.finishSession) { finishSessionAlert = true }
+                .fontWeight(.semibold)
+        } else if session.current.status == .pending {
+            Button(.complete) {
+                navigate(.forward) { session.completeAndAdvance() }
+            }
+            .fontWeight(.semibold)
+            .tint(.green)
+        } else {
+            Button(session.current.status.title, systemImage: session.current.status.icon) {}
+                .fontWeight(.semibold)
+                .disabled(true)
+        }
+    }
+
+    @ViewBuilder
+    private var secondaryAction: some View {
+        if session.current.status == .pending {
+            Button(.skip) {
+                navigate(.forward) { session.skipAndAdvance() }
+            }
+        } else {
+            Button(.undo) {
+                withAnimation(.snappy) { session.undoStatusChange() }
+            }
+        }
+    }
+
+    private func navigate(_ direction: SessionNavigationDirection, action: @escaping () -> Void) {
+        var transaction = Transaction()
+        transaction.disablesAnimations = true
+
+        withTransaction(transaction) {
+            navigationDirection = direction
+        }
+
+        withAnimation(.snappy(), action)
+    }
 }

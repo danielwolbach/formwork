@@ -9,19 +9,19 @@ import SwiftData
 import SwiftUI
 
 struct WorkoutEntryDetailScreen: View {
-    @Environment(\.modelContext) private var modelContext: ModelContext
     @Environment(\.dismiss) private var dismiss: DismissAction
+    @Environment(\.modelContext) private var modelContext: ModelContext
     @State private var deleteAlert = false
     @Bindable var entry: WorkoutEntry
 
     var body: some View {
         ScrollView {
             ScreenStack {
-                DetailHero(
-                    title: entry.exercise.name,
-                    subtitle: entry.exercise.disciplinesText,
-                    systemImage: entry.target.systemImage,
-                    color: entry.target.color
+                IconHero(
+                    icon: entry.icon,
+                    color: entry.color,
+                    title: entry.title,
+                    subtitle: String(localized: entry.target.type.title)
                 )
 
                 ExerciseTargetEditor(target: $entry.target)
@@ -31,8 +31,8 @@ struct WorkoutEntryDetailScreen: View {
         .toolbar {
             Menu(.moreOptions) {
                 Section {
-                    Menu(.metric) {
-                        ExerciseTargetMetricPicker(target: $entry.target)
+                    Menu(.type) {
+                        ExerciseTargetTypePicker(target: $entry.target)
                     }
                 }
 
@@ -46,14 +46,14 @@ struct WorkoutEntryDetailScreen: View {
         .onChange(of: entry.target) {
             save()
         }
-        .alert("Remove Exercise?", isPresented: $deleteAlert) {
+        .alert(.alertRemoveExerciseTitle, isPresented: $deleteAlert) {
             Button(.remove) {
                 remove()
             }
 
             Button(.cancel) {}
         } message: {
-            Text("This will remove the exercise from the workout. This cannot be undone.")
+            Text(.alertRemoveExerciseMessage)
         }
     }
 
@@ -66,9 +66,8 @@ struct WorkoutEntryDetailScreen: View {
     }
 
     private func remove() {
-        modelContext.delete(entry)
-
         do {
+            modelContext.delete(entry)
             try modelContext.save()
             dismiss()
         } catch {

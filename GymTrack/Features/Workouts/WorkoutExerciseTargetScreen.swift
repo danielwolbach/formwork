@@ -20,25 +20,20 @@ struct WorkoutExerciseTargetScreen: View {
         self.exercise = exercise
         self.workout = workout
         self.dismissPicker = dismissPicker
-        _target = State(initialValue: .defaults(for: exercise.metric))
+        _target = State(initialValue: .defaults(for: exercise.type))
     }
 
     var body: some View {
         ScrollView {
             ScreenStack {
-                DetailHero(
-                    title: exercise.name,
-                    subtitle: exercise.disciplinesText,
-                    systemImage: target.systemImage,
-                    color: target.color
-                )
+                IconHero(icon: target.icon, color: target.color, title: exercise.name, subtitle: exercise.subtitle)
 
-                metricMenu
+                typeMenu
 
                 ExerciseTargetEditor(target: $target)
             }
         }
-        .navigationTitle("Add Exercise")
+        .navigationTitle(.screenAddExercise)
         .navigationSubtitle(workout.name)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
@@ -50,11 +45,11 @@ struct WorkoutExerciseTargetScreen: View {
         }
     }
 
-    private var metricMenu: some View {
+    private var typeMenu: some View {
         Menu {
-            ExerciseTargetMetricPicker(target: $target)
+            ExerciseTargetTypePicker(target: $target)
         } label: {
-            Label(target.metric.title, systemImage: target.metric.systemImage)
+            Label(target.type.title, systemImage: target.type.icon)
         }
         .fontWeight(.semibold)
         .buttonStyle(.glass)
@@ -62,11 +57,10 @@ struct WorkoutExerciseTargetScreen: View {
     }
 
     private func save() {
-        let order = (workout.entries.map(\.order).max() ?? -1) + 1
-        let entry = WorkoutEntry(order: order, exercise: exercise, target: target)
-        workout.entries.append(entry)
-
         do {
+            let order = (workout.entries.map(\.order).max() ?? -1) + 1
+            let entry = WorkoutEntry(order: order, exercise: exercise, target: target)
+            workout.entries.append(entry)
             try modelContext.save()
             dismissPicker()
         } catch {

@@ -13,18 +13,18 @@ struct NumberStepper: View {
 
     @Binding private var value: Double
 
-    let title: LocalizedStringKey
+    let title: LocalizedStringResource
     let step: Double?
     let range: ClosedRange<Double>
-    let suffix: String?
+    let suffix: LocalizedStringResource?
     let style: Style
 
     init(
         value: Binding<Int>,
-        title: LocalizedStringKey,
+        title: LocalizedStringResource,
         step: Int? = nil,
         range: ClosedRange<Int> = 0 ... 1_000_000,
-        suffix: String? = nil
+        suffix: LocalizedStringResource? = nil
     ) {
         _value = Binding(
             get: { Double(value.wrappedValue) },
@@ -40,10 +40,10 @@ struct NumberStepper: View {
 
     init(
         value: Binding<Double>,
-        title: LocalizedStringKey,
+        title: LocalizedStringResource,
         step: Double? = nil,
         range: ClosedRange<Double> = 0 ... 1_000_000,
-        suffix: String? = nil,
+        suffix: LocalizedStringResource? = nil,
         fractionDigits: Int = 1
     ) {
         _value = value
@@ -125,6 +125,7 @@ struct NumberStepper: View {
             Text(formattedValue)
                 .font(.title)
                 .fontWeight(.bold)
+                .contentTransition(.numericText(value: value))
 
             if let suffix {
                 Text(suffix)
@@ -147,26 +148,32 @@ struct NumberStepper: View {
     private func confirm() {
         if let parsedDraft {
             let adjusted = min(max(parsedDraft, range.lowerBound), range.upperBound)
-            value = style.isInteger ? adjusted.rounded() : adjusted
+
+            withAnimation(.snappy) {
+                value = style.isInteger ? adjusted.rounded() : adjusted
+            }
         }
 
         showingKeypad = false
     }
 
     private func stepButton(_ descriptor: ActionDescriptor, disabled: Bool, action: @escaping () -> Void) -> some View {
-        IconButton(descriptor) {
+        Button(descriptor) {
             action()
         }
         .disabled(disabled)
+        .buttonStyle(.glass)
+        .labelStyle(.fixedIconOnly)
+        .buttonBorderShape(.circle)
     }
 }
 
 private struct NumberInputSheet: View {
     @Binding var draft: String
 
-    let title: LocalizedStringKey
+    let title: LocalizedStringResource
     let formattedValue: String
-    let suffix: String?
+    let suffix: LocalizedStringResource?
     let allowsDecimal: Bool
     let isValid: Bool
     let confirm: () -> Void
@@ -229,6 +236,6 @@ extension NumberStepper {
 #Preview {
     @Previewable @State var weight = 40.0
 
-    NumberStepper(value: $weight, title: "Weight", step: 5, suffix: "kg")
+    NumberStepper(value: $weight, title: .exerciseTargetFieldWeight, step: 5, suffix: .unitKilograms)
         .padding()
 }

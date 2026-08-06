@@ -16,7 +16,7 @@ enum ActionDescriptor {
     case edit
     case delete
     case remove
-    case metric
+    case type
     case moreOptions
     case increase
     case decrease
@@ -33,32 +33,32 @@ enum ActionDescriptor {
     case replaceSession
     case resumeSession
 
-    var title: LocalizedStringKey {
+    var title: LocalizedStringResource {
         switch self {
-        case .createWorkout: "Create Workout"
-        case .createExercise: "Create Exercise"
-        case .addWorkoutExercise: "Add Exercise"
-        case .startSession: "Start Session"
-        case .seeStats: "See Stats"
-        case .edit: "Edit"
-        case .delete: "Delete"
-        case .remove: "Remove"
-        case .metric: "Metric"
-        case .moreOptions: "More Options"
-        case .increase: "Increase"
-        case .decrease: "Decrease"
-        case .confirm: "Confirm"
-        case .cancel: "Cancel"
-        case .backward: "Backward"
-        case .forward: "Forward"
-        case .complete: "Complete"
-        case .skip: "Skip"
-        case .queue: "Queue"
-        case .undo: "Undo"
-        case .cancelSession: "Cancel Session"
-        case .finishSession: "Finish"
-        case .replaceSession: "Replace Session"
-        case .resumeSession: "Resume Active Session"
+        case .createWorkout: .actionCreateWorkout
+        case .createExercise: .actionCreateExercise
+        case .addWorkoutExercise: .actionExerciseAdd
+        case .startSession: .actionSessionStart
+        case .seeStats: .actionStatsView
+        case .edit: .actionEdit
+        case .delete: .actionDelete
+        case .remove: .actionRemove
+        case .type: .actionExerciseType
+        case .moreOptions: .actionOptions
+        case .increase: .actionIncrease
+        case .decrease: .actionDecrease
+        case .confirm: .actionConfirm
+        case .cancel: .actionCancel
+        case .backward: .actionBackward
+        case .forward: .actionForward
+        case .complete: .actionComplete
+        case .skip: .actionSkip
+        case .queue: .actionQueue
+        case .undo: .actionUndo
+        case .cancelSession: .actionSessionCancel
+        case .finishSession: .actionSessionFinish
+        case .replaceSession: .actionSessionReplace
+        case .resumeSession: .actionSessionResume
         }
     }
 
@@ -72,7 +72,7 @@ enum ActionDescriptor {
         case .edit: "pencil"
         case .delete: "trash"
         case .remove: "minus.circle"
-        case .metric: "lines.measurement.horizontal"
+        case .type: "lines.measurement.horizontal"
         case .moreOptions: "ellipsis"
         case .increase: "plus"
         case .decrease: "minus"

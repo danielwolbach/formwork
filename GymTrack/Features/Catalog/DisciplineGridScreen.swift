@@ -26,9 +26,9 @@ struct DisciplineGridScreen: View {
                 .padding(.horizontal)
             }
         }
-        .navigationTitle("Catalog")
+        .navigationTitle(.screenCatalog)
         .navigationDestination(for: Discipline.self) { discipline in
-            ExerciseList(exercises: exercises(for: discipline))
+            exerciseList(for: discipline)
                 .navigationTitle(discipline.title)
                 .toolbar {
                     ToolbarItem {
@@ -49,6 +49,21 @@ struct DisciplineGridScreen: View {
             }
         }
         .exerciseSheet(item: $sheet)
+    }
+
+    @ViewBuilder
+    private func exerciseList(for discipline: Discipline) -> some View {
+        let exercises = exercises(for: discipline)
+
+        if exercises.isEmpty {
+            ContentUnavailableView(.emptyNoExercises, systemImage: Exercise.genericIcon)
+        } else {
+            ScrollView {
+                ScreenStack {
+                    ExerciseList(exercises: exercises)
+                }
+            }
+        }
     }
 
     private func exercises(for discipline: Discipline) -> [Exercise] {

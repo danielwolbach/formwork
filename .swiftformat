@@ -2,6 +2,5 @@
 --maxwidth 120
 --trimwhitespace always
 --semicolons never
---self remove
 --importgrouping alpha
---header ignore
+--swift-version 6

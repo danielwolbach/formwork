@@ -13,7 +13,7 @@ struct DisciplineTile: View {
 
     var body: some View {
         ZStack(alignment: .topTrailing) {
-            Image(systemName: discipline.systemImage)
+            Image(systemName: discipline.icon)
                 .font(.system(size: 48))
                 .foregroundStyle(.secondary)
                 .padding(4)
@@ -24,11 +24,9 @@ struct DisciplineTile: View {
 
                     Text(discipline.title)
                         .font(.headline)
-                        .fontWeight(.semibold)
 
-                    Text("\(count) Exercises")
+                    Text(.disciplineExerciseCount(count: count))
                         .font(.subheadline)
-                        .fontWeight(.semibold)
                         .foregroundStyle(.secondary)
                 }
 

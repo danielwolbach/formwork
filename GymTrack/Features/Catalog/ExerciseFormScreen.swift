@@ -9,48 +9,47 @@ import SwiftData
 import SwiftUI
 
 struct ExerciseFormScreen: View {
-    @Environment(\.modelContext) private var modelContext: ModelContext
     @Environment(\.dismiss) private var dismiss: DismissAction
-
+    @Environment(\.modelContext) private var modelContext: ModelContext
     @State private var name: String
-    @State private var metric: ExerciseMetric
+    @State private var type: ExerciseType
     @State private var disciplines: Set<Discipline>
 
     let exercise: Exercise?
 
     init(exercise: Exercise? = nil) {
         _name = State(initialValue: exercise?.name ?? "")
-        _metric = State(initialValue: exercise?.metric ?? .weight)
+        _type = State(initialValue: exercise?.type ?? .weight)
         _disciplines = State(initialValue: exercise?.disciplines ?? [])
         self.exercise = exercise
     }
 
-    init(name: String? = nil, metric: ExerciseMetric? = nil, disciplines: Set<Discipline>? = nil) {
+    init(name: String? = nil, type: ExerciseType? = nil, disciplines: Set<Discipline> = []) {
         _name = State(initialValue: name ?? "")
-        _metric = State(initialValue: metric ?? .weight)
-        _disciplines = State(initialValue: disciplines ?? [])
+        _type = State(initialValue: type ?? .weight)
+        _disciplines = State(initialValue: disciplines)
         exercise = nil
     }
 
     var body: some View {
         Form {
-            Section("Name") {
-                TextField("Bench Press", text: $name)
+            Section(.sectionName) {
+                TextField(.placeholderExerciseName, text: $name)
             }
 
-            Section("Metric") {
-                Picker("Metric", selection: $metric) {
-                    ForEach(ExerciseMetric.allCases) { metric in
-                        Label(metric.title, systemImage: metric.systemImage)
-                            .tag(metric)
+            Section(.sectionExerciseType) {
+                Picker(.sectionExerciseType, selection: $type) {
+                    ForEach(ExerciseType.allCases) { type in
+                        Label(type.title, systemImage: type.icon)
+                            .tag(type)
                     }
                 }
             }
 
-            Section("Disciplines") {
+            Section(.sectionDisciplines) {
                 ForEach(Discipline.allCases) { discipline in
                     Toggle(isOn: selected(discipline)) {
-                        Label(discipline.title, systemImage: discipline.systemImage)
+                        Label(discipline.title, systemImage: discipline.icon)
                     }
                 }
             }
@@ -74,8 +73,8 @@ struct ExerciseFormScreen: View {
         }
     }
 
-    private var title: LocalizedStringKey {
-        exercise == nil ? "Create Exercise" : "Edit Exercise"
+    private var title: LocalizedStringResource {
+        exercise == nil ? .screenCreateExercise : .screenEditExercise
     }
 
     private var valid: Bool {
@@ -99,10 +98,10 @@ struct ExerciseFormScreen: View {
 
         if let exercise {
             exercise.name = name
-            exercise.metric = metric
+            exercise.type = type
             exercise.disciplines = disciplines
         } else {
-            let exercise = Exercise(name: name, metric: metric, disciplines: disciplines)
+            let exercise = Exercise(name: name, type: type, disciplines: disciplines)
             modelContext.insert(exercise)
         }
 

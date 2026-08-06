@@ -12,7 +12,7 @@ import SwiftData
 final class Exercise {
     var name: String
 
-    var metric: ExerciseMetric
+    var type: ExerciseType
 
     var disciplines: Set<Discipline>
 
@@ -22,9 +22,9 @@ final class Exercise {
     @Relationship(deleteRule: .cascade, inverse: \SessionEntry.exercise)
     var sessionEntries: [SessionEntry] = []
 
-    init(name: String, metric: ExerciseMetric, disciplines: Set<Discipline>) {
+    init(name: String, type: ExerciseType, disciplines: Set<Discipline>) {
         self.name = name
-        self.metric = metric
+        self.type = type
         self.disciplines = disciplines
     }
 }

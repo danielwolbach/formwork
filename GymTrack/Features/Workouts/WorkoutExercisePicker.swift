@@ -9,8 +9,8 @@ import SwiftData
 import SwiftUI
 
 struct WorkoutExercisePicker: View {
-    @Environment(\.dismiss) private var dismiss: DismissAction
     @Query(sort: \Exercise.name) private var exercises: [Exercise]
+    @Environment(\.dismiss) private var dismiss: DismissAction
     @State private var selectedDisciplines: Set<Discipline> = []
     @State private var searchText = ""
     @State private var createSheet = false
@@ -19,10 +19,10 @@ struct WorkoutExercisePicker: View {
 
     var body: some View {
         content
-            .navigationTitle("Add Exercise")
+            .navigationTitle(.screenAddExercise)
             .navigationSubtitle(workout.name)
             .navigationBarTitleDisplayMode(.inline)
-            .searchable(text: $searchText, prompt: "Search Exercises")
+            .searchable(text: $searchText, prompt: .searchExercises)
             .safeAreaInset(edge: .bottom) {
                 if !exercises.isEmpty {
                     DisciplineFilterBar(selection: $selectedDisciplines)
@@ -50,7 +50,7 @@ struct WorkoutExercisePicker: View {
             }
             .sheet(isPresented: $createSheet) {
                 NavigationStack {
-                    ExerciseFormScreen(disciplines: selectedDisciplines.isEmpty ? nil : selectedDisciplines)
+                    ExerciseFormScreen(disciplines: selectedDisciplines)
                 }
             }
     }
@@ -58,22 +58,14 @@ struct WorkoutExercisePicker: View {
     @ViewBuilder
     private var content: some View {
         if exercises.isEmpty {
-            ContentUnavailableView("No Exercises", systemImage: Exercise.systemImage)
+            ContentUnavailableView(.emptyNoExercises, systemImage: Exercise.genericIcon)
         } else if matchingExercises.isEmpty {
             emptyState
         } else {
             ScrollView {
                 ScreenStack {
-                    exerciseRows
+                    ExerciseList(exercises: matchingExercises)
                 }
-            }
-        }
-    }
-
-    private var exerciseRows: some View {
-        RowStack {
-            ForEach(matchingExercises) { exercise in
-                ExercisePickerRow(exercise: exercise)
             }
         }
     }
@@ -98,9 +90,9 @@ struct WorkoutExercisePicker: View {
             ContentUnavailableView.search(text: searchText)
         } else {
             ContentUnavailableView(
-                "No Matching Exercises",
-                systemImage: Exercise.systemImage,
-                description: Text("Try different filters.")
+                .emptyNoMatchingExercises,
+                systemImage: Exercise.genericIcon,
+                description: Text(.emptyNoMatchingExercisesDescription)
             )
         }
     }
@@ -111,22 +103,6 @@ struct WorkoutExercisePicker: View {
 
     private var trimmedSearchText: String {
         searchText.trimmingCharacters(in: .whitespacesAndNewlines)
-    }
-}
-
-private struct ExercisePickerRow: View {
-    let exercise: Exercise
-
-    var body: some View {
-        NavigationLink(value: exercise) {
-            NavigationRow(
-                title: exercise.name,
-                subtitle: exercise.disciplinesText,
-                systemImage: exercise.systemImage,
-                color: exercise.color
-            )
-        }
-        .buttonStyle(.plain)
     }
 }
 
@@ -144,9 +120,8 @@ private struct DisciplineFilterBar: View {
                     )
                 }
             }
-            .padding(.horizontal)
             // Aligns the first chip with the searchable field's leading edge.
-            .padding(.horizontal)
+            .padding(.horizontal, 32)
             .padding(.vertical, 8)
         }
         .scrollIndicators(.hidden)
@@ -159,11 +134,7 @@ private struct DisciplineFilterBar: View {
 
     private func toggle(_ discipline: Discipline) {
         withAnimation(.snappy(duration: 0.2)) {
-            if selection.contains(discipline) {
-                selection.remove(discipline)
-            } else {
-                selection.insert(discipline)
-            }
+            selection.formSymmetricDifference([discipline])
         }
     }
 }
@@ -175,18 +146,18 @@ private struct DisciplineFilterButton: View {
 
     var body: some View {
         if isHighlighted {
-            LabelButton(
-                discipline.title,
-                systemImage: discipline.systemImage,
-                style: .glassProminent
-            ) {
+            Button(discipline.title, systemImage: discipline.icon) {
                 action()
             }
             .tint(discipline.color)
+            .labelStyle(.fixedTitleAndIcon)
+            .buttonStyle(.glassProminent)
         } else {
-            LabelButton(discipline.title, systemImage: discipline.systemImage) {
+            Button(discipline.title, systemImage: discipline.icon) {
                 action()
             }
+            .labelStyle(.fixedTitleAndIcon)
+            .buttonStyle(.glass)
         }
     }
 }

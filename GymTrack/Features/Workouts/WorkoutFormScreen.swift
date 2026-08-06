@@ -9,8 +9,8 @@ import SwiftData
 import SwiftUI
 
 struct WorkoutFormScreen: View {
-    @Environment(\.modelContext) private var modelContext: ModelContext
     @Environment(\.dismiss) private var dismiss: DismissAction
+    @Environment(\.modelContext) private var modelContext: ModelContext
     @State private var name: String
     @State private var entries: [WorkoutEntry]
 
@@ -24,22 +24,14 @@ struct WorkoutFormScreen: View {
 
     var body: some View {
         Form {
-            Section("Name") {
-                TextField("Bench Press", text: $name)
+            Section(.sectionName) {
+                TextField(.placeholderExerciseName, text: $name)
             }
 
             if !entries.isEmpty {
-                Section("Exercises") {
+                Section(.sectionExercises) {
                     ForEach(entries) { entry in
-                        HStack {
-                            VStack(alignment: .leading) {
-                                Text(entry.exercise.name)
-
-                                entry.target.summary
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
-                            }
-                        }
+                        IconRow(icon: entry.icon, color: entry.color, title: entry.title, subtitle: entry.subtitle)
                     }
                     .onMove(perform: move)
                 }
@@ -65,8 +57,8 @@ struct WorkoutFormScreen: View {
         }
     }
 
-    private var title: LocalizedStringKey {
-        workout == nil ? "Create Workout" : "Edit Workout"
+    private var title: LocalizedStringResource {
+        workout == nil ? .screenCreateWorkout : .screenEditWorkout
     }
 
     private var valid: Bool {

@@ -8,7 +8,7 @@
 import Foundation
 import SwiftData
 
-extension Collection where Element == Session {
+extension Collection<Session> {
     var activeSession: Session? {
         first { !$0.entries.isEmpty }
     }

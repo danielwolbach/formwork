@@ -11,38 +11,22 @@ struct ExerciseList: View {
     let exercises: [Exercise]
 
     var body: some View {
-        if exercises.isEmpty {
-            ContentUnavailableView("No Exercises", systemImage: Exercise.systemImage)
-        } else {
-            ScrollView {
-                ScreenStack {
-                    RowStack {
-                        ForEach(exercises) { exercise in
-                            NavigationLink(value: exercise) {
-                                NavigationRow(
-                                    title: exercise.name,
-                                    subtitle: exercise.disciplinesText,
-                                    systemImage: exercise.systemImage,
-                                    color: exercise.color
-                                )
-                            }
-                            .buttonStyle(.plain)
-                        }
-                    }
-                }
+        RowStack {
+            ForEach(exercises) { exercise in
+                IconNavigationRow(
+                    value: exercise,
+                    icon: exercise.icon,
+                    color: exercise.color,
+                    title: exercise.title,
+                    subtitle: exercise.subtitle
+                )
             }
         }
     }
 }
 
-#Preview("Samples") {
+#Preview {
     NavigationStack {
         ExerciseList(exercises: Exercise.samples)
-    }
-}
-
-#Preview("Empty") {
-    NavigationStack {
-        ExerciseList(exercises: [])
     }
 }

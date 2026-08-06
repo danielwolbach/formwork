@@ -10,6 +10,7 @@ import SwiftUI
 
 struct SessionMiniPlayer: View {
     @Environment(\.presentSession) private var presentSession: PresentSessionAction
+
     let session: Session
     let transitionNamespace: Namespace.ID
 
@@ -28,54 +29,83 @@ struct SessionMiniPlayer: View {
             }
             .buttonStyle(.plain)
 
-            HStack(spacing: 0) {
-                switch session.current.status {
-                case .pending:
-                    IconButton(.complete, style: .glassProminent) {
-                        if session.pending.count == 1 {
-                            presentSession(session)
-                        }
-
-                        navigate {
-                            session.completeAndAdvance()
-                        }
-                    }
-                    .fontWeight(.bold)
-                    .tint(.green)
-                    .clipShape(.circle)
-
-                case .done, .skipped:
-                    IconButton(.undo) {
-                        withAnimation(.snappy) {
-                            session.undoStatusChange()
-                        }
-                    }
-                    .clipShape(.circle)
-                }
-
-                IconButton(.forward) {
-                    navigate {
-                        if let next = session.next {
-                            session.current = next
-                        } else if let firstEntry = session.firstEntry {
-                            session.current = firstEntry
-                        } else {
-                            return
-                        }
-                    }
-                }
-                .clipShape(.circle)
-            }
+            SessionMiniPlayerControls(
+                status: session.current.status,
+                complete: completeCurrentEntry,
+                undo: undoCurrentEntry,
+                advance: advanceToNextEntry
+            )
         }
         .padding(.horizontal)
         .matchedTransitionSource(id: session.persistentModelID, in: transitionNamespace)
     }
 
     private func navigate(action: @escaping () -> Void) {
-        DispatchQueue.main.async {
-            withAnimation(.snappy()) {
-                action()
+        withAnimation(.snappy()) {
+            action()
+        }
+    }
+
+    private func completeCurrentEntry() {
+        if session.pending.count == 1 {
+            presentSession(session)
+        }
+
+        navigate {
+            session.completeAndAdvance()
+        }
+    }
+
+    private func undoCurrentEntry() {
+        withAnimation(.snappy) {
+            session.undoStatusChange()
+        }
+    }
+
+    private func advanceToNextEntry() {
+        navigate {
+            if let next = session.next {
+                session.current = next
+            } else if let firstEntry = session.firstEntry {
+                session.current = firstEntry
             }
+        }
+    }
+}
+
+private struct SessionMiniPlayerControls: View {
+    let status: SessionEntry.Status
+    let complete: () -> Void
+    let undo: () -> Void
+    let advance: () -> Void
+
+    var body: some View {
+        HStack {
+            statusAction
+
+            Button(.forward, action: advance)
+                .labelStyle(.fixedIconOnly)
+                .buttonStyle(.glass)
+                .buttonBorderShape(.circle)
+        }
+    }
+
+    @ViewBuilder
+    private var statusAction: some View {
+        switch status {
+        case .pending:
+            Button(.complete, action: complete)
+                .fontWeight(.bold)
+                .tint(.green)
+                .labelStyle(.fixedIconOnly)
+                .buttonStyle(.glassProminent)
+                .buttonBorderShape(.circle)
+
+        case .done, .skipped:
+            Button(.undo, action: undo)
+                .labelStyle(.fixedIconOnly)
+                .buttonStyle(.glassProminent)
+                .buttonBorderShape(.circle)
         }
     }
 }
@@ -85,17 +115,13 @@ private struct SessionMiniPlayerEntry: View {
 
     var body: some View {
         HStack {
-            IconTile(
-                systemImage: entry.systemImage,
-                color: entry.color,
-                size: .small
-            )
+            IconBadge(icon: entry.icon, color: entry.color, size: 32)
 
             VStack(alignment: .leading, spacing: 0) {
                 Text(entry.exercise.name)
                     .font(.caption)
 
-                entry.subtitle
+                Text(entry.subtitle)
                     .font(.caption2)
                     .foregroundStyle(.secondary)
             }

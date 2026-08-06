@@ -20,7 +20,8 @@ struct ScreenStack<Content: View>: View {
 
 #Preview {
     ScreenStack {
-        Text("Hello")
-        Text("World")
+        Text("First section")
+        Text("Second section")
     }
+    .padding()
 }

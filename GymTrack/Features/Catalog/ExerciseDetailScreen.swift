@@ -9,9 +9,8 @@ import SwiftData
 import SwiftUI
 
 struct ExerciseDetailScreen: View {
-    @Environment(\.modelContext) private var modelContext: ModelContext
     @Environment(\.dismiss) private var dismiss: DismissAction
-
+    @Environment(\.modelContext) private var modelContext: ModelContext
     @State private var sheet: ExerciseSheet?
     @State private var deleteAlert = false
 
@@ -20,12 +19,7 @@ struct ExerciseDetailScreen: View {
     var body: some View {
         ScrollView {
             ScreenStack {
-                DetailHero(
-                    title: exercise.name,
-                    subtitle: Text(exercise.metric.title),
-                    systemImage: exercise.systemImage,
-                    color: exercise.color
-                )
+                IconHero(icon: exercise.icon, color: exercise.color, title: exercise.title, subtitle: exercise.subtitle)
 
                 // TODO:
             }
@@ -46,16 +40,14 @@ struct ExerciseDetailScreen: View {
             }
         }
         .exerciseSheet(item: $sheet)
-        .alert("Delete Exercise?", isPresented: $deleteAlert) {
+        .alert(.alertDeleteExerciseTitle, isPresented: $deleteAlert) {
             Button(.delete) {
                 delete()
             }
 
             Button(.cancel) {}
         } message: {
-            Text(
-                "This will delete the exercise and remove it from all workouts and active sessions. This cannot be undone."
-            )
+            Text(.alertDeleteExerciseMessage)
         }
     }
 
