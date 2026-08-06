@@ -19,12 +19,20 @@ final class SessionEntry: Comparable {
 
     var target: ExerciseTarget
 
-    init(order: Int, exercise: Exercise, target: ExerciseTarget) {
+    var workoutEntry: WorkoutEntry?
+
+    init(
+        order: Int,
+        exercise: Exercise,
+        target: ExerciseTarget,
+        workoutEntry: WorkoutEntry? = nil
+    ) {
         self.order = order
         current = 0
         status = .pending
         self.exercise = exercise
         self.target = target
+        self.workoutEntry = workoutEntry
     }
 
     static func < (lhs: SessionEntry, rhs: SessionEntry) -> Bool {

@@ -19,7 +19,14 @@ final class Session {
 
     init(workout: Workout) {
         let entries = workout.entries.sorted()
-            .map { SessionEntry(order: $0.order, exercise: $0.exercise, target: $0.target) }
+            .map {
+                SessionEntry(
+                    order: $0.order,
+                    exercise: $0.exercise,
+                    target: $0.target,
+                    workoutEntry: $0
+                )
+            }
 
         precondition(!entries.isEmpty, "Cannot create a session for an empty workout.")
 
