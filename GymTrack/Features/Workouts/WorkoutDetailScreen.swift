@@ -16,6 +16,7 @@ struct WorkoutDetailScreen: View {
     @State private var sheet: WorkoutSheet?
     @State private var deleteAlert = false
     @State private var replaceSessionAlert = false
+    @State private var statisticsPresented = false
 
     let workout: Workout
 
@@ -32,7 +33,7 @@ struct WorkoutDetailScreen: View {
                         }
 
                         Button(.seeStats) {
-                            // TODO:
+                            statisticsPresented = true
                         }
                     }
 
@@ -99,7 +100,7 @@ struct WorkoutDetailScreen: View {
                     .buttonStyle(.glassProminent)
 
                     Button(.seeStats) {
-                        // TODO:
+                        statisticsPresented = true
                     }
                     .labelStyle(.fixedIconOnly)
                     .buttonStyle(.glass)
@@ -111,6 +112,11 @@ struct WorkoutDetailScreen: View {
                 } else {
                     WorkoutEntryList(entries: workout.entries.sorted())
                 }
+            }
+        }
+        .sheet(isPresented: $statisticsPresented) {
+            NavigationStack {
+                WorkoutStatisticsScreen(workout: workout)
             }
         }
     }

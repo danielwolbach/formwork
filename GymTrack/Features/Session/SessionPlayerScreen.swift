@@ -13,26 +13,33 @@ struct SessionPlayerScreen: View {
     @Environment(\.modelContext) private var modelContext: ModelContext
     @State private var navigationDirection: SessionNavigationDirection = .forward
     @State private var queuePresented = false
+    @State private var summaryPresented = false
     @State private var finishSessionAlert = false
     @State private var cancelSessionAlert = false
     @Bindable var session: Session
 
     var body: some View {
-        ScreenStack {
+        VStack(spacing: 0) {
             SessionEntryDetail(entry: session.current)
                 .id(session.current.id)
                 .frame(maxWidth: .infinity)
                 .transition(navigationDirection.transition)
 
             Spacer()
-
+        }
+        .safeAreaBar(edge: .bottom, spacing: 0) {
             SessionEntryControls(
                 session: session,
                 navigationDirection: $navigationDirection,
                 finishSessionAlert: $finishSessionAlert
             )
+            .padding(.vertical, 16)
         }
         .toolbar {
+            ToolbarItem(placement: .principal) {
+                SessionTimer(session: session)
+            }
+
             ToolbarItem(placement: .topBarLeading) {
                 Button(.actionMinimize, systemImage: "chevron.down") {
                     dismiss()
@@ -64,6 +71,13 @@ struct SessionPlayerScreen: View {
                 SessionQueueScreen(session: session)
             }
         }
+        .sheet(isPresented: $summaryPresented) {
+            NavigationStack {
+                SessionSummaryScreen(session: session) {
+                    dismiss()
+                }
+            }
+        }
         .alert(.alertFinishSessionTitle, isPresented: $finishSessionAlert) {
             Button(.finishSession) {
                 finishSession()
@@ -87,7 +101,7 @@ struct SessionPlayerScreen: View {
     private func finishSession() {
         do {
             try modelContext.finishSession(session)
-            dismiss()
+            summaryPresented = true
         } catch {
             fatalError("Failed to finish session: \(error)")
         }
@@ -103,17 +117,13 @@ struct SessionPlayerScreen: View {
     }
 }
 
-#Preview {
-    SessionPlayerScreen(session: Session.samples[0])
-}
-
 private struct SessionEntryControls: View {
     @Bindable var session: Session
     @Binding var navigationDirection: SessionNavigationDirection
     @Binding var finishSessionAlert: Bool
 
     var body: some View {
-        VStack(spacing: 32) {
+        VStack(spacing: 16) {
             ButtonStack {
                 Button(.backward) {
                     navigate(.backward) { session.moveToPrevious() }
@@ -137,7 +147,8 @@ private struct SessionEntryControls: View {
             }
 
             secondaryAction
-                .buttonStyle(.glass)
+                .buttonStyle(.borderless)
+                .foregroundStyle(.secondary)
                 .labelStyle(.fixedTitleAndIcon)
                 .controlSize(.small)
         }
@@ -184,5 +195,11 @@ private struct SessionEntryControls: View {
         }
 
         withAnimation(.snappy(), action)
+    }
+}
+
+#Preview {
+    NavigationStack {
+        SessionPlayerScreen(session: Session.samples[0])
     }
 }

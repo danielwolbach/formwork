@@ -10,7 +10,7 @@ import SwiftData
 
 extension Collection<Session> {
     var activeSession: Session? {
-        first { !$0.entries.isEmpty }
+        first(where: \.isActive)
     }
 }
 
@@ -20,9 +20,10 @@ extension ModelContext {
         precondition(!workout.entries.isEmpty, "Cannot start a session for an empty workout.")
 
         let sessions = try fetch(FetchDescriptor<Session>(sortBy: [SortDescriptor(\.started, order: .reverse)]))
+        let activeSessions = sessions.filter(\.isActive)
 
-        if let session = sessions.first {
-            for extraSession in sessions.dropFirst() {
+        if let session = activeSessions.first {
+            for extraSession in activeSessions.dropFirst() {
                 delete(extraSession)
             }
 
@@ -44,7 +45,7 @@ extension ModelContext {
             entry.workoutEntry?.target = entry.target
         }
 
-        delete(session)
+        session.ended = .now
         try save()
     }
 
@@ -55,6 +56,10 @@ extension ModelContext {
 }
 
 extension Session {
+    var isActive: Bool {
+        ended == nil
+    }
+
     var orderedEntries: [SessionEntry] {
         entries.sorted()
     }
@@ -77,6 +82,8 @@ extension Session {
         precondition(!entries.isEmpty, "Cannot reset a session for an empty workout.")
 
         started = Date.now
+        ended = nil
+        self.workout = workout
         self.entries = entries
         current = entries[0]
     }

@@ -30,16 +30,8 @@ struct WorkoutEntryDetailScreen: View {
         }
         .toolbar {
             Menu(.moreOptions) {
-                Section {
-                    Menu(.type) {
-                        ExerciseTargetTypePicker(target: $entry.target)
-                    }
-                }
-
-                Section {
-                    Button(.remove) {
-                        deleteAlert = true
-                    }
+                Button(.remove) {
+                    deleteAlert = true
                 }
             }
         }

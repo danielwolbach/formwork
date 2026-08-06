@@ -94,6 +94,7 @@ private struct CompletedEntryRow: View {
                 undo(entry)
             }
             .buttonStyle(.plain)
+            .labelStyle(.fixedIconOnly)
             .foregroundStyle(.tertiary)
             .padding(.horizontal, 6)
         }

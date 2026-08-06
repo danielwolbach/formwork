@@ -26,9 +26,7 @@ struct WorkoutExerciseTargetScreen: View {
     var body: some View {
         ScrollView {
             ScreenStack {
-                IconHero(icon: target.icon, color: target.color, title: exercise.name, subtitle: exercise.subtitle)
-
-                typeMenu
+                IconHero(icon: exercise.icon, color: exercise.color, title: exercise.name, subtitle: exercise.subtitle)
 
                 ExerciseTargetEditor(target: $target)
             }
@@ -43,17 +41,6 @@ struct WorkoutExerciseTargetScreen: View {
                 }
             }
         }
-    }
-
-    private var typeMenu: some View {
-        Menu {
-            ExerciseTargetTypePicker(target: $target)
-        } label: {
-            Label(target.type.title, systemImage: target.type.icon)
-        }
-        .fontWeight(.semibold)
-        .buttonStyle(.glass)
-        .controlSize(.large)
     }
 
     private func save() {

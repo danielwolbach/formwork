@@ -104,7 +104,7 @@ private struct SessionMiniPlayerControls: View {
         case .done, .skipped:
             Button(.undo, action: undo)
                 .labelStyle(.fixedIconOnly)
-                .buttonStyle(.glassProminent)
+                .buttonStyle(.glass)
                 .buttonBorderShape(.circle)
         }
     }

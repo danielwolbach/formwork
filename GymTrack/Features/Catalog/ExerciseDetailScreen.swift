@@ -21,7 +21,80 @@ struct ExerciseDetailScreen: View {
             ScreenStack {
                 IconHero(icon: exercise.icon, color: exercise.color, title: exercise.title, subtitle: exercise.subtitle)
 
-                // TODO:
+                StatisticsStack {
+                    StatisticsRowStack {
+                        MetricCard(
+                            value: lastPerformedText,
+                            title: .statsLastPerformed,
+                            icon: "calendar",
+                            tint: .blue
+                        )
+
+                        MetricCard(
+                            value: exercise.completedExecutionCount.formatted(),
+                            title: .statsCompletedExecutions,
+                            icon: "checkmark.circle",
+                            tint: .green
+                        )
+                    }
+
+                    StatisticsRowStack {
+                        MetricCard(
+                            value: exercise.lastTarget?.primaryTargetText ?? "–",
+                            title: .statsLastTarget,
+                            icon: "target",
+                            tint: exercise.color,
+                            trend: exercise.recentTargetTrend.map {
+                                MetricTrend(value: $0.value, direction: $0.isIncrease ? .up : .down)
+                            }
+                        )
+
+                        MetricCard(
+                            value: exercise.highestCompletedTarget?.primaryTargetText ?? "–",
+                            title: .statsPersonalBest,
+                            icon: "trophy",
+                            tint: .yellow
+                        )
+                    }
+
+                    StatisticsRowStack {
+                        MetricCard(
+                            value: exercise.completionRate?
+                                .formatted(.percent.precision(.fractionLength(0))) ?? "–",
+                            title: .statsCompletionRate,
+                            icon: "checkmark.seal",
+                            tint: .green
+                        )
+
+                        MetricCard(
+                            value: exercise.skippedExecutionCount.formatted(),
+                            title: .statsSkippedExecutions,
+                            icon: "forward.end",
+                            tint: .orange
+                        )
+                    }
+
+                    if !exercise.recentTargetHistory.isEmpty {
+                        ExerciseTargetHistoryChart(data: exercise.recentTargetHistory, tint: exercise.color)
+                    }
+
+                    StatisticsCard(
+                        title: .statsRecentActivity,
+                        icon: "clock.arrow.circlepath",
+                        tint: exercise.color
+                    ) {
+                        VStack(spacing: 0) {
+                            ForEach(historyEntries.indices, id: \.self) { index in
+                                ExerciseHistoryRow(entry: historyEntries[index])
+
+                                if index < historyEntries.count - 1 {
+                                    Divider()
+                                }
+                            }
+                        }
+                    }
+                }
+                .padding(.horizontal)
             }
         }
         .toolbar {
@@ -58,6 +131,43 @@ struct ExerciseDetailScreen: View {
         } catch {
             fatalError("Failed to delete exercise: \(error)")
         }
+    }
+
+    private var lastPerformedText: String {
+        guard let lastPerformedDate = exercise.lastPerformedDate else {
+            return "–"
+        }
+
+        if Calendar.autoupdatingCurrent.isDate(lastPerformedDate, equalTo: .now, toGranularity: .year) {
+            return lastPerformedDate.formatted(.dateTime.day().month(.abbreviated))
+        }
+
+        return lastPerformedDate.formatted(.dateTime.day().month(.abbreviated).year(.twoDigits))
+    }
+
+    private var historyEntries: [SessionEntry] {
+        Array(exercise.performedSessionEntries.prefix(5))
+    }
+}
+
+private struct ExerciseHistoryRow: View {
+    let entry: SessionEntry
+
+    var body: some View {
+        HStack(spacing: 12) {
+            Image(systemName: entry.status.icon)
+                .foregroundStyle(entry.status.color)
+
+            VStack(alignment: .leading, spacing: 2) {
+                Text(entry.session?.ended?.formatted(date: .abbreviated, time: .omitted) ?? "–")
+                Text(entry.target.title)
+                    .foregroundStyle(.secondary)
+            }
+
+            Spacer()
+        }
+        .font(.subheadline)
+        .padding(.vertical, 10)
     }
 }
 

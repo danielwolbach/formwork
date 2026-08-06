@@ -20,31 +20,6 @@ struct ExerciseTypePicker: View {
     }
 }
 
-struct ExerciseTargetTypePicker: View {
-    @Binding var target: ExerciseTarget
-
-    var body: some View {
-        ExerciseTypePicker(selection: type)
-    }
-
-    private var type: Binding<ExerciseType> {
-        Binding {
-            target.type
-        } set: { type in
-            withAnimation(.snappy(duration: 0.25)) {
-                target = .defaults(for: type)
-            }
-        }
-    }
-}
-
 #Preview {
     ExerciseTypePicker(selection: .constant(ExerciseType.weight))
-}
-
-#Preview {
-    @Previewable @State var target = ExerciseTarget.weight(weight: 60, sets: 3, reps: 8)
-
-    ExerciseTargetTypePicker(target: $target)
-        .padding()
 }

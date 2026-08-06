@@ -21,6 +21,7 @@ enum ActionDescriptor {
     case increase
     case decrease
     case confirm
+    case close
     case cancel
     case backward
     case forward
@@ -32,6 +33,7 @@ enum ActionDescriptor {
     case finishSession
     case replaceSession
     case resumeSession
+    case sessionHistory
 
     var title: LocalizedStringResource {
         switch self {
@@ -48,6 +50,7 @@ enum ActionDescriptor {
         case .increase: .actionIncrease
         case .decrease: .actionDecrease
         case .confirm: .actionConfirm
+        case .close: .actionClose
         case .cancel: .actionCancel
         case .backward: .actionBackward
         case .forward: .actionForward
@@ -59,6 +62,7 @@ enum ActionDescriptor {
         case .finishSession: .actionSessionFinish
         case .replaceSession: .actionSessionReplace
         case .resumeSession: .actionSessionResume
+        case .sessionHistory: .actionSessionHistory
         }
     }
 
@@ -77,6 +81,7 @@ enum ActionDescriptor {
         case .increase: "plus"
         case .decrease: "minus"
         case .confirm: "checkmark"
+        case .close: "xmark"
         case .cancel: "xmark"
         case .backward: "backward.fill"
         case .forward: "forward.fill"
@@ -88,6 +93,7 @@ enum ActionDescriptor {
         case .finishSession: "flag.pattern.checkered"
         case .replaceSession: "restart"
         case .resumeSession: "arrowshape.turn.up.forward"
+        case .sessionHistory: "clock.arrow.circlepath"
         }
     }
 

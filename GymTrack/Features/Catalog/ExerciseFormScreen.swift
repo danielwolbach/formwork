@@ -38,12 +38,8 @@ struct ExerciseFormScreen: View {
             }
 
             Section(.sectionExerciseType) {
-                Picker(.sectionExerciseType, selection: $type) {
-                    ForEach(ExerciseType.allCases) { type in
-                        Label(type.title, systemImage: type.icon)
-                            .tag(type)
-                    }
-                }
+                ExerciseTypePicker(selection: $type)
+                    .disabled(!canChangeType)
             }
 
             Section(.sectionDisciplines) {
@@ -79,6 +75,14 @@ struct ExerciseFormScreen: View {
 
     private var valid: Bool {
         !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && !disciplines.isEmpty
+    }
+
+    private var canChangeType: Bool {
+        guard let exercise else {
+            return true
+        }
+
+        return exercise.workoutEntries.isEmpty && exercise.sessionEntries.isEmpty
     }
 
     private func selected(_ discipline: Discipline) -> Binding<Bool> {

@@ -12,7 +12,11 @@ import SwiftData
 final class Session {
     var started: Date
 
-    @Relationship(deleteRule: .cascade)
+    var ended: Date?
+
+    var workout: Workout?
+
+    @Relationship(deleteRule: .cascade, inverse: \SessionEntry.session)
     var entries: [SessionEntry]
 
     var current: SessionEntry
@@ -31,6 +35,8 @@ final class Session {
         precondition(!entries.isEmpty, "Cannot create a session for an empty workout.")
 
         started = Date.now
+        ended = nil
+        self.workout = workout
         self.entries = entries
         current = entries[0]
     }

@@ -21,12 +21,16 @@ final class SessionEntry: Comparable {
 
     var workoutEntry: WorkoutEntry?
 
+    var session: Session?
+
     init(
         order: Int,
         exercise: Exercise,
         target: ExerciseTarget,
         workoutEntry: WorkoutEntry? = nil
     ) {
+        precondition(target.type == exercise.type, "A session entry target must match its exercise type.")
+
         self.order = order
         current = 0
         status = .pending

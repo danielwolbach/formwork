@@ -25,9 +25,9 @@ struct ContentView: View {
 
     var body: some View {
         MainTabs(
+            presentedSession: $presentedSession,
             activeSession: activeSession,
             sessionTransitionNamespace: sessionTransitionNamespace,
-            presentedSession: $presentedSession
         )
         .fullScreenCover(item: $presentedSession) { session in
             NavigationStack {
@@ -45,9 +45,10 @@ struct ContentView: View {
 }
 
 private struct MainTabs: View {
+    @Binding var presentedSession: Session?
+
     let activeSession: Session?
     let sessionTransitionNamespace: Namespace.ID
-    @Binding var presentedSession: Session?
 
     var body: some View {
         TabView {
@@ -65,7 +66,7 @@ private struct MainTabs: View {
 
             Tab(.screenStats, systemImage: "sparkles") {
                 NavigationStack {
-                    ContentUnavailableView(.emptyStats, systemImage: "sparkles")
+                    GlobalStatisticsScreen()
                 }
             }
         }

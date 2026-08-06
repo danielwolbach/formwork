@@ -16,6 +16,8 @@ final class WorkoutEntry: Comparable {
     var exercise: Exercise
 
     init(order: Int, exercise: Exercise, target: ExerciseTarget) {
+        precondition(target.type == exercise.type, "A workout entry target must match its exercise type.")
+
         self.order = order
         self.exercise = exercise
         self.target = target
