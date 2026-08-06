@@ -13,16 +13,17 @@ struct SessionDetailScreen: View {
     var body: some View {
         ScrollView {
             ScreenStack {
-                IconHero(
-                    icon: "checkmark.circle.fill",
-                    color: .green,
-                    title: session.workout?.name ?? String(localized: .screenStats),
-                    subtitle: session.ended?.formatted(date: .abbreviated, time: .shortened) ?? ""
-                )
+                ScreenSection {
+                    IconHero(
+                        icon: "checkmark.circle.fill",
+                        color: .green,
+                        title: session.workout?.name ?? String(localized: .screenStats),
+                        subtitle: session.ended?.formatted(date: .abbreviated, time: .shortened) ?? ""
+                    )
 
-                SessionStatistics(session: session)
+                    SessionStatistics(session: session)
+                }
             }
-            .padding(.horizontal)
         }
     }
 }

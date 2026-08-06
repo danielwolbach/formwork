@@ -80,35 +80,39 @@ struct WorkoutDetailScreen: View {
     private var content: some View {
         ScrollView {
             ScreenStack {
-                IconHero(icon: workout.icon, color: workout.color, title: workout.title, subtitle: workout.subtitle)
+                ScreenSection {
+                    IconHero(icon: workout.icon, color: workout.color, title: workout.title, subtitle: workout.subtitle)
 
-                ButtonStack {
-                    Button(.addWorkoutExercise) {
-                        sheet = .addWorkoutExercise(workout)
-                    }
-                    .labelStyle(.fixedIconOnly)
-                    .buttonStyle(.glass)
-                    .buttonBorderShape(.circle)
+                    ButtonStack {
+                        Button(.addWorkoutExercise) {
+                            sheet = .addWorkoutExercise(workout)
+                        }
+                        .labelStyle(.fixedIconOnly)
+                        .buttonStyle(.glass)
+                        .buttonBorderShape(.circle)
 
-                    Button(.startSession) {
-                        startSession()
-                    }
-                    .tint(.green)
-                    .fontWeight(.semibold)
-                    .disabled(workout.entries.isEmpty)
-                    .labelStyle(.fixedTitleAndIcon)
-                    .buttonStyle(.glassProminent)
+                        Button(.startSession) {
+                            startSession()
+                        }
+                        .tint(.green)
+                        .fontWeight(.semibold)
+                        .disabled(workout.entries.isEmpty)
+                        .labelStyle(.fixedTitleAndIcon)
+                        .buttonStyle(.glassProminent)
 
-                    Button(.seeStats) {
-                        statisticsPresented = true
+                        Button(.seeStats) {
+                            statisticsPresented = true
+                        }
+                        .labelStyle(.fixedIconOnly)
+                        .buttonStyle(.glass)
+                        .buttonBorderShape(.circle)
                     }
-                    .labelStyle(.fixedIconOnly)
-                    .buttonStyle(.glass)
-                    .buttonBorderShape(.circle)
                 }
 
                 if workout.entries.isEmpty {
-                    ContentUnavailableView(.emptyNoExercises, systemImage: Exercise.genericIcon)
+                    ScreenSection {
+                        ContentUnavailableView(.emptyNoExercises, systemImage: Exercise.genericIcon)
+                    }
                 } else {
                     WorkoutEntryList(entries: workout.entries.sorted())
                 }

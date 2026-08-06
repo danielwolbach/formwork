@@ -11,7 +11,7 @@ struct StatisticsRowStack<Content: View>: View {
     @ViewBuilder let content: Content
 
     var body: some View {
-        HStack(spacing: StatisticsLayout.spacing) {
+        HStack(spacing: LayoutMetrics.compactSpacing) {
             content
         }
     }

@@ -26,9 +26,16 @@ struct WorkoutExerciseTargetScreen: View {
     var body: some View {
         ScrollView {
             ScreenStack {
-                IconHero(icon: exercise.icon, color: exercise.color, title: exercise.name, subtitle: exercise.subtitle)
+                ScreenSection {
+                    IconHero(
+                        icon: exercise.icon,
+                        color: exercise.color,
+                        title: exercise.name,
+                        subtitle: exercise.subtitle
+                    )
 
-                ExerciseTargetEditor(target: $target)
+                    ExerciseTargetEditor(target: $target)
+                }
             }
         }
         .navigationTitle(.screenAddExercise)

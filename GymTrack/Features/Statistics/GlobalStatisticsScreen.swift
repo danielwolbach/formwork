@@ -15,37 +15,38 @@ struct GlobalStatisticsScreen: View {
     var body: some View {
         ScrollView {
             ScreenStack {
-                StatisticsStack {
-                    StatisticsRowStack {
-                        MetricCard(
-                            value: sessions.finishedSessionCount(in: .currentWeek).formatted(),
-                            title: .statsThisWeek,
-                            icon: "calendar",
-                            tint: .green
-                        )
+                ScreenSection {
+                    StatisticsStack {
+                        StatisticsRowStack {
+                            MetricCard(
+                                value: sessions.finishedSessionCount(in: .currentWeek).formatted(),
+                                title: .statsThisWeek,
+                                icon: "calendar",
+                                tint: .green
+                            )
+
+                            MetricCard(
+                                value: sessions.finishedSessionCount(in: .currentMonth).formatted(),
+                                title: .statsThisMonth,
+                                icon: "calendar.badge.clock",
+                                tint: .blue
+                            )
+                        }
 
                         MetricCard(
-                            value: sessions.finishedSessionCount(in: .currentMonth).formatted(),
-                            title: .statsThisMonth,
-                            icon: "calendar.badge.clock",
-                            tint: .blue
+                            value: sessions.finishedSessionCount(in: .allTime).formatted(),
+                            title: .statsTotalSessions,
+                            icon: "dumbbell",
+                            tint: .purple
                         )
+
+                        if !sessions.completedDisciplineDistribution.isEmpty {
+                            DisciplineDistributionChart(data: sessions.completedDisciplineDistribution)
+                        }
+
+                        WeeklySessionsChart(data: sessions.weeklySessionCounts(), tint: .green)
                     }
-
-                    MetricCard(
-                        value: sessions.finishedSessionCount(in: .allTime).formatted(),
-                        title: .statsTotalSessions,
-                        icon: "dumbbell",
-                        tint: .purple
-                    )
-
-                    if !sessions.completedDisciplineDistribution.isEmpty {
-                        DisciplineDistributionChart(data: sessions.completedDisciplineDistribution)
-                    }
-
-                    WeeklySessionsChart(data: sessions.weeklySessionCounts(), tint: .green)
                 }
-                .padding(.horizontal)
             }
         }
         .navigationTitle(.screenStats)

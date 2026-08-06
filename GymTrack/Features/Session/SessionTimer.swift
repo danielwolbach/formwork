@@ -42,9 +42,9 @@ struct SessionTimer: View {
         return nextMinute.formatted(date: .omitted, time: .shortened)
     }
 
-    private func timingItem<Content: View>(
+    private func timingItem(
         icon: String,
-        @ViewBuilder value: () -> Content
+        @ViewBuilder value: () -> some View
     ) -> some View {
         HStack {
             Image(systemName: icon)

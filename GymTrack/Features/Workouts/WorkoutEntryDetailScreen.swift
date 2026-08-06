@@ -17,15 +17,16 @@ struct WorkoutEntryDetailScreen: View {
     var body: some View {
         ScrollView {
             ScreenStack {
-                IconHero(
-                    icon: entry.icon,
-                    color: entry.color,
-                    title: entry.title,
-                    subtitle: String(localized: entry.target.type.title)
-                )
+                ScreenSection {
+                    IconHero(
+                        icon: entry.icon,
+                        color: entry.color,
+                        title: entry.title,
+                        subtitle: String(localized: entry.target.type.title)
+                    )
 
-                ExerciseTargetEditor(target: $entry.target)
-                    .padding(.horizontal)
+                    ExerciseTargetEditor(target: $entry.target)
+                }
             }
         }
         .toolbar {

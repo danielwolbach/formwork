@@ -63,9 +63,7 @@ struct WorkoutExercisePicker: View {
             emptyState
         } else {
             ScrollView {
-                ScreenStack {
-                    ExerciseList(exercises: matchingExercises)
-                }
+                ExerciseList(exercises: matchingExercises)
             }
         }
     }

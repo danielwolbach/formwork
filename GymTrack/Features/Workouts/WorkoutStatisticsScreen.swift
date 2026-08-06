@@ -14,63 +14,64 @@ struct WorkoutStatisticsScreen: View {
     var body: some View {
         ScrollView {
             ScreenStack {
-                StatisticsStack {
-                    StatisticsRowStack {
-                        MetricCard(
-                            value: workout.totalCompletionCount.formatted(),
-                            title: .statsTotalCompletions,
-                            icon: "checkmark.circle",
-                            tint: .green
-                        )
+                ScreenSection {
+                    StatisticsStack {
+                        StatisticsRowStack {
+                            MetricCard(
+                                value: workout.totalCompletionCount.formatted(),
+                                title: .statsTotalCompletions,
+                                icon: "checkmark.circle",
+                                tint: .green
+                            )
 
-                        MetricCard(
-                            value: lastCompletedText,
-                            title: .statsLastCompleted,
-                            icon: "calendar",
-                            tint: .blue
-                        )
-                    }
+                            MetricCard(
+                                value: lastCompletedText,
+                                title: .statsLastCompleted,
+                                icon: "calendar",
+                                tint: .blue
+                            )
+                        }
 
-                    StatisticsRowStack {
-                        MetricCard(
-                            value: workout.typicalDuration?
-                                .formatted(.time(pattern: .hourMinute(padHourToLength: 1))) ?? "–",
-                            title: .statsTypicalDuration,
-                            icon: "clock",
-                            tint: .purple
-                        )
+                        StatisticsRowStack {
+                            MetricCard(
+                                value: workout.typicalDuration?
+                                    .formatted(.time(pattern: .hourMinute(padHourToLength: 1))) ?? "–",
+                                title: .statsTypicalDuration,
+                                icon: "clock",
+                                tint: .purple
+                            )
 
-                        MetricCard(
-                            value: workout.completionRate?
-                                .formatted(.percent.precision(.fractionLength(0))) ?? "–",
-                            title: .statsCompletionRate,
-                            icon: "checkmark.seal",
-                            tint: .orange
-                        )
-                    }
-                    
-                    if !workout.disciplineDistribution.isEmpty {
-                        DisciplineDistributionChart(data: workout.disciplineDistribution)
-                    }
+                            MetricCard(
+                                value: workout.completionRate?
+                                    .formatted(.percent.precision(.fractionLength(0))) ?? "–",
+                                title: .statsCompletionRate,
+                                icon: "checkmark.seal",
+                                tint: .orange
+                            )
+                        }
 
-                    if !workout.recentDurationTrend.isEmpty {
-                        WorkoutDurationChart(data: workout.recentDurationTrend, tint: .purple)
-                    }
+                        if !workout.disciplineDistribution.isEmpty {
+                            DisciplineDistributionChart(data: workout.disciplineDistribution)
+                        }
 
-                    StatisticsCard(title: .statsCompletedHistory, icon: "clock.arrow.circlepath", tint: .blue) {
-                        VStack(spacing: 0) {
-                            ForEach(historySessions.indices, id: \.self) { index in
-                                WorkoutSessionHistoryRow(session: historySessions[index])
+                        if !workout.recentDurationTrend.isEmpty {
+                            WorkoutDurationChart(data: workout.recentDurationTrend, tint: .purple)
+                        }
 
-                                if index < historySessions.count - 1 {
-                                    Divider()
+                        StatisticsCard(title: .statsCompletedHistory, icon: "clock.arrow.circlepath", tint: .blue) {
+                            VStack(spacing: 0) {
+                                ForEach(historySessions.indices, id: \.self) { index in
+                                    WorkoutSessionHistoryRow(session: historySessions[index])
+
+                                    if index < historySessions.count - 1 {
+                                        Divider()
+                                    }
                                 }
                             }
                         }
                     }
                 }
             }
-            .padding(.horizontal)
         }
         .navigationTitle(.screenStats)
         .navigationBarTitleDisplayMode(.inline)

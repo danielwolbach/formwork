@@ -1,25 +1,25 @@
 //
-//  ScreenStack.swift
+//  ScreenSection.swift
 //  GymTrack
 //
-//  Created by Daniel Wolbach on 08.07.26.
+//  Created by Daniel Wolbach on 06.08.26.
 //
 
 import SwiftUI
 
-struct ScreenStack<Content: View>: View {
+struct ScreenSection<Content: View>: View {
     @ViewBuilder let content: Content
 
     var body: some View {
         VStack(spacing: LayoutMetrics.sectionSpacing) {
             content
         }
-        .padding(.vertical, LayoutMetrics.screenVertical)
+        .padding(.horizontal, LayoutMetrics.screenHorizontal)
     }
 }
 
 #Preview {
-    ScreenStack {
+    ScreenSection {
         Text("First section")
         Text("Second section")
     }

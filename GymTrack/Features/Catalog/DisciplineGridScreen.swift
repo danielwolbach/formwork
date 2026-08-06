@@ -15,15 +15,19 @@ struct DisciplineGridScreen: View {
     var body: some View {
         ScrollView {
             ScreenStack {
-                LazyVGrid(columns: [GridItem(.flexible(), spacing: 8), GridItem(.flexible(), spacing: 8)], spacing: 8) {
-                    ForEach(Discipline.allCases) { discipline in
-                        NavigationLink(value: discipline) {
-                            DisciplineTile(discipline: discipline, count: exerciseCount(for: discipline))
+                ScreenSection {
+                    LazyVGrid(
+                        columns: [GridItem(.flexible(), spacing: 8), GridItem(.flexible(), spacing: 8)],
+                        spacing: 8
+                    ) {
+                        ForEach(Discipline.allCases) { discipline in
+                            NavigationLink(value: discipline) {
+                                DisciplineTile(discipline: discipline, count: exerciseCount(for: discipline))
+                            }
+                            .buttonStyle(.plain)
                         }
-                        .buttonStyle(.plain)
                     }
                 }
-                .padding(.horizontal)
             }
         }
         .navigationTitle(.screenCatalog)
@@ -59,9 +63,7 @@ struct DisciplineGridScreen: View {
             ContentUnavailableView(.emptyNoExercises, systemImage: Exercise.genericIcon)
         } else {
             ScrollView {
-                ScreenStack {
-                    ExerciseList(exercises: exercises)
-                }
+                ExerciseList(exercises: exercises)
             }
         }
     }

@@ -27,7 +27,7 @@ struct ContentView: View {
         MainTabs(
             presentedSession: $presentedSession,
             activeSession: activeSession,
-            sessionTransitionNamespace: sessionTransitionNamespace,
+            sessionTransitionNamespace: sessionTransitionNamespace
         )
         .fullScreenCover(item: $presentedSession) { session in
             NavigationStack {

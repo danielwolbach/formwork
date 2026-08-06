@@ -19,82 +19,88 @@ struct ExerciseDetailScreen: View {
     var body: some View {
         ScrollView {
             ScreenStack {
-                IconHero(icon: exercise.icon, color: exercise.color, title: exercise.title, subtitle: exercise.subtitle)
+                ScreenSection {
+                    IconHero(
+                        icon: exercise.icon,
+                        color: exercise.color,
+                        title: exercise.title,
+                        subtitle: exercise.subtitle
+                    )
 
-                StatisticsStack {
-                    StatisticsRowStack {
-                        MetricCard(
-                            value: lastPerformedText,
-                            title: .statsLastPerformed,
-                            icon: "calendar",
-                            tint: .blue
-                        )
+                    StatisticsStack {
+                        StatisticsRowStack {
+                            MetricCard(
+                                value: lastPerformedText,
+                                title: .statsLastPerformed,
+                                icon: "calendar",
+                                tint: .blue
+                            )
 
-                        MetricCard(
-                            value: exercise.completedExecutionCount.formatted(),
-                            title: .statsCompletedExecutions,
-                            icon: "checkmark.circle",
-                            tint: .green
-                        )
-                    }
+                            MetricCard(
+                                value: exercise.completedExecutionCount.formatted(),
+                                title: .statsCompletedExecutions,
+                                icon: "checkmark.circle",
+                                tint: .green
+                            )
+                        }
 
-                    StatisticsRowStack {
-                        MetricCard(
-                            value: exercise.lastTarget?.primaryTargetText ?? "–",
-                            title: .statsLastTarget,
-                            icon: "target",
-                            tint: exercise.color,
-                            trend: exercise.recentTargetTrend.map {
-                                MetricTrend(value: $0.value, direction: $0.isIncrease ? .up : .down)
-                            }
-                        )
+                        StatisticsRowStack {
+                            MetricCard(
+                                value: exercise.lastTarget?.primaryTargetText ?? "–",
+                                title: .statsLastTarget,
+                                icon: "target",
+                                tint: exercise.color,
+                                trend: exercise.recentTargetTrend.map {
+                                    MetricTrend(value: $0.value, direction: $0.isIncrease ? .up : .down)
+                                }
+                            )
 
-                        MetricCard(
-                            value: exercise.highestCompletedTarget?.primaryTargetText ?? "–",
-                            title: .statsPersonalBest,
-                            icon: "trophy",
-                            tint: .yellow
-                        )
-                    }
+                            MetricCard(
+                                value: exercise.highestCompletedTarget?.primaryTargetText ?? "–",
+                                title: .statsPersonalBest,
+                                icon: "trophy",
+                                tint: .yellow
+                            )
+                        }
 
-                    StatisticsRowStack {
-                        MetricCard(
-                            value: exercise.completionRate?
-                                .formatted(.percent.precision(.fractionLength(0))) ?? "–",
-                            title: .statsCompletionRate,
-                            icon: "checkmark.seal",
-                            tint: .green
-                        )
+                        StatisticsRowStack {
+                            MetricCard(
+                                value: exercise.completionRate?
+                                    .formatted(.percent.precision(.fractionLength(0))) ?? "–",
+                                title: .statsCompletionRate,
+                                icon: "checkmark.seal",
+                                tint: .green
+                            )
 
-                        MetricCard(
-                            value: exercise.skippedExecutionCount.formatted(),
-                            title: .statsSkippedExecutions,
-                            icon: "forward.end",
-                            tint: .orange
-                        )
-                    }
+                            MetricCard(
+                                value: exercise.skippedExecutionCount.formatted(),
+                                title: .statsSkippedExecutions,
+                                icon: "forward.end",
+                                tint: .orange
+                            )
+                        }
 
-                    if !exercise.recentTargetHistory.isEmpty {
-                        ExerciseTargetHistoryChart(data: exercise.recentTargetHistory, tint: exercise.color)
-                    }
+                        if !exercise.recentTargetHistory.isEmpty {
+                            ExerciseTargetHistoryChart(data: exercise.recentTargetHistory, tint: exercise.color)
+                        }
 
-                    StatisticsCard(
-                        title: .statsRecentActivity,
-                        icon: "clock.arrow.circlepath",
-                        tint: exercise.color
-                    ) {
-                        VStack(spacing: 0) {
-                            ForEach(historyEntries.indices, id: \.self) { index in
-                                ExerciseHistoryRow(entry: historyEntries[index])
+                        StatisticsCard(
+                            title: .statsRecentActivity,
+                            icon: "clock.arrow.circlepath",
+                            tint: exercise.color
+                        ) {
+                            VStack(spacing: 0) {
+                                ForEach(historyEntries.indices, id: \.self) { index in
+                                    ExerciseHistoryRow(entry: historyEntries[index])
 
-                                if index < historyEntries.count - 1 {
-                                    Divider()
+                                    if index < historyEntries.count - 1 {
+                                        Divider()
+                                    }
                                 }
                             }
                         }
                     }
                 }
-                .padding(.horizontal)
             }
         }
         .toolbar {

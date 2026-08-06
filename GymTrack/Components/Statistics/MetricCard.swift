@@ -41,14 +41,14 @@ struct MetricCard: View {
     var body: some View {
         StatisticsCard(title: title, icon: icon, tint: tint) {
             Spacer()
-            
+
             VStack(alignment: .leading, spacing: 2) {
                 if let trend {
                     Label(trend.value, systemImage: trend.direction == .up ? "arrow.up.right" : "arrow.down.right")
                         .font(.caption.weight(.semibold))
                         .foregroundStyle(trend.direction == .up ? .green : .red)
                 }
-                
+
                 Text(value)
                     .font(.system(.title, design: .rounded).weight(.bold))
                     .contentTransition(.numericText())

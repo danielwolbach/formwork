@@ -20,10 +20,11 @@ struct IconNavigationRow<Value: Hashable>: View {
                 IconRow(icon: icon, color: color, title: title, subtitle: subtitle)
                 IconAccessory(icon: "chevron.right")
             }
+            .padding(.horizontal, LayoutMetrics.screenHorizontal)
+            .padding(.vertical, LayoutMetrics.rowVertical)
+            .frame(maxWidth: .infinity)
             .contentShape(.rect)
         }
-        .padding(.horizontal)
-        .padding(.vertical, 8)
         .buttonStyle(.plain)
     }
 }

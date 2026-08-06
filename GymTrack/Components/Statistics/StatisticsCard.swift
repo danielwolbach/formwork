@@ -17,8 +17,6 @@ struct StatisticsCard<Content: View>: View {
         title: LocalizedStringResource,
         icon: String,
         tint: Color = .accentColor,
-        titleLineLimit: Int? = nil,
-        minimumHeight: CGFloat? = nil,
         @ViewBuilder content: () -> Content
     ) {
         self.title = title
@@ -28,18 +26,18 @@ struct StatisticsCard<Content: View>: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
+        VStack(alignment: .leading, spacing: LayoutMetrics.cardPadding) {
             Label(title, systemImage: icon)
                 .font(.subheadline.weight(.semibold))
                 .foregroundStyle(tint)
                 .lineLimit(1)
                 .minimumScaleFactor(0.8)
                 .allowsTightening(true)
-            
+
             content
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(16)
+        .padding(LayoutMetrics.cardPadding)
         .frame(maxWidth: .infinity, minHeight: 128, alignment: .topLeading)
         .background(.ultraThinMaterial)
         .clipShape(.rect(cornerRadius: 12, style: .continuous))

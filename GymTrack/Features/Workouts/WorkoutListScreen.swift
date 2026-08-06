@@ -34,9 +34,7 @@ struct WorkoutListScreen: View {
             ContentUnavailableView(.emptyNoWorkouts, systemImage: Workout.genericIcon)
         } else {
             ScrollView {
-                ScreenStack {
-                    WorkoutList(workouts: workouts)
-                }
+                WorkoutList(workouts: workouts)
             }
         }
     }
