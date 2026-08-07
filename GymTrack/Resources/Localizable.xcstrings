@@ -358,6 +358,23 @@
         }
       }
     },
+    "action.session.history" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sitzungsverlauf"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Session history"
+          }
+        }
+      }
+    },
     "action.session.replace" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -388,23 +405,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Resume session"
-          }
-        }
-      }
-    },
-    "action.session.history" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Einheitsverlauf"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Session history"
           }
         }
       }
@@ -1286,30 +1286,13 @@
         }
       }
     },
-    "screen.stats" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Statistiken"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Stats"
-          }
-        }
-      }
-    },
     "screen.session.detail" : {
       "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Einheit"
+            "value" : "Siztung"
           }
         },
         "en" : {
@@ -1326,7 +1309,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Einheitsverlauf"
+            "value" : "Sitzungsverlauf"
           }
         },
         "en" : {
@@ -1343,13 +1326,30 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Einheitsübersicht"
+            "value" : "Sitzungsübersicht"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Session summary"
+          }
+        }
+      }
+    },
+    "screen.stats" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Statistiken"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stats"
           }
         }
       }
@@ -1490,6 +1490,16 @@
         }
       }
     },
+    "Session" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sitztung"
+          }
+        }
+      }
+    },
     "session.entry.status.done" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1558,6 +1568,125 @@
         }
       }
     },
+    "stats.completed.history" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abgeschlossene Sitzungen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Completed sessions"
+          }
+        }
+      }
+    },
+    "stats.completion.rate" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abschlussrate"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Completion rate"
+          }
+        }
+      }
+    },
+    "stats.date" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Datum"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Date"
+          }
+        }
+      }
+    },
+    "stats.discipline.distribution" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disziplinverteilung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Discipline distribution"
+          }
+        }
+      }
+    },
+    "stats.duration" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dauer"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Duration"
+          }
+        }
+      }
+    },
+    "stats.exercises" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Übungen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exercises"
+          }
+        }
+      }
+    },
+    "stats.last.completed" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zuletzt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Last done"
+          }
+        }
+      }
+    },
     "stats.last.performed" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1571,6 +1700,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Last performed"
+          }
+        }
+      }
+    },
+    "stats.last.six.weeks" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Letzte 6 Wochen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Last 6 weeks"
           }
         }
       }
@@ -1626,6 +1772,23 @@
         }
       }
     },
+    "stats.recent.duration" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Letzte Dauer"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recent duration"
+          }
+        }
+      }
+    },
     "stats.recent.trend" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1639,6 +1802,40 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Recent trend"
+          }
+        }
+      }
+    },
+    "stats.session.entries" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Übungen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exercises"
+          }
+        }
+      }
+    },
+    "stats.sessions" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sitzungen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sessions"
           }
         }
       }
@@ -1690,190 +1887,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Target history"
-          }
-        }
-      }
-    },
-    "stats.average.skipped" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ø übersprungene Übungen"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Avg. skipped exercises"
-          }
-        }
-      }
-    },
-    "stats.completed.history" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Abgeschlossene Einheiten"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Completed sessions"
-          }
-        }
-      }
-    },
-    "stats.completion.rate" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Abschlussrate"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Completion rate"
-          }
-        }
-      }
-    },
-    "stats.date" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Datum"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Date"
-          }
-        }
-      }
-    },
-    "stats.discipline.distribution" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Disziplinverteilung" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Discipline distribution" } }
-      }
-    },
-    "stats.exercises" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Übungen" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Exercises" } }
-      }
-    },
-    "stats.duration" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dauer"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Duration"
-          }
-        }
-      }
-    },
-    "stats.last.completed" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Zuletzt"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Last done"
-          }
-        }
-      }
-    },
-    "stats.last.six.weeks" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Letzte 6 Wochen"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Last 6 weeks"
-          }
-        }
-      }
-    },
-    "stats.recent.duration" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Letzte Dauer"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Recent duration"
-          }
-        }
-      }
-    },
-    "stats.session.entries" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Übungen"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Exercises"
-          }
-        }
-      }
-    },
-    "stats.sessions" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Einheiten"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sessions"
           }
         }
       }
@@ -2087,57 +2100,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%#@meters@"
-          },
-          "substitutions" : {
-            "meters" : {
-              "argNum" : 1,
-              "formatSpecifier" : "lld",
-              "variations" : {
-                "plural" : {
-                  "one" : {
-                    "stringUnit" : {
-                      "state" : "translated",
-                      "value" : "%arg Meter"
-                    }
-                  },
-                  "other" : {
-                    "stringUnit" : {
-                      "state" : "translated",
-                      "value" : "%arg Meter"
-                    }
-                  }
-                }
-              }
-            }
+            "value" : "%(meters)lld m"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%#@meters@"
-          },
-          "substitutions" : {
-            "meters" : {
-              "argNum" : 1,
-              "formatSpecifier" : "lld",
-              "variations" : {
-                "plural" : {
-                  "one" : {
-                    "stringUnit" : {
-                      "state" : "translated",
-                      "value" : "%arg meter"
-                    }
-                  },
-                  "other" : {
-                    "stringUnit" : {
-                      "state" : "translated",
-                      "value" : "%arg meters"
-                    }
-                  }
-                }
-              }
-            }
+            "value" : "%1$(meters)lld m"
           }
         }
       }
@@ -2148,57 +2117,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%#@minutes@"
-          },
-          "substitutions" : {
-            "minutes" : {
-              "argNum" : 1,
-              "formatSpecifier" : "lld",
-              "variations" : {
-                "plural" : {
-                  "one" : {
-                    "stringUnit" : {
-                      "state" : "translated",
-                      "value" : "%arg Minute"
-                    }
-                  },
-                  "other" : {
-                    "stringUnit" : {
-                      "state" : "translated",
-                      "value" : "%arg Minuten"
-                    }
-                  }
-                }
-              }
-            }
+            "value" : "%(minutes)lld min"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%#@minutes@"
-          },
-          "substitutions" : {
-            "minutes" : {
-              "argNum" : 1,
-              "formatSpecifier" : "lld",
-              "variations" : {
-                "plural" : {
-                  "one" : {
-                    "stringUnit" : {
-                      "state" : "translated",
-                      "value" : "%arg minute"
-                    }
-                  },
-                  "other" : {
-                    "stringUnit" : {
-                      "state" : "translated",
-                      "value" : "%arg minutes"
-                    }
-                  }
-                }
-              }
-            }
+            "value" : "%1$(minutes)lld min"
           }
         }
       }

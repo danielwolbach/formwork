@@ -14,7 +14,7 @@ struct GymTrackApp: App {
         WindowGroup {
             ContentView()
         }
-        .modelContainer(for: [Exercise.self, Workout.self, WorkoutEntry.self, Session.self, SessionEntry.self])
+        .modelContainer(ModelContainerInstance.shared)
     }
 }
 
@@ -22,6 +22,7 @@ struct ContentView: View {
     @Query(sort: \Session.started, order: .reverse) private var sessions: [Session]
     @Namespace private var sessionTransitionNamespace
     @State private var presentedSession: Session?
+    @State private var sessionActivityCoordinator = SessionActivityCoordinator()
 
     var body: some View {
         MainTabs(
@@ -37,11 +38,33 @@ struct ContentView: View {
                 .zoom(sourceID: session.persistentModelID, in: sessionTransitionNamespace)
             )
         }
+        .task(id: liveActivitySnapshot) {
+            await sessionActivityCoordinator.synchronize(with: activeSession)
+        }
+        .onOpenURL { _ in
+            presentedSession = activeSession
+        }
     }
 
     private var activeSession: Session? {
         sessions.activeSession
     }
+
+    private var liveActivitySnapshot: SessionLiveActivitySnapshot? {
+        guard let activeSession else {
+            return nil
+        }
+
+        return SessionLiveActivitySnapshot(
+            id: activeSession.activity,
+            state: activeSession.liveState
+        )
+    }
+}
+
+private struct SessionLiveActivitySnapshot: Hashable {
+    let id: UUID
+    let state: SessionActivityAttributes.ContentState
 }
 
 private struct MainTabs: View {

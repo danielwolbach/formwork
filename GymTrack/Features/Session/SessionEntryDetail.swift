@@ -12,7 +12,12 @@ struct SessionEntryDetail: View {
 
     var body: some View {
         VStack(spacing: 32) {
-            IconHero(icon: entry.icon, color: entry.color, title: entry.title, subtitle: entry.subtitle)
+            IconHero(
+                icon: entry.icon,
+                color: entry.color,
+                title: entry.title,
+                subtitle: entry.subtitle
+            )
 
             ExerciseTargetEditor(target: $entry.target)
         }

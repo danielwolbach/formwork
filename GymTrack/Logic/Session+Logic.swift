@@ -81,11 +81,12 @@ extension Session {
 
         precondition(!entries.isEmpty, "Cannot reset a session for an empty workout.")
 
-        started = Date.now
-        ended = nil
+        self.started = Date.now
+        self.ended = nil
         self.workout = workout
         self.entries = entries
-        current = entries[0]
+        self.current = entries[0]
+        self.activity = UUID()
     }
 
     var pending: [SessionEntry] {

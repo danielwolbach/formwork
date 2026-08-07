@@ -170,27 +170,37 @@ extension Session {
     }
 }
 
-private struct SampleDataModifier: ViewModifier {
-    let container: ModelContainer
+enum SampleData {
+    static let container: ModelContainer = {
+        let schema = Schema([
+            Exercise.self,
+            Workout.self,
+            WorkoutEntry.self,
+            Session.self,
+            SessionEntry.self,
+        ])
+        let configuration = ModelConfiguration(
+            schema: schema,
+            isStoredInMemoryOnly: true
+        )
 
-    init() {
-        let schema = Schema([Exercise.self, Workout.self, WorkoutEntry.self, Session.self, SessionEntry.self])
-        let configuration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
-
-        do {
-            container = try ModelContainer(for: schema, configurations: [configuration])
-        } catch {
-            fatalError("Failed to create sample data container: \(error)")
-        }
+        let container = try! ModelContainer(
+            for: schema,
+            configurations: [configuration]
+        )
 
         let sessions = Session.samples
         sessions.compactMap(\.workout).forEach(container.mainContext.insert)
         sessions.forEach(container.mainContext.insert)
-    }
 
+        return container
+    }()
+}
+
+private struct SampleDataModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
-            .modelContainer(container)
+            .modelContainer(SampleData.container)
     }
 }
 

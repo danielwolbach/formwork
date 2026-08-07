@@ -15,10 +15,7 @@ enum StatisticsPeriod: Hashable, Sendable {
     case trailingWeeks(Int)
     case trailingMonths(Int)
 
-    func dateInterval(
-        relativeTo date: Date = .now,
-        calendar: Calendar = .autoupdatingCurrent
-    ) -> DateInterval? {
+    func dateInterval(relativeTo date: Date = .now, calendar: Calendar = .autoupdatingCurrent) -> DateInterval? {
         switch self {
         case .currentWeek:
             calendar.dateInterval(of: .weekOfYear, for: date)

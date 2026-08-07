@@ -21,6 +21,8 @@ final class Session {
 
     var current: SessionEntry
 
+    var activity: UUID
+
     init(workout: Workout) {
         let entries = workout.entries.sorted()
             .map {
@@ -39,5 +41,6 @@ final class Session {
         self.workout = workout
         self.entries = entries
         current = entries[0]
+        activity = UUID()
     }
 }
