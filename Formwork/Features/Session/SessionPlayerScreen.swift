@@ -11,6 +11,7 @@ struct SessionPlayerScreen: View {
     @Environment(\.dismiss) private var dismiss: DismissAction
     @State private var finishAlert: Bool = false
     @State private var cancelAlert: Bool = false
+    @State private var direction: SlideDirection = .forward
     
     let session: Session
     
@@ -70,26 +71,35 @@ struct SessionPlayerScreen: View {
             }
     }
     
-    @ViewBuilder
     private var currentView: some View {
-        if let current = session.current {
-            @Bindable var current = current
-            
-            VStack(spacing: 32) {
-                DisplayableHero(displayable: current.exercise)
-                
-                ExerciseTargetView(target: $current.target)
-                
-                Spacer()
+        SlideStack(
+            key: session.current?.identifier,
+            direction: direction,
+            onForward: { advance(.forward) { session.moveToNext() } },
+            onBackward: { advance(.backward) { session.moveToPrevious() } }
+        ) { identifier in
+            if let entry = session.entry(identifiedBy: identifier) {
+                @Bindable var entry = entry
+
+                VStack(spacing: 32) {
+                    DisplayableHero(displayable: entry.exercise)
+
+                    ExerciseTargetView(target: $entry.target)
+
+                    Spacer()
+                }
             }
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
     }
     
     private var controls: some View {
         VStack(spacing: 16) {
             HStack {
                 Button(.backward) {
-                    session.moveToPrevious()
+                    advance(.backward) {
+                        session.moveToPrevious()
+                    }
                 }
                 .disabled(session.previous == nil)
                 .buttonStyle(.glass)
@@ -101,7 +111,9 @@ struct SessionPlayerScreen: View {
                     .labelStyle(.fixedTitleAndIcon)
                 
                 Button(.forward) {
-                    session.moveToNext()
+                    advance(.forward) {
+                        session.moveToNext()
+                    }
                 }
                 .disabled(session.next == nil)
                 .buttonStyle(.glass)
@@ -129,7 +141,9 @@ struct SessionPlayerScreen: View {
         } else if let status = session.current?.status {
             if status.isPending {
                 Button(.complete) {
-                    session.completeAndAdvance()
+                    advance(.forward) {
+                        session.completeAndAdvance()
+                    }
                 }
                 .fontWeight(.semibold)
                 .tint(.green)
@@ -148,7 +162,9 @@ struct SessionPlayerScreen: View {
         if let status = session.current?.status {
             if status.isPending {
                 Button(.skipExercise) {
-                    session.skipAndAdvance()
+                    advance(.forward) {
+                        session.skipAndAdvance()
+                    }
                 }
             } else {
                 Button(.undo) {
@@ -156,6 +172,11 @@ struct SessionPlayerScreen: View {
                 }
             }
         }
+    }
+    
+    private func advance(_ direction: SlideDirection, _ action: () -> Void) {
+        self.direction = direction
+        action()
     }
     
     private func finish() {

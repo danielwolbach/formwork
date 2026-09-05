@@ -110,6 +110,10 @@ final class Session {
         orderedEntries.first
     }
 
+    func entry(identifiedBy identifier: UUID) -> SessionEntry? {
+        entries.first { $0.identifier == identifier }
+    }
+
     var current: SessionEntry? {
         get {
             entries.first { $0.identifier == currentIdentifier }

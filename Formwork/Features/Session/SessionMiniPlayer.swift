@@ -10,65 +10,81 @@ import SwiftUI
 
 struct SessionMiniPlayer: View {
     @Environment(\.presentSession) private var presentSession: PresentSessionAction
+    @State private var direction: SlideDirection = .forward
     
     let session: Session
     let transitionNamespace: Namespace.ID
     
     var body: some View {
-        HStack {
-            Button {
-                presentSession(session)
-            } label: {
-                entry
-            }
-            .buttonStyle(.plain)
+        HStack(spacing: 0) {
+            entry
             
             controls
+                .padding(.trailing)
         }
-        .padding(.horizontal)
         .matchedTransitionSource(id: session.persistentModelID, in: transitionNamespace)
     }
     
-    @ViewBuilder
     private var entry: some View {
-        if let current = session.current {
-            HStack {
-                PictogramView(pictogram: current.pictogram, size: 32)
-                    .overlay(alignment: .bottomTrailing) {
-                        if !current.status.isPending {
-                            PictogramBadge(pictogram: current.status.pictogram, size: 12)
-                                .offset(x: 2, y: 2)
+        SlideStack(
+            key: session.current?.identifier,
+            direction: direction,
+            fade: 16,
+            onForward: advanceToNextEntry,
+            onBackward: returnToPreviousEntry
+        ) { identifier in
+            if let current = session.entry(identifiedBy: identifier) {
+                HStack {
+                    PictogramView(pictogram: current.pictogram, size: 32)
+                        .overlay(alignment: .bottomTrailing) {
+                            if !current.status.isPending {
+                                PictogramBadge(pictogram: current.status.pictogram, size: 12)
+                                    .offset(x: 2, y: 2)
+                            }
                         }
-                    }
-                
-                VStack(alignment: .leading, spacing: 0) {
-                    Text(current.title)
-                        .font(.caption)
                     
-                    Text(current.subtitle)
-                        .font(.caption2)
-                        .foregroundStyle(.secondary)
+                    VStack(alignment: .leading, spacing: 0) {
+                        Text(current.title)
+                            .font(.caption)
+                        
+                        Text(current.subtitle)
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
+                    }
+                    
+                    Spacer()
                 }
-                
-                Spacer()
+                .padding(.horizontal)
+                .contentShape(.rect)
+                .onTapGesture {
+                    presentSession(session)
+                }
+                .accessibilityAddTraits(.isButton)
             }
-            .contentShape(.rect)
         }
     }
     
     private var controls: some View {
-        HStack {
-            statusAction
-            
-            Button(.forward, action: advanceToNextEntry)
-                .labelStyle(.fixedIconOnly)
-                .buttonStyle(.glass)
-                .buttonBorderShape(.circle)
-        }
+        statusAction
     }
     
     @ViewBuilder
     private var statusAction: some View {
+        if session.isComplete {
+            Button(.finishSession) {
+                presentSession(session)
+            }
+            .fontWeight(.bold)
+            .labelStyle(.fixedIconOnly)
+            .buttonStyle(.glassProminent)
+            .buttonBorderShape(.circle)
+        } else {
+            pendingStatusAction
+        }
+    }
+    
+    @ViewBuilder
+    private var pendingStatusAction: some View {
         switch session.current?.status {
         case .pending:
             Button(.complete, action: completeCurrentEntry)
@@ -90,10 +106,7 @@ struct SessionMiniPlayer: View {
     }
     
     private func completeCurrentEntry() {
-        if session.pending.count == 1 {
-            presentSession(session)
-        }
-        
+        direction = .forward
         session.completeAndAdvance()
     }
     
@@ -102,14 +115,15 @@ struct SessionMiniPlayer: View {
     }
     
     private func advanceToNextEntry() {
-        if let next = session.next {
-            session.current = next
-        } else if let firstEntry = session.firstEntry {
-            session.current = firstEntry
-        }
+        direction = .forward
+        session.moveToNext()
+    }
+    
+    private func returnToPreviousEntry() {
+        direction = .backward
+        session.moveToPrevious()
     }
 }
-
 
 #Preview {
     @Previewable @Namespace var namespace
