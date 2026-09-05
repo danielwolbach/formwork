@@ -10,19 +10,23 @@ import SwiftData
 @Model
 final class WorkoutEntry {
     var order: Int = 0
-    
+
     var target: ExerciseTarget = ExerciseTarget.bodyweight(sets: 1, reps: 1)
-    
+
     var exercise: Exercise? = nil
-    
-    // FIXME: This reference is technically not needed here, do we still need
-    // to keep it around to keep the relationship properly working?
+
+    // Both sides of a relationship have to exist for `inverse:` to name one, and
+    // CloudKit rejects a schema with one-sided relationships, so the
+    // back-references stay even where the app never reads them.
     var workout: Workout? = nil
-    
-    init(order: Int, target: ExerciseTarget, exercise: Exercise) {
+
+    @Relationship(deleteRule: .nullify, inverse: \SessionEntry.workoutEntry)
+    var sessionEntries: [SessionEntry] = []
+
+    init(order: Int, exercise: Exercise, target: ExerciseTarget) {
         self.order = order
-        self.target = target
         self.exercise = exercise
+        self.target = target
     }
 }
 

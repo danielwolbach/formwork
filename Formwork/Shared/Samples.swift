@@ -29,27 +29,31 @@ enum Samples {
     
     static let workoutEntries: [WorkoutEntry] =
     [
-            WorkoutEntry(order: 0, target: .duration(minutes: 10), exercise: exercises[0]),
-            WorkoutEntry(order: 1, target: .weight(weight: 85, sets: 3, reps: 10), exercise: exercises[1]),
-            WorkoutEntry(order: 2, target: .weight(weight: 40, sets: 3, reps: 10), exercise: exercises[2]),
-            WorkoutEntry(order: 3, target: .weight(weight: 40, sets: 3, reps: 10), exercise: exercises[3]),
-            WorkoutEntry(order: 4, target: .weight(weight: 40, sets: 3, reps: 12), exercise: exercises[4]),
-            WorkoutEntry(order: 5, target: .weight(weight: 25, sets: 3, reps: 12), exercise: exercises[5]),
-            WorkoutEntry(order: 6, target: .weight(weight: 45, sets: 3, reps: 12), exercise: exercises[6]),
-            WorkoutEntry(order: 7, target: .weight(weight: 40, sets: 3, reps: 14), exercise: exercises[7]),
-            WorkoutEntry(order: 8, target: .bodyweight(sets: 3, reps: 12), exercise: exercises[8]),
+        WorkoutEntry(order: 0, exercise: exercises[0], target: .duration(minutes: 10)),
+        WorkoutEntry(order: 1, exercise: exercises[1], target: .weight(weight: 85, sets: 3, reps: 10)),
+        WorkoutEntry(order: 2, exercise: exercises[2], target: .weight(weight: 40, sets: 3, reps: 10)),
+        WorkoutEntry(order: 3, exercise: exercises[3], target: .weight(weight: 40, sets: 3, reps: 10)),
+        WorkoutEntry(order: 4, exercise: exercises[4], target: .weight(weight: 40, sets: 3, reps: 12)),
+        WorkoutEntry(order: 5, exercise: exercises[5], target: .weight(weight: 25, sets: 3, reps: 12)),
+        WorkoutEntry(order: 6, exercise: exercises[6], target: .weight(weight: 45, sets: 3, reps: 12)),
+        WorkoutEntry(order: 7, exercise: exercises[7], target: .weight(weight: 40, sets: 3, reps: 14)),
+        WorkoutEntry(order: 8, exercise: exercises[8], target: .bodyweight(sets: 3, reps: 12)),
     ]
+    
+    static let session: Session = {
+        try! Session.start(workouts[0], in: container.mainContext)
+    }()
 }
 
 extension Samples {
     static let container: ModelContainer = {
-        let schema = Schema([Exercise.self])
+        let schema = Schema([Exercise.self, Workout.self, WorkoutEntry.self, Session.self, SessionEntry.self])
         let configuration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
         let container = try! ModelContainer(for: schema, configurations: [configuration])
         
         Samples.exercises.forEach(container.mainContext.insert)
         Samples.workouts.forEach(container.mainContext.insert)
-        
+      
         return container
     }()
 }

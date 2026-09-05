@@ -18,6 +18,9 @@ final class Exercise {
     
     @Relationship(deleteRule: .cascade, inverse: \WorkoutEntry.exercise)
     var workoutEntries: [WorkoutEntry] = []
+    
+    @Relationship(deleteRule: .cascade, inverse: \SessionEntry.exercise)
+    var sessionEntries: [SessionEntry] = []
 
     init(name: String, type: ExerciseType, categories: Set<ExerciseCategory>) {
         self.name = name

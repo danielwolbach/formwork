@@ -79,7 +79,7 @@ struct NumberStepper: View {
             .foregroundStyle(.secondary)
     }
     
-    private func stepButton(_ descriptor: Action, by delta: Double) -> some View {
+    private func stepButton(_ descriptor: ActionDescriptor, by delta: Double) -> some View {
         Button(descriptor) {
             withAnimation {
                 value = clamped(value + delta)

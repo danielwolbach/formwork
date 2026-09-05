@@ -89,7 +89,7 @@ struct WorkoutAddExerciseScreen: View {
     
     private func save(exercise: Exercise) {
         let order = (workout.entries.map(\.order).max() ?? -1) + 1
-        let entry = WorkoutEntry(order: order, target: target, exercise: exercise)
+        let entry = WorkoutEntry(order: order, exercise: exercise, target: target)
         workout.entries.append(entry)
         dismiss()
     }

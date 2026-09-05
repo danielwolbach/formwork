@@ -11,8 +11,11 @@ import SwiftUI
 struct WorkoutScreen: View {
     @Environment(\.modelContext) private var modelContext: ModelContext
     @Environment(\.dismiss) private var dismiss: DismissAction
+    @Environment(\.presentSession) private var presentSession: PresentSessionAction
+    @Query(Session.activeDescriptor) private var activeSessions: [Session]
     @State private var sheet: Sheet? = nil
     @State private var deleteAlert: Bool = false
+    @State private var sessionActiveAlert: Bool = false
     
     let workout: Workout
     
@@ -30,8 +33,9 @@ struct WorkoutScreen: View {
                     .buttonBorderShape(.circle)
                     
                     Button(.startSession) {
-                        // TODO
+                        startSession()
                     }
+                    .disabled(workout.entries.isEmpty)
                     .labelStyle(.fixedTitleAndIcon)
                     .buttonStyle(.glassProminent)
                     .tint(.green)
@@ -94,11 +98,53 @@ struct WorkoutScreen: View {
         } message: {
             Text(.alertWorkoutDeleteMessage)
         }
+        .alert(.alertSessionReplaceTitle, isPresented: $sessionActiveAlert) {
+            Button(.replaceSession) {
+                replaceSession()
+            }
+            
+            if let activeSession {
+                Button(.resumeSession) {
+                    presentSession(activeSession)
+                }
+            }
+            
+            Button(.cancel) {
+                
+            }
+        } message: {
+            Text(.alertSessionReplaceMessage)
+        }
     }
     
     private func delete() {
         modelContext.delete(workout)
         dismiss()
+    }
+    
+    private var activeSession: Session? {
+        activeSessions.first
+    }
+    
+    private func startSession() {
+        guard activeSession == nil else {
+            sessionActiveAlert = true
+            return
+        }
+        
+        replaceSession()
+    }
+    
+    private func replaceSession() {
+        do {
+            let session = try Session.start(workout, in: modelContext)
+
+            DispatchQueue.main.async {
+                presentSession(session)
+            }
+        } catch {
+            // TODO: Log error
+        }
     }
 }
 

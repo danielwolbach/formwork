@@ -140,3 +140,35 @@ extension WorkoutEntry: SubtitledDisplayable {
         target.pictogram
     }
 }
+
+extension SessionEntry: SubtitledDisplayable {
+    var title: String {
+        exercise?.title ?? String(localized: .unknown)
+    }
+    
+    var subtitle: String {
+        target.title
+    }
+    
+    var pictogram: Pictogram {
+        target.pictogram
+    }
+}
+
+extension SessionEntry.Status: Displayable {
+    var title: String {
+        switch self {
+        case .pending: String(localized: .sessionStatusPendingTitle)
+        case .completed: String(localized: .sessionStatusCompletedTitle)
+        case .skipped: String(localized: .sessionStatusSkippedTitle)
+        }
+    }
+    
+    var pictogram: Pictogram {
+        switch self {
+        case .pending: Pictogram(icon: "circle.dotted", color: .gray)
+        case .completed: Pictogram(icon: "checkmark.circle.fill", color: .green)
+        case .skipped: Pictogram(icon: "forward.end.circle.fill", color: .orange)
+        }
+    }
+}
