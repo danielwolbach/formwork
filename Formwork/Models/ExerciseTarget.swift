@@ -24,3 +24,14 @@ extension ExerciseTarget {
         }
     }
 }
+
+extension ExerciseTarget {
+    static func defaults(for type: ExerciseType) -> Self {
+        switch type {
+        case .weight: .weight(weight: 10, sets: 3, reps: 10)
+        case .bodyweight: .bodyweight(sets: 3, reps: 10)
+        case .duration: .duration(minutes: 10)
+        case .distance: .distance(meters: 1000)
+        }
+    }
+}

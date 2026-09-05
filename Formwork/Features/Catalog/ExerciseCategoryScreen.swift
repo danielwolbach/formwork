@@ -16,7 +16,7 @@ struct ExerciseCategoryScreen: View {
     
     var body: some View {
         ScrollView {
-            RowStack(items: exercises) { exercise in
+            RowStack(items: filteredExercises) { exercise in
                 ExerciseRow(exercise: exercise)
             }
         }

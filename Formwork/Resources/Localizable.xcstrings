@@ -506,6 +506,17 @@
         }
       }
     },
+    "screen.workout.addExercise.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add Exercise"
+          }
+        }
+      }
+    },
     "screen.workout.create.title" : {
       "extractionState" : "manual",
       "localizations" : {

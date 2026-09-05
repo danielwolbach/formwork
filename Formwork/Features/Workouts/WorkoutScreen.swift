@@ -23,7 +23,7 @@ struct WorkoutScreen: View {
 
                 HStack {
                     Button(.addExercise) {
-                        // TODO
+                        sheet = .addWorkoutExercise(workout: workout)
                     }
                     .labelStyle(.fixedIconOnly)
                     .buttonStyle(.glass)
@@ -58,7 +58,7 @@ struct WorkoutScreen: View {
             Menu(.more) {
                 Section {
                     Button(.addExercise) {
-                        
+                        sheet = .addWorkoutExercise(workout: workout)
                     }
                     
                     Button(.stats) {
@@ -116,4 +116,5 @@ private struct WorkoutEntryRow: View {
     NavigationStack {
         WorkoutScreen(workout: Samples.workouts.first!)
     }
+    .sampleData()
 }

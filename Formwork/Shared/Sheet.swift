@@ -12,6 +12,7 @@ enum Sheet: Identifiable, Hashable, View {
     case editExercise(exercise: Exercise)
     case createWorkout
     case editWorkout(workout: Workout)
+    case addWorkoutExercise(workout: Workout)
 
     var id: Self {
         self
@@ -23,6 +24,7 @@ enum Sheet: Identifiable, Hashable, View {
         case .editExercise(let exercise): ExerciseForm(exercise: exercise)
         case .createWorkout: WorkoutForm()
         case .editWorkout(let workout): WorkoutForm(workout: workout)
+        case .addWorkoutExercise(let workout): WorkoutAddExerciseScreen(workout: workout)
         }
     }
 }
