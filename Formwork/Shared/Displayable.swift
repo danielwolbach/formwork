@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import FormworkKit
 import SwiftUI
 
 protocol Displayable {
@@ -59,16 +60,16 @@ extension ExerciseCategory: Displayable {
     
     var pictogram: Pictogram {
         switch self {
-        case .arms: Pictogram(icon: "figure.dance", color: .blue)
-        case .legs: Pictogram(icon: "figure.walk", color: .purple)
-        case .chest: Pictogram(icon: "figure.arms.open", color: .orange)
-        case .shoulders: Pictogram(icon: "figure.play", color: .indigo)
-        case .core: Pictogram(icon: "figure.core.training", color: .yellow)
-        case .back: Pictogram(icon: "figure.indoor.rowing", color: .green)
-        case .cardio: Pictogram(icon: "figure.run", color: .pink)
-        case .flexibility: Pictogram(icon: "figure.yoga", color: .mint)
-        case .mindfulness: Pictogram(icon: "figure.mind.and.body", color: .teal)
-        case .other: Pictogram(icon: "ellipsis.circle", color: .gray)
+        case .arms: Pictogram(icon: "figure.dance", tint: .blue)
+        case .legs: Pictogram(icon: "figure.walk", tint: .purple)
+        case .chest: Pictogram(icon: "figure.arms.open", tint: .orange)
+        case .shoulders: Pictogram(icon: "figure.play", tint: .indigo)
+        case .core: Pictogram(icon: "figure.core.training", tint: .yellow)
+        case .back: Pictogram(icon: "figure.indoor.rowing", tint: .green)
+        case .cardio: Pictogram(icon: "figure.run", tint: .pink)
+        case .flexibility: Pictogram(icon: "figure.yoga", tint: .mint)
+        case .mindfulness: Pictogram(icon: "figure.mind.and.body", tint: .teal)
+        case .other: Pictogram(icon: "ellipsis.circle", tint: .gray)
         }
     }
 }
@@ -105,10 +106,10 @@ extension ExerciseType: Displayable {
     
     var pictogram: Pictogram {
         switch self {
-        case .weight: Pictogram(icon: "dumbbell", color: .indigo)
-        case .bodyweight: Pictogram(icon: "figure", color: .pink)
-        case .duration: Pictogram(icon: "timer", color: .orange)
-        case .distance: Pictogram(icon: "map", color: .teal)
+        case .weight: Pictogram(icon: "dumbbell", tint: .indigo)
+        case .bodyweight: Pictogram(icon: "figure", tint: .pink)
+        case .duration: Pictogram(icon: "timer", tint: .orange)
+        case .distance: Pictogram(icon: "map", tint: .teal)
         }
     }
 }
@@ -123,7 +124,7 @@ extension Workout: SubtitledDisplayable {
     }
     
     var pictogram: Pictogram {
-        .init(icon: "clipboard", color: .accentColor)
+        .init(icon: "clipboard", tint: .accent)
     }
 }
 
@@ -166,9 +167,9 @@ extension SessionEntry.Status: Displayable {
     
     var pictogram: Pictogram {
         switch self {
-        case .pending: Pictogram(icon: "circle.dotted", color: .gray)
-        case .completed: Pictogram(icon: "checkmark.circle.fill", color: .green)
-        case .skipped: Pictogram(icon: "forward.end.circle.fill", color: .orange)
+        case .pending: Pictogram(icon: "circle.dotted", tint: .gray)
+        case .completed: Pictogram(icon: "checkmark.circle.fill", tint: .green)
+        case .skipped: Pictogram(icon: "forward.end.circle.fill", tint: .orange)
         }
     }
 }

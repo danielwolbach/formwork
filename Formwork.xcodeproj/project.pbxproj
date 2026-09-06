@@ -6,16 +6,77 @@
 	objectVersion = 90;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		CAC0D4BB304D499000DEF149 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CAC0D4BA304D499000DEF149 /* WidgetKit.framework */; };
+		CAC0D4BD304D499000DEF149 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CAC0D4BC304D499000DEF149 /* SwiftUI.framework */; };
+		CAC0D4CA304D499100DEF149 /* FormworkWidgetsExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = CAC0D4B8304D499000DEF149 /* FormworkWidgetsExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		CAC0D4D4304D4CF800DEF149 /* FormworkKit in Frameworks */ = {isa = PBXBuildFile; productRef = CAC0D4D3304D4CF800DEF149 /* FormworkKit */; };
+		CAC0D4D6304D4D0700DEF149 /* FormworkKit in Frameworks */ = {isa = PBXBuildFile; productRef = CAC0D4D5304D4D0700DEF149 /* FormworkKit */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		CAC0D4C8304D499100DEF149 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 000000000000000000000000 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CAC0D4B7304D499000DEF149;
+			remoteInfo = FormworkWidgetsExtension;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		CAC0D4CF304D499100DEF149 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			dstPath = "";
+			dstSubfolder = PlugIns;
+			files = (
+				CAC0D4CA304D499100DEF149 /* FormworkWidgetsExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		000000000000000000000120 /* Formwork.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Formwork.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CAB5B303304B235A00832946 /* CONTRIBUTING.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CONTRIBUTING.md; sourceTree = "<group>"; };
 		CAB5B304304B235A00832946 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		CAC0D4B8304D499000DEF149 /* FormworkWidgetsExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = FormworkWidgetsExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		CAC0D4BA304D499000DEF149 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		CAC0D4BC304D499000DEF149 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		CAC0D4CB304D499100DEF149 /* Exceptions for "FormworkWidgets" folder in "FormworkWidgetsExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Resources/Info.plist,
+			);
+			target = CAC0D4B7304D499000DEF149 /* FormworkWidgetsExtension */;
+		};
+		CAC0D4D1304D4AB100DEF149 /* Exceptions for "Formwork" folder in "Formwork" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Resources/Info.plist,
+			);
+			target = 000000000000000100000000 /* Formwork */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		000000000000000000000010 /* Formwork */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				CAC0D4D1304D4AB100DEF149 /* Exceptions for "Formwork" folder in "Formwork" target */,
+			);
 			path = Formwork;
+			sourceTree = "<group>";
+		};
+		CAC0D4BE304D499000DEF149 /* FormworkWidgets */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				CAC0D4CB304D499100DEF149 /* Exceptions for "FormworkWidgets" folder in "FormworkWidgetsExtension" target */,
+			);
+			path = FormworkWidgets;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -24,6 +85,15 @@
 		000000000000000130000000 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			files = (
+				CAC0D4D4304D4CF800DEF149 /* FormworkKit in Frameworks */,
+			);
+		};
+		CAC0D4B5304D499000DEF149 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			files = (
+				CAC0D4D6304D4D0700DEF149 /* FormworkKit in Frameworks */,
+				CAC0D4BD304D499000DEF149 /* SwiftUI.framework in Frameworks */,
+				CAC0D4BB304D499000DEF149 /* WidgetKit.framework in Frameworks */,
 			);
 		};
 /* End PBXFrameworksBuildPhase section */
@@ -33,6 +103,8 @@
 			isa = PBXGroup;
 			children = (
 				000000000000000000000010 /* Formwork */,
+				CAC0D4BE304D499000DEF149 /* FormworkWidgets */,
+				CAC0D4B9304D499000DEF149 /* Frameworks */,
 				000000000000000000000020 /* Products */,
 				CAB5B303304B235A00832946 /* CONTRIBUTING.md */,
 				CAB5B304304B235A00832946 /* README.md */,
@@ -43,8 +115,18 @@
 			isa = PBXGroup;
 			children = (
 				000000000000000000000120 /* Formwork.app */,
+				CAC0D4B8304D499000DEF149 /* FormworkWidgetsExtension.appex */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		CAC0D4B9304D499000DEF149 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				CAC0D4BA304D499000DEF149 /* WidgetKit.framework */,
+				CAC0D4BC304D499000DEF149 /* SwiftUI.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -57,16 +139,44 @@
 				000000000000000120000000 /* Sources */,
 				000000000000000130000000 /* Frameworks */,
 				000000000000000140000000 /* Resources */,
+				CAC0D4CF304D499100DEF149 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
+			);
+			dependencies = (
+				CAC0D4C9304D499100DEF149 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				000000000000000000000010 /* Formwork */,
 			);
 			name = Formwork;
+			packageProductDependencies = (
+				CAC0D4D3304D4CF800DEF149 /* FormworkKit */,
+			);
 			productName = MyApp;
 			productReference = 000000000000000000000120 /* Formwork.app */;
 			productType = "com.apple.product-type.application";
+		};
+		CAC0D4B7304D499000DEF149 /* FormworkWidgetsExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CAC0D4CC304D499100DEF149 /* Build configuration list for PBXNativeTarget "FormworkWidgetsExtension" */;
+			buildPhases = (
+				CAC0D4B4304D499000DEF149 /* Sources */,
+				CAC0D4B5304D499000DEF149 /* Frameworks */,
+				CAC0D4B6304D499000DEF149 /* Resources */,
+			);
+			buildRules = (
+			);
+			fileSystemSynchronizedGroups = (
+				CAC0D4BE304D499000DEF149 /* FormworkWidgets */,
+			);
+			name = FormworkWidgetsExtension;
+			packageProductDependencies = (
+				CAC0D4D5304D4D0700DEF149 /* FormworkKit */,
+			);
+			productName = FormworkWidgetsExtension;
+			productReference = CAC0D4B8304D499000DEF149 /* FormworkWidgetsExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -75,11 +185,14 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 2630;
+				LastSwiftUpdateCheck = 2700;
 				LastUpgradeCheck = 2700;
 				TargetAttributes = {
 					000000000000000100000000 = {
 						CreatedOnToolsVersion = 26.3;
+					};
+					CAC0D4B7304D499000DEF149 = {
+						CreatedOnToolsVersion = 27.0;
 					};
 				};
 			};
@@ -92,18 +205,27 @@
 			);
 			mainGroup = 000000000000000000000001;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				CAC0D4D2304D4CF800DEF149 /* XCLocalSwiftPackageReference "FormworkKit" */,
+			);
 			preferredProjectObjectVersion = 90;
 			productRefGroup = 000000000000000000000020 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				000000000000000100000000 /* Formwork */,
+				CAC0D4B7304D499000DEF149 /* FormworkWidgetsExtension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		000000000000000140000000 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			files = (
+			);
+		};
+		CAC0D4B6304D499000DEF149 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			files = (
 			);
@@ -116,7 +238,20 @@
 			files = (
 			);
 		};
+		CAC0D4B4304D499000DEF149 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			files = (
+			);
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		CAC0D4C9304D499100DEF149 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CAC0D4B7304D499000DEF149 /* FormworkWidgetsExtension */;
+			targetProxy = CAC0D4C8304D499100DEF149 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		000000000000000011000000 /* Debug configuration for PBXProject "Formwork" */ = {
@@ -263,8 +398,10 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Formwork/Resources/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Formwork;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
+				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -304,8 +441,10 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Formwork/Resources/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Formwork;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
+				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -335,6 +474,77 @@
 			};
 			name = Release;
 		};
+		CAC0D4CD304D499100DEF149 /* Debug configuration for PBXNativeTarget "FormworkWidgetsExtension" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = HLXAUY6W4W;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = FormworkWidgets/Resources/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = FormworkWidgets;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = de.danielwolbach.Formwork.FormworkWidgets;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		CAC0D4CE304D499100DEF149 /* Release configuration for PBXNativeTarget "FormworkWidgetsExtension" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = HLXAUY6W4W;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = FormworkWidgets/Resources/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = FormworkWidgets;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = de.danielwolbach.Formwork.FormworkWidgets;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -354,7 +564,34 @@
 			);
 			defaultConfigurationName = Release;
 		};
+		CAC0D4CC304D499100DEF149 /* Build configuration list for PBXNativeTarget "FormworkWidgetsExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CAC0D4CD304D499100DEF149 /* Debug configuration for PBXNativeTarget "FormworkWidgetsExtension" */,
+				CAC0D4CE304D499100DEF149 /* Release configuration for PBXNativeTarget "FormworkWidgetsExtension" */,
+			);
+			defaultConfigurationName = Release;
+		};
 /* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		CAC0D4D2304D4CF800DEF149 /* XCLocalSwiftPackageReference "FormworkKit" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = FormworkKit;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		CAC0D4D3304D4CF800DEF149 /* FormworkKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = FormworkKit;
+		};
+		CAC0D4D5304D4D0700DEF149 /* FormworkKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CAC0D4D2304D4CF800DEF149 /* XCLocalSwiftPackageReference "FormworkKit" */;
+			productName = FormworkKit;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 000000000000000000000000 /* Project object */;
 }

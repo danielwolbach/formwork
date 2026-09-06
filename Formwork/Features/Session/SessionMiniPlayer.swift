@@ -6,6 +6,7 @@
 //
 
 import SwiftData
+import FormworkKit
 import SwiftUI
 
 struct SessionMiniPlayer: View {
@@ -40,13 +41,11 @@ struct SessionMiniPlayer: View {
         ) { identifier in
             if let current = session.entry(identifiedBy: identifier) {
                 HStack {
-                    PictogramView(pictogram: current.pictogram, size: 32)
-                        .overlay(alignment: .bottomTrailing) {
-                            if !current.status.isPending {
-                                PictogramBadge(pictogram: current.status.pictogram, size: 12)
-                                    .offset(x: 2, y: 2)
-                            }
-                        }
+                    PictogramView(
+                        pictogram: current.pictogram,
+                        size: 32,
+                        badge: current.status.isPending ? nil : current.status.pictogram
+                    )
                     
                     VStack(alignment: .leading, spacing: 0) {
                         Text(current.title)

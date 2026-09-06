@@ -5,24 +5,20 @@
 //  Created by Daniel Wolbach on 04.09.26.
 //
 
+import FormworkKit
 import SwiftData
 import SwiftUI
 
 @main struct App: SwiftUI.App {
-    private static let container: ModelContainer = {
-        if ProcessInfo.processInfo.arguments.contains("--sample-data") {
-            return Samples.container
-        } else {
-            let schema = Schema([Exercise.self, Workout.self, WorkoutEntry.self, Session.self, SessionEntry.self])
-            return try! ModelContainer(for: schema, configurations: [ModelConfiguration(schema: schema)])
-        }
-    }()
+    init() {
+        SessionControl.register(SessionController())
+    }
     
     var body: some Scene {
         WindowGroup {
             AppContent()
         }
-        .modelContainer(Self.container)
+        .modelContainer(Storage.container)
     }
 }
 
@@ -33,6 +29,10 @@ private struct AppContent: View {
 
     private var activeSession: Session? {
         activeSessions.first
+    }
+
+    private var activityState: SessionActivityAttributes.ContentState? {
+        activeSession.flatMap(SessionActivity.state(for:))
     }
 
     var body: some View {
@@ -48,6 +48,16 @@ private struct AppContent: View {
                 SessionPlayerScreen(session: session)
             }
             .navigationTransition(.zoom(sourceID: session.persistentModelID, in: sessionTransition))
+        }
+        .task(id: activityState) {
+            SessionActivity.sync(activeSession)
+        }
+        .onOpenURL { url in
+            guard url == DeepLink.session, let activeSession else {
+                return
+            }
+
+            presentedSession = activeSession
         }
     }
 }
@@ -78,6 +88,7 @@ private struct MainTabView: View {
         }
     }
 }
+
 #Preview {
     AppContent()
         .sampleData()
