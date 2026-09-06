@@ -222,8 +222,8 @@ extension Samples {
         (try? container.mainContext.fetch(Session.finishedDescriptor)) ?? []
     }
 
-    static var stats: Stats {
-        finishedSessions.stats()
+    static var statistics: Statistics {
+        finishedSessions.statistics()
     }
 }
 

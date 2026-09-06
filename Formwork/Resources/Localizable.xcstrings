@@ -232,13 +232,13 @@
         }
       }
     },
-    "action.stats.title" : {
+    "action.statistics.title" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "View Stats"
+            "value" : "Statistics"
           }
         }
       }
@@ -539,6 +539,29 @@
         }
       }
     },
+    "exercise.target.bodyweight.measure" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%1$(reps)lld Rep"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%1$(reps)lld Reps"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "exercise.target.bodyweight.title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -568,6 +591,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$(minutes)lld min"
+          }
+        }
+      }
+    },
+    "exercise.target.weight.measure" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$(weight)@ kg"
           }
         }
       }
@@ -881,6 +915,17 @@
         }
       }
     },
+    "screen.statistics.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Statistics"
+          }
+        }
+      }
+    },
     "screen.workout.addExercise.title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -958,6 +1003,28 @@
         }
       }
     },
+    "statistic.completionRate.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Completion Rate"
+          }
+        }
+      }
+    },
+    "statistic.lastPerformed.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Last Performed"
+          }
+        }
+      }
+    },
     "statistic.lastSession.title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -965,6 +1032,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Last Session"
+          }
+        }
+      }
+    },
+    "statistic.mostSkipped.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Most Skipped"
+          }
+        }
+      }
+    },
+    "statistic.personalBest.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Personal Best"
           }
         }
       }
@@ -999,6 +1088,28 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "statistic.timesCompleted.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Times Completed"
+          }
+        }
+      }
+    },
+    "statistic.typicalDuration.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Typical Duration"
           }
         }
       }

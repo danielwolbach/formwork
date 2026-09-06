@@ -89,6 +89,21 @@ extension ExerciseTarget: Displayable {
         }
     }
     
+    /// The ranked measure alone, without the sets/reps context — for personal
+    /// bests.
+    var measure: String {
+        switch self {
+        case let .weight(weight, _, _):
+            String(localized: .exerciseTargetWeightMeasure(weight: weight.formatted(.number.precision(.fractionLength(1)))))
+        case let .bodyweight(_, reps):
+            String(localized: .exerciseTargetBodyweightMeasure(reps: reps))
+        case let .duration(minutes):
+            String(localized: .exerciseTargetDurationTitle(minutes: minutes))
+        case let .distance(meters):
+            String(localized: .exerciseTargetDistanceTitle(meters: meters))
+        }
+    }
+    
     var pictogram: Pictogram {
         type.pictogram
     }

@@ -9,23 +9,19 @@ import FormworkKit
 import SwiftUI
 
 struct SummarySection: View {
-    let stats: Stats
-
-    private var overall: WorkoutStats {
-        stats.overall
-    }
+    let statistics: WorkoutStatistics
 
     var body: some View {
         LazyVGrid(columns: [.init(.flexible()), .init(.flexible())]) {
             ValueCard(
                 title: .statisticStreakTitle,
-                value: String(localized: .statisticStreakValue(count: overall.weekStreak())),
+                value: String(localized: .statisticStreakValue(count: statistics.weekStreak())),
                 pictogram: Pictogram(icon: "flame", tint: .orange)
             )
 
             ValueCard(
                 title: .statisticLastSessionTitle,
-                value: overall.lastCompleted.relativeDayDescription().localizedCapitalized,
+                value: statistics.lastCompleted?.relativeDayDescription().localizedCapitalized,
                 pictogram: Pictogram(icon: "calendar", tint: .indigo)
             )
         }
@@ -33,11 +29,11 @@ struct SummarySection: View {
 }
 
 #Preview("With History") {
-    SummarySection(stats: Samples.stats)
+    SummarySection(statistics: Samples.statistics.overall)
         .padding()
 }
 
 #Preview("No History") {
-    SummarySection(stats: Stats(sessions: []))
+    SummarySection(statistics: Statistics(sessions: []).overall)
         .padding()
 }

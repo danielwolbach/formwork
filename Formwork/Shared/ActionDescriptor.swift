@@ -28,7 +28,7 @@ extension ActionDescriptor {
     static let confirm = ActionDescriptor(title: .actionConfirmTitle, systemImage: "checkmark", role: .confirm)
     static let cancel = ActionDescriptor(title: .actionCancelTitle, systemImage: "xmark", role: .cancel)
     static let more = ActionDescriptor(title: .actionMoreTitle, systemImage: "ellipsis")
-    static let stats = ActionDescriptor(title: .actionStatsTitle, systemImage: "chart.pie")
+    static let statistics = ActionDescriptor(title: .actionStatisticsTitle, systemImage: "chart.pie")
     static let remove = ActionDescriptor(title: .actionRemoveTitle, systemImage: "minus.circle", role: .destructive)
     static let increase = ActionDescriptor(title: .actionIncreaseTitle, systemImage: "plus")
     static let decrease = ActionDescriptor(title: .actionDecreaseTitle, systemImage: "minus")

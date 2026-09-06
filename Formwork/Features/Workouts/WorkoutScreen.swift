@@ -40,8 +40,8 @@ struct WorkoutScreen: View {
                     .buttonStyle(.glassProminent)
                     .tint(.green)
                     
-                    Button(.stats) {
-                        // TODO
+                    Button(.statistics) {
+                        sheet = .workoutStats(workout: workout)
                     }
                     .labelStyle(.fixedIconOnly)
                     .buttonStyle(.glass)
@@ -65,8 +65,8 @@ struct WorkoutScreen: View {
                         sheet = .addWorkoutExercise(workout: workout)
                     }
                     
-                    Button(.stats) {
-                        
+                    Button(.statistics) {
+                        sheet = .workoutStats(workout: workout)
                     }
                 }
                 Section {

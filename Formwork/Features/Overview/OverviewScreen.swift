@@ -19,10 +19,10 @@ struct OverviewScreen: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 32) {
-                SummarySection(stats: sessions.stats())
+                SummarySection(statistics: sessions.statistics().overall)
 
                 TodaySection(
-                    state: DayState(workouts: workouts, stats: sessions.stats(), on: .now),
+                    state: DayState(workouts: workouts, statistics: sessions.statistics(), on: .now),
                     canStart: active.isEmpty,
                     onStart: { workout in replaceSession(workout: workout) }
                 )

@@ -15,7 +15,7 @@ enum DayState {
 }
 
 extension DayState {
-    init(workouts: [Workout], stats: Stats, on date: Date = .now) {
+    init(workouts: [Workout], statistics: Statistics, on date: Date = .now) {
         let scheduled = workouts.filter { $0.schedule.matches(date) }
 
         guard !scheduled.isEmpty else {
@@ -24,8 +24,8 @@ extension DayState {
         }
 
         let remaining = scheduled
-            .filter { !stats[$0].hasCompletion(on: date) }
-            .map { workout in (workout: workout, time: stats[workout].lastStartTimeOfDay) }
+            .filter { !statistics[$0].hasCompletion(on: date) }
+            .map { workout in (workout: workout, time: statistics[workout].lastStartTimeOfDay) }
             .sorted { lhs, rhs in
                 switch (lhs.time, rhs.time) {
                 case let (left?, right?) where left != right:
