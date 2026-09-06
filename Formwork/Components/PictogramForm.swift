@@ -59,6 +59,8 @@ struct PictogramForm: View {
         }
         .navigationTitle(.screenPictogramTitle)
         .navigationBarTitleDisplayMode(.inline)
+        .sensoryFeedback(.selection, trigger: draft.color)
+        .sensoryFeedback(.selection, trigger: draft.icon)
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 Button(.confirm) {
