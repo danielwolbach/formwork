@@ -15,12 +15,15 @@ final class Workout {
     
     var pictogram: Pictogram = Pictogram(icon: "figure.strengthtraining.traditional", tint: .blue)
     
+    var schedule: Schedule = Schedule.inactive
+    
     @Relationship(deleteRule: .cascade, inverse: \WorkoutEntry.workout)
     var entries: [WorkoutEntry] = []
     
-    init(name: String, pictogram: Pictogram = Pictogram(icon: "figure.strengthtraining.traditional", tint: .blue), entries: [WorkoutEntry]) {
+    init(name: String, pictogram: Pictogram, entries: [WorkoutEntry], schedule: Schedule = .inactive) {
         self.name = name
         self.pictogram = pictogram
         self.entries = entries
+        self.schedule = schedule
     }
 }

@@ -9,14 +9,21 @@ import SwiftData
 import SwiftUI
 
 struct WorkoutsScreen: View {
-    @Query private var workouts: [Workout]
+    @Query(sort: \Workout.name) private var workouts: [Workout]
     @State private var sheet: Sheet? = nil
     
     var body: some View {
         ScrollView {
-            RowStack(items: workouts) { workout in
-                WorkoutRow(workout: workout)
+            LazyVStack(spacing: 16) {
+                ForEach(workouts) { workout in
+                    NavigationLink(value: workout) {
+                        WorkoutCard(workout: workout)
+                    }
+                    .buttonStyle(.plain)
+                }
             }
+            .padding(.vertical, 8)
+            .padding(.horizontal)
         }
         .navigationTitle(.screenWorkoutsTitle)
         .navigationDestination(for: Workout.self) { workout in
@@ -31,16 +38,6 @@ struct WorkoutsScreen: View {
             NavigationStack {
                 sheet
             }
-        }
-    }
-}
-
-private struct WorkoutRow: View {
-    let workout: Workout
-    
-    var body: some View {
-        NavigationRow(value: workout) {
-            DisplayableRow(displayable: workout)
         }
     }
 }

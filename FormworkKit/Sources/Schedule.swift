@@ -1,0 +1,73 @@
+//
+//  Schedule.swift
+//  FormworkKit
+//
+//  Created by Daniel Wolbach on 06.09.26.
+//
+
+import Foundation
+
+public nonisolated struct Schedule: Codable, Hashable, Sendable {
+    public var days: Set<Weekday>
+    public var interval: Int
+    public var startDate: Date
+
+    public init(days: Set<Weekday>, interval: Int = 1, startDate: Date) {
+        self.days = days
+        self.interval = max(1, interval)
+        self.startDate = startDate
+    }
+}
+
+extension Schedule {
+    public static let inactive = Schedule(days: [], interval: 1, startDate: .distantPast)
+
+    public var isActive: Bool {
+        !days.isEmpty
+    }
+
+    public mutating func setDay(_ day: Weekday, isOn: Bool, calendar: Calendar = .autoupdatingCurrent, now: Date = .now) {
+        let wasActive = isActive
+
+        if isOn {
+            days.insert(day)
+        } else {
+            days.remove(day)
+        }
+
+        if !wasActive, isActive {
+            startDate = calendar.startOfDay(for: now)
+        }
+    }
+}
+
+public nonisolated enum Weekday: Int, Codable, Hashable, Sendable, CaseIterable, Identifiable {
+    case monday, tuesday, wednesday, thursday, friday, saturday, sunday
+
+    public var id: Self {
+        self
+    }
+}
+
+extension Weekday {
+    public var calendarWeekday: Int {
+        (rawValue + 1) % 7 + 1
+    }
+
+    public init?(calendarWeekday: Int) {
+        guard (1 ... 7).contains(calendarWeekday) else { return nil }
+        self.init(rawValue: (calendarWeekday + 5) % 7)
+    }
+
+    public static func ordered(in calendar: Calendar = .autoupdatingCurrent) -> [Weekday] {
+        (0 ..< 7).compactMap { Weekday(calendarWeekday: (calendar.firstWeekday - 1 + $0) % 7 + 1) }
+    }
+
+    public func symbol(in calendar: Calendar = .autoupdatingCurrent) -> String {
+        calendar.veryShortWeekdaySymbols[calendarWeekday - 1]
+    }
+
+    public func name(in calendar: Calendar = .autoupdatingCurrent) -> String {
+        calendar.weekdaySymbols[calendarWeekday - 1]
+    }
+}
