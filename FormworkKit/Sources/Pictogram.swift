@@ -23,32 +23,32 @@ public nonisolated struct Pictogram: Codable, Hashable, Sendable {
 }
 
 extension Pictogram {
-    public nonisolated enum Tint: String, Codable, Hashable, Sendable, CaseIterable {
-        case accent
-        case gray
+    public nonisolated enum Tint: String, Identifiable, Codable, Hashable, Sendable, CaseIterable {
+        case blue
+        case indigo
+        case purple
+        case pink
         case red
         case orange
         case yellow
         case green
         case mint
-        case teal
         case cyan
-        case blue
-        case indigo
-        case purple
-        case pink
         case brown
+        case gray
+        
+        public var id: Self {
+            self
+        }
 
         public var color: Color {
             switch self {
-            case .accent: .accentColor
             case .gray: .gray
             case .red: .red
             case .orange: .orange
             case .yellow: .yellow
             case .green: .green
             case .mint: .mint
-            case .teal: .teal
             case .cyan: .cyan
             case .blue: .blue
             case .indigo: .indigo

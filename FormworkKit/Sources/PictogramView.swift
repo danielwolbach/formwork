@@ -62,7 +62,7 @@ public struct PictogramView: View {
         )
 
         PictogramView(
-            pictogram: Pictogram(icon: "figure.run", tint: .pink),
+            pictogram: Pictogram(icon: "figure.run", tint: .red),
             size: 96,
             badge: Pictogram(icon: "forward.end.circle.fill", tint: .orange)
         )

@@ -68,7 +68,7 @@ extension ExerciseCategory: Displayable {
         case .back: Pictogram(icon: "figure.indoor.rowing", tint: .green)
         case .cardio: Pictogram(icon: "figure.run", tint: .pink)
         case .flexibility: Pictogram(icon: "figure.yoga", tint: .mint)
-        case .mindfulness: Pictogram(icon: "figure.mind.and.body", tint: .teal)
+        case .mindfulness: Pictogram(icon: "figure.mind.and.body", tint: .cyan)
         case .other: Pictogram(icon: "ellipsis.circle", tint: .gray)
         }
     }
@@ -109,7 +109,7 @@ extension ExerciseType: Displayable {
         case .weight: Pictogram(icon: "dumbbell", tint: .indigo)
         case .bodyweight: Pictogram(icon: "figure", tint: .pink)
         case .duration: Pictogram(icon: "timer", tint: .orange)
-        case .distance: Pictogram(icon: "map", tint: .teal)
+        case .distance: Pictogram(icon: "map", tint: .cyan)
         }
     }
 }
@@ -121,10 +121,6 @@ extension Workout: SubtitledDisplayable {
     
     var subtitle: String {
         String(localized: .workoutSubtitle(exerciseCount: entries.count))
-    }
-    
-    var pictogram: Pictogram {
-        .init(icon: "clipboard", tint: .accent)
     }
 }
 
