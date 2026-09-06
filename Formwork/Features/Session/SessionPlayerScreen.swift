@@ -75,6 +75,8 @@ struct SessionPlayerScreen: View {
         SlideStack(
             key: session.current?.identifier,
             direction: direction,
+            canMoveForward: session.next != nil,
+            canMoveBackward: session.previous != nil,
             onForward: { advance(.forward) { session.moveToNext() } },
             onBackward: { advance(.backward) { session.moveToPrevious() } }
         ) { identifier in
@@ -141,6 +143,8 @@ struct SessionPlayerScreen: View {
         } else if let status = session.current?.status {
             if status.isPending {
                 Button(.complete) {
+                    Haptics.impact(.medium)
+                    
                     advance(.forward) {
                         session.completeAndAdvance()
                     }
@@ -182,6 +186,7 @@ struct SessionPlayerScreen: View {
     private func finish() {
         do {
             try session.finish()
+            Haptics.notification(.success)
             dismiss()
         } catch {
             // TODO: Log error

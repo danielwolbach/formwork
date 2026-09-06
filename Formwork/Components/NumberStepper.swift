@@ -70,6 +70,9 @@ struct NumberStepper: View {
         .sheet(isPresented: $showKeypad) {
             keypadSheet
         }
+        .sensoryFeedback(trigger: value) { oldValue, newValue in
+            newValue > oldValue ? .increase : .decrease
+        }
     }
     
     private var titleLabel: some View {

@@ -30,6 +30,8 @@ struct SessionMiniPlayer: View {
             key: session.current?.identifier,
             direction: direction,
             fade: 16,
+            canMoveForward: session.next != nil,
+            canMoveBackward: session.previous != nil,
             onForward: advanceToNextEntry,
             onBackward: returnToPreviousEntry
         ) { identifier in
@@ -106,6 +108,7 @@ struct SessionMiniPlayer: View {
     }
     
     private func completeCurrentEntry() {
+        Haptics.impact(.medium)
         direction = .forward
         session.completeAndAdvance()
     }

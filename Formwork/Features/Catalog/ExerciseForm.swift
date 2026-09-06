@@ -89,6 +89,7 @@ private struct ExerciseTypePicker: View {
                 }
             }
         }
+        .sensoryFeedback(.selection, trigger: type)
     }
 }
 
@@ -148,6 +149,7 @@ private struct ExerciseCategoryPicker: View {
             }
         }
         .padding(.vertical, 4)
+        .sensoryFeedback(.selection, trigger: categories)
     }
 }
 

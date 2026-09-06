@@ -25,6 +25,8 @@ struct SlideStack<Key: Hashable, Content: View>: View {
     private let direction: SlideDirection
     private let animation: Animation
     private let fade: CGFloat
+    private let canMoveForward: Bool
+    private let canMoveBackward: Bool
     private let onForward: (() -> Void)?
     private let onBackward: (() -> Void)?
     private let content: (Key) -> Content
@@ -37,6 +39,8 @@ struct SlideStack<Key: Hashable, Content: View>: View {
         direction: SlideDirection,
         animation: Animation = .snappy,
         fade: CGFloat = 0,
+        canMoveForward: Bool = true,
+        canMoveBackward: Bool = true,
         onForward: (() -> Void)? = nil,
         onBackward: (() -> Void)? = nil,
         @ViewBuilder content: @escaping (Key) -> Content
@@ -45,6 +49,8 @@ struct SlideStack<Key: Hashable, Content: View>: View {
         self.direction = direction
         self.animation = animation
         self.fade = fade
+        self.canMoveForward = canMoveForward
+        self.canMoveBackward = canMoveBackward
         self.onForward = onForward
         self.onBackward = onBackward
         self.content = content
@@ -61,8 +67,20 @@ struct SlideStack<Key: Hashable, Content: View>: View {
                 }
 
                 if value.translation.width < 0 {
+                    guard canMoveForward else {
+                        Haptics.impact(.rigid, intensity: 0.5)
+                        return
+                    }
+
+                    Haptics.impact(.soft)
                     onForward?()
                 } else {
+                    guard canMoveBackward else {
+                        Haptics.impact(.rigid, intensity: 0.5)
+                        return
+                    }
+
+                    Haptics.impact(.soft)
                     onBackward?()
                 }
             }
