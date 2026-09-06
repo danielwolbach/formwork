@@ -135,15 +135,11 @@ private struct WeekdayPicker: View {
     @Binding var schedule: Schedule
     let tint: Color
     
-    private var calendar: Calendar {
-        .autoupdatingCurrent
-    }
-    
     var body: some View {
         HStack {
-            ForEach(Weekday.ordered(in: calendar)) { candidate in
-                WeekdayChip(day: candidate, calendar: calendar, tint: tint, selected: schedule.days.contains(candidate)) {
-                    schedule.setDay(candidate, isOn: !schedule.days.contains(candidate), calendar: calendar)
+            ForEach(Weekday.ordered()) { candidate in
+                WeekdayChip(day: candidate, tint: tint, selected: schedule.days.contains(candidate)) {
+                    schedule.setDay(candidate, isOn: !schedule.days.contains(candidate))
                 }
             }
         }
@@ -155,14 +151,12 @@ private struct WeekdayPicker: View {
 
 private struct WeekdayChip: View {
     let day: Weekday
-    let calendar: Calendar
     let selectedTint: Color
     let selected: Bool
     let action: () -> Void
     
-    init(day: Weekday, calendar: Calendar, tint: Color, selected: Bool, action: @escaping () -> Void) {
+    init(day: Weekday, tint: Color, selected: Bool, action: @escaping () -> Void) {
         self.day = day
-        self.calendar = calendar
         self.selectedTint = tint
         self.selected = selected
         self.action = action
@@ -174,7 +168,7 @@ private struct WeekdayChip: View {
     
     var body: some View {
         Button(action: action) {
-            Text(day.symbol(in: calendar))
+            Text(day.symbol())
                 .font(.subheadline)
                 .fontWeight(.semibold)
                 .lineLimit(1)
@@ -195,7 +189,7 @@ private struct WeekdayChip: View {
                 }
         }
         .buttonStyle(.plain)
-        .accessibilityLabel(day.name(in: calendar))
+        .accessibilityLabel(day.name())
         .accessibilityAddTraits(selected ? [.isSelected] : [])
     }
 }

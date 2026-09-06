@@ -20,6 +20,9 @@ final class Workout {
     @Relationship(deleteRule: .cascade, inverse: \WorkoutEntry.workout)
     var entries: [WorkoutEntry] = []
     
+    @Relationship(deleteRule: .nullify, inverse: \Session.workout)
+    var sessions: [Session] = []
+    
     init(name: String, pictogram: Pictogram, entries: [WorkoutEntry], schedule: Schedule = .inactive) {
         self.name = name
         self.pictogram = pictogram

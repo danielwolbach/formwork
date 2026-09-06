@@ -39,6 +39,23 @@ extension Schedule {
             startDate = calendar.startOfDay(for: now)
         }
     }
+
+    public func matches(_ date: Date, calendar: Calendar = .autoupdatingCurrent) -> Bool {
+        guard isActive else { return false }
+
+        guard let weekday = Weekday(calendarWeekday: calendar.component(.weekday, from: date)), days.contains(weekday)
+        else { return false }
+
+        guard calendar.startOfDay(for: date) >= calendar.startOfDay(for: startDate) else { return false }
+        guard interval > 1 else { return true }
+
+        guard let anchor = calendar.dateInterval(of: .weekOfYear, for: startDate)?.start,
+              let week = calendar.dateInterval(of: .weekOfYear, for: date)?.start,
+              let delta = calendar.dateComponents([.weekOfYear], from: anchor, to: week).weekOfYear
+        else { return false }
+
+        return delta % interval == 0
+    }
 }
 
 public nonisolated enum Weekday: Int, Codable, Hashable, Sendable, CaseIterable, Identifiable {

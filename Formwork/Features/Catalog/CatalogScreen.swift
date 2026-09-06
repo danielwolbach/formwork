@@ -85,7 +85,8 @@ private struct ExerciseCategoryTile: View {
         }
         .foregroundStyle(.white)
         .aspectRatio(1.8, contentMode: .fit)
-        .glassEffect(.regular.tint(category.pictogram.color), in: .rect(cornerRadius: 12, style: .continuous))
+        .glassEffect(.regular.tint(category.pictogram.color), in: .rect(cornerRadius: 16, style: .continuous))
+        .shadow(color: .black.opacity(0.04), radius: 4, x: 0, y: 4)
         .contentShape(.rect)
     }
 }

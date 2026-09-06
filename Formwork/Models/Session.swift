@@ -37,6 +37,13 @@ final class Session {
         descriptor.fetchLimit = 1
         return descriptor
     }
+    
+    static var finishedDescriptor: FetchDescriptor<Session> {
+        FetchDescriptor<Session>(
+            predicate: #Predicate<Session> { $0.ended != nil },
+            sortBy: [SortDescriptor(\.ended, order: .reverse)]
+        )
+    }
 
     static func active(in context: ModelContext) throws -> Session? {
         try context.fetch(activeDescriptor).first
@@ -76,7 +83,14 @@ final class Session {
         
         modelContext.delete(self)
     }
+    
+    var completion: Date? {
+        guard let ended, entries.contains(where: \.status.isCompleted) else {
+            return nil
+        }
 
+        return ended
+    }
 
     var isActive: Bool {
         ended == nil

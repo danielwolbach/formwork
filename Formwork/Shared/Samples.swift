@@ -74,21 +74,43 @@ enum Samples {
         WorkoutEntry(order: 5, exercise: exercises[24], target: .duration(minutes: 5)),
     ]
     
+    static let scheduleAnchor: Date = {
+        let calendar = Calendar.autoupdatingCurrent
+        let anchor = calendar.date(byAdding: .day, value: -35, to: .now) ?? .now
+        return calendar.startOfDay(for: anchor)
+    }()
+
     static let workouts: [Workout] =
     [
         Workout(
             name: "Full Body",
             pictogram: Pictogram(icon: "figure.strengthtraining.traditional", tint: .blue),
-            entries: Samples.fullBodyEntries),
+            entries: Samples.fullBodyEntries,
+            schedule: Schedule(
+                days: Set(Weekday.allCases),
+                interval: 1,
+                startDate: Samples.scheduleAnchor
+            )
+        ),
         Workout(
             name: "Push Day",
             pictogram: Pictogram(icon: "figure.boxing", tint: .orange),
-            entries: Samples.pushDayEntries
+            entries: Samples.pushDayEntries,
+            schedule: Schedule(
+                days: [.monday, .thursday],
+                interval: 1,
+                startDate: Samples.scheduleAnchor
+            )
         ),
         Workout(
             name: "Leg Day",
             pictogram: Pictogram(icon: "figure.strengthtraining.functional", tint: .purple),
-            entries: Samples.legDayEntries
+            entries: Samples.legDayEntries,
+            schedule: Schedule(
+                days: [.tuesday, .saturday],
+                interval: 2,
+                startDate: Samples.scheduleAnchor
+            )
         ),
     ]
     
@@ -100,6 +122,88 @@ enum Samples {
 }
 
 extension Samples {
+    private struct SessionPlan {
+        let weeksAgo: Int
+        let weekday: Weekday
+        let workout: Int
+        var skipsLast: Bool = false
+        var isAbandoned: Bool = false
+    }
+
+    private static let historyWeeks = 12
+
+    private static let gapWeek = 6
+
+    private static let entryDuration: TimeInterval = 5 * 60
+
+    private static var sessionPlans: [SessionPlan] {
+        var plans: [SessionPlan] = []
+
+        for weeksAgo in 0 ..< historyWeeks where weeksAgo != gapWeek {
+            plans.append(SessionPlan(weeksAgo: weeksAgo, weekday: .monday, workout: 1))
+            plans.append(SessionPlan(weeksAgo: weeksAgo, weekday: .thursday, workout: 1, skipsLast: weeksAgo.isMultiple(of: 3)))
+            plans.append(SessionPlan(weeksAgo: weeksAgo, weekday: .saturday, workout: 0))
+
+            if weeksAgo.isMultiple(of: 2) {
+                plans.append(SessionPlan(weeksAgo: weeksAgo, weekday: .tuesday, workout: 2))
+            }
+        }
+
+        plans.append(SessionPlan(weeksAgo: 2, weekday: .wednesday, workout: 0, isAbandoned: true))
+
+        return plans
+    }
+
+    static func insertHistory(into context: ModelContext) {
+        let calendar = Calendar.autoupdatingCurrent
+
+        guard let currentWeek = calendar.weekStart(for: .now) else {
+            return
+        }
+
+        for plan in sessionPlans.sorted(by: { $0.weeksAgo > $1.weeksAgo }) {
+            guard
+                let week = calendar.date(byAdding: .weekOfYear, value: -plan.weeksAgo, to: currentWeek),
+                let day = calendar.date(byAdding: .day, value: plan.weekday.rawValue, to: week),
+                let start = calendar.date(bySettingHour: hour(for: plan.workout), minute: 15, second: 0, of: day),
+                start < .now
+            else {
+                continue
+            }
+
+            insert(plan, startingAt: start, into: context)
+        }
+    }
+
+    private static func hour(for workout: Int) -> Int {
+        switch workout {
+        case 1: 7   // Push Day, before work
+        case 2: 19  // Leg Day, late
+        default: 18 // Full Body, after work
+        }
+    }
+
+    private static func insert(_ plan: SessionPlan, startingAt start: Date, into context: ModelContext) {
+        let session = try! Session.start(workouts[plan.workout], in: context)
+        let entries = session.entries.sorted()
+
+        session.started = start
+
+        var moment = start
+
+        for entry in entries {
+            moment.addTimeInterval(entryDuration)
+
+            let isSkipped = plan.isAbandoned || (plan.skipsLast && entry === entries.last)
+            entry.status = isSkipped ? .skipped(at: moment) : .completed(at: moment)
+        }
+
+        session.ended = moment.addingTimeInterval(entryDuration)
+    }
+}
+
+
+extension Samples {
     static let container: ModelContainer = {
         let schema = Schema([Exercise.self, Workout.self, WorkoutEntry.self, Session.self, SessionEntry.self])
         let configuration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
@@ -107,9 +211,20 @@ extension Samples {
         
         Samples.exercises.forEach(container.mainContext.insert)
         Samples.workouts.forEach(container.mainContext.insert)
+        Samples.insertHistory(into: container.mainContext)
       
         return container
     }()
+}
+
+extension Samples {
+    static var finishedSessions: [Session] {
+        (try? container.mainContext.fetch(Session.finishedDescriptor)) ?? []
+    }
+
+    static var stats: Stats {
+        finishedSessions.stats()
+    }
 }
 
 private struct SampleDataModifier: ViewModifier {

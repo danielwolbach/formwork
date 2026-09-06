@@ -80,7 +80,7 @@ struct SessionActivity: Widget {
             Text(context.state.subtitle)
                 .lineLimit(1)
                 .font(.subheadline)
-                .foregroundStyle(context.state.isComplete ? .green : .secondary)
+                .foregroundStyle(.secondary)
         }
     }
     

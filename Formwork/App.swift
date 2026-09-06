@@ -68,6 +68,12 @@ private struct MainTabView: View {
 
     var body: some View {
         TabView {
+            Tab(.screenOverviewTitle, systemImage: "text.rectangle.page") {
+                NavigationStack {
+                    OverviewScreen()
+                }
+            }
+            
             Tab(.screenWorkoutsTitle, systemImage: "clipboard") {
                 NavigationStack {
                     WorkoutsScreen()

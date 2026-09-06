@@ -1,0 +1,84 @@
+//
+//  RestingView.swift
+//  Formwork
+//
+//  Created by Daniel Wolbach on 06.09.26.
+//
+
+import FormworkKit
+import SwiftUI
+
+struct RestingView: View {
+    enum Kind {
+        case finished
+        case unscheduled
+    }
+
+    let kind: Kind
+
+    init(_ kind: Kind) {
+        self.kind = kind
+    }
+
+    private var shape: some InsettableShape {
+        .rect(cornerRadius: 16, style: .continuous)
+    }
+
+    var body: some View {
+        VStack(spacing: 14) {
+            Image(systemName: pictogram.icon)
+                .font(.system(size: 48))
+                .symbolRenderingMode(.hierarchical)
+                .foregroundStyle(pictogram.color)
+                .frame(width: 96, height: 96)
+         
+
+            VStack(spacing: 3) {
+                Text(title)
+                    .font(.headline)
+
+                Text(message)
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+            }
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 36)
+        .padding(.horizontal, 24)
+        .background(pictogram.color.quinary)
+        .background(.ultraThinMaterial)
+        .clipShape(shape)
+        .shadow(color: .black.opacity(0.04), radius: 4, x: 0, y: 4)
+        .accessibilityElement(children: .combine)
+    }
+    
+    private var pictogram: Pictogram {
+        switch kind {
+        case .finished: Pictogram(icon: "checkmark.seal.fill", tint: .green)
+        case .unscheduled: Pictogram(icon: "moon.zzz.fill", tint: .indigo)
+        }
+    }
+
+    private var title: LocalizedStringResource {
+        switch kind {
+        case .finished: .overviewRestingFinishedTitle
+        case .unscheduled: .overviewRestingUnscheduledTitle
+        }
+    }
+
+    private var message: LocalizedStringResource {
+        switch kind {
+        case .finished: .overviewRestingFinishedMessage
+        case .unscheduled: .overviewRestingUnscheduledMessage
+        }
+    }
+}
+
+#Preview {
+    VStack {
+        RestingView(.finished)
+        RestingView(.unscheduled)
+    }
+    .padding()
+}
