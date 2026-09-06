@@ -19,6 +19,9 @@ struct SessionMiniPlayer: View {
         HStack(spacing: 0) {
             entry
             
+            sessionProgress
+                .padding(.trailing)
+            
             controls
                 .padding(.trailing)
         }
@@ -58,10 +61,10 @@ struct SessionMiniPlayer: View {
                 }
                 .padding(.horizontal)
                 .contentShape(.rect)
+                .accessibilityAddTraits(.isButton)
                 .onTapGesture {
                     presentSession(session)
                 }
-                .accessibilityAddTraits(.isButton)
             }
         }
     }
@@ -105,6 +108,13 @@ struct SessionMiniPlayer: View {
         case nil:
             EmptyView()
         }
+    }
+    
+    private var sessionProgress: some View {
+        Text(verbatim: "\(session.history.count) / \(session.entries.count)")
+            .font(.caption2)
+            .monospacedDigit()
+            .foregroundStyle(.secondary)
     }
     
     private func completeCurrentEntry() {
