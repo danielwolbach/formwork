@@ -13,6 +13,7 @@ struct ExerciseScreen: View {
     @Environment(\.modelContext) private var modelContext: ModelContext
     @Environment(\.dismiss) private var dismiss: DismissAction
     @Query(Session.finishedDescriptor) private var sessions: [Session]
+    @Query(sort: \Workout.name) private var workouts: [Workout]
     @State private var sheet: Sheet? = nil
     @State private var deleteAlert: Bool = false
 
@@ -52,6 +53,17 @@ struct ExerciseScreen: View {
         }
         .toolbar {
             Menu(.more) {
+                Section {
+                    Menu(.addToWorkout) {
+                        ForEach(workouts) { workout in
+                            Button(workout.name, systemImage: workout.pictogram.icon) {
+                                sheet = .addExerciseToWorkout(exercise: exercise, workout: workout)
+                            }
+                        }
+                    }
+                    .disabled(workouts.isEmpty)
+                }
+
                 Section {
                     Button(.edit) {
                         sheet = .editExercise(exercise: exercise)

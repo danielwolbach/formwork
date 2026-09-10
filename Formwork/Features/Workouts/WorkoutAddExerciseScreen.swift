@@ -96,38 +96,8 @@ struct WorkoutAddExerciseScreen: View {
     }
 
     private func save(exercise: Exercise, target: ExerciseTarget) {
-        let order = (workout.entries.map(\.order).max() ?? -1) + 1
-        let entry = WorkoutEntry(order: order, exercise: exercise, target: target)
-        workout.entries.append(entry)
+        workout.append(exercise: exercise, target: target)
         dismiss()
-    }
-}
-
-private struct ExerciseTargetConfigurator: View {
-    let exercise: Exercise
-    let onConfirm: (ExerciseTarget) -> Void
-
-    @State private var target: ExerciseTarget
-
-    init(exercise: Exercise, onConfirm: @escaping (ExerciseTarget) -> Void) {
-        self.exercise = exercise
-        self.onConfirm = onConfirm
-        self._target = State(initialValue: .defaults(for: exercise.type))
-    }
-
-    var body: some View {
-        ScreenStack {
-            DisplayableHero(displayable: exercise)
-
-            ExerciseTargetView(target: $target)
-        }
-        .toolbar {
-            ToolbarItem(placement: .confirmationAction) {
-                Button(.confirm) {
-                    onConfirm(target)
-                }
-            }
-        }
     }
 }
 

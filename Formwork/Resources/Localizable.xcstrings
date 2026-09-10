@@ -12,6 +12,17 @@
         }
       }
     },
+    "action.addToWorkout.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add to Workout"
+          }
+        }
+      }
+    },
     "action.backward.title" : {
       "extractionState" : "manual",
       "localizations" : {

@@ -1,5 +1,5 @@
 //
-//  SessionsScreen.swift
+//  SessionListScreen.swift
 //  Formwork
 //
 //  Created by Daniel Wolbach on 10.09.26.

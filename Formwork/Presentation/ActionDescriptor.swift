@@ -37,6 +37,9 @@ extension ActionDescriptor {
     static let undo = ActionDescriptor(title: .actionUndoTitle, systemImage: "arrow.uturn.backward")
     static let minimize = ActionDescriptor(title: .actionMinimizeTitle, systemImage: "chevron.down")
 
+    /// Exercise
+    static let addToWorkout = ActionDescriptor(title: .actionAddToWorkoutTitle, systemImage: "text.badge.plus")
+
     // Workout
     static let startSession = ActionDescriptor(title: .actionStartSessionTitle, systemImage: "play.fill")
     static let replaceSession = ActionDescriptor(

@@ -1,5 +1,5 @@
 //
-//  WorkoutsScreen.swift
+//  WorkoutListScreen.swift
 //  Formwork
 //
 //  Created by Daniel Wolbach on 04.09.26.

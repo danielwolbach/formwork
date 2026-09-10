@@ -29,4 +29,9 @@ final class Workout {
         self.entries = entries
         self.schedule = schedule
     }
+
+    func append(exercise: Exercise, target: ExerciseTarget) {
+        let order = (entries.map(\.order).max() ?? -1) + 1
+        entries.append(WorkoutEntry(order: order, exercise: exercise, target: target))
+    }
 }
