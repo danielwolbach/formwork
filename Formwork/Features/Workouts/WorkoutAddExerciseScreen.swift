@@ -19,8 +19,22 @@ struct WorkoutAddExerciseScreen: View {
     let workout: Workout
 
     var body: some View {
-        ScreenStack {
-            RowStack(navigating: matchingExercises)
+        Group {
+            if exercises.isEmpty {
+                ContentUnavailableView {
+                    Label(.emptyExercisesTitle, systemImage: "magazine")
+                } description: {
+                    Text(.emptyExercisesMessage)
+                } actions: {
+                    Button(.create) {
+                        sheet = .createExercise
+                    }
+                    .labelStyle(.fixedTitleAndIcon)
+                    .buttonStyle(.glassProminent)
+                }
+            } else {
+                searchableExercises
+            }
         }
         .navigationTitle(.screenWorkoutAddExerciseTitle)
         .navigationSubtitle(workout.title)
@@ -33,7 +47,6 @@ struct WorkoutAddExerciseScreen: View {
         .safeAreaInset(edge: .bottom) {
             ExerciseCategoryFilterBar(selection: $selectedCategories)
         }
-        .searchable(text: $searchText.animated())
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
                 Button(.cancel) {
@@ -52,6 +65,22 @@ struct WorkoutAddExerciseScreen: View {
                 sheet
             }
         }
+    }
+
+    /// `.searchable` lives on this branch only: with no exercises at all there
+    /// is nothing to search, and without a `ScrollView` behind it the bar would
+    /// render expanded instead of collapsed.
+    private var searchableExercises: some View {
+        Group {
+            if matchingExercises.isEmpty {
+                ContentUnavailableView.search(text: searchText)
+            } else {
+                ScreenStack {
+                    RowStack(navigating: matchingExercises)
+                }
+            }
+        }
+        .searchable(text: $searchText.animated())
     }
 
     private var matchingExercises: [Exercise] {

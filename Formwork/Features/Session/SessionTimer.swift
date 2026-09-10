@@ -12,7 +12,7 @@ struct SessionTimer: View {
 
     var body: some View {
         VStack(spacing: 2) {
-            Text(session.workout?.title ?? String(localized: .unknown))
+            Text(session.workout?.title ?? String(localized: .workoutUnknownTitle))
                 .font(.caption)
                 .fontWeight(.semibold)
                 .lineLimit(1)

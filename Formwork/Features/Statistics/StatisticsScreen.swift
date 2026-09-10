@@ -30,8 +30,18 @@ struct StatisticsScreen: View {
                 )
             }
 
-            SectionStack(title: Text(.screenSessionsTitle), accessory: { allSessionsLink }) {
-                RowStack(navigating: Array(sessions.prefix(5)))
+            SectionStack(title: Text(.screenSessionsTitle)) {
+                if sessions.isEmpty {
+                    ContentUnavailableView {
+                        Label(.emptySessionsTitle, systemImage: "flame")
+                    } description: {
+                        Text(.emptySessionsMessage)
+                    }
+                } else {
+                    RowStack(navigating: Array(sessions.prefix(5)))
+                }
+            } accessory: {
+                allSessionsLink.disabled(sessions.isEmpty)
             }
         }
         .navigationTitle(.screenStatisticsTitle)

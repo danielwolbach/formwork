@@ -10,17 +10,32 @@ import SwiftData
 import SwiftUI
 
 struct CatalogScreen: View {
-    @Query private var exercises: [Exercise]
+    @Query(sort: \Exercise.name) private var exercises: [Exercise]
     @State private var sheet: Sheet? = nil
+    @State private var searchText = ""
 
     var body: some View {
-        ScreenStack {
-            ExerciseCategoryGrid(exercises: exercises)
+        Group {
+            if let matchingExercises, matchingExercises.isEmpty {
+                ContentUnavailableView.search(text: searchText)
+            } else {
+                ScreenStack {
+                    if let matchingExercises {
+                        RowStack(navigating: matchingExercises)
+                    } else {
+                        ExerciseCategoryGrid(exercises: exercises)
+                    }
+                }
+            }
         }
         .navigationTitle(.screenCatalogTitle)
         .navigationDestination(for: ExerciseCategory.self) { category in
             ExerciseCategoryScreen(category: category)
         }
+        .navigationDestination(for: Exercise.self) { exercise in
+            ExerciseScreen(exercise: exercise)
+        }
+        .searchable(text: $searchText.animated())
         .toolbar {
             Button(.create) {
                 sheet = .createExercise
@@ -31,6 +46,16 @@ struct CatalogScreen: View {
                 sheet
             }
         }
+    }
+
+    private var matchingExercises: [Exercise]? {
+        let searchText = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
+
+        guard !searchText.isEmpty else {
+            return nil
+        }
+
+        return exercises.filter { $0.name.localizedCaseInsensitiveContains(searchText) }
     }
 }
 

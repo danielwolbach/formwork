@@ -13,6 +13,7 @@ public nonisolated struct SessionActivityAttributes: ActivityAttributes {
         public var title: String
         public var subtitle: String?
         public var pictogram: Pictogram
+        public var workout: Pictogram
         public var status: Pictogram?
         public var resolved: Int
         public var total: Int
@@ -25,6 +26,7 @@ public nonisolated struct SessionActivityAttributes: ActivityAttributes {
             title: String,
             subtitle: String?,
             pictogram: Pictogram,
+            workout: Pictogram,
             status: Pictogram?,
             resolved: Int,
             total: Int,
@@ -36,6 +38,7 @@ public nonisolated struct SessionActivityAttributes: ActivityAttributes {
             self.title = title
             self.subtitle = subtitle
             self.pictogram = pictogram
+            self.workout = workout
             self.status = status
             self.resolved = resolved
             self.total = total

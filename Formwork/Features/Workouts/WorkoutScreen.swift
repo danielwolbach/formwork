@@ -48,7 +48,21 @@ struct WorkoutScreen: View {
             }
             .controlSize(.large)
 
-            RowStack(navigating: workout.entries.sorted())
+            if workout.entries.isEmpty {
+                ContentUnavailableView {
+                    Label(.emptyWorkoutEntriesTitle, systemImage: "magazine")
+                } description: {
+                    Text(.emptyWorkoutEntriesMessage)
+                } actions: {
+                    Button(.addExercise) {
+                        sheet = .addWorkoutExercise(workout: workout)
+                    }
+                    .labelStyle(.fixedTitleAndIcon)
+                    .buttonStyle(.glassProminent)
+                }
+            } else {
+                RowStack(navigating: workout.entries.sorted())
+            }
         }
         .navigationDestination(for: WorkoutEntry.self) { entry in
             WorkoutEntryScreen(entry: entry)

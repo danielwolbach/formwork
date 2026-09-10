@@ -51,13 +51,13 @@ struct SessionActivity: Widget {
                     .padding(.horizontal)
                 }
             } compactLeading: {
-                Image(systemName: "figure.strengthtraining.traditional")
-                    .foregroundStyle(context.state.pictogram.color)
+                Image(systemName: context.state.workout.icon)
+                    .foregroundStyle(context.state.workout.color)
             } compactTrailing: {
                 remaining(for: context)
             } minimal: {
-                Image(systemName: "figure.strengthtraining.traditional")
-                    .foregroundStyle(context.state.pictogram.color)
+                Image(systemName: context.state.workout.icon)
+                    .foregroundStyle(context.state.workout.color)
             }
             .widgetURL(DeepLink.session)
         }
@@ -122,7 +122,8 @@ struct SessionActivity: Widget {
             }
             .tint(.gray)
             .buttonBorderShape(.circle)
-            .disabled(!context.state.canMoveBackward)
+            .opacity(context.state.canMoveBackward ? 1 : 0.5)
+            .accessibilityHidden(!context.state.canMoveBackward)
 
             if context.state.isPending {
                 Button(intent: SessionCompleteIntent()) {
@@ -143,7 +144,8 @@ struct SessionActivity: Widget {
             }
             .tint(.gray)
             .buttonBorderShape(.circle)
-            .disabled(!context.state.canMoveForward)
+            .opacity(context.state.canMoveForward ? 1 : 0.5)
+            .accessibilityHidden(!context.state.canMoveForward)
         }
     }
 
@@ -165,6 +167,7 @@ private extension SessionActivityAttributes.ContentState {
             title: "Barbell Squat",
             subtitle: "3 × 8",
             pictogram: Pictogram(icon: "dumbbell", tint: .indigo),
+            workout: .workout,
             status: nil,
             resolved: 2,
             total: 5,

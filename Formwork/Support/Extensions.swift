@@ -30,8 +30,6 @@ extension Date {
         case 0:
             return String(localized: .dateTodayTitle)
         case 1 ... 6:
-            // Shift `now` back by whole days so `.relative` measures calendar
-            // days rather than the interval between the two instants.
             let shifted = calendar.date(byAdding: .day, value: -days, to: now) ?? self
             return shifted.formatted(.relative(presentation: .named))
         default:

@@ -24,6 +24,13 @@ struct ExerciseForm: View {
         self._categories = State(initialValue: exercise?.categories ?? [])
         self.exercise = exercise
     }
+    
+    init(category: ExerciseCategory) {
+        self._name = State(initialValue: "")
+        self._type = State(initialValue: .weight)
+        self._categories = State(initialValue: [category])
+        self.exercise = nil
+    }
 
     var body: some View {
         Form {
@@ -41,6 +48,7 @@ struct ExerciseForm: View {
         }
         .navigationTitle(exercise == nil ? .screenExerciseCreateTitle : .screenExerciseEditTitle)
         .navigationBarTitleDisplayMode(.inline)
+        .scrollDismissesKeyboard(.immediately)
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 Button(.confirm) {

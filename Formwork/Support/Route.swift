@@ -12,7 +12,7 @@ enum Route: Hashable, View {
 
     var body: some View {
         switch self {
-        case .sessions: SessionsScreen()
+        case .sessions: SessionListScreen()
         }
     }
 }

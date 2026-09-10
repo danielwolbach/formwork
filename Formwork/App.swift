@@ -76,7 +76,7 @@ private struct MainTabView: View {
 
             Tab(.screenWorkoutsTitle, systemImage: "clipboard") {
                 NavigationStack {
-                    WorkoutsScreen()
+                    WorkoutListScreen()
                 }
             }
 

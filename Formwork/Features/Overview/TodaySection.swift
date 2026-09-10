@@ -17,8 +17,7 @@ struct TodaySection: View {
     var body: some View {
         SectionStack(
             title: Text(.overviewTodayTitle),
-            subtitle: Text(verbatim: date.formatted(.dateTime.weekday(.wide).day().month(.wide))),
-            accessory: { startButton }
+            subtitle: Text(verbatim: date.formatted(.dateTime.weekday(.wide).day().month(.wide)))
         ) {
             switch state {
             case let .remaining(workouts):
@@ -35,6 +34,8 @@ struct TodaySection: View {
             case .unscheduled:
                 RestingView(.unscheduled)
             }
+        } accessory: {
+            startButton
         }
     }
 

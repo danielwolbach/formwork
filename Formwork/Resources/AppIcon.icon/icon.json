@@ -1,0 +1,62 @@
+{
+  "fill" : {
+    "linear-gradient" : [
+      "srgb:0.20638,0.53835,1.00000,1.00000",
+      "srgb:0.21190,0.33359,1.00000,1.00000"
+    ]
+  },
+  "groups" : [
+    {
+      "layers" : [
+        {
+          "image-name" : "person.svg",
+          "name" : "Person",
+          "position" : {
+            "scale" : 1,
+            "translation-in-points" : [
+              -22,
+              144
+            ]
+          }
+        }
+      ],
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.5
+      },
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.3
+      }
+    },
+    {
+      "layers" : [
+        {
+          "image-name" : "dumbbell.svg",
+          "name" : "Dumbbell",
+          "position" : {
+            "scale" : 1,
+            "translation-in-points" : [
+              269,
+              -54
+            ]
+          }
+        }
+      ],
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.5
+      },
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.3
+      }
+    }
+  ],
+  "supported-platforms" : {
+    "circles" : [
+      "watchOS"
+    ],
+    "squares" : "shared"
+  }
+}

@@ -11,7 +11,7 @@ import SwiftData
 
 @Model
 final class Workout {
-    var name: String = String(localized: .unknown)
+    var name: String = String(localized: .workoutUnknownTitle)
 
     var pictogram: Pictogram = Pictogram.workout
 

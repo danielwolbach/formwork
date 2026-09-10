@@ -55,6 +55,7 @@ enum SessionActivity {
             title: current.title,
             subtitle: current.subtitle,
             pictogram: current.pictogram,
+            workout: session.workout?.pictogram ?? .workout,
             status: current.badge,
             resolved: session.resolvedCount,
             total: session.entries.count,
@@ -71,7 +72,7 @@ enum SessionActivity {
         }
 
         let attributes = SessionActivityAttributes(
-            workout: session.workout?.title ?? String(localized: .unknown),
+            workout: session.workout?.title ?? String(localized: .workoutUnknownTitle),
             started: session.started
         )
 

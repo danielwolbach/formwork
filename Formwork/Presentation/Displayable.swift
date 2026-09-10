@@ -156,7 +156,7 @@ extension Workout: Displayable {
 
 extension WorkoutEntry: Displayable {
     var title: String {
-        exercise?.title ?? String(localized: .unknown)
+        exercise?.title ?? String(localized: .exerciseUnknownTitle)
     }
 
     var subtitle: String? {
@@ -170,7 +170,7 @@ extension WorkoutEntry: Displayable {
 
 extension Session: Displayable {
     var title: String {
-        workout?.title ?? String(localized: .unknown)
+        workout?.title ?? String(localized: .workoutUnknownTitle)
     }
 
     var subtitle: String? {
@@ -184,7 +184,7 @@ extension Session: Displayable {
 
 extension SessionEntry: Displayable {
     var title: String {
-        exercise?.title ?? String(localized: .unknown)
+        exercise?.title ?? String(localized: .exerciseUnknownTitle)
     }
 
     var subtitle: String? {

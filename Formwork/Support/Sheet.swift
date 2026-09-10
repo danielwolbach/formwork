@@ -9,6 +9,7 @@ import SwiftUI
 
 enum Sheet: Identifiable, Hashable, View {
     case createExercise
+    case createExerciseInCategory(category: ExerciseCategory)
     case editExercise(exercise: Exercise)
     case createWorkout
     case editWorkout(workout: Workout)
@@ -22,6 +23,7 @@ enum Sheet: Identifiable, Hashable, View {
     var body: some View {
         switch self {
         case .createExercise: ExerciseForm()
+        case let .createExerciseInCategory(category): ExerciseForm(category: category)
         case let .editExercise(exercise): ExerciseForm(exercise: exercise)
         case .createWorkout: WorkoutForm()
         case let .editWorkout(workout): WorkoutForm(workout: workout)

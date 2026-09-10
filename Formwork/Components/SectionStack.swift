@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct SectionStack<Accessory: View, Content: View>: View {
+struct SectionStack<Content: View, Accessory: View>: View {
     /// `Text` rather than a resource: a header is a catalog string in some
     /// places and a formatted value in others, and `Text(verbatim:)` at the
     /// call site keeps the latter out of the string catalog.
@@ -15,8 +15,8 @@ struct SectionStack<Accessory: View, Content: View>: View {
 
     var subtitle: Text?
 
-    @ViewBuilder let accessory: () -> Accessory
     @ViewBuilder let content: () -> Content
+    @ViewBuilder let accessory: () -> Accessory
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -54,7 +54,7 @@ extension SectionStack where Accessory == EmptyView {
         subtitle: Text? = nil,
         @ViewBuilder content: @escaping () -> Content
     ) {
-        self.init(title: title, subtitle: subtitle, accessory: { EmptyView() }, content: content)
+        self.init(title: title, subtitle: subtitle, content: content, accessory: { EmptyView() })
     }
 }
 
@@ -62,15 +62,14 @@ extension SectionStack where Accessory == EmptyView {
     ScreenStack {
         SectionStack(
             title: Text(.overviewTodayTitle),
-            subtitle: Text(verbatim: Date.now.formatted(.dateTime.weekday(.wide).day().month(.wide))),
-            accessory: {
-                Button(.startSession) {}
-                    .labelStyle(.fixedTitleAndIcon)
-                    .tint(.green)
-                    .buttonStyle(.glassProminent)
-            }
+            subtitle: Text(verbatim: Date.now.formatted(.dateTime.weekday(.wide).day().month(.wide)))
         ) {
             RowStack(navigating: Array(Samples.exercises.prefix(3)))
+        } accessory: {
+            Button(.startSession) {}
+                .labelStyle(.fixedTitleAndIcon)
+                .tint(.green)
+                .buttonStyle(.glassProminent)
         }
 
         SectionStack {

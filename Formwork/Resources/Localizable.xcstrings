@@ -406,6 +406,94 @@
         }
       }
     },
+    "empty.exercises.message" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Create an exercise to add it to your workouts."
+          }
+        }
+      }
+    },
+    "empty.exercises.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No Exercises"
+          }
+        }
+      }
+    },
+    "empty.sessions.message" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sessions you finish appear here."
+          }
+        }
+      }
+    },
+    "empty.sessions.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No Sessions"
+          }
+        }
+      }
+    },
+    "empty.workoutEntries.message" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add exercises to this workout to start a session."
+          }
+        }
+      }
+    },
+    "empty.workoutEntries.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No Exercises"
+          }
+        }
+      }
+    },
+    "empty.workouts.message" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Create a workout to plan your exercises and start a session."
+          }
+        }
+      }
+    },
+    "empty.workouts.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No Workouts"
+          }
+        }
+      }
+    },
     "exercise.category.arms.title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -657,6 +745,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Weight"
+          }
+        }
+      }
+    },
+    "exercise.unknown.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unknown Exercise"
           }
         }
       }
@@ -1342,6 +1441,17 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "workout.unknown.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unknown Workout"
           }
         }
       }
