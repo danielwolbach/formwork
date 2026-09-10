@@ -40,6 +40,18 @@ extension Date {
     }
 }
 
+extension Date {
+    func monthDescription(now: Date = .now) -> String {
+        let calendar = Calendar.autoupdatingCurrent
+
+        if calendar.component(.year, from: self) == calendar.component(.year, from: now) {
+            return formatted(.dateTime.month(.wide))
+        }
+
+        return formatted(.dateTime.month(.wide).year())
+    }
+}
+
 extension Calendar {
     nonisolated func weekStart(for date: Date) -> Date? {
         dateInterval(of: .weekOfYear, for: date)?.start

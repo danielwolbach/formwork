@@ -55,7 +55,7 @@ enum SessionActivity {
             title: current.title,
             subtitle: current.subtitle,
             pictogram: current.pictogram,
-            status: current.status.isPending ? nil : current.status.pictogram,
+            status: current.badge,
             resolved: session.resolvedCount,
             total: session.entries.count,
             isPending: current.status.isPending,

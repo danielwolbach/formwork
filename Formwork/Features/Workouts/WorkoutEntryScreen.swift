@@ -16,13 +16,10 @@ struct WorkoutEntryScreen: View {
     @Bindable var entry: WorkoutEntry
 
     var body: some View {
-        ScrollView {
-            VStack(spacing: 32) {
-                DisplayableHero(displayable: entry.exercise)
+        ScreenStack {
+            DisplayableHero(displayable: entry.exercise)
 
-                ExerciseTargetView(target: $entry.target)
-            }
-            .frame(maxWidth: .infinity)
+            ExerciseTargetView(target: $entry.target)
         }
         .toolbar {
             Menu(.more) {

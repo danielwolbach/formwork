@@ -20,38 +20,35 @@ struct WorkoutScreen: View {
     let workout: Workout
 
     var body: some View {
-        ScrollView {
-            VStack(spacing: 32) {
-                DisplayableHero(displayable: workout)
+        ScreenStack {
+            DisplayableHero(displayable: workout)
 
-                HStack {
-                    Button(.addExercise) {
-                        sheet = .addWorkoutExercise(workout: workout)
-                    }
-                    .labelStyle(.fixedIconOnly)
-                    .buttonStyle(.glass)
-                    .buttonBorderShape(.circle)
-
-                    Button(.startSession) {
-                        startSession()
-                    }
-                    .disabled(workout.entries.isEmpty)
-                    .labelStyle(.fixedTitleAndIcon)
-                    .buttonStyle(.glassProminent)
-                    .tint(.green)
-
-                    Button(.statistics) {
-                        sheet = .workoutStats(workout: workout)
-                    }
-                    .labelStyle(.fixedIconOnly)
-                    .buttonStyle(.glass)
-                    .buttonBorderShape(.circle)
+            HStack {
+                Button(.addExercise) {
+                    sheet = .addWorkoutExercise(workout: workout)
                 }
-                .controlSize(.large)
+                .labelStyle(.fixedIconOnly)
+                .buttonStyle(.glass)
+                .buttonBorderShape(.circle)
 
-                RowStack(navigating: workout.entries.sorted())
+                Button(.startSession) {
+                    startSession()
+                }
+                .disabled(workout.entries.isEmpty)
+                .labelStyle(.fixedTitleAndIcon)
+                .buttonStyle(.glassProminent)
+                .tint(.green)
+
+                Button(.statistics) {
+                    sheet = .workoutStats(workout: workout)
+                }
+                .labelStyle(.fixedIconOnly)
+                .buttonStyle(.glass)
+                .buttonBorderShape(.circle)
             }
-            .frame(maxWidth: .infinity)
+            .controlSize(.large)
+
+            RowStack(navigating: workout.entries.sorted())
         }
         .navigationDestination(for: WorkoutEntry.self) { entry in
             WorkoutEntryScreen(entry: entry)

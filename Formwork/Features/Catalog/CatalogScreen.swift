@@ -14,7 +14,7 @@ struct CatalogScreen: View {
     @State private var sheet: Sheet? = nil
 
     var body: some View {
-        ScrollView {
+        ScreenStack {
             ExerciseCategoryGrid(exercises: exercises)
         }
         .navigationTitle(.screenCatalogTitle)
@@ -45,8 +45,6 @@ private struct ExerciseCategoryGrid: View {
                 }
             }
         }
-        .padding(.vertical, 8)
-        .padding(.horizontal, 16)
     }
 
     private func countExercises(in category: ExerciseCategory) -> Int {

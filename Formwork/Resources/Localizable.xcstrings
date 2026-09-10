@@ -166,17 +166,6 @@
         }
       }
     },
-    "action.openQueue.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Queue"
-          }
-        }
-      }
-    },
     "action.remove.title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -206,6 +195,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Resume Session"
+          }
+        }
+      }
+    },
+    "action.showAllSessions.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All Sessions"
           }
         }
       }
@@ -290,13 +290,24 @@
         }
       }
     },
-    "alert.session.failed.title" : {
+    "alert.session.delete.message" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Something Went Wrong"
+            "value" : "The session is removed from your history and no longer counts towards your statistics."
+          }
+        }
+      }
+    },
+    "alert.session.delete.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete Session?"
           }
         }
       }
@@ -380,17 +391,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Placeholder"
-          }
-        }
-      }
-    },
-    "date.never.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Never"
           }
         }
       }
@@ -1047,6 +1047,17 @@
         }
       }
     },
+    "screen.sessions.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sessions"
+          }
+        }
+      }
+    },
     "screen.statistics.title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1142,6 +1153,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Completion Rate"
+          }
+        }
+      }
+    },
+    "statistic.duration.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Duration"
+          }
+        }
+      }
+    },
+    "statistic.finishedAt.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finished At"
           }
         }
       }

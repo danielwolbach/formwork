@@ -18,7 +18,7 @@ struct WorkoutStatisticsScreen: View {
     var body: some View {
         let statistics = sessions.statistics()[workout]
 
-        ScrollView {
+        ScreenStack {
             TileGrid {
                 StatisticCard(
                     title: .statisticTypicalDurationTitle,
@@ -26,28 +26,27 @@ struct WorkoutStatisticsScreen: View {
                         allowed: [.hours, .minutes],
                         width: .abbreviated
                     )) },
-                    pictogram: .init(icon: "stopwatch", tint: .cyan)
+                    pictogram: .duration
                 )
 
                 StatisticCard(
                     title: .statisticLastSessionTitle,
                     value: statistics.lastCompleted?.relativeDayDescription().localizedCapitalized,
-                    pictogram: .init(icon: "calendar", tint: .indigo)
+                    pictogram: .date
                 )
 
                 StatisticCard(
                     title: .statisticTimesCompletedTitle,
                     value: statistics.completions.count.formatted(),
-                    pictogram: .init(icon: "repeat", tint: .orange)
+                    pictogram: .tally
                 )
 
                 StatisticCard(
                     title: .statisticMostSkippedTitle,
                     value: statistics.mostSkippedExercise,
-                    pictogram: .init(icon: "forward.end", tint: .pink)
+                    pictogram: .skipped
                 )
             }
-            .padding(.horizontal)
         }
         .navigationTitle(.screenStatisticsTitle)
         .navigationSubtitle(workout.title)

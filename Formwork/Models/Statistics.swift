@@ -180,17 +180,17 @@ struct Statistics {
                     switch entry.status {
                     case .pending:
                         continue
-                    case let .completed(date):
-                        groupedExercises[identifier, default: []].append(date)
+                    case .completed:
+                        groupedExercises[identifier, default: []].append(session.started)
 
                         if entry.target.type == exercise.type {
                             groupedTargets[identifier, default: []].append(entry.target)
                         }
-                    case let .skipped(date):
-                        groupedSkips[identifier, default: []].append(date)
+                    case .skipped:
+                        groupedSkips[identifier, default: []].append(session.started)
 
                         if let workout {
-                            workoutSkips[workout, default: [:]][identifier, default: []].append(date)
+                            workoutSkips[workout, default: [:]][identifier, default: []].append(session.started)
                             skippedExerciseNames[identifier] = exercise.name
                         }
                     }
@@ -203,11 +203,11 @@ struct Statistics {
 
             let duration = completion.timeIntervalSince(session.started)
 
-            completions.append(completion)
+            completions.append(session.started)
             durations.append(duration)
 
             if let workout {
-                groupedCompletions[workout, default: []].append(completion)
+                groupedCompletions[workout, default: []].append(session.started)
                 groupedDurations[workout, default: []].append(duration)
             }
         }
@@ -263,5 +263,17 @@ struct Statistics {
 extension [Session] {
     func statistics() -> Statistics {
         Statistics(sessions: self)
+    }
+
+    /// Sessions bucketed by the month they ended in, newest month first. The
+    /// order inside a bucket is whatever the fetch produced.
+    func groupedByMonth(calendar: Calendar = .autoupdatingCurrent) -> [(month: Date, sessions: [Session])] {
+        let buckets = Dictionary(grouping: self) { session in
+            calendar.dateInterval(of: .month, for: session.started)?.start ?? session.started
+        }
+
+        return buckets
+            .map { (month: $0.key, sessions: $0.value) }
+            .sorted { $0.month > $1.month }
     }
 }

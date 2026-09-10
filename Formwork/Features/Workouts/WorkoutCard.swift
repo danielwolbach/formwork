@@ -36,10 +36,12 @@ struct WorkoutCard: View {
                     .font(.headline)
                     .lineLimit(1)
 
-                Text(workout.subtitle)
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                    .lineLimit(1)
+                if let subtitle = workout.subtitle {
+                    Text(subtitle)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(1)
+                }
             }
 
             if !categories.isEmpty {

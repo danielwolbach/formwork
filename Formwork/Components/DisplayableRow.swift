@@ -12,22 +12,18 @@ struct DisplayableRow: View {
     private let title: String
     private let subtitle: String?
     private let pictogram: Pictogram
-
-    init(displayable: some SubtitledDisplayable) {
-        self.title = displayable.title
-        self.subtitle = displayable.subtitle
-        self.pictogram = displayable.pictogram
-    }
+    private let badge: Pictogram?
 
     init(displayable: some Displayable) {
         self.title = displayable.title
-        self.subtitle = nil
+        self.subtitle = displayable.subtitle
         self.pictogram = displayable.pictogram
+        self.badge = displayable.badge
     }
 
     var body: some View {
         HStack {
-            PictogramView(pictogram: pictogram, size: 64)
+            PictogramView(pictogram: pictogram, size: 64, badge: badge)
 
             VStack(alignment: .leading) {
                 Text(title).font(.headline).lineLimit(1)

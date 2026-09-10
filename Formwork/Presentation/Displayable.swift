@@ -14,23 +14,36 @@ protocol Displayable {
         get
     }
 
+    var subtitle: String? {
+        get
+    }
+
     var pictogram: Pictogram {
         get
     }
-}
 
-protocol SubtitledDisplayable: Displayable {
-    var subtitle: String {
+    /// Overlaid on the pictogram's corner. Most things have nothing to badge.
+    var badge: Pictogram? {
         get
     }
 }
 
-extension Exercise: SubtitledDisplayable {
+extension Displayable {
+    var subtitle: String? {
+        nil
+    }
+
+    var badge: Pictogram? {
+        nil
+    }
+}
+
+extension Exercise: Displayable {
     var title: String {
         name
     }
 
-    var subtitle: String {
+    var subtitle: String? {
         ExerciseCategory.allCases
             .filter { categories.contains($0) }
             .map(\.title)
@@ -92,8 +105,6 @@ extension ExerciseTarget: Displayable {
         }
     }
 
-    /// The ranked measure alone, without the sets/reps context — for personal
-    /// bests.
     var measure: String {
         switch self {
         case let .weight(weight, _, _):
@@ -133,41 +144,59 @@ extension ExerciseType: Displayable {
     }
 }
 
-extension Workout: SubtitledDisplayable {
+extension Workout: Displayable {
     var title: String {
         name
     }
 
-    var subtitle: String {
+    var subtitle: String? {
         String(localized: .workoutSubtitle(exerciseCount: entries.count))
     }
 }
 
-extension WorkoutEntry: SubtitledDisplayable {
+extension WorkoutEntry: Displayable {
     var title: String {
         exercise?.title ?? String(localized: .unknown)
     }
 
-    var subtitle: String {
+    var subtitle: String? {
         target.title
     }
 
     var pictogram: Pictogram {
-        target.pictogram
+        exercise?.pictogram ?? .unknown
     }
 }
 
-extension SessionEntry: SubtitledDisplayable {
+extension Session: Displayable {
+    var title: String {
+        workout?.title ?? String(localized: .unknown)
+    }
+
+    var subtitle: String? {
+        started.formatted()
+    }
+
+    var pictogram: FormworkKit.Pictogram {
+        workout?.pictogram ?? .unknown
+    }
+}
+
+extension SessionEntry: Displayable {
     var title: String {
         exercise?.title ?? String(localized: .unknown)
     }
 
-    var subtitle: String {
+    var subtitle: String? {
         target.title
     }
 
     var pictogram: Pictogram {
-        target.pictogram
+        exercise?.pictogram ?? .unknown
+    }
+
+    var badge: Pictogram? {
+        status.isPending ? nil : status.pictogram
     }
 }
 

@@ -44,16 +44,18 @@ struct SessionMiniPlayer: View {
                     PictogramView(
                         pictogram: current.pictogram,
                         size: 32,
-                        badge: current.status.isPending ? nil : current.status.pictogram
+                        badge: current.badge
                     )
 
                     VStack(alignment: .leading, spacing: 0) {
                         Text(current.title)
                             .font(.caption)
 
-                        Text(current.subtitle)
-                            .font(.caption2)
-                            .foregroundStyle(.secondary)
+                        if let subtitle = current.subtitle {
+                            Text(subtitle)
+                                .font(.caption2)
+                                .foregroundStyle(.secondary)
+                        }
                     }
 
                     Spacer()

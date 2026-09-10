@@ -102,6 +102,14 @@ extension Session {
 
         return ended
     }
+
+    var duration: TimeInterval? {
+        guard let ended else {
+            return nil
+        }
+
+        return ended.timeIntervalSince(started)
+    }
 }
 
 /// The order entries are worked through in, and how much of it is left.
@@ -132,6 +140,14 @@ extension Session {
 
     var resolvedCount: Int {
         entries.count { !$0.status.isPending }
+    }
+
+    var completedCount: Int {
+        entries.count { $0.status.isCompleted }
+    }
+
+    var skippedCount: Int {
+        entries.count { $0.status.isSkipped }
     }
 
     var progressText: String {

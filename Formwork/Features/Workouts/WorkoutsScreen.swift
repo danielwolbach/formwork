@@ -13,17 +13,13 @@ struct WorkoutsScreen: View {
     @State private var sheet: Sheet? = nil
 
     var body: some View {
-        ScrollView {
-            LazyVStack(spacing: 16) {
-                ForEach(workouts) { workout in
-                    NavigationLink(value: workout) {
-                        WorkoutCard(workout: workout)
-                    }
-                    .buttonStyle(.plain)
+        ScreenStack {
+            RowStack(items: workouts) { workout in
+                NavigationLink(value: workout) {
+                    WorkoutCard(workout: workout)
                 }
+                .buttonStyle(.plain)
             }
-            .padding(.vertical, 8)
-            .padding(.horizontal)
         }
         .navigationTitle(.screenWorkoutsTitle)
         .navigationDestination(for: Workout.self) { workout in

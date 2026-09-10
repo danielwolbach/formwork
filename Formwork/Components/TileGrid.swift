@@ -26,13 +26,13 @@ struct TileGrid<Content: View>: View {
         StatisticCard(
             title: .statisticStreakTitle,
             value: "4 Weeks",
-            pictogram: Pictogram(icon: "flame", tint: .orange)
+            pictogram: .streak
         )
 
         StatisticCard(
             title: .statisticLastSessionTitle,
             value: nil,
-            pictogram: Pictogram(icon: "calendar", tint: .indigo)
+            pictogram: .date
         )
     }
     .padding()

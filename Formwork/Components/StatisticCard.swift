@@ -50,32 +50,32 @@ private struct StatisticCardGallery: View {
             StatisticCard(
                 title: .statisticStreakTitle,
                 value: "23 Weeks",
-                pictogram: Pictogram(icon: "flame", tint: .orange)
+                pictogram: .streak
             )
             StatisticCard(
                 title: .statisticLastSessionTitle,
                 value: "2 Days Ago",
-                pictogram: Pictogram(icon: "calendar", tint: .indigo)
+                pictogram: .date
             )
             StatisticCard(
                 title: .statisticStreakTitle,
                 value: "0 Weeks",
-                pictogram: Pictogram(icon: "flame", tint: .orange)
+                pictogram: .streak
             )
             StatisticCard(
                 title: .statisticLastSessionTitle,
                 value: nil,
-                pictogram: Pictogram(icon: "calendar", tint: .indigo)
+                pictogram: .date
             )
             StatisticCard(
                 title: .statisticStreakTitle,
                 value: "127 Wochen",
-                pictogram: Pictogram(icon: "flame", tint: .orange)
+                pictogram: .streak
             )
             StatisticCard(
                 title: .statisticLastSessionTitle,
                 value: "Vorgestern Abend",
-                pictogram: Pictogram(icon: "calendar", tint: .indigo)
+                pictogram: .date
             )
         }
         .padding()

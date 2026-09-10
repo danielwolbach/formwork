@@ -77,10 +77,12 @@ struct SessionActivity: Widget {
                 .lineLimit(1)
                 .font(.headline)
 
-            Text(context.state.subtitle)
-                .lineLimit(1)
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
+            if let subtitle = context.state.subtitle {
+                Text(subtitle)
+                    .lineLimit(1)
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            }
         }
     }
 

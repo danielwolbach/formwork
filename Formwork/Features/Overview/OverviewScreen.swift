@@ -19,18 +19,14 @@ struct OverviewScreen: View {
     var body: some View {
         let statistics = sessions.statistics()
 
-        ScrollView {
-            VStack(spacing: 32) {
-                SummarySection(statistics: statistics.overall)
+        ScreenStack {
+            SummarySection(statistics: statistics.overall)
 
-                TodaySection(
-                    state: DayState(workouts: workouts, statistics: statistics, on: .now),
-                    canStart: active.isEmpty,
-                    onStart: { workout in replaceSession(workout: workout) }
-                )
-            }
-            .padding(.vertical, 8)
-            .padding(.horizontal)
+            TodaySection(
+                state: DayState(workouts: workouts, statistics: statistics, on: .now),
+                canStart: active.isEmpty,
+                onStart: { workout in replaceSession(workout: workout) }
+            )
         }
         .navigationTitle(.screenOverviewTitle)
         .navigationDestination(for: Workout.self) { workout in

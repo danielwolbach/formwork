@@ -8,55 +8,25 @@
 import FormworkKit
 import SwiftUI
 
-/// The day's heading, its start button, and whatever is left to do under it.
-///
-/// Takes its state rather than deriving it, so every branch is reachable from a
-/// preview without arranging sample history to match.
 struct TodaySection: View {
     let state: DayState
-
-    var date: Date = .now
-
-    /// `false` while a session is already running — starting another one would
-    /// replace it.
-    var canStart: Bool = true
-
-    var onStart: (Workout) -> Void = { _ in }
+    let date: Date = .now
+    let canStart: Bool
+    let onStart: (Workout) -> Void
 
     var body: some View {
-        VStack(alignment: .leading) {
-            HStack {
-                VStack(alignment: .leading) {
-                    Text(verbatim: date.formatted(.dateTime.weekday(.wide).day().month(.wide)))
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-
-                    Text(.overviewTodayTitle)
-                        .font(.headline)
-                }
-
-                Spacer()
-
-                if let workout = state.next {
-                    Button(.startSession) {
-                        onStart(workout)
-                    }
-                    .disabled(!canStart)
-                    .labelStyle(.fixedTitleAndIcon)
-                    .tint(.green)
-                    .buttonStyle(.glassProminent)
-                }
-            }
-
+        SectionStack(
+            title: Text(.overviewTodayTitle),
+            subtitle: Text(verbatim: date.formatted(.dateTime.weekday(.wide).day().month(.wide))),
+            accessory: { startButton }
+        ) {
             switch state {
             case let .remaining(workouts):
-                LazyVStack {
-                    ForEach(workouts) { workout in
-                        NavigationLink(value: workout) {
-                            WorkoutCard(workout: workout)
-                        }
-                        .buttonStyle(.plain)
+                RowStack(items: workouts) { workout in
+                    NavigationLink(value: workout) {
+                        WorkoutCard(workout: workout)
                     }
+                    .buttonStyle(.plain)
                 }
 
             case .finished:
@@ -67,17 +37,29 @@ struct TodaySection: View {
             }
         }
     }
+
+    @ViewBuilder
+    private var startButton: some View {
+        if let workout = state.next {
+            Button(.startSession) {
+                onStart(workout)
+            }
+            .disabled(!canStart)
+            .labelStyle(.fixedTitleAndIcon)
+            .tint(.green)
+            .buttonStyle(.glassProminent)
+        }
+    }
 }
 
 private struct TodaySectionPreview: View {
     let state: DayState
-    var canStart: Bool = true
+    let canStart: Bool = true
 
     var body: some View {
         NavigationStack {
-            ScrollView {
-                TodaySection(state: state, canStart: canStart)
-                    .padding(.horizontal)
+            ScreenStack {
+                TodaySection(state: state, canStart: canStart, onStart: { _ in })
             }
         }
         .sampleData()

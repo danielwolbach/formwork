@@ -12,16 +12,15 @@ struct RowStack<Item: Identifiable & Hashable, Row: View>: View {
     @ViewBuilder let row: (Item) -> Row
 
     var body: some View {
-        LazyVStack(spacing: 0) {
+        LazyVStack(spacing: 16) {
             ForEach(items) { item in
                 row(item)
             }
         }
-        .padding(.horizontal, 8)
     }
 }
 
-extension RowStack where Item: SubtitledDisplayable, Row == NavigationRow<Item, DisplayableRow> {
+extension RowStack where Item: Displayable, Row == NavigationRow<Item, DisplayableRow> {
     init(navigating items: [Item]) {
         self.init(items: items) { item in
             NavigationRow(value: item) {
@@ -33,7 +32,7 @@ extension RowStack where Item: SubtitledDisplayable, Row == NavigationRow<Item, 
 
 #Preview {
     NavigationStack {
-        ScrollView {
+        ScreenStack {
             RowStack(navigating: Samples.exercises)
         }
     }

@@ -19,7 +19,7 @@ struct WorkoutAddExerciseScreen: View {
     let workout: Workout
 
     var body: some View {
-        ScrollView {
+        ScreenStack {
             RowStack(navigating: matchingExercises)
         }
         .navigationTitle(.screenWorkoutAddExerciseTitle)
@@ -87,12 +87,10 @@ private struct ExerciseTargetConfigurator: View {
     }
 
     var body: some View {
-        ScrollView {
-            VStack(spacing: 32) {
-                DisplayableHero(displayable: exercise)
+        ScreenStack {
+            DisplayableHero(displayable: exercise)
 
-                ExerciseTargetView(target: $target)
-            }
+            ExerciseTargetView(target: $target)
         }
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {

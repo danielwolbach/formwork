@@ -16,13 +16,13 @@ struct SummarySection: View {
             StatisticCard(
                 title: .statisticStreakTitle,
                 value: String(localized: .statisticStreakValue(count: statistics.weekStreak())),
-                pictogram: Pictogram(icon: "flame", tint: .orange)
+                pictogram: .streak
             )
 
             StatisticCard(
                 title: .statisticLastSessionTitle,
                 value: statistics.lastCompleted?.relativeDayDescription().localizedCapitalized,
-                pictogram: Pictogram(icon: "calendar", tint: .indigo)
+                pictogram: .date
             )
         }
     }

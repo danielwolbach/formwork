@@ -24,13 +24,12 @@ struct NavigationRow<Value: Hashable, Content: View>: View {
             }
         }
         .buttonStyle(.plain)
-        .padding(8)
     }
 }
 
 #Preview {
     NavigationStack {
-        ScrollView {
+        ScreenStack {
             ForEach(Samples.exercises.prefix(6)) { exercise in
                 NavigationRow(value: exercise) {
                     DisplayableRow(displayable: exercise)

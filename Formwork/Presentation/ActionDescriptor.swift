@@ -55,6 +55,9 @@ extension ActionDescriptor {
         role: .destructive
     )
     static let finishSession = ActionDescriptor(title: .actionFinishSessionTitle, systemImage: "flag.pattern.checkered")
+
+    /// Statistics
+    static let showAllSessions = ActionDescriptor(title: .actionShowAllSessionsTitle, systemImage: "chevron.right")
 }
 
 extension Button where Label == SwiftUI.Label<Text, Image> {
@@ -65,6 +68,18 @@ extension Button where Label == SwiftUI.Label<Text, Image> {
             role: descriptor.role,
             action: action
         )
+    }
+}
+
+extension NavigationLink where Label == SwiftUI.Label<Text, Image>, Destination == Never {
+    init(_ descriptor: ActionDescriptor, value: (some Hashable)?) {
+        self.init(value: value) {
+            SwiftUI.Label {
+                Text(descriptor.title)
+            } icon: {
+                Image(systemName: descriptor.systemImage)
+            }
+        }
     }
 }
 

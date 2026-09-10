@@ -188,6 +188,7 @@ private struct ValueLabel: View {
                 .fontWeight(.semibold)
                 .foregroundStyle(isPlaceholder ? .secondary : .primary)
                 .contentTransition(.numericText(value: value))
+                .monospacedDigit()
 
             if let suffix {
                 Text(suffix)

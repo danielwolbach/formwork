@@ -48,6 +48,6 @@ extension DayState {
             return nil
         }
 
-        return workouts.first
+        return workouts.first { !$0.entries.isEmpty }
     }
 }

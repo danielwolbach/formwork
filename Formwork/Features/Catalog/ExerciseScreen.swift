@@ -21,36 +21,33 @@ struct ExerciseScreen: View {
     var body: some View {
         let statistics = sessions.statistics()[exercise]
 
-        ScrollView {
-            VStack(spacing: 32) {
-                DisplayableHero(displayable: exercise)
+        ScreenStack {
+            DisplayableHero(displayable: exercise)
 
-                TileGrid {
-                    StatisticCard(
-                        title: .statisticPersonalBestTitle,
-                        value: statistics.personalBest?.measure,
-                        pictogram: .init(icon: "trophy", tint: .yellow)
-                    )
+            TileGrid {
+                StatisticCard(
+                    title: .statisticPersonalBestTitle,
+                    value: statistics.personalBest?.measure,
+                    pictogram: .record
+                )
 
-                    StatisticCard(
-                        title: .statisticCompletionRateTitle,
-                        value: statistics.completionRate?.formatted(.percent.precision(.fractionLength(0))),
-                        pictogram: .init(icon: "checkmark.circle", tint: .green)
-                    )
+                StatisticCard(
+                    title: .statisticCompletionRateTitle,
+                    value: statistics.completionRate?.formatted(.percent.precision(.fractionLength(0))),
+                    pictogram: .completed
+                )
 
-                    StatisticCard(
-                        title: .statisticLastPerformedTitle,
-                        value: statistics.lastCompleted?.relativeDayDescription().localizedCapitalized,
-                        pictogram: .init(icon: "calendar", tint: .indigo)
-                    )
+                StatisticCard(
+                    title: .statisticLastPerformedTitle,
+                    value: statistics.lastCompleted?.relativeDayDescription().localizedCapitalized,
+                    pictogram: .date
+                )
 
-                    StatisticCard(
-                        title: .statisticTimesCompletedTitle,
-                        value: statistics.completions.count.formatted(),
-                        pictogram: .init(icon: "repeat", tint: .orange)
-                    )
-                }
-                .padding(.horizontal)
+                StatisticCard(
+                    title: .statisticTimesCompletedTitle,
+                    value: statistics.completions.count.formatted(),
+                    pictogram: .tally
+                )
             }
         }
         .toolbar {

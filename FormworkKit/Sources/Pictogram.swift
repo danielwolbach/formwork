@@ -61,4 +61,13 @@ public extension Pictogram {
 
     static let unknown = Pictogram(icon: "questionmark", tint: .gray)
     static let workout = Pictogram(icon: "figure.strengthtraining.traditional", tint: .blue)
+
+    static let duration = Pictogram(icon: "stopwatch", tint: .cyan)
+    static let date = Pictogram(icon: "calendar", tint: .indigo)
+    static let time = Pictogram(icon: "clock", tint: .blue)
+    static let tally = Pictogram(icon: "repeat", tint: .orange)
+    static let record = Pictogram(icon: "trophy", tint: .yellow)
+    static let streak = Pictogram(icon: "flame", tint: .orange)
+    static let completed = Pictogram(icon: "checkmark.circle", tint: .green)
+    static let skipped = Pictogram(icon: "forward.end", tint: .pink)
 }

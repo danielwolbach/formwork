@@ -15,7 +15,7 @@ struct ExerciseCategoryScreen: View {
     let category: ExerciseCategory
 
     var body: some View {
-        ScrollView {
+        ScreenStack {
             RowStack(navigating: filteredExercises)
         }
         .navigationTitle(category.title)

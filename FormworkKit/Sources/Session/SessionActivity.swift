@@ -11,7 +11,7 @@ import Foundation
 public nonisolated struct SessionActivityAttributes: ActivityAttributes {
     public nonisolated struct ContentState: Codable, Hashable, Sendable {
         public var title: String
-        public var subtitle: String
+        public var subtitle: String?
         public var pictogram: Pictogram
         public var status: Pictogram?
         public var resolved: Int
@@ -23,7 +23,7 @@ public nonisolated struct SessionActivityAttributes: ActivityAttributes {
 
         public init(
             title: String,
-            subtitle: String,
+            subtitle: String?,
             pictogram: Pictogram,
             status: Pictogram?,
             resolved: Int,
