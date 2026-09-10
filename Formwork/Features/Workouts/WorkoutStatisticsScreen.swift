@@ -17,6 +17,7 @@ struct WorkoutStatisticsScreen: View {
 
     var body: some View {
         let statistics = sessions.statistics()[workout]
+        let distribution = CategoryDistribution(categories: workout.entries.compactMap { $0.exercise?.categories })
 
         ScreenStack {
             TileGrid {
@@ -46,6 +47,9 @@ struct WorkoutStatisticsScreen: View {
                     value: statistics.mostSkippedExercise,
                     pictogram: .skipped
                 )
+
+                DistributionCard(title: .statisticDistributionTitle, distribution: distribution)
+                    .tileSpan(columns: 2)
             }
         }
         .navigationTitle(.screenStatisticsTitle)

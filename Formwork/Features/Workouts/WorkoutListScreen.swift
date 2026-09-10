@@ -55,11 +55,13 @@ struct WorkoutListScreen: View {
                 ContentUnavailableView.search(text: searchText)
             } else {
                 ScreenStack {
-                    RowStack(items: matchingWorkouts) { workout in
-                        NavigationLink(value: workout) {
-                            WorkoutCard(workout: workout)
+                    TileGrid(columns: 1) {
+                        ForEach(matchingWorkouts) { workout in
+                            NavigationLink(value: workout) {
+                                WorkoutCard(workout: workout)
+                            }
+                            .buttonStyle(.plain)
                         }
-                        .buttonStyle(.plain)
                     }
                 }
             }

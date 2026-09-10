@@ -45,9 +45,9 @@ struct WorkoutCard: View {
             }
 
             if !categories.isEmpty {
-                FlowLayout(spacing: 6) {
+                FlowLayout {
                     ForEach(categories, id: \.self) { category in
-                        CategoryChip(category: category)
+                        PictogramChip(displayable: category)
                     }
                 }
             }
@@ -58,31 +58,6 @@ struct WorkoutCard: View {
     private var categories: [ExerciseCategory] {
         let present = Set(workout.entries.compactMap(\.exercise).flatMap(\.categories))
         return ExerciseCategory.allCases.filter(present.contains)
-    }
-}
-
-private struct CategoryChip: View {
-    let category: ExerciseCategory
-
-    private var tint: Color {
-        category.pictogram.color
-    }
-
-    var body: some View {
-        HStack(spacing: 4) {
-            Image(systemName: category.pictogram.icon)
-                .font(.caption)
-
-            Text(category.title)
-                .font(.caption)
-                .lineLimit(1)
-        }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 8)
-        .foregroundStyle(tint)
-        .background {
-            Capsule().fill(tint.quinary)
-        }
     }
 }
 

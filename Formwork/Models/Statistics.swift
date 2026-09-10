@@ -146,6 +146,10 @@ nonisolated struct ExerciseStatistics {
 struct Statistics {
     let overall: WorkoutStatistics
 
+    /// Category mix of every exercise completed in a finished session, across
+    /// all workouts.
+    let completedDistribution: CategoryDistribution
+
     private let perWorkout: [PersistentIdentifier: WorkoutStatistics]
 
     private let perExercise: [PersistentIdentifier: ExerciseStatistics]
@@ -156,6 +160,7 @@ struct Statistics {
         var groupedStarts: [PersistentIdentifier: [Date]] = [:]
         var durations: [TimeInterval] = []
         var groupedDurations: [PersistentIdentifier: [TimeInterval]] = [:]
+        var completedCategories: [Set<ExerciseCategory>] = []
         var groupedExercises: [PersistentIdentifier: [Date]] = [:]
         var groupedTargets: [PersistentIdentifier: [ExerciseTarget]] = [:]
         var groupedSkips: [PersistentIdentifier: [Date]] = [:]
@@ -181,6 +186,7 @@ struct Statistics {
                     case .pending:
                         continue
                     case .completed:
+                        completedCategories.append(exercise.categories)
                         groupedExercises[identifier, default: []].append(session.started)
 
                         if entry.target.type == exercise.type {
@@ -247,6 +253,7 @@ struct Statistics {
             starts: sessions.map(\.started),
             durations: durations
         )
+        self.completedDistribution = CategoryDistribution(categories: completedCategories)
         self.perWorkout = perWorkout
         self.perExercise = perExercise
     }

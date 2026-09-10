@@ -1256,6 +1256,17 @@
         }
       }
     },
+    "statistic.completedDistribution.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Completed Categories"
+          }
+        }
+      }
+    },
     "statistic.completionRate.title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1263,6 +1274,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Completion Rate"
+          }
+        }
+      }
+    },
+    "statistic.distribution.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Category Distribution"
           }
         }
       }

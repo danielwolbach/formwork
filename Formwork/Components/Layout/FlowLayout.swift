@@ -9,7 +9,7 @@ import FormworkKit
 import SwiftUI
 
 struct FlowLayout: Layout {
-    var spacing: CGFloat = 8
+    var spacing: CGFloat = 6
     var alignment: HorizontalAlignment = .leading
 
     struct Row {

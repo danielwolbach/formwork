@@ -13,21 +13,27 @@ struct StatisticsScreen: View {
     @Query(Session.finishedDescriptor) private var sessions: [Session]
 
     var body: some View {
-        let statistics = sessions.statistics().overall
+        let statistics = sessions.statistics()
 
         ScreenStack {
             TileGrid {
                 StatisticCard(
                     title: .statisticStreakTitle,
-                    value: String(localized: .statisticStreakValue(count: statistics.weekStreak())),
+                    value: String(localized: .statisticStreakValue(count: statistics.overall.weekStreak())),
                     pictogram: .streak
                 )
 
                 StatisticCard(
                     title: .statisticLastSessionTitle,
-                    value: statistics.lastCompleted?.relativeDayDescription().localizedCapitalized,
+                    value: statistics.overall.lastCompleted?.relativeDayDescription().localizedCapitalized,
                     pictogram: .date
                 )
+
+                DistributionCard(
+                    title: .statisticCompletedDistributionTitle,
+                    distribution: statistics.completedDistribution
+                )
+                .tileSpan(columns: 2)
             }
 
             SectionStack(title: Text(.screenSessionsTitle)) {

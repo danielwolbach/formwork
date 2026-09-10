@@ -21,11 +21,13 @@ struct TodaySection: View {
         ) {
             switch state {
             case let .remaining(workouts):
-                RowStack(items: workouts) { workout in
-                    NavigationLink(value: workout) {
-                        WorkoutCard(workout: workout)
+                TileGrid(columns: 1) {
+                    ForEach(workouts) { workout in
+                        NavigationLink(value: workout) {
+                            WorkoutCard(workout: workout)
+                        }
+                        .buttonStyle(.plain)
                     }
-                    .buttonStyle(.plain)
                 }
 
             case .finished:

@@ -132,7 +132,7 @@ private struct ExerciseCategoryPicker: View {
     @Binding var categories: Set<ExerciseCategory>
 
     var body: some View {
-        FlowLayout(spacing: 8, alignment: .center) {
+        FlowLayout(alignment: .center) {
             ForEach(ExerciseCategory.allCases, id: \.self) { candidate in
                 ExerciseCategoryChip(category: candidate, isSelected: categories.contains(candidate)) {
                     if categories.contains(candidate) {
