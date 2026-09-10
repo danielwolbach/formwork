@@ -15,25 +15,25 @@ struct DisplayableHero: View {
 
     init(displayable: (some SubtitledDisplayable)?) {
         if let displayable {
-            title = displayable.title
-            subtitle = displayable.subtitle
-            pictogram = displayable.pictogram
+            self.title = displayable.title
+            self.subtitle = displayable.subtitle
+            self.pictogram = displayable.pictogram
         } else {
-            title = String(localized: .unknown)
-            subtitle = nil
-            pictogram = .unknown
+            self.title = String(localized: .unknown)
+            self.subtitle = nil
+            self.pictogram = .unknown
         }
     }
-    
+
     init(displayable: (some Displayable)?) {
         if let displayable {
-            title = displayable.title
-            subtitle = nil
-            pictogram = displayable.pictogram
+            self.title = displayable.title
+            self.subtitle = nil
+            self.pictogram = displayable.pictogram
         } else {
-            title = String(localized: .unknown)
-            subtitle = nil
-            pictogram = .unknown
+            self.title = String(localized: .unknown)
+            self.subtitle = nil
+            self.pictogram = .unknown
         }
     }
 
@@ -53,4 +53,16 @@ struct DisplayableHero: View {
             }
         }
     }
+}
+
+#Preview("Subtitled") {
+    DisplayableHero(displayable: Samples.exercises.first)
+}
+
+#Preview("Plain") {
+    DisplayableHero(displayable: ExerciseType.weight)
+}
+
+#Preview("Missing") {
+    DisplayableHero(displayable: Exercise?.none)
 }

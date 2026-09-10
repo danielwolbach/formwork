@@ -16,9 +16,9 @@ struct WorkoutScreen: View {
     @State private var sheet: Sheet? = nil
     @State private var deleteAlert: Bool = false
     @State private var sessionActiveAlert: Bool = false
-    
+
     let workout: Workout
-    
+
     var body: some View {
         ScrollView {
             VStack(spacing: 32) {
@@ -31,7 +31,7 @@ struct WorkoutScreen: View {
                     .labelStyle(.fixedIconOnly)
                     .buttonStyle(.glass)
                     .buttonBorderShape(.circle)
-                    
+
                     Button(.startSession) {
                         startSession()
                     }
@@ -39,7 +39,7 @@ struct WorkoutScreen: View {
                     .labelStyle(.fixedTitleAndIcon)
                     .buttonStyle(.glassProminent)
                     .tint(.green)
-                    
+
                     Button(.statistics) {
                         sheet = .workoutStats(workout: workout)
                     }
@@ -48,10 +48,8 @@ struct WorkoutScreen: View {
                     .buttonBorderShape(.circle)
                 }
                 .controlSize(.large)
-                
-                RowStack(items: workout.entries.sorted()) { entry in
-                    WorkoutEntryRow(entry: entry)
-                }
+
+                RowStack(navigating: workout.entries.sorted())
             }
             .frame(maxWidth: .infinity)
         }
@@ -64,7 +62,7 @@ struct WorkoutScreen: View {
                     Button(.addExercise) {
                         sheet = .addWorkoutExercise(workout: workout)
                     }
-                    
+
                     Button(.statistics) {
                         sheet = .workoutStats(workout: workout)
                     }
@@ -74,7 +72,7 @@ struct WorkoutScreen: View {
                         sheet = .editWorkout(workout: workout)
                     }
                 }
-                
+
                 Section {
                     Button(.delete) {
                         deleteAlert = true
@@ -91,10 +89,8 @@ struct WorkoutScreen: View {
             Button(.delete) {
                 delete()
             }
-            
-            Button(.cancel) {
-                
-            }
+
+            Button(.cancel) {}
         } message: {
             Text(.alertWorkoutDeleteMessage)
         }
@@ -102,39 +98,37 @@ struct WorkoutScreen: View {
             Button(.replaceSession) {
                 replaceSession()
             }
-            
+
             if let activeSession {
                 Button(.resumeSession) {
                     presentSession(activeSession)
                 }
             }
-            
-            Button(.cancel) {
-                
-            }
+
+            Button(.cancel) {}
         } message: {
             Text(.alertSessionReplaceMessage)
         }
     }
-    
+
     private func delete() {
         modelContext.delete(workout)
         dismiss()
     }
-    
+
     private var activeSession: Session? {
         activeSessions.first
     }
-    
+
     private func startSession() {
         guard activeSession == nil else {
             sessionActiveAlert = true
             return
         }
-        
+
         replaceSession()
     }
-    
+
     private func replaceSession() {
         do {
             let session = try Session.start(workout, in: modelContext)
@@ -144,16 +138,6 @@ struct WorkoutScreen: View {
             }
         } catch {
             // TODO: Log error
-        }
-    }
-}
-
-private struct WorkoutEntryRow: View {
-    let entry: WorkoutEntry
-    
-    var body: some View {
-        NavigationRow(value: entry) {
-            DisplayableRow(displayable: entry)
         }
     }
 }

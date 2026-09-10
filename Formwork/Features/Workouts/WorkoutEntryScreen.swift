@@ -12,14 +12,14 @@ struct WorkoutEntryScreen: View {
     @Environment(\.modelContext) private var modelContext: ModelContext
     @Environment(\.dismiss) private var dismiss: DismissAction
     @State private var deleteAlert: Bool = false
-    
+
     @Bindable var entry: WorkoutEntry
-    
+
     var body: some View {
         ScrollView {
             VStack(spacing: 32) {
                 DisplayableHero(displayable: entry.exercise)
-    
+
                 ExerciseTargetView(target: $entry.target)
             }
             .frame(maxWidth: .infinity)
@@ -37,15 +37,13 @@ struct WorkoutEntryScreen: View {
             Button(.remove) {
                 delete()
             }
-            
-            Button(.cancel) {
-                
-            }
+
+            Button(.cancel) {}
         } message: {
             Text(.alertWorkoutEntryRemoveMessage)
         }
     }
-    
+
     private func delete() {
         modelContext.delete(entry)
         dismiss()

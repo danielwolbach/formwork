@@ -9,23 +9,23 @@ import SwiftUI
 
 struct SessionTimer: View {
     let session: Session
-    
+
     var body: some View {
         VStack(spacing: 2) {
             Text(session.workout?.title ?? String(localized: .unknown))
                 .font(.caption)
                 .fontWeight(.semibold)
                 .lineLimit(1)
-            
+
             HStack {
-                Text(verbatim: "\(session.history.count) / \(session.entries.count)")
+                Text(verbatim: session.progressText)
                     .font(.caption2)
                     .monospacedDigit()
                     .foregroundStyle(.secondary)
-                
+
                 Divider()
                     .frame(height: 12)
-                
+
                 elapsed
                     .font(.caption2)
                     .monospacedDigit()
@@ -33,7 +33,7 @@ struct SessionTimer: View {
             }
         }
     }
-    
+
     @ViewBuilder
     private var elapsed: some View {
         if let ended = session.ended {

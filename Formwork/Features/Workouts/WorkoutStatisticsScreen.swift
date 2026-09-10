@@ -12,33 +12,36 @@ import SwiftUI
 struct WorkoutStatisticsScreen: View {
     @Environment(\.dismiss) private var dismiss: DismissAction
     @Query(Session.finishedDescriptor) private var sessions: [Session]
-    
+
     let workout: Workout
-    
+
     var body: some View {
         let statistics = sessions.statistics()[workout]
 
         ScrollView {
-            LazyVGrid(columns: [.init(.flexible()), .init(.flexible())]) {
-                ValueCard(
+            TileGrid {
+                StatisticCard(
                     title: .statisticTypicalDurationTitle,
-                    value: statistics.typicalDuration.map { Duration.seconds($0).formatted(.units(allowed: [.hours, .minutes], width: .abbreviated)) },
+                    value: statistics.typicalDuration.map { Duration.seconds($0).formatted(.units(
+                        allowed: [.hours, .minutes],
+                        width: .abbreviated
+                    )) },
                     pictogram: .init(icon: "stopwatch", tint: .cyan)
                 )
-                
-                ValueCard(
+
+                StatisticCard(
                     title: .statisticLastSessionTitle,
                     value: statistics.lastCompleted?.relativeDayDescription().localizedCapitalized,
                     pictogram: .init(icon: "calendar", tint: .indigo)
                 )
-                
-                ValueCard(
+
+                StatisticCard(
                     title: .statisticTimesCompletedTitle,
                     value: statistics.completions.count.formatted(),
                     pictogram: .init(icon: "repeat", tint: .orange)
                 )
-                
-                ValueCard(
+
+                StatisticCard(
                     title: .statisticMostSkippedTitle,
                     value: statistics.mostSkippedExercise,
                     pictogram: .init(icon: "forward.end", tint: .pink)

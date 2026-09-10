@@ -45,3 +45,16 @@ extension Calendar {
         dateInterval(of: .weekOfYear, for: date)?.start
     }
 }
+
+extension GridItem {
+    static func ntile(n: Int, spacing: CGFloat? = nil) -> [GridItem] {
+        Array(repeating: GridItem(.flexible(), spacing: spacing), count: n)
+    }
+}
+
+extension Locale {
+    /// The decimal separator to both show on the keypad and parse back out.
+    static var currentDecimalSeparator: String {
+        current.decimalSeparator ?? "."
+    }
+}

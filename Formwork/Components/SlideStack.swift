@@ -130,3 +130,46 @@ struct SlideStack<Key: Hashable, Content: View>: View {
         }
     }
 }
+
+#Preview {
+    @Previewable @State var index = 0
+    @Previewable @State var direction: SlideDirection = .forward
+
+    VStack(spacing: 32) {
+        SlideStack(
+            key: index,
+            direction: direction,
+            fade: 16,
+            canMoveForward: index < Samples.exercises.count - 1,
+            canMoveBackward: index > 0,
+            onForward: {
+                direction = .forward
+                index += 1
+            },
+            onBackward: {
+                direction = .backward
+                index -= 1
+            }
+        ) { (key: Int) in
+            DisplayableHero(displayable: Samples.exercises[key])
+        }
+
+        HStack {
+            Button(.backward) {
+                direction = .backward
+                index -= 1
+            }
+            .disabled(index == 0)
+
+            Button(.forward) {
+                direction = .forward
+                index += 1
+            }
+            .disabled(index == Samples.exercises.count - 1)
+        }
+        .labelStyle(.fixedIconOnly)
+        .buttonStyle(.glass)
+        .buttonBorderShape(.circle)
+    }
+    .padding()
+}

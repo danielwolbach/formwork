@@ -17,12 +17,14 @@ struct OverviewScreen: View {
     @Query(sort: \Workout.name) private var workouts: [Workout]
 
     var body: some View {
+        let statistics = sessions.statistics()
+
         ScrollView {
             VStack(spacing: 32) {
-                SummarySection(statistics: sessions.statistics().overall)
+                SummarySection(statistics: statistics.overall)
 
                 TodaySection(
-                    state: DayState(workouts: workouts, statistics: sessions.statistics(), on: .now),
+                    state: DayState(workouts: workouts, statistics: statistics, on: .now),
                     canStart: active.isEmpty,
                     onStart: { workout in replaceSession(workout: workout) }
                 )
@@ -33,11 +35,6 @@ struct OverviewScreen: View {
         .navigationTitle(.screenOverviewTitle)
         .navigationDestination(for: Workout.self) { workout in
             WorkoutScreen(workout: workout)
-        }
-        .toolbar {
-            Menu(.more) {
-
-            }
         }
     }
 

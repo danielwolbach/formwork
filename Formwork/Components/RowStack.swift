@@ -1,5 +1,5 @@
 //
-//  NavigableList.swift
+//  RowStack.swift
 //  Formwork
 //
 //  Created by Daniel Wolbach on 04.09.26.
@@ -21,12 +21,20 @@ struct RowStack<Item: Identifiable & Hashable, Row: View>: View {
     }
 }
 
+extension RowStack where Item: SubtitledDisplayable, Row == NavigationRow<Item, DisplayableRow> {
+    init(navigating items: [Item]) {
+        self.init(items: items) { item in
+            NavigationRow(value: item) {
+                DisplayableRow(displayable: item)
+            }
+        }
+    }
+}
+
 #Preview {
     NavigationStack {
-        RowStack(items: Samples.exercises) { exercise in
-            NavigationRow(value: exercise) {
-                DisplayableRow(displayable: exercise)
-            }
+        ScrollView {
+            RowStack(navigating: Samples.exercises)
         }
     }
 }

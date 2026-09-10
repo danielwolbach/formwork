@@ -13,19 +13,40 @@ struct PictogramForm: View {
     @Binding var pictogram: Pictogram
     @State private var draft: Pictogram
 
-    static let columns: Int = 6
-    static let imageOptions: [String] = [
-        "figure.strengthtraining.traditional", "figure", "figure.walk", "figure.run", "figure.barre", "figure.boxing",
-        "figure.cooldown", "figure.dance", "figure.flexibility", "figure.gymnastics", "figure.jumprope", "figure.pilates",
-        "figure.play", "figure.rolling", "figure.yoga", "figure.cross.training", "figure.strengthtraining.functional", "figure.highintensity.intervaltraining",
-        "figure.martial.arts", "figure.indoor.rowing", "figure.step.training", "figure.run.treadmill", "figure.indoor.cycle", "figure.stair.stepper"
+    private static let columns: Int = 6
+
+    private static let imageOptions: [String] = [
+        Pictogram.workout.icon,
+        "figure",
+        "figure.walk",
+        "figure.run",
+        "figure.barre",
+        "figure.boxing",
+        "figure.cooldown",
+        "figure.dance",
+        "figure.flexibility",
+        "figure.gymnastics",
+        "figure.jumprope",
+        "figure.pilates",
+        "figure.play",
+        "figure.rolling",
+        "figure.yoga",
+        "figure.cross.training",
+        "figure.strengthtraining.functional",
+        "figure.highintensity.intervaltraining",
+        "figure.martial.arts",
+        "figure.indoor.rowing",
+        "figure.step.training",
+        "figure.run.treadmill",
+        "figure.indoor.cycle",
+        "figure.stair.stepper",
     ]
-    
+
     init(pictogram: Binding<Pictogram>) {
         self._pictogram = pictogram
         self._draft = State(initialValue: pictogram.wrappedValue)
     }
-    
+
     var body: some View {
         Form {
             Section {
@@ -37,20 +58,31 @@ struct PictogramForm: View {
                 .listRowBackground(Color.clear)
                 .listRowInsets(EdgeInsets())
             }
+
             Section(.fieldPictogramColorTitle) {
-                LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 16), count: PictogramForm.columns), spacing: 16) {
+                TileGrid(columns: PictogramForm.columns) {
                     ForEach(Pictogram.Tint.allCases) { tint in
-                        TintButton(tint: tint, isSelected: tint == draft.tint) {
+                        PictogramSwatch(
+                            fill: AnyShapeStyle(tint.color),
+                            ring: AnyShapeStyle(tint.color),
+                            isSelected: tint == draft.tint,
+                            label: Text(tint.title)
+                        ) {
                             draft.tint = tint
                         }
                     }
                 }
             }
-            
+
             Section(.fieldPictogramIconTitle) {
-                LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 16), count: PictogramForm.columns), spacing: 16) {
+                TileGrid(columns: PictogramForm.columns) {
                     ForEach(PictogramForm.imageOptions, id: \.self) { option in
-                        IconButton(icon: option, isSelected: option == draft.icon) {
+                        PictogramSwatch(
+                            fill: AnyShapeStyle(Color.gray.quinary),
+                            ring: AnyShapeStyle(Color.gray.secondary),
+                            isSelected: option == draft.icon,
+                            icon: option
+                        ) {
                             draft.icon = option
                         }
                     }
@@ -59,7 +91,7 @@ struct PictogramForm: View {
         }
         .navigationTitle(.screenPictogramTitle)
         .navigationBarTitleDisplayMode(.inline)
-        .sensoryFeedback(.selection, trigger: draft.color)
+        .sensoryFeedback(.selection, trigger: draft.tint)
         .sensoryFeedback(.selection, trigger: draft.icon)
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
@@ -78,75 +110,47 @@ struct PictogramForm: View {
     }
 }
 
-private struct TintButton: View {
-    let tint: Pictogram.Tint
+private struct PictogramSwatch: View {
+    let fill: AnyShapeStyle
+    let ring: AnyShapeStyle
     let isSelected: Bool
+    var icon: String?
+    var label: Text?
     let action: () -> Void
 
     var body: some View {
+        if let label {
+            swatch.accessibilityLabel(label)
+        } else {
+            swatch
+        }
+    }
+
+    private var swatch: some View {
         Button(action: action) {
-            fill
-                .overlay(ring)
+            Circle()
+                .fill(fill)
+                .frame(height: 40)
+                .overlay {
+                    if let icon {
+                        Image(systemName: icon)
+                            .font(.subheadline)
+                            .foregroundStyle(.primary)
+                    }
+                }
+                .overlay {
+                    Circle()
+                        .stroke(isSelected ? ring : AnyShapeStyle(Color.clear), lineWidth: 2)
+                        .padding(-4)
+                }
         }
         .buttonStyle(.plain)
-    }
-
-    private var fill: some View {
-        Circle()
-            .fill(tint.color)
-            .frame(height: 40)
-    }
-
-    private var ring: some View {
-        Circle()
-            .stroke(ringColor, lineWidth: 2)
-            .padding(-4)
-    }
-
-    private var ringColor: Color {
-        isSelected ? tint.color : .clear
-    }
-}
-
-private struct IconButton: View {
-    let icon: String
-    let isSelected: Bool
-    let action: () -> Void
-
-    var body: some View {
-        Button(action: action) {
-            fill
-                .overlay(symbol)
-                .overlay(ring)
-        }
-        .buttonStyle(.plain)
-    }
-
-    private var fill: some View {
-        Circle()
-            .fill(.gray.quinary)
-            .frame(height: 40)
-    }
-
-    private var symbol: some View {
-        Image(systemName: icon)
-            .font(.subheadline)
-            .foregroundStyle(.primary)
-    }
-
-    private var ring: some View {
-        Circle()
-            .stroke(ringColor.secondary, lineWidth: 2)
-            .padding(-4)
-    }
-
-    private var ringColor: Color {
-        isSelected ? .gray : .clear
+        .accessibilityAddTraits(isSelected ? [.isSelected] : [])
     }
 }
 
 #Preview {
-    @Previewable @State var pictogram: Pictogram = .unknown
+    @Previewable @State var pictogram: Pictogram = .workout
 
     NavigationStack {
         PictogramForm(pictogram: $pictogram)

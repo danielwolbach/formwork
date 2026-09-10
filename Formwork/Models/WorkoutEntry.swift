@@ -13,12 +13,9 @@ final class WorkoutEntry {
 
     var target: ExerciseTarget = ExerciseTarget.bodyweight(sets: 1, reps: 1)
 
-    var exercise: Exercise? = nil
+    var exercise: Exercise?
 
-    // Both sides of a relationship have to exist for `inverse:` to name one, and
-    // CloudKit rejects a schema with one-sided relationships, so the
-    // back-references stay even where the app never reads them.
-    var workout: Workout? = nil
+    var workout: Workout?
 
     @Relationship(deleteRule: .nullify, inverse: \SessionEntry.workoutEntry)
     var sessionEntries: [SessionEntry] = []

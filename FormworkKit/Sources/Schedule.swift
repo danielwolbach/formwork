@@ -19,14 +19,14 @@ public nonisolated struct Schedule: Codable, Hashable, Sendable {
     }
 }
 
-extension Schedule {
-    public static let inactive = Schedule(days: [], interval: 1, startDate: .distantPast)
+public extension Schedule {
+    static let inactive = Schedule(days: [], interval: 1, startDate: .distantPast)
 
-    public var isActive: Bool {
+    var isActive: Bool {
         !days.isEmpty
     }
 
-    public mutating func setDay(_ day: Weekday, isOn: Bool, calendar: Calendar = .autoupdatingCurrent, now: Date = .now) {
+    mutating func setDay(_ day: Weekday, isOn: Bool, calendar: Calendar = .autoupdatingCurrent, now: Date = .now) {
         let wasActive = isActive
 
         if isOn {
@@ -40,7 +40,7 @@ extension Schedule {
         }
     }
 
-    public func matches(_ date: Date, calendar: Calendar = .autoupdatingCurrent) -> Bool {
+    func matches(_ date: Date, calendar: Calendar = .autoupdatingCurrent) -> Bool {
         guard isActive else { return false }
 
         guard let weekday = Weekday(calendarWeekday: calendar.component(.weekday, from: date)), days.contains(weekday)
@@ -49,9 +49,10 @@ extension Schedule {
         guard calendar.startOfDay(for: date) >= calendar.startOfDay(for: startDate) else { return false }
         guard interval > 1 else { return true }
 
-        guard let anchor = calendar.dateInterval(of: .weekOfYear, for: startDate)?.start,
-              let week = calendar.dateInterval(of: .weekOfYear, for: date)?.start,
-              let delta = calendar.dateComponents([.weekOfYear], from: anchor, to: week).weekOfYear
+        guard
+            let anchor = calendar.dateInterval(of: .weekOfYear, for: startDate)?.start,
+            let week = calendar.dateInterval(of: .weekOfYear, for: date)?.start,
+            let delta = calendar.dateComponents([.weekOfYear], from: anchor, to: week).weekOfYear
         else { return false }
 
         return delta % interval == 0
@@ -66,25 +67,25 @@ public nonisolated enum Weekday: Int, Codable, Hashable, Sendable, CaseIterable,
     }
 }
 
-extension Weekday {
-    public var calendarWeekday: Int {
+public extension Weekday {
+    var calendarWeekday: Int {
         (rawValue + 1) % 7 + 1
     }
 
-    public init?(calendarWeekday: Int) {
+    init?(calendarWeekday: Int) {
         guard (1 ... 7).contains(calendarWeekday) else { return nil }
         self.init(rawValue: (calendarWeekday + 5) % 7)
     }
 
-    public static func ordered(in calendar: Calendar = .autoupdatingCurrent) -> [Weekday] {
+    static func ordered(in calendar: Calendar = .autoupdatingCurrent) -> [Weekday] {
         (0 ..< 7).compactMap { Weekday(calendarWeekday: (calendar.firstWeekday - 1 + $0) % 7 + 1) }
     }
 
-    public func symbol(in calendar: Calendar = .autoupdatingCurrent) -> String {
+    func symbol(in calendar: Calendar = .autoupdatingCurrent) -> String {
         calendar.veryShortWeekdaySymbols[calendarWeekday - 1]
     }
 
-    public func name(in calendar: Calendar = .autoupdatingCurrent) -> String {
+    func name(in calendar: Calendar = .autoupdatingCurrent) -> String {
         calendar.weekdaySymbols[calendarWeekday - 1]
     }
 }

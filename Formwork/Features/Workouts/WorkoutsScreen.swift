@@ -11,7 +11,7 @@ import SwiftUI
 struct WorkoutsScreen: View {
     @Query(sort: \Workout.name) private var workouts: [Workout]
     @State private var sheet: Sheet? = nil
-    
+
     var body: some View {
         ScrollView {
             LazyVStack(spacing: 16) {

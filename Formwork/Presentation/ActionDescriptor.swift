@@ -1,5 +1,5 @@
 //
-//  Action.swift
+//  ActionDescriptor.swift
 //  Formwork
 //
 //  Created by Daniel Wolbach on 04.09.26.
@@ -21,7 +21,6 @@ struct ActionDescriptor {
 
 extension ActionDescriptor {
     // Generic
-    static let placeholder = ActionDescriptor(title: .commonPlaceholderTitle, systemImage: "questionmark")
     static let delete = ActionDescriptor(title: .actionDeleteTitle, systemImage: "trash", role: .destructive)
     static let create = ActionDescriptor(title: .actionCreateTitle, systemImage: "plus")
     static let edit = ActionDescriptor(title: .actionEditTitle, systemImage: "pencil")
@@ -37,17 +36,24 @@ extension ActionDescriptor {
     static let complete = ActionDescriptor(title: .actionCompleteTitle, systemImage: "checkmark")
     static let undo = ActionDescriptor(title: .actionUndoTitle, systemImage: "arrow.uturn.backward")
     static let minimize = ActionDescriptor(title: .actionMinimizeTitle, systemImage: "chevron.down")
-    
+
     // Workout
     static let startSession = ActionDescriptor(title: .actionStartSessionTitle, systemImage: "play.fill")
-    static let replaceSession = ActionDescriptor(title: .actionReplaceSessionTitle, systemImage: "arrow.trianglehead.2.clockwise", role: .destructive)
+    static let replaceSession = ActionDescriptor(
+        title: .actionReplaceSessionTitle,
+        systemImage: "arrow.trianglehead.2.clockwise",
+        role: .destructive
+    )
     static let resumeSession = ActionDescriptor(title: .actionResumeSessionTitle, systemImage: "play.fill")
     static let addExercise = ActionDescriptor(title: .actionAddExerciseTitle, systemImage: "text.badge.plus")
-    
+
     // Session
     static let skipExercise = ActionDescriptor(title: .actionSkipExerciseTitle, systemImage: "forward.end")
-    static let openQueue = ActionDescriptor(title: .actionOpenQueueTitle, systemImage: "list.bullet")
-    static let cancelSession = ActionDescriptor(title: .actionCancelSessionTitle, systemImage: "xmark", role: .destructive)
+    static let cancelSession = ActionDescriptor(
+        title: .actionCancelSessionTitle,
+        systemImage: "xmark",
+        role: .destructive
+    )
     static let finishSession = ActionDescriptor(title: .actionFinishSessionTitle, systemImage: "flag.pattern.checkered")
 }
 

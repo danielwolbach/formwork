@@ -18,12 +18,12 @@ final class SessionEntry {
 
     var target: ExerciseTarget = ExerciseTarget.bodyweight(sets: 1, reps: 1)
 
-    var exercise: Exercise? = nil
+    var exercise: Exercise?
 
-    var workoutEntry: WorkoutEntry? = nil
+    var workoutEntry: WorkoutEntry?
 
-    var session: Session? = nil
-    
+    var session: Session?
+
     init(workoutEntry: WorkoutEntry) {
         self.identifier = UUID()
         self.order = workoutEntry.order
@@ -40,15 +40,27 @@ extension SessionEntry {
         case skipped(at: Date)
 
         var isPending: Bool {
-            if case .pending = self { true } else { false }
+            if case .pending = self {
+                true
+            } else {
+                false
+            }
         }
 
         var isCompleted: Bool {
-            if case .completed = self { true } else { false }
+            if case .completed = self {
+                true
+            } else {
+                false
+            }
         }
 
         var isSkipped: Bool {
-            if case .skipped = self { true } else { false }
+            if case .skipped = self {
+                true
+            } else {
+                false
+            }
         }
 
         var resolved: Date? {

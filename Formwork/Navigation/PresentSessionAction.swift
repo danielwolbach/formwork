@@ -9,11 +9,11 @@ import SwiftUI
 
 struct PresentSessionAction {
     private let action: (Session) -> Void
-    
+
     init(action: @escaping (Session) -> Void) {
         self.action = action
     }
-    
+
     func callAsFunction(_ session: Session) {
         action(session)
     }

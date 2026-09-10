@@ -20,10 +20,6 @@ struct RestingView: View {
         self.kind = kind
     }
 
-    private var shape: some InsettableShape {
-        .rect(cornerRadius: 16, style: .continuous)
-    }
-
     var body: some View {
         VStack(spacing: 14) {
             Image(systemName: pictogram.icon)
@@ -31,7 +27,6 @@ struct RestingView: View {
                 .symbolRenderingMode(.hierarchical)
                 .foregroundStyle(pictogram.color)
                 .frame(width: 96, height: 96)
-         
 
             VStack(spacing: 3) {
                 Text(title)
@@ -46,13 +41,11 @@ struct RestingView: View {
         .frame(maxWidth: .infinity)
         .padding(.vertical, 36)
         .padding(.horizontal, 24)
-        .background(pictogram.color.quinary)
-        .background(.ultraThinMaterial)
-        .clipShape(shape)
-        .shadow(color: .black.opacity(0.04), radius: 4, x: 0, y: 4)
+        .cardFill(tint: pictogram.color)
+        .cardSurface()
         .accessibilityElement(children: .combine)
     }
-    
+
     private var pictogram: Pictogram {
         switch kind {
         case .finished: Pictogram(icon: "checkmark.seal.fill", tint: .green)

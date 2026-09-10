@@ -260,8 +260,7 @@ struct Statistics {
     }
 }
 
-extension Array where Element == Session {
-    /// `finished.statistics()` — the intended entry point from a `@Query`.
+extension [Session] {
     func statistics() -> Statistics {
         Statistics(sessions: self)
     }

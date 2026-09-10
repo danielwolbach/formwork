@@ -22,11 +22,11 @@ enum Sheet: Identifiable, Hashable, View {
     var body: some View {
         switch self {
         case .createExercise: ExerciseForm()
-        case .editExercise(let exercise): ExerciseForm(exercise: exercise)
+        case let .editExercise(exercise): ExerciseForm(exercise: exercise)
         case .createWorkout: WorkoutForm()
-        case .editWorkout(let workout): WorkoutForm(workout: workout)
-        case .addWorkoutExercise(let workout): WorkoutAddExerciseScreen(workout: workout)
-        case .workoutStats(let workout): WorkoutStatisticsScreen(workout: workout)
+        case let .editWorkout(workout): WorkoutForm(workout: workout)
+        case let .addWorkoutExercise(workout): WorkoutAddExerciseScreen(workout: workout)
+        case let .workoutStats(workout): WorkoutStatisticsScreen(workout: workout)
         }
     }
 }

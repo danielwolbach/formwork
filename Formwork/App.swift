@@ -13,7 +13,7 @@ import SwiftUI
     init() {
         SessionControl.register(SessionController())
     }
-    
+
     var body: some Scene {
         WindowGroup {
             AppContent()
@@ -73,7 +73,7 @@ private struct MainTabView: View {
                     OverviewScreen()
                 }
             }
-            
+
             Tab(.screenWorkoutsTitle, systemImage: "clipboard") {
                 NavigationStack {
                     WorkoutsScreen()

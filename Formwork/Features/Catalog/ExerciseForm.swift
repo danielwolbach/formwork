@@ -15,26 +15,26 @@ struct ExerciseForm: View {
     @State private var name: String
     @State private var type: ExerciseType
     @State private var categories: Set<ExerciseCategory>
-    
+
     let exercise: Exercise?
-    
+
     init(exercise: Exercise? = nil) {
         self._name = State(initialValue: exercise?.name ?? "")
         self._type = State(initialValue: exercise?.type ?? .weight)
         self._categories = State(initialValue: exercise?.categories ?? [])
         self.exercise = exercise
     }
-    
+
     var body: some View {
         Form {
             Section(.fieldNameTitle) {
                 TextField(exercise?.name ?? String(localized: .fieldNameTitle), text: $name)
             }
-            
+
             Section(.fieldExerciseTypeTitle) {
                 ExerciseTypePicker(type: $type)
             }
-            
+
             Section(.fieldExerciseCategoriesTitle) {
                 ExerciseCategoryPicker(categories: $categories)
             }
@@ -56,16 +56,16 @@ struct ExerciseForm: View {
             }
         }
     }
-    
+
     private var valid: Bool {
         let name = name.trimmingCharacters(in: .whitespacesAndNewlines)
         return !name.isEmpty
     }
-    
+
     private func save() {
         let name = name.trimmingCharacters(in: .whitespacesAndNewlines)
         let categories = categories.isEmpty ? [.other] : categories
-        
+
         if let exercise {
             exercise.name = name
             exercise.type = type
@@ -74,18 +74,18 @@ struct ExerciseForm: View {
             let exercise = Exercise(name: name, type: type, categories: categories)
             modelContext.insert(exercise)
         }
-        
+
         dismiss()
     }
 }
 
 private struct ExerciseTypePicker: View {
     @Binding var type: ExerciseType
-    
+
     var body: some View {
-        LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())]) {
+        TileGrid(spacing: 12) {
             ForEach(ExerciseType.allCases, id: \.self) { candidate in
-                ExerciseTypeOption(type: candidate, selected: candidate == type) {
+                ExerciseTypeOption(type: candidate, isSelected: candidate == type) {
                     type = candidate
                 }
             }
@@ -96,51 +96,37 @@ private struct ExerciseTypePicker: View {
 
 private struct ExerciseTypeOption: View {
     let type: ExerciseType
-    let selected: Bool
+    let isSelected: Bool
     let action: () -> Void
-    
-    private var tint: Color {
-        selected ? type.pictogram.color : .secondary
-    }
-    
+
     var body: some View {
-        Button(action: action) {
+        SelectableTile(
+            outline: RoundedRectangle(cornerRadius: 12, style: .continuous),
+            tint: type.pictogram.color,
+            isSelected: isSelected,
+            borderWidth: 2,
+            action: action
+        ) {
             VStack {
                 Image(systemName: type.pictogram.icon)
                     .frame(width: 24, height: 24)
-                
+
                 Text(type.title)
                     .lineLimit(1)
             }
             .padding()
             .frame(maxWidth: .infinity)
-            .foregroundStyle(tint)
-            .background {
-                ZStack {
-                    Rectangle().fill(.ultraThinMaterial)
-                    
-                    Rectangle().fill(tint.quinary)
-                        .opacity(selected ? 1 : 0)
-                }
-            }
-            .contentShape(.rect)
-            .clipShape(.rect(cornerRadius: 12, style: .continuous))
-            .overlay {
-                RoundedRectangle(cornerRadius: 12, style: .continuous)
-                    .strokeBorder(tint.secondary, lineWidth: selected ? 2 : 0)
-            }
         }
-        .buttonStyle(.plain)
     }
 }
 
 private struct ExerciseCategoryPicker: View {
     @Binding var categories: Set<ExerciseCategory>
-    
+
     var body: some View {
         FlowLayout(spacing: 8, alignment: .center) {
             ForEach(ExerciseCategory.allCases, id: \.self) { candidate in
-                ExerciseCategoryChip(category: candidate, selected: categories.contains(candidate)) {
+                ExerciseCategoryChip(category: candidate, isSelected: categories.contains(candidate)) {
                     if categories.contains(candidate) {
                         categories.remove(candidate)
                     } else {
@@ -156,41 +142,27 @@ private struct ExerciseCategoryPicker: View {
 
 private struct ExerciseCategoryChip: View {
     let category: ExerciseCategory
-    let selected: Bool
+    let isSelected: Bool
     let action: () -> Void
-    
-    private var tint: Color {
-        selected ? category.pictogram.color : .secondary
-    }
-    
+
     var body: some View {
-        Button(action: action) {
+        SelectableTile(
+            outline: Capsule(),
+            tint: category.pictogram.color,
+            isSelected: isSelected,
+            action: action
+        ) {
             HStack(spacing: 6) {
                 Image(systemName: category.pictogram.icon)
                     .font(.subheadline)
-                
+
                 Text(category.title)
                     .font(.subheadline)
                     .lineLimit(1)
             }
             .padding(.horizontal, 12)
             .padding(.vertical, 8)
-            .foregroundStyle(tint)
-            .background {
-                ZStack {
-                    Capsule().fill(.ultraThinMaterial)
-                    
-                    Capsule().fill(tint.quinary)
-                        .opacity(selected ? 1 : 0)
-                }
-            }
-            .contentShape(Capsule())
-            .overlay {
-                Capsule()
-                    .strokeBorder(tint.secondary, lineWidth: selected ? 1.5 : 0)
-            }
         }
-        .buttonStyle(.plain)
     }
 }
 

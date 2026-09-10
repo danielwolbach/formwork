@@ -56,7 +56,7 @@ enum SessionActivity {
             subtitle: current.subtitle,
             pictogram: current.pictogram,
             status: current.status.isPending ? nil : current.status.pictogram,
-            resolved: session.history.count,
+            resolved: session.resolvedCount,
             total: session.entries.count,
             isPending: current.status.isPending,
             isComplete: session.isComplete,
@@ -75,7 +75,6 @@ enum SessionActivity {
             started: session.started
         )
 
-       
         _ = try? Activity<SessionActivityAttributes>.request(
             attributes: attributes,
             content: ActivityContent(state: state, staleDate: nil)

@@ -13,9 +13,9 @@ struct SessionPlayerScreen: View {
     @State private var finishAlert: Bool = false
     @State private var cancelAlert: Bool = false
     @State private var direction: SlideDirection = .forward
-    
+
     let session: Session
-    
+
     var body: some View {
         currentView
             .safeAreaBar(edge: .bottom, spacing: 0) {
@@ -25,21 +25,21 @@ struct SessionPlayerScreen: View {
                 ToolbarItem(placement: .principal) {
                     SessionTimer(session: session)
                 }
-                
+
                 ToolbarItem(placement: .topBarLeading) {
                     Button(.minimize) {
                         dismiss()
                     }
                 }
-                
-                ToolbarItem(placement: . topBarTrailing) {
+
+                ToolbarItem(placement: .topBarTrailing) {
                     Menu(.more) {
                         Section {
                             Button(.finishSession) {
                                 finishAlert = true
                             }
                         }
-                        
+
                         Section {
                             Button(.cancelSession) {
                                 cancelAlert = true
@@ -52,10 +52,8 @@ struct SessionPlayerScreen: View {
                 Button(.finishSession) {
                     finish()
                 }
-                
-                Button(.cancel) {
-                    
-                }
+
+                Button(.cancel) {}
             } message: {
                 Text(.alertSessionFinishMessage)
             }
@@ -63,15 +61,13 @@ struct SessionPlayerScreen: View {
                 Button(.cancelSession) {
                     cancel()
                 }
-                
-                Button(.cancel) {
-                    
-                }
+
+                Button(.cancel) {}
             } message: {
                 Text(.alertSessionCancelMessage)
             }
     }
-    
+
     private var currentView: some View {
         SlideStack(
             key: session.current?.identifier,
@@ -95,7 +91,7 @@ struct SessionPlayerScreen: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
     }
-    
+
     private var controls: some View {
         VStack(spacing: 16) {
             HStack {
@@ -108,11 +104,11 @@ struct SessionPlayerScreen: View {
                 .buttonStyle(.glass)
                 .buttonBorderShape(.circle)
                 .labelStyle(.fixedIconOnly)
-                
+
                 primaryAction
                     .buttonStyle(.glassProminent)
                     .labelStyle(.fixedTitleAndIcon)
-                
+
                 Button(.forward) {
                     advance(.forward) {
                         session.moveToNext()
@@ -124,7 +120,7 @@ struct SessionPlayerScreen: View {
                 .labelStyle(.fixedIconOnly)
             }
             .controlSize(.large)
-            
+
             secondaryAction
                 .buttonStyle(.borderless)
                 .labelStyle(.fixedTitleAndIcon)
@@ -133,7 +129,7 @@ struct SessionPlayerScreen: View {
         }
         .padding(.horizontal)
     }
-    
+
     @ViewBuilder
     private var primaryAction: some View {
         if session.isComplete {
@@ -145,7 +141,7 @@ struct SessionPlayerScreen: View {
             if status.isPending {
                 Button(.complete) {
                     Haptics.impact(.medium)
-                    
+
                     advance(.forward) {
                         session.completeAndAdvance()
                     }
@@ -161,7 +157,7 @@ struct SessionPlayerScreen: View {
             }
         }
     }
-    
+
     @ViewBuilder
     private var secondaryAction: some View {
         if let status = session.current?.status {
@@ -178,29 +174,21 @@ struct SessionPlayerScreen: View {
             }
         }
     }
-    
+
     private func advance(_ direction: SlideDirection, _ action: () -> Void) {
         self.direction = direction
         action()
     }
-    
+
     private func finish() {
-        do {
-            try session.finish()
-            Haptics.notification(.success)
-            dismiss()
-        } catch {
-            // TODO: Log error
-        }
+        session.finish()
+        Haptics.notification(.success)
+        dismiss()
     }
-    
+
     private func cancel() {
-        do {
-            try session.cancel()
-            dismiss()
-        } catch {
-            // TODO: Log error
-        }
+        session.cancel()
+        dismiss()
     }
 }
 

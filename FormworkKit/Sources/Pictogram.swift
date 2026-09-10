@@ -22,8 +22,8 @@ public nonisolated struct Pictogram: Codable, Hashable, Sendable {
     }
 }
 
-extension Pictogram {
-    public nonisolated enum Tint: String, Identifiable, Codable, Hashable, Sendable, CaseIterable {
+public extension Pictogram {
+    nonisolated enum Tint: String, Identifiable, Codable, Hashable, Sendable, CaseIterable {
         case blue
         case indigo
         case purple
@@ -36,7 +36,7 @@ extension Pictogram {
         case cyan
         case brown
         case gray
-        
+
         public var id: Self {
             self
         }
@@ -59,5 +59,6 @@ extension Pictogram {
         }
     }
 
-    public static let unknown = Pictogram(icon: "questionmark", tint: .gray)
+    static let unknown = Pictogram(icon: "questionmark", tint: .gray)
+    static let workout = Pictogram(icon: "figure.strengthtraining.traditional", tint: .blue)
 }

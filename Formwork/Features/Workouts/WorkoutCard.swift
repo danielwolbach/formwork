@@ -10,16 +10,14 @@ import SwiftUI
 
 struct WorkoutCard: View {
     let workout: Workout
-    
+
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             banner
             content
         }
-        .background(.background)
-        .clipShape(.rect(cornerRadius: 16, style: .continuous))
-        .shadow(color: .black.opacity(0.04), radius: 4, x: 0, y: 4)
-        .contentShape(.rect)
+        .background(.ultraThinMaterial)
+        .cardSurface()
     }
 
     private var banner: some View {
@@ -54,7 +52,7 @@ struct WorkoutCard: View {
         }
         .padding()
     }
-    
+
     private var categories: [ExerciseCategory] {
         let present = Set(workout.entries.compactMap(\.exercise).flatMap(\.categories))
         return ExerciseCategory.allCases.filter(present.contains)

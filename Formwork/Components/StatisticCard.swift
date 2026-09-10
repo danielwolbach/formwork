@@ -1,0 +1,87 @@
+//
+//  StatisticCard.swift
+//  Formwork
+//
+//  Created by Daniel Wolbach on 06.09.26.
+//
+
+import FormworkKit
+import SwiftUI
+
+struct StatisticCard: View {
+    let title: LocalizedStringResource
+    let value: String?
+    let pictogram: Pictogram
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 2) {
+            Spacer(minLength: 0)
+
+            Text(title)
+                .font(.subheadline)
+                .lineLimit(1)
+                .foregroundStyle(.secondary)
+
+            Text(verbatim: value ?? "—")
+                .font(.system(.title3, design: .rounded, weight: .semibold))
+                .lineLimit(1)
+                .minimumScaleFactor(0.6)
+                .contentTransition(.numericText())
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding()
+        .background(alignment: .topTrailing) {
+            Image(systemName: pictogram.icon)
+                .font(.system(size: 96))
+                .symbolRenderingMode(.hierarchical)
+                .foregroundStyle(pictogram.color)
+                .opacity(0.35)
+                .offset(x: 24, y: -24)
+        }
+        .cardFill(tint: pictogram.color)
+        .aspectRatio(1.8, contentMode: .fit)
+        .cardSurface()
+    }
+}
+
+private struct StatisticCardGallery: View {
+    var body: some View {
+        TileGrid {
+            StatisticCard(
+                title: .statisticStreakTitle,
+                value: "23 Weeks",
+                pictogram: Pictogram(icon: "flame", tint: .orange)
+            )
+            StatisticCard(
+                title: .statisticLastSessionTitle,
+                value: "2 Days Ago",
+                pictogram: Pictogram(icon: "calendar", tint: .indigo)
+            )
+            StatisticCard(
+                title: .statisticStreakTitle,
+                value: "0 Weeks",
+                pictogram: Pictogram(icon: "flame", tint: .orange)
+            )
+            StatisticCard(
+                title: .statisticLastSessionTitle,
+                value: nil,
+                pictogram: Pictogram(icon: "calendar", tint: .indigo)
+            )
+            StatisticCard(
+                title: .statisticStreakTitle,
+                value: "127 Wochen",
+                pictogram: Pictogram(icon: "flame", tint: .orange)
+            )
+            StatisticCard(
+                title: .statisticLastSessionTitle,
+                value: "Vorgestern Abend",
+                pictogram: Pictogram(icon: "calendar", tint: .indigo)
+            )
+        }
+        .padding()
+    }
+}
+
+#Preview {
+    StatisticCardGallery()
+}

@@ -18,7 +18,7 @@ nonisolated enum ExerciseCategory: Identifiable, Codable, CaseIterable {
     case flexibility
     case mindfulness
     case other
-    
+
     var id: Self {
         self
     }

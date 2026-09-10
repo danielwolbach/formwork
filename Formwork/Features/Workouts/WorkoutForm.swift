@@ -17,44 +17,48 @@ struct WorkoutForm: View {
     @State private var schedule: Schedule
     @State private var entries: [WorkoutEntry]
     @State private var isPictogramFormPresented = false
-    
+
     let workout: Workout?
-    
+
     init(workout: Workout? = nil) {
         self._name = State(initialValue: workout?.name ?? "")
-        self._pictogram = State(initialValue: workout?.pictogram ?? Pictogram(icon: "figure.strengthtraining.traditional", tint: .blue))
+        self._pictogram = State(initialValue: workout?.pictogram ?? Pictogram.workout)
         self._entries = State(initialValue: workout?.entries.sorted() ?? [])
         self._schedule = State(initialValue: workout?.schedule ?? .inactive)
         self.workout = workout
     }
-    
+
     var body: some View {
         Form {
             Section {
                 HStack {
                     Spacer()
-                    
+
                     Button {
                         isPictogramFormPresented = true
                     } label: {
-                        PictogramView(pictogram: pictogram, size: 192, badge: Pictogram(icon: "pencil.circle.fill", tint: .gray))
+                        PictogramView(
+                            pictogram: pictogram,
+                            size: 192,
+                            badge: Pictogram(icon: "pencil.circle.fill", tint: .gray)
+                        )
                     }
-                    
+
                     Spacer()
                 }
                 .listRowBackground(Color.clear)
             }
-            
+
             Section(.fieldNameTitle) {
                 TextField(workout?.name ?? String(localized: .fieldNameTitle), text: $name)
             }
-            
+
             scheduleSection
-            
+
             if !entries.isEmpty {
                 Section(.fieldWorkoutEntriesTitle) {
                     ForEach(entries) { entry in
-                        WorkoutEntryRow(entry: entry)
+                        DisplayableRow(displayable: entry)
                     }
                     .onMove { source, destination in
                         entries.move(fromOffsets: source, toOffset: destination)
@@ -72,7 +76,7 @@ struct WorkoutForm: View {
                 }
                 .disabled(!valid)
             }
-            
+
             ToolbarItem(placement: .cancellationAction) {
                 Button(.cancel) {
                     dismiss()
@@ -85,12 +89,11 @@ struct WorkoutForm: View {
             }
         }
     }
-    
-    @ViewBuilder
+
     private var scheduleSection: some View {
         Section(.fieldWorkoutScheduleTitle) {
             WeekdayPicker(schedule: $schedule, tint: pictogram.color)
-            
+
             if schedule.isActive {
                 Picker(selection: $schedule.interval) {
                     ForEach(1 ... 4, id: \.self) { weeks in
@@ -100,7 +103,7 @@ struct WorkoutForm: View {
                     Text(.fieldWorkoutScheduleIntervalTitle)
                 }
                 .listRowSeparator(.hidden)
-                
+
                 DatePicker(selection: $schedule.startDate, displayedComponents: .date) {
                     Text(.fieldWorkoutScheduleStartDateTitle)
                 }
@@ -108,16 +111,18 @@ struct WorkoutForm: View {
             }
         }
     }
-    
+
     private var valid: Bool {
         let name = name.trimmingCharacters(in: .whitespacesAndNewlines)
         return !name.isEmpty
     }
-    
+
     private func save() {
         let name = name.trimmingCharacters(in: .whitespacesAndNewlines)
-        for (index, entry) in entries.enumerated() { entry.order = index }
-    
+        for (index, entry) in entries.enumerated() {
+            entry.order = index
+        }
+
         if let workout {
             workout.name = name
             workout.pictogram = pictogram
@@ -126,7 +131,7 @@ struct WorkoutForm: View {
             let workout = Workout(name: name, pictogram: pictogram, entries: entries, schedule: schedule)
             modelContext.insert(workout)
         }
-        
+
         dismiss()
     }
 }
@@ -134,11 +139,11 @@ struct WorkoutForm: View {
 private struct WeekdayPicker: View {
     @Binding var schedule: Schedule
     let tint: Color
-    
+
     var body: some View {
         HStack {
             ForEach(Weekday.ordered()) { candidate in
-                WeekdayChip(day: candidate, tint: tint, selected: schedule.days.contains(candidate)) {
+                WeekdayChip(day: candidate, tint: tint, isSelected: schedule.days.contains(candidate)) {
                     schedule.setDay(candidate, isOn: !schedule.days.contains(candidate))
                 }
             }
@@ -151,54 +156,24 @@ private struct WeekdayPicker: View {
 
 private struct WeekdayChip: View {
     let day: Weekday
-    let selectedTint: Color
-    let selected: Bool
+    let tint: Color
+    let isSelected: Bool
     let action: () -> Void
-    
-    init(day: Weekday, tint: Color, selected: Bool, action: @escaping () -> Void) {
-        self.day = day
-        self.selectedTint = tint
-        self.selected = selected
-        self.action = action
-    }
-    
-    private var tint: Color {
-        selected ? selectedTint : .secondary
-    }
-    
+
     var body: some View {
-        Button(action: action) {
+        SelectableTile(
+            outline: Circle(),
+            tint: tint,
+            isSelected: isSelected,
+            action: action
+        ) {
             Text(day.symbol())
                 .font(.subheadline)
                 .fontWeight(.semibold)
                 .lineLimit(1)
                 .frame(width: 40, height: 40)
-                .foregroundStyle(tint)
-                .background {
-                    ZStack {
-                        Circle().fill(.ultraThinMaterial)
-                        
-                        Circle().fill(tint.quinary)
-                            .opacity(selected ? 1 : 0)
-                    }
-                }
-                .contentShape(.circle)
-                .overlay {
-                    Circle()
-                        .strokeBorder(tint.secondary, lineWidth: selected ? 1.5 : 0)
-                }
         }
-        .buttonStyle(.plain)
         .accessibilityLabel(day.name())
-        .accessibilityAddTraits(selected ? [.isSelected] : [])
-    }
-}
-
-private struct WorkoutEntryRow: View {
-    let entry: WorkoutEntry
-    
-    var body: some View {
-        DisplayableRow(displayable: entry)
     }
 }
 

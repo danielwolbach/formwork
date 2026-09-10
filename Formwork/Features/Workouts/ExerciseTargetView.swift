@@ -9,49 +9,52 @@ import SwiftUI
 
 struct ExerciseTargetView: View {
     @Binding var target: ExerciseTarget
-    
+
     var body: some View {
         switch target {
         case let .weight(weight, sets, reps): WeightTargetView(
-            weight: binding(
-                get: { weight },
-                set: { .weight(weight: $0, sets: sets, reps: reps) }
-            ),
-            sets: binding(
-                get: { sets },
-                set: { .weight(weight: weight, sets: $0, reps: reps) }
-            ),
-            reps: binding(
-                get: { reps },
-                set: { .weight(weight: weight, sets: sets, reps: $0) }
+                weight: binding(
+                    get: { weight },
+                    set: { .weight(weight: $0, sets: sets, reps: reps) }
+                ),
+                sets: binding(
+                    get: { sets },
+                    set: { .weight(weight: weight, sets: $0, reps: reps) }
+                ),
+                reps: binding(
+                    get: { reps },
+                    set: { .weight(weight: weight, sets: sets, reps: $0) }
+                )
             )
-        )
         case let .bodyweight(sets, reps): BodyweightTargetView(
-            sets: binding(
-                get: { sets },
-                set: { .bodyweight(sets: $0, reps: reps) }
-            ),
-            reps: binding(
-                get: { reps },
-                set: { .bodyweight(sets: sets, reps: $0) }
+                sets: binding(
+                    get: { sets },
+                    set: { .bodyweight(sets: $0, reps: reps) }
+                ),
+                reps: binding(
+                    get: { reps },
+                    set: { .bodyweight(sets: sets, reps: $0) }
+                )
             )
-        )
         case let .duration(minutes): DurationTargetView(
-            minutes: binding(
-                get: { minutes },
-                set: { .duration(minutes: $0) }
+                minutes: binding(
+                    get: { minutes },
+                    set: { .duration(minutes: $0) }
+                )
             )
-        )
         case let .distance(meters): DistanceTargetView(
-            meters: binding(
-                get: { meters },
-                set: { .distance(meters: $0) }
+                meters: binding(
+                    get: { meters },
+                    set: { .distance(meters: $0) }
+                )
             )
-        )
         }
     }
-    
-    private func binding<Value: Sendable>(get: @Sendable @escaping () -> Value, set: @escaping (Value) -> ExerciseTarget) -> Binding<Value> {
+
+    private func binding<Value: Sendable>(
+        get: @Sendable @escaping () -> Value,
+        set: @escaping (Value) -> ExerciseTarget
+    ) -> Binding<Value> {
         Binding(get: get, set: { target = set($0) })
     }
 }
@@ -60,7 +63,7 @@ private struct WeightTargetView: View {
     @Binding var weight: Double
     @Binding var sets: Int
     @Binding var reps: Int
-    
+
     var body: some View {
         VStack(spacing: 32) {
             NumberStepper(
@@ -68,9 +71,9 @@ private struct WeightTargetView: View {
                 title: .exerciseTypeWeightTitle,
                 suffix: .unitKilogramsSuffix,
                 stepSize: 5,
-                range: 0 ... 1_000,
+                range: 0 ... 1000
             )
-            
+
             BodyweightTargetView(sets: $sets, reps: $reps)
         }
     }
@@ -79,19 +82,19 @@ private struct WeightTargetView: View {
 private struct BodyweightTargetView: View {
     @Binding var sets: Int
     @Binding var reps: Int
-    
+
     var body: some View {
         VStack(spacing: 32) {
             HStack {
                 NumberStepper(
                     value: $sets,
                     title: .fieldExerciseTargetSetsTitle,
-                    range: 1 ... 1_000
+                    range: 1 ... 1000
                 )
-                
+
                 Divider()
                     .frame(height: 48)
-                
+
                 NumberStepper(
                     value: $reps,
                     title: .fieldExerciseTargetRepsTitle,
@@ -104,7 +107,7 @@ private struct BodyweightTargetView: View {
 
 private struct DurationTargetView: View {
     @Binding var minutes: Int
-    
+
     var body: some View {
         VStack(spacing: 32) {
             HStack {
@@ -122,7 +125,7 @@ private struct DurationTargetView: View {
 
 private struct DistanceTargetView: View {
     @Binding var meters: Int
-    
+
     var body: some View {
         VStack(spacing: 32) {
             HStack {

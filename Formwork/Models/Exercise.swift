@@ -11,15 +11,15 @@ import SwiftData
 @Model
 final class Exercise {
     var name: String = String(localized: .unknown)
-    
+
     var type: ExerciseType = ExerciseType.bodyweight
-    
+
     var categories: Set<ExerciseCategory> = [ExerciseCategory.other]
-    
+
     @Relationship(deleteRule: .cascade, inverse: \WorkoutEntry.exercise)
     var workoutEntries: [WorkoutEntry] = []
-    
-    @Relationship(deleteRule: .cascade, inverse: \SessionEntry.exercise)
+
+    @Relationship(deleteRule: .nullify, inverse: \SessionEntry.exercise)
     var sessionEntries: [SessionEntry] = []
 
     init(name: String, type: ExerciseType, categories: Set<ExerciseCategory>) {

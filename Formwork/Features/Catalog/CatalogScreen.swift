@@ -12,7 +12,7 @@ import SwiftUI
 struct CatalogScreen: View {
     @Query private var exercises: [Exercise]
     @State private var sheet: Sheet? = nil
-    
+
     var body: some View {
         ScrollView {
             ExerciseCategoryGrid(exercises: exercises)
@@ -36,9 +36,9 @@ struct CatalogScreen: View {
 
 private struct ExerciseCategoryGrid: View {
     let exercises: [Exercise]
-    
+
     var body: some View {
-        LazyVGrid(columns: [.init(.flexible()), .init(.flexible())]) {
+        TileGrid {
             ForEach(ExerciseCategory.allCases) { category in
                 NavigationLink(value: category) {
                     ExerciseCategoryTile(category: category, exerciseCount: countExercises(in: category))
@@ -48,9 +48,9 @@ private struct ExerciseCategoryGrid: View {
         .padding(.vertical, 8)
         .padding(.horizontal, 16)
     }
-    
+
     private func countExercises(in category: ExerciseCategory) -> Int {
-        return exercises.count { $0.categories.contains(category) }
+        exercises.count { $0.categories.contains(category) }
     }
 }
 
@@ -72,7 +72,7 @@ private struct ExerciseCategoryTile: View {
                     Text(category.title)
                         .font(.headline)
                         .lineLimit(1)
-                    
+
                     Text(.exerciseCategorySubtitle(exerciseCount: exerciseCount))
                         .font(.subheadline)
                         .lineLimit(1)
@@ -85,12 +85,10 @@ private struct ExerciseCategoryTile: View {
         }
         .foregroundStyle(.white)
         .aspectRatio(1.8, contentMode: .fit)
-        .glassEffect(.regular.tint(category.pictogram.color), in: .rect(cornerRadius: 16, style: .continuous))
-        .shadow(color: .black.opacity(0.04), radius: 4, x: 0, y: 4)
-        .contentShape(.rect)
+        .glassEffect(.regular.tint(category.pictogram.color), in: .card)
+        .cardSurface()
     }
 }
-
 
 #Preview {
     NavigationStack {

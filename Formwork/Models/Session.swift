@@ -12,14 +12,14 @@ import SwiftData
 final class Session {
     var started: Date = Date.distantPast
 
-    var ended: Date? = nil
+    var ended: Date?
 
-    var workout: Workout? = nil
+    var workout: Workout?
 
     @Relationship(deleteRule: .cascade, inverse: \SessionEntry.session)
     var entries: [SessionEntry] = []
 
-    private var currentIdentifier: UUID? = nil
+    private var currentIdentifier: UUID?
 
     private init(workout: Workout, entries: [SessionEntry]) {
         self.started = .now
@@ -28,7 +28,10 @@ final class Session {
         self.entries = entries
         self.currentIdentifier = entries.sorted().first?.identifier
     }
+}
 
+/// Fetching sessions out of a context.
+extension Session {
     static var activeDescriptor: FetchDescriptor<Session> {
         var descriptor = FetchDescriptor<Session>(
             predicate: #Predicate<Session> { $0.ended == nil },
@@ -37,7 +40,7 @@ final class Session {
         descriptor.fetchLimit = 1
         return descriptor
     }
-    
+
     static var finishedDescriptor: FetchDescriptor<Session> {
         FetchDescriptor<Session>(
             predicate: #Predicate<Session> { $0.ended != nil },
@@ -48,13 +51,17 @@ final class Session {
     static func active(in context: ModelContext) throws -> Session? {
         try context.fetch(activeDescriptor).first
     }
-    
+}
+
+/// Starting, finishing and abandoning a session.
+extension Session {
     static func start(_ workout: Workout, in context: ModelContext) throws -> Session {
         precondition(!workout.entries.isEmpty)
 
         let entries = workout.entries.map { workoutEntry in SessionEntry(workoutEntry: workoutEntry) }
+        let runningDescriptor = FetchDescriptor<Session>(predicate: #Predicate<Session> { $0.ended == nil })
 
-        for running in try context.fetch(FetchDescriptor<Session>(predicate: #Predicate<Session> { $0.ended == nil })) {
+        for running in try context.fetch(runningDescriptor) {
             context.delete(running)
         }
 
@@ -64,7 +71,7 @@ final class Session {
         return session
     }
 
-    func finish() throws {
+    func finish() {
         guard isActive else {
             return
         }
@@ -76,14 +83,18 @@ final class Session {
         ended = .now
     }
 
-    func cancel() throws {
+    func cancel() {
         guard let modelContext else {
             return
         }
-        
+
         modelContext.delete(self)
     }
-    
+
+    var isActive: Bool {
+        ended == nil
+    }
+
     var completion: Date? {
         guard let ended, entries.contains(where: \.status.isCompleted) else {
             return nil
@@ -91,15 +102,10 @@ final class Session {
 
         return ended
     }
+}
 
-    var isActive: Bool {
-        ended == nil
-    }
-
-    var isComplete: Bool {
-        pending.isEmpty
-    }
-
+/// The order entries are worked through in, and how much of it is left.
+extension Session {
     var pending: [SessionEntry] {
         entries
             .filter(\.status.isPending)
@@ -120,14 +126,31 @@ final class Session {
         history + pending
     }
 
-    var firstEntry: SessionEntry? {
-        orderedEntries.first
+    var isComplete: Bool {
+        pending.isEmpty
+    }
+
+    var resolvedCount: Int {
+        entries.count { !$0.status.isPending }
+    }
+
+    var progressText: String {
+        "\(resolvedCount) / \(entries.count)"
     }
 
     func entry(identifiedBy identifier: UUID) -> SessionEntry? {
         entries.first { $0.identifier == identifier }
     }
 
+    private func renumber(_ entries: [SessionEntry]) {
+        for (order, entry) in entries.enumerated() {
+            entry.order = order
+        }
+    }
+}
+
+/// Which entry the player is on, and every way of leaving it.
+extension Session {
     var current: SessionEntry? {
         get {
             entries.first { $0.identifier == currentIdentifier }
@@ -169,7 +192,7 @@ final class Session {
 
         return ordered[index + 1]
     }
-    
+
     func moveToPrevious() {
         guard let previous else {
             return
@@ -211,13 +234,6 @@ final class Session {
         undoStatusChange(for: current)
     }
 
-    func reorderPending(_ entries: [SessionEntry]) {
-        let reordered = entries.filter(\.status.isPending)
-        let remainder = pending.filter { entry in !reordered.contains { $0 === entry } }
-
-        renumber(reordered + remainder)
-    }
-
     private func advance(as status: SessionEntry.Status) {
         guard let entry = current else {
             return
@@ -226,11 +242,5 @@ final class Session {
         let following = pending.first { $0 !== entry }
         entry.status = status
         current = following ?? entry
-    }
-
-    private func renumber(_ entries: [SessionEntry]) {
-        for (order, entry) in entries.enumerated() {
-            entry.order = order
-        }
     }
 }

@@ -6,9 +6,9 @@ let package = Package(
     name: "FormworkKit",
     platforms: [.iOS(.v27)],
     products: [
-        .library(name: "FormworkKit", targets: ["FormworkKit"])
+        .library(name: "FormworkKit", targets: ["FormworkKit"]),
     ],
     targets: [
-        .target(name: "FormworkKit")
+        .target(name: "FormworkKit"),
     ]
 )

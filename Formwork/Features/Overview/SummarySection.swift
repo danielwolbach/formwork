@@ -12,14 +12,14 @@ struct SummarySection: View {
     let statistics: WorkoutStatistics
 
     var body: some View {
-        LazyVGrid(columns: [.init(.flexible()), .init(.flexible())]) {
-            ValueCard(
+        TileGrid {
+            StatisticCard(
                 title: .statisticStreakTitle,
                 value: String(localized: .statisticStreakValue(count: statistics.weekStreak())),
                 pictogram: Pictogram(icon: "flame", tint: .orange)
             )
 
-            ValueCard(
+            StatisticCard(
                 title: .statisticLastSessionTitle,
                 value: statistics.lastCompleted?.relativeDayDescription().localizedCapitalized,
                 pictogram: Pictogram(icon: "calendar", tint: .indigo)

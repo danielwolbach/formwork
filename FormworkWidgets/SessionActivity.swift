@@ -1,5 +1,5 @@
 //
-//  FormworkWidgetsLiveActivity.swift
+//  SessionActivity.swift
 //  FormworkWidgets
 //
 //  Created by Daniel Wolbach on 06.09.26.
@@ -20,7 +20,7 @@ struct SessionActivity: Widget {
                     Spacer()
                     progress(for: context)
                 }
-                
+
                 HStack {
                     description(for: context)
                     Spacer()
@@ -35,13 +35,13 @@ struct SessionActivity: Widget {
                     pictogram(for: context)
                         .padding(.leading)
                 }
-                
+
                 DynamicIslandExpandedRegion(.trailing) {
                     progress(for: context)
                         .padding(.trailing)
                         .frame(height: 40)
                 }
-                
+
                 DynamicIslandExpandedRegion(.bottom) {
                     HStack {
                         description(for: context)
@@ -62,7 +62,7 @@ struct SessionActivity: Widget {
             .widgetURL(DeepLink.session)
         }
     }
-    
+
     private func pictogram(for context: ActivityViewContext<SessionActivityAttributes>) -> some View {
         PictogramView(
             pictogram: context.state.pictogram,
@@ -76,14 +76,14 @@ struct SessionActivity: Widget {
             Text(context.state.title)
                 .lineLimit(1)
                 .font(.headline)
-            
+
             Text(context.state.subtitle)
                 .lineLimit(1)
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
         }
     }
-    
+
     private func progress(for context: ActivityViewContext<SessionActivityAttributes>) -> some View {
         HStack {
             Text(context.attributes.started, style: .timer)
@@ -91,14 +91,14 @@ struct SessionActivity: Widget {
                 .font(.footnote)
                 .fontWeight(.semibold)
                 .multilineTextAlignment(.trailing)
-            
+
             Divider()
                 .frame(height: 16)
-            
+
             remaining(for: context)
         }
     }
-    
+
     private func remaining(for context: ActivityViewContext<SessionActivityAttributes>) -> some View {
         HStack(alignment: .bottom, spacing: 0) {
             Text(verbatim: "\(context.state.resolved)")
@@ -112,7 +112,7 @@ struct SessionActivity: Widget {
         }
         .monospacedDigit()
     }
-        
+
     private func controls(for context: ActivityViewContext<SessionActivityAttributes>) -> some View {
         HStack {
             Button(intent: SessionBackwardIntent()) {
@@ -121,7 +121,7 @@ struct SessionActivity: Widget {
             .tint(.gray)
             .buttonBorderShape(.circle)
             .disabled(!context.state.canMoveBackward)
-            
+
             if context.state.isPending {
                 Button(intent: SessionCompleteIntent()) {
                     controlLabel("checkmark")
@@ -135,7 +135,7 @@ struct SessionActivity: Widget {
                 .tint(.gray)
                 .buttonBorderShape(.circle)
             }
-            
+
             Button(intent: SessionForwardIntent()) {
                 controlLabel("chevron.right")
             }
@@ -144,7 +144,7 @@ struct SessionActivity: Widget {
             .disabled(!context.state.canMoveForward)
         }
     }
-    
+
     private func controlLabel(_ systemImage: String) -> some View {
         Image(systemName: systemImage)
             .frame(width: 20, height: 20)
@@ -172,7 +172,7 @@ private extension SessionActivityAttributes.ContentState {
             canMoveBackward: true
         )
     }
-    
+
     static var completed: Self {
         var state = Self.preview
         state.status = Pictogram(icon: "checkmark.circle.fill", tint: .green)
@@ -180,21 +180,21 @@ private extension SessionActivityAttributes.ContentState {
         state.resolved = 3
         return state
     }
-    
+
     static var atStart: Self {
         var state = Self.preview
         state.canMoveBackward = false
         state.resolved = 0
         return state
     }
-    
+
     static var atEnd: Self {
         var state = Self.preview
         state.canMoveForward = false
         state.resolved = 4
         return state
     }
-    
+
     static var finished: Self {
         var state = Self.preview
         state.subtitle = "Session complete"

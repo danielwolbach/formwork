@@ -14,15 +14,15 @@ struct DisplayableRow: View {
     private let pictogram: Pictogram
 
     init(displayable: some SubtitledDisplayable) {
-        title = displayable.title
-        subtitle = displayable.subtitle
-        pictogram = displayable.pictogram
+        self.title = displayable.title
+        self.subtitle = displayable.subtitle
+        self.pictogram = displayable.pictogram
     }
 
     init(displayable: some Displayable) {
-        title = displayable.title
-        subtitle = nil
-        pictogram = displayable.pictogram
+        self.title = displayable.title
+        self.subtitle = nil
+        self.pictogram = displayable.pictogram
     }
 
     var body: some View {
@@ -44,4 +44,13 @@ struct DisplayableRow: View {
         }
         .contentShape(.rect)
     }
+}
+
+#Preview {
+    VStack(spacing: 16) {
+        DisplayableRow(displayable: Samples.exercises[0])
+        DisplayableRow(displayable: Samples.workouts[0])
+        DisplayableRow(displayable: ExerciseCategory.cardio)
+    }
+    .padding()
 }

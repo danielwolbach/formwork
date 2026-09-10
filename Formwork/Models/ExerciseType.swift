@@ -12,7 +12,7 @@ nonisolated enum ExerciseType: Identifiable, Codable, CaseIterable {
     case bodyweight
     case duration
     case distance
-    
+
     var id: Self {
         self
     }

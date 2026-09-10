@@ -1,5 +1,5 @@
 //
-//  FormworkWidgetsBundle.swift
+//  WidgetBundle.swift
 //  FormworkWidgets
 //
 //  Created by Daniel Wolbach on 06.09.26.

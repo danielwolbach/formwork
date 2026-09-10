@@ -9,15 +9,14 @@ import SwiftUI
 
 struct NumberStepper: View {
     @State private var showKeypad = false
-    @State private var draft = ""
     @Binding var value: Double
-    
+
     let title: LocalizedStringResource
     let suffix: LocalizedStringResource?
     let stepSize: Double?
     let fractionLength: Int
     let range: ClosedRange<Double>
-    
+
     init(
         value: Binding<Double>,
         title: LocalizedStringResource,
@@ -33,7 +32,7 @@ struct NumberStepper: View {
         self.stepSize = stepSize
         self.range = range
     }
-    
+
     init(
         value: Binding<Int>,
         title: LocalizedStringResource,
@@ -50,38 +49,44 @@ struct NumberStepper: View {
             range: Double(range.lowerBound) ... Double(range.upperBound)
         )
     }
-    
+
     var body: some View {
         VStack(spacing: 4) {
             titleLabel
-            
+
             HStack(spacing: 16) {
                 if let stepSize {
                     stepButton(.decrease, by: -stepSize)
                 }
-                
+
                 valueButton
-                
+
                 if let stepSize {
                     stepButton(.increase, by: stepSize)
                 }
             }
         }
         .sheet(isPresented: $showKeypad) {
-            keypadSheet
+            NumberEntrySheet(
+                value: $value,
+                title: title,
+                suffix: suffix,
+                fractionLength: fractionLength,
+                range: range
+            )
         }
         .sensoryFeedback(trigger: value) { oldValue, newValue in
             newValue > oldValue ? .increase : .decrease
         }
     }
-    
+
     private var titleLabel: some View {
         Text(title)
             .font(.subheadline)
             .lineLimit(1)
             .foregroundStyle(.secondary)
     }
-    
+
     private func stepButton(_ descriptor: ActionDescriptor, by delta: Double) -> some View {
         Button(descriptor) {
             withAnimation {
@@ -92,7 +97,7 @@ struct NumberStepper: View {
         .buttonStyle(.glass)
         .buttonBorderShape(.circle)
     }
-    
+
     private var valueButton: some View {
         Button {
             showKeypad = true
@@ -101,12 +106,36 @@ struct NumberStepper: View {
         }
         .buttonStyle(.plain)
     }
-    
-    private var keypadSheet: some View {
+
+    private var text: String {
+        value.formatted(.number.precision(.fractionLength(fractionLength)))
+    }
+
+    private func clamped(_ raw: Double) -> Double {
+        min(max(raw, range.lowerBound), range.upperBound)
+    }
+}
+
+private struct NumberEntrySheet: View {
+    @Environment(\.dismiss) private var dismiss: DismissAction
+    @State private var draft = ""
+    @Binding var value: Double
+
+    let title: LocalizedStringResource
+    let suffix: LocalizedStringResource?
+    let fractionLength: Int
+    let range: ClosedRange<Double>
+
+    var body: some View {
         NavigationStack {
             VStack(spacing: 32) {
-                ValueLabel(text: draft.isEmpty ? text : draft, suffix: suffix, value: value)
-                
+                ValueLabel(
+                    text: draft.isEmpty ? text : draft,
+                    suffix: suffix,
+                    value: value,
+                    isPlaceholder: draft.isEmpty
+                )
+
                 DecimalKeypad(text: $draft, fractionLength: fractionLength, upperBound: range.upperBound)
                     .padding(.horizontal)
             }
@@ -116,31 +145,33 @@ struct NumberStepper: View {
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button(.confirm) {
-                        let parsedDraft = Double(draft.replacingOccurrences(of: Locale.currentDecimalSeparator, with: "."))
-                        
-                        if let parsedDraft {
-                            value = clamped(parsedDraft)
-                            showKeypad = false
-                        }
+                        confirm()
                     }
                 }
-                
+
                 ToolbarItem(placement: .cancellationAction) {
                     Button(.cancel) {
-                        showKeypad = false
+                        dismiss()
                     }
                 }
             }
         }
         .presentationDetents([.medium])
     }
-    
+
     private var text: String {
         value.formatted(.number.precision(.fractionLength(fractionLength)))
     }
-    
-    private func clamped(_ raw: Double) -> Double {
-        min(max(raw, range.lowerBound), range.upperBound)
+
+    private func confirm() {
+        let parsed = Double(draft.replacingOccurrences(of: Locale.currentDecimalSeparator, with: "."))
+
+        guard let parsed else {
+            return
+        }
+
+        value = min(max(parsed, range.lowerBound), range.upperBound)
+        dismiss()
     }
 }
 
@@ -148,14 +179,16 @@ private struct ValueLabel: View {
     let text: String
     let suffix: LocalizedStringResource?
     let value: Double
-    
+    var isPlaceholder: Bool = false
+
     var body: some View {
         HStack(alignment: .firstTextBaseline, spacing: 4) {
             Text(text)
                 .font(.title)
                 .fontWeight(.semibold)
+                .foregroundStyle(isPlaceholder ? .secondary : .primary)
                 .contentTransition(.numericText(value: value))
-            
+
             if let suffix {
                 Text(suffix)
                     .font(.title2)
@@ -169,112 +202,12 @@ private struct ValueLabel: View {
     }
 }
 
-private struct DecimalKeypad: View {
-    @Binding var text: String
-    
-    let fractionLength: Int
-    let upperBound: Double
-    
-    init(text: Binding<String>, fractionLength: Int = 1, upperBound: Double = 1_000_000_000) {
-        self._text = text
-        self.fractionLength = fractionLength
-        self.upperBound = upperBound
-    }
-    
-    var body: some View {
-        LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 12), count: 3), spacing: 12) {
-            ForEach(1 ... 9, id: \.self) { digit in
-                key(action: { appendDigit(String(digit)) }) {
-                    digitLabel(String(digit))
-                }
-            }
-            
-            if fractionLength > 0 {
-                key(action: appendSeparator) {
-                    digitLabel(Locale.currentDecimalSeparator)
-                }
-            } else {
-                Color.clear.frame(height: 48)
-            }
-            
-            key(action: { appendDigit("0") }) {
-                digitLabel("0")
-            }
-            
-            key(action: {
-                if !text.isEmpty {
-                    text.removeLast()
-                }
-            }) {
-                Image(systemName: "delete.backward")
-                    .font(.title3)
-            }
-        }
-    }
-    
-    private func appendDigit(_ digit: String) {
-        let candidate = text + digit
-        
-        guard withinFractionDigits(candidate), withinRange(candidate) else {
-            return
-        }
-        
-        text = candidate
-    }
-    
-    private func appendSeparator() {
-        guard fractionLength > 0, !text.contains(Locale.currentDecimalSeparator) else {
-            return
-        }
-        
-        text += text.isEmpty ? "0\(Locale.currentDecimalSeparator)" : Locale.currentDecimalSeparator
-    }
-    
-    private func withinFractionDigits(_ candidate: String) -> Bool {
-        guard let separatorRange = candidate.range(of: Locale.currentDecimalSeparator) else {
-            return true
-        }
-        
-        return candidate[separatorRange.upperBound...].count <= fractionLength
-    }
-    
-    private func withinRange(_ candidate: String) -> Bool {
-        guard let value = Double(candidate.replacingOccurrences(of: Locale.currentDecimalSeparator, with: ".")) else {
-            return true
-        }
-        
-        return value <= upperBound
-    }
-    
-    private func digitLabel(_ label: String) -> some View {
-        Text(label)
-            .font(.title2)
-            .fontWeight(.medium)
-    }
-    
-    private func key(action: @escaping () -> Void, @ViewBuilder label: () -> some View) -> some View {
-        Button(action: action) {
-            label()
-                .frame(maxWidth: .infinity)
-                .frame(height: 48)
-                .contentShape(.rect)
-        }
-        .buttonStyle(.glass)
-    }
-}
-
-private extension Locale {
-    static var currentDecimalSeparator: String {
-        current.decimalSeparator ?? "."
-    }
-}
-
 #Preview("Decimal") {
     @Previewable @State var value: Double = 0
     NumberStepper(value: $value, title: .exerciseTypeWeightTitle, suffix: .unitKilogramsSuffix)
 }
 
 #Preview("Integer") {
-    @Previewable @State var value: Int = 0
+    @Previewable @State var value = 0
     NumberStepper(value: $value, title: .fieldExerciseTargetRepsTitle)
 }

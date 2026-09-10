@@ -5,81 +5,116 @@
 //  Created by Daniel Wolbach on 04.09.26.
 //
 
+import FormworkKit
 import SwiftUI
 
 struct FlowLayout: Layout {
     var spacing: CGFloat = 8
     var alignment: HorizontalAlignment = .leading
-    var expandElements: Bool = false
 
-    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
+    struct Row {
+        var indices: Range<Int>
+        var sizes: [CGSize]
+        var width: CGFloat
+        var height: CGFloat
+    }
+
+    struct Cache {
+        var containerWidth: CGFloat = .nan
+        var rows: [Row] = []
+    }
+
+    func makeCache(subviews _: Subviews) -> Cache {
+        Cache()
+    }
+
+    func updateCache(_ cache: inout Cache, subviews _: Subviews) {
+        cache = Cache()
+    }
+
+    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout Cache) -> CGSize {
         let containerWidth = proposal.width ?? .infinity
-        let rows = rows(for: subviews, containerWidth: containerWidth)
+        let rows = rows(for: subviews, containerWidth: containerWidth, cache: &cache)
         let height = rows.reduce(0) { $0 + $1.height } + CGFloat(max(rows.count - 1, 0)) * spacing
         let width = rows.map(\.width).max() ?? 0
+
         return CGSize(width: containerWidth.isFinite ? containerWidth : width, height: height)
     }
 
-    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
-        let rows = rows(for: subviews, containerWidth: bounds.width)
+    func placeSubviews(in bounds: CGRect, proposal _: ProposedViewSize, subviews: Subviews, cache: inout Cache) {
+        let rows = rows(for: subviews, containerWidth: bounds.width, cache: &cache)
         var y = bounds.minY
 
         for row in rows {
-            let extra = expandElements ? max(0, bounds.width - row.width) / CGFloat(row.elements.count) : 0
-            let effectiveRowWidth = row.width + extra * CGFloat(row.elements.count)
-            var x: CGFloat
-            
-            switch alignment {
-            case .leading: x = bounds.minX
-            case .trailing: x = bounds.maxX - effectiveRowWidth
-            default: x = bounds.minX + (bounds.width - effectiveRowWidth) / 2
+            var x = switch alignment {
+            case .leading: bounds.minX
+            case .trailing: bounds.maxX - row.width
+            default: bounds.minX + (bounds.width - row.width) / 2
             }
 
-            for element in row.elements {
-                let width = element.size.width + extra
-                let placementProposal = expandElements
-                    ? ProposedViewSize(width: width, height: element.size.height)
-                    : ProposedViewSize.unspecified
-                element.subview.place(at: CGPoint(x: x, y: y), anchor: .topLeading, proposal: placementProposal)
-                x += width + spacing
+            for (position, index) in row.indices.enumerated() {
+                subviews[index].place(at: CGPoint(x: x, y: y), anchor: .topLeading, proposal: .unspecified)
+                x += row.sizes[position].width + spacing
             }
 
             y += row.height + spacing
         }
     }
 
-    private struct Row {
-        var elements: [(subview: LayoutSubview, size: CGSize)]
-        var width: CGFloat
-        var height: CGFloat
-    }
-
-    private func rows(for subviews: Subviews, containerWidth: CGFloat) -> [Row] {
-        var rows: [Row] = []
-        var current: [(subview: LayoutSubview, size: CGSize)] = []
-        var currentWidth: CGFloat = 0
-        var currentHeight: CGFloat = 0
-
-        func commitRow() {
-            guard !current.isEmpty else { return }
-            rows.append(Row(elements: current, width: currentWidth - spacing, height: currentHeight))
-            current = []
-            currentWidth = 0
-            currentHeight = 0
+    private func rows(for subviews: Subviews, containerWidth: CGFloat, cache: inout Cache) -> [Row] {
+        guard cache.containerWidth != containerWidth else {
+            return cache.rows
         }
 
-        for subview in subviews {
-            let size = subview.sizeThatFits(.unspecified)
-            if currentWidth + size.width > containerWidth, !current.isEmpty {
-                commitRow()
+        var rows: [Row] = []
+        var sizes: [CGSize] = []
+        var start = subviews.startIndex
+        var width: CGFloat = 0
+        var height: CGFloat = 0
+
+        func commitRow(endingAt end: Int) {
+            guard !sizes.isEmpty else {
+                return
             }
 
-            current.append((subview, size))
-            currentWidth += size.width + spacing
-            currentHeight = max(currentHeight, size.height)
+            rows.append(Row(indices: start ..< end, sizes: sizes, width: width - spacing, height: height))
+            start = end
+            sizes = []
+            width = 0
+            height = 0
         }
-        commitRow()
+
+        for index in subviews.indices {
+            let size = subviews[index].sizeThatFits(.unspecified)
+
+            if width + size.width > containerWidth, !sizes.isEmpty {
+                commitRow(endingAt: index)
+            }
+
+            sizes.append(size)
+            width += size.width + spacing
+            height = max(height, size.height)
+        }
+
+        commitRow(endingAt: subviews.endIndex)
+
+        cache.containerWidth = containerWidth
+        cache.rows = rows
 
         return rows
     }
+}
+
+#Preview {
+    FlowLayout(spacing: 8, alignment: .center) {
+        ForEach(ExerciseCategory.allCases) { category in
+            Text(category.title)
+                .font(.subheadline)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 8)
+                .foregroundStyle(category.pictogram.color)
+                .background(Capsule().fill(category.pictogram.color.quinary))
+        }
+    }
+    .padding()
 }

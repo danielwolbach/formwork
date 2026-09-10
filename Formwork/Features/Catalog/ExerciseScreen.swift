@@ -15,36 +15,36 @@ struct ExerciseScreen: View {
     @Query(Session.finishedDescriptor) private var sessions: [Session]
     @State private var sheet: Sheet? = nil
     @State private var deleteAlert: Bool = false
-    
+
     let exercise: Exercise
-    
+
     var body: some View {
         let statistics = sessions.statistics()[exercise]
-        
+
         ScrollView {
             VStack(spacing: 32) {
                 DisplayableHero(displayable: exercise)
-                
-                LazyVGrid(columns: [.init(.flexible()), .init(.flexible())]) {
-                    ValueCard(
+
+                TileGrid {
+                    StatisticCard(
                         title: .statisticPersonalBestTitle,
                         value: statistics.personalBest?.measure,
                         pictogram: .init(icon: "trophy", tint: .yellow)
                     )
-                    
-                    ValueCard(
+
+                    StatisticCard(
                         title: .statisticCompletionRateTitle,
                         value: statistics.completionRate?.formatted(.percent.precision(.fractionLength(0))),
                         pictogram: .init(icon: "checkmark.circle", tint: .green)
                     )
-                    
-                    ValueCard(
+
+                    StatisticCard(
                         title: .statisticLastPerformedTitle,
                         value: statistics.lastCompleted?.relativeDayDescription().localizedCapitalized,
                         pictogram: .init(icon: "calendar", tint: .indigo)
                     )
-                    
-                    ValueCard(
+
+                    StatisticCard(
                         title: .statisticTimesCompletedTitle,
                         value: statistics.completions.count.formatted(),
                         pictogram: .init(icon: "repeat", tint: .orange)
@@ -60,7 +60,7 @@ struct ExerciseScreen: View {
                         sheet = .editExercise(exercise: exercise)
                     }
                 }
-                
+
                 Section {
                     Button(.delete) {
                         deleteAlert = true
@@ -77,15 +77,13 @@ struct ExerciseScreen: View {
             Button(.delete) {
                 delete()
             }
-            
-            Button(.cancel) {
-                
-            }
+
+            Button(.cancel) {}
         } message: {
             Text(.alertExerciseDeleteMessage)
         }
     }
-    
+
     func delete() {
         modelContext.delete(exercise)
         dismiss()

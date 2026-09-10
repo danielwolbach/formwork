@@ -5,15 +5,15 @@
 //  Created by Daniel Wolbach on 04.09.26.
 //
 
-import Foundation
 import FormworkKit
+import Foundation
 import SwiftUI
 
 protocol Displayable {
     var title: String {
         get
     }
-    
+
     var pictogram: Pictogram {
         get
     }
@@ -29,14 +29,14 @@ extension Exercise: SubtitledDisplayable {
     var title: String {
         name
     }
-    
+
     var subtitle: String {
         ExerciseCategory.allCases
             .filter { categories.contains($0) }
-            .map { $0.title }
+            .map(\.title)
             .joined(separator: ", ")
     }
-    
+
     var pictogram: Pictogram {
         type.pictogram
     }
@@ -57,7 +57,7 @@ extension ExerciseCategory: Displayable {
         case .other: String(localized: .exerciseCategoryOtherTitle)
         }
     }
-    
+
     var pictogram: Pictogram {
         switch self {
         case .arms: Pictogram(icon: "figure.dance", tint: .blue)
@@ -74,27 +74,31 @@ extension ExerciseCategory: Displayable {
     }
 }
 
-
 extension ExerciseTarget: Displayable {
     var title: String {
         switch self {
         case let .weight(weight, sets, reps):
-            String(localized: .exerciseTargetWeightTitle(weight: weight.formatted(.number.precision(.fractionLength(1))), sets: sets, reps: reps))
+            String(localized: .exerciseTargetWeightTitle(
+                weight: weight.formatted(.number.precision(.fractionLength(1))),
+                sets: sets,
+                reps: reps
+            ))
         case let .bodyweight(sets, reps):
             String(localized: .exerciseTargetBodyweightTitle(sets: sets, reps: reps))
-           case let .duration(minutes):
+        case let .duration(minutes):
             String(localized: .exerciseTargetDurationTitle(minutes: minutes))
         case let .distance(meters):
             String(localized: .exerciseTargetDistanceTitle(meters: meters))
         }
     }
-    
+
     /// The ranked measure alone, without the sets/reps context — for personal
     /// bests.
     var measure: String {
         switch self {
         case let .weight(weight, _, _):
-            String(localized: .exerciseTargetWeightMeasure(weight: weight.formatted(.number.precision(.fractionLength(1)))))
+            String(localized: .exerciseTargetWeightMeasure(weight: weight
+                    .formatted(.number.precision(.fractionLength(1)))))
         case let .bodyweight(_, reps):
             String(localized: .exerciseTargetBodyweightMeasure(reps: reps))
         case let .duration(minutes):
@@ -103,7 +107,7 @@ extension ExerciseTarget: Displayable {
             String(localized: .exerciseTargetDistanceTitle(meters: meters))
         }
     }
-    
+
     var pictogram: Pictogram {
         type.pictogram
     }
@@ -118,7 +122,7 @@ extension ExerciseType: Displayable {
         case .distance: String(localized: .exerciseTypeDistanceTitle)
         }
     }
-    
+
     var pictogram: Pictogram {
         switch self {
         case .weight: Pictogram(icon: "dumbbell", tint: .indigo)
@@ -133,7 +137,7 @@ extension Workout: SubtitledDisplayable {
     var title: String {
         name
     }
-    
+
     var subtitle: String {
         String(localized: .workoutSubtitle(exerciseCount: entries.count))
     }
@@ -143,11 +147,11 @@ extension WorkoutEntry: SubtitledDisplayable {
     var title: String {
         exercise?.title ?? String(localized: .unknown)
     }
-    
+
     var subtitle: String {
         target.title
     }
-    
+
     var pictogram: Pictogram {
         target.pictogram
     }
@@ -157,11 +161,11 @@ extension SessionEntry: SubtitledDisplayable {
     var title: String {
         exercise?.title ?? String(localized: .unknown)
     }
-    
+
     var subtitle: String {
         target.title
     }
-    
+
     var pictogram: Pictogram {
         target.pictogram
     }
@@ -175,12 +179,31 @@ extension SessionEntry.Status: Displayable {
         case .skipped: String(localized: .sessionStatusSkippedTitle)
         }
     }
-    
+
     var pictogram: Pictogram {
         switch self {
         case .pending: Pictogram(icon: "circle.dotted", tint: .gray)
         case .completed: Pictogram(icon: "checkmark.circle.fill", tint: .green)
         case .skipped: Pictogram(icon: "forward.end.circle.fill", tint: .orange)
+        }
+    }
+}
+
+extension Pictogram.Tint {
+    var title: String {
+        switch self {
+        case .blue: String(localized: .pictogramTintBlueTitle)
+        case .indigo: String(localized: .pictogramTintIndigoTitle)
+        case .purple: String(localized: .pictogramTintPurpleTitle)
+        case .pink: String(localized: .pictogramTintPinkTitle)
+        case .red: String(localized: .pictogramTintRedTitle)
+        case .orange: String(localized: .pictogramTintOrangeTitle)
+        case .yellow: String(localized: .pictogramTintYellowTitle)
+        case .green: String(localized: .pictogramTintGreenTitle)
+        case .mint: String(localized: .pictogramTintMintTitle)
+        case .cyan: String(localized: .pictogramTintCyanTitle)
+        case .brown: String(localized: .pictogramTintBrownTitle)
+        case .gray: String(localized: .pictogramTintGrayTitle)
         }
     }
 }
