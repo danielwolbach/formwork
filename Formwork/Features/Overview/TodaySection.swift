@@ -31,10 +31,10 @@ struct TodaySection: View {
                 }
 
             case .finished:
-                RestingView(.finished)
+                RestingView(kind: .finished)
 
             case .unscheduled:
-                RestingView(.unscheduled)
+                RestingView(kind: .unscheduled)
             }
         } accessory: {
             startButton

@@ -7,8 +7,6 @@
 
 import SwiftUI
 
-/// Validates entry as text — fraction digits and upper bound are checked on the
-/// candidate string, so a keypress that would break either is simply refused.
 struct DecimalKeypad: View {
     @Binding var text: String
 

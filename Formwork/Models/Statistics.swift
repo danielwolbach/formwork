@@ -20,16 +20,23 @@ nonisolated struct WorkoutStatistics {
     /// `Statistics` still retains nothing from the context it was built in.
     let mostSkippedExercise: String?
 
+    /// Category mix of the exercises actually completed in these sessions.
+    /// History, not plan — the plan's mix comes from `Statistics.distribution(of:)`
+    /// over a workout's current entries, which needs no sessions at all.
+    let completedDistribution: [ExerciseCategory: Double]
+
     init(
         completions: [Date],
         starts: [Date] = [],
         durations: [TimeInterval] = [],
-        mostSkippedExercise: String? = nil
+        mostSkippedExercise: String? = nil,
+        completedCategories: [Set<ExerciseCategory>] = []
     ) {
         self.completions = completions.sorted()
         self.starts = starts.sorted()
         self.durations = durations.sorted()
         self.mostSkippedExercise = mostSkippedExercise
+        self.completedDistribution = Statistics.distribution(of: completedCategories)
     }
 
     var lastCompleted: Date? {
@@ -146,10 +153,6 @@ nonisolated struct ExerciseStatistics {
 struct Statistics {
     let overall: WorkoutStatistics
 
-    /// Category mix of every exercise completed in a finished session, across
-    /// all workouts.
-    let completedDistribution: CategoryDistribution
-
     private let perWorkout: [PersistentIdentifier: WorkoutStatistics]
 
     private let perExercise: [PersistentIdentifier: ExerciseStatistics]
@@ -161,6 +164,7 @@ struct Statistics {
         var durations: [TimeInterval] = []
         var groupedDurations: [PersistentIdentifier: [TimeInterval]] = [:]
         var completedCategories: [Set<ExerciseCategory>] = []
+        var groupedCategories: [PersistentIdentifier: [Set<ExerciseCategory>]] = [:]
         var groupedExercises: [PersistentIdentifier: [Date]] = [:]
         var groupedTargets: [PersistentIdentifier: [ExerciseTarget]] = [:]
         var groupedSkips: [PersistentIdentifier: [Date]] = [:]
@@ -188,6 +192,10 @@ struct Statistics {
                     case .completed:
                         completedCategories.append(exercise.categories)
                         groupedExercises[identifier, default: []].append(session.started)
+
+                        if let workout {
+                            groupedCategories[workout, default: []].append(exercise.categories)
+                        }
 
                         if entry.target.type == exercise.type {
                             groupedTargets[identifier, default: []].append(entry.target)
@@ -234,7 +242,8 @@ struct Statistics {
                 completions: groupedCompletions[workout] ?? [],
                 starts: groupedStarts[workout] ?? [],
                 durations: groupedDurations[workout] ?? [],
-                mostSkippedExercise: mostSkipped.flatMap { skippedExerciseNames[$0.key] }
+                mostSkippedExercise: mostSkipped.flatMap { skippedExerciseNames[$0.key] },
+                completedCategories: groupedCategories[workout] ?? []
             )
         }
 
@@ -251,9 +260,9 @@ struct Statistics {
         self.overall = WorkoutStatistics(
             completions: completions,
             starts: sessions.map(\.started),
-            durations: durations
+            durations: durations,
+            completedCategories: completedCategories
         )
-        self.completedDistribution = CategoryDistribution(categories: completedCategories)
         self.perWorkout = perWorkout
         self.perExercise = perExercise
     }
@@ -264,6 +273,31 @@ struct Statistics {
 
     subscript(exercise: Exercise) -> ExerciseStatistics {
         perExercise[exercise.persistentModelID] ?? ExerciseStatistics(completions: [])
+    }
+}
+
+extension Statistics {
+    /// Category mix of the given exercises, as shares summing to 1. An exercise
+    /// counted in several categories splits its weight evenly between them, so
+    /// every exercise carries the same total weight. Empty if nothing counts.
+    nonisolated static func distribution(of categories: [Set<ExerciseCategory>]) -> [ExerciseCategory: Double] {
+        var weights: [ExerciseCategory: Double] = [:]
+
+        for group in categories where !group.isEmpty {
+            let weight = 1 / Double(group.count)
+
+            for category in group {
+                weights[category, default: 0] += weight
+            }
+        }
+
+        let total = weights.values.reduce(0, +)
+
+        guard total > 0 else {
+            return [:]
+        }
+
+        return weights.mapValues { $0 / total }
     }
 }
 

@@ -32,7 +32,7 @@ private struct AppContent: View {
     }
 
     private var activityState: SessionActivityAttributes.ContentState? {
-        activeSession.flatMap(SessionActivity.state(for:))
+        activeSession.flatMap(SessionActivityController.state(for:))
     }
 
     var body: some View {
@@ -50,7 +50,7 @@ private struct AppContent: View {
             .navigationTransition(.zoom(sourceID: session.persistentModelID, in: sessionTransition))
         }
         .task(id: activityState) {
-            SessionActivity.sync(activeSession)
+            SessionActivityController.sync(activeSession)
         }
         .onOpenURL { url in
             guard url == DeepLink.session, let activeSession else {

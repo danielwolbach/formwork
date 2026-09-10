@@ -67,9 +67,6 @@ struct WorkoutAddExerciseScreen: View {
         }
     }
 
-    /// `.searchable` lives on this branch only: with no exercises at all there
-    /// is nothing to search, and without a `ScrollView` behind it the bar would
-    /// render expanded instead of collapsed.
     private var searchableExercises: some View {
         Group {
             if matchingExercises.isEmpty {

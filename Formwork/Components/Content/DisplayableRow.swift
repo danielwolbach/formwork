@@ -14,11 +14,18 @@ struct DisplayableRow: View {
     private let pictogram: Pictogram
     private let badge: Pictogram?
 
-    init(displayable: some Displayable) {
-        self.title = displayable.title
-        self.subtitle = displayable.subtitle
-        self.pictogram = displayable.pictogram
-        self.badge = displayable.badge
+    init(displayable: (some Displayable)?) {
+        if let displayable {
+            self.title = displayable.title
+            self.subtitle = displayable.subtitle
+            self.pictogram = displayable.pictogram
+            self.badge = displayable.badge
+        } else {
+            self.title = String(localized: .unknown)
+            self.subtitle = nil
+            self.pictogram = .unknown
+            self.badge = nil
+        }
     }
 
     var body: some View {

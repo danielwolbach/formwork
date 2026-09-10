@@ -34,7 +34,7 @@ struct ScreenStack<Content: View>: View {
 #Preview {
     NavigationStack {
         ScreenStack {
-            DisplayableHero(displayable: Samples.exercises.first)
+            DisplayableHero(displayable: Samples.exercises.first!)
 
             TileGrid {
                 StatisticCard(

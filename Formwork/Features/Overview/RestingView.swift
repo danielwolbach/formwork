@@ -16,10 +16,6 @@ struct RestingView: View {
 
     let kind: Kind
 
-    init(_ kind: Kind) {
-        self.kind = kind
-    }
-
     var body: some View {
         VStack(spacing: 14) {
             Image(systemName: pictogram.icon)
@@ -70,8 +66,8 @@ struct RestingView: View {
 
 #Preview {
     VStack {
-        RestingView(.finished)
-        RestingView(.unscheduled)
+        RestingView(kind: .finished)
+        RestingView(kind: .unscheduled)
     }
     .padding()
 }

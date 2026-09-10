@@ -8,11 +8,7 @@
 import SwiftUI
 
 struct SectionStack<Content: View, Accessory: View>: View {
-    /// `Text` rather than a resource: a header is a catalog string in some
-    /// places and a formatted value in others, and `Text(verbatim:)` at the
-    /// call site keeps the latter out of the string catalog.
     var title: Text?
-
     var subtitle: Text?
 
     @ViewBuilder let content: () -> Content
@@ -73,7 +69,7 @@ extension SectionStack where Accessory == EmptyView {
         }
 
         SectionStack {
-            RestingView(.unscheduled)
+            RestingView(kind: .unscheduled)
         }
     }
     .sampleData()

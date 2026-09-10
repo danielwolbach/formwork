@@ -25,8 +25,7 @@ struct StatisticCard: View {
             Text(verbatim: value ?? "—")
                 .font(.system(.title3, design: .rounded, weight: .semibold))
                 .lineLimit(1)
-                .minimumScaleFactor(0.6)
-                .contentTransition(.numericText())
+                .minimumScaleFactor(0.5)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding()
@@ -36,7 +35,7 @@ struct StatisticCard: View {
                 .symbolRenderingMode(.hierarchical)
                 .foregroundStyle(pictogram.color)
                 .opacity(0.35)
-                .offset(x: 24, y: -24)
+                .offset(x: 24, y: -32)
         }
         .cardFill(tint: pictogram.color)
         .aspectRatio(1.8, contentMode: .fit)

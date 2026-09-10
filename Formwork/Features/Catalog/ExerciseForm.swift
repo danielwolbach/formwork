@@ -24,7 +24,7 @@ struct ExerciseForm: View {
         self._categories = State(initialValue: exercise?.categories ?? [])
         self.exercise = exercise
     }
-    
+
     init(category: ExerciseCategory) {
         self._name = State(initialValue: "")
         self._type = State(initialValue: .weight)

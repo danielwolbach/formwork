@@ -29,9 +29,9 @@ struct StatisticsScreen: View {
                     pictogram: .date
                 )
 
-                DistributionCard(
+                ExerciseCategoryDistributionCard(
                     title: .statisticCompletedDistributionTitle,
-                    distribution: statistics.completedDistribution
+                    distribution: statistics.overall.completedDistribution
                 )
                 .tileSpan(columns: 2)
             }

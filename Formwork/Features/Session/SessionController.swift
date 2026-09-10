@@ -36,6 +36,6 @@ final class SessionController: SessionControlling {
         change(session)
         try? context.save()
 
-        SessionActivity.sync(session)
+        SessionActivityController.sync(session)
     }
 }

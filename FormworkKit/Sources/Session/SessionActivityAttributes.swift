@@ -1,5 +1,5 @@
 //
-//  SessionActivity.swift
+//  SessionActivityAttributes.swift
 //  FormworkKit
 //
 //  Created by Daniel Wolbach on 06.09.26.
@@ -17,10 +17,14 @@ public nonisolated struct SessionActivityAttributes: ActivityAttributes {
         public var status: Pictogram?
         public var resolved: Int
         public var total: Int
-        public var isPending: Bool
-        public var isComplete: Bool
         public var canMoveForward: Bool
         public var canMoveBackward: Bool
+
+        /// An entry carries a status pictogram exactly once it has been resolved,
+        /// so its absence *is* the pending state — it is not tracked separately.
+        public var isPending: Bool {
+            status == nil
+        }
 
         public init(
             title: String,
@@ -30,8 +34,6 @@ public nonisolated struct SessionActivityAttributes: ActivityAttributes {
             status: Pictogram?,
             resolved: Int,
             total: Int,
-            isPending: Bool,
-            isComplete: Bool,
             canMoveForward: Bool,
             canMoveBackward: Bool
         ) {
@@ -42,8 +44,6 @@ public nonisolated struct SessionActivityAttributes: ActivityAttributes {
             self.status = status
             self.resolved = resolved
             self.total = total
-            self.isPending = isPending
-            self.isComplete = isComplete
             self.canMoveForward = canMoveForward
             self.canMoveBackward = canMoveBackward
         }
@@ -56,28 +56,5 @@ public nonisolated struct SessionActivityAttributes: ActivityAttributes {
     public init(workout: String, started: Date) {
         self.workout = workout
         self.started = started
-    }
-}
-
-public protocol SessionControlling: Sendable {
-    func complete() async
-
-    func undo() async
-
-    func moveToNext() async
-
-    func moveToPrevious() async
-}
-
-@MainActor
-public enum SessionControl {
-    private static var controller: (any SessionControlling)?
-
-    public static func register(_ controller: any SessionControlling) {
-        Self.controller = controller
-    }
-
-    static func resolve() -> (any SessionControlling)? {
-        controller
     }
 }

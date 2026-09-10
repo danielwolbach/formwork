@@ -17,7 +17,7 @@ struct WorkoutEntryScreen: View {
 
     var body: some View {
         ScreenStack {
-            DisplayableHero(displayable: entry.exercise)
+            DisplayableHero(displayable: entry.exercise!)
 
             ExerciseTargetView(target: $entry.target)
         }

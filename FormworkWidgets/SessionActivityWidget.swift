@@ -1,5 +1,5 @@
 //
-//  SessionActivity.swift
+//  SessionActivityWidget.swift
 //  FormworkWidgets
 //
 //  Created by Daniel Wolbach on 06.09.26.
@@ -11,7 +11,7 @@ import FormworkKit
 import SwiftUI
 import WidgetKit
 
-struct SessionActivity: Widget {
+struct SessionActivityWidget: Widget {
     var body: some WidgetConfiguration {
         ActivityConfiguration(for: SessionActivityAttributes.self) { context in
             VStack {
@@ -171,8 +171,6 @@ private extension SessionActivityAttributes.ContentState {
             status: nil,
             resolved: 2,
             total: 5,
-            isPending: true,
-            isComplete: false,
             canMoveForward: true,
             canMoveBackward: true
         )
@@ -181,7 +179,6 @@ private extension SessionActivityAttributes.ContentState {
     static var completed: Self {
         var state = Self.preview
         state.status = Pictogram(icon: "checkmark.circle.fill", tint: .green)
-        state.isPending = false
         state.resolved = 3
         return state
     }
@@ -204,8 +201,6 @@ private extension SessionActivityAttributes.ContentState {
         var state = Self.preview
         state.subtitle = "Session complete"
         state.status = Pictogram(icon: "checkmark.circle.fill", tint: .green)
-        state.isPending = false
-        state.isComplete = true
         state.canMoveForward = false
         state.resolved = 5
         return state
@@ -213,7 +208,7 @@ private extension SessionActivityAttributes.ContentState {
 }
 
 #Preview("Lock Screen", as: .content, using: SessionActivityAttributes.preview) {
-    SessionActivity()
+    SessionActivityWidget()
 } contentStates: {
     SessionActivityAttributes.ContentState.preview
     SessionActivityAttributes.ContentState.completed
@@ -223,7 +218,7 @@ private extension SessionActivityAttributes.ContentState {
 }
 
 #Preview("Island Expanded", as: .dynamicIsland(.expanded), using: SessionActivityAttributes.preview) {
-    SessionActivity()
+    SessionActivityWidget()
 } contentStates: {
     SessionActivityAttributes.ContentState.preview
     SessionActivityAttributes.ContentState.completed
@@ -233,7 +228,7 @@ private extension SessionActivityAttributes.ContentState {
 }
 
 #Preview("Island Compact", as: .dynamicIsland(.compact), using: SessionActivityAttributes.preview) {
-    SessionActivity()
+    SessionActivityWidget()
 } contentStates: {
     SessionActivityAttributes.ContentState.preview
     SessionActivityAttributes.ContentState.completed
@@ -241,7 +236,7 @@ private extension SessionActivityAttributes.ContentState {
 }
 
 #Preview("Island Minimal", as: .dynamicIsland(.minimal), using: SessionActivityAttributes.preview) {
-    SessionActivity()
+    SessionActivityWidget()
 } contentStates: {
     SessionActivityAttributes.ContentState.preview
     SessionActivityAttributes.ContentState.completed

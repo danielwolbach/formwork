@@ -266,7 +266,15 @@
       }
     },
     "alert.exercise.delete.message" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The exercise is removed from every workout that uses it, but past sessions keep what you logged."
+          }
+        }
+      }
     },
     "alert.exercise.delete.title" : {
       "extractionState" : "manual",
@@ -368,7 +376,15 @@
       }
     },
     "alert.workout.delete.message" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The workout is removed, but past sessions stay in your history and still count towards your statistics."
+          }
+        }
+      }
     },
     "alert.workout.delete.title" : {
       "extractionState" : "manual",
@@ -382,7 +398,15 @@
       }
     },
     "alert.workout.entry.remove.message" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The exercise stays in your catalog and is only removed from this workout."
+          }
+        }
+      }
     },
     "alert.workout.entry.remove.title" : {
       "extractionState" : "manual",

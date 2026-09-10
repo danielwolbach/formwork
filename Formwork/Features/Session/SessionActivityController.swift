@@ -1,5 +1,5 @@
 //
-//  SessionActivity.swift
+//  SessionActivityController.swift
 //  Formwork
 //
 //  Created by Daniel Wolbach on 06.09.26.
@@ -10,7 +10,7 @@ import FormworkKit
 import Foundation
 
 @MainActor
-enum SessionActivity {
+enum SessionActivityController {
     static func sync(_ session: Session?) {
         guard let session, session.isActive, let state = state(for: session) else {
             end()
@@ -59,8 +59,6 @@ enum SessionActivity {
             status: current.badge,
             resolved: session.resolvedCount,
             total: session.entries.count,
-            isPending: current.status.isPending,
-            isComplete: session.isComplete,
             canMoveForward: session.next != nil,
             canMoveBackward: session.previous != nil
         )

@@ -7,7 +7,6 @@
 
 import FormworkKit
 import Foundation
-import SwiftUI
 
 protocol Displayable {
     var title: String {
@@ -22,7 +21,6 @@ protocol Displayable {
         get
     }
 
-    /// Overlaid on the pictogram's corner. Most things have nothing to badge.
     var badge: Pictogram? {
         get
     }
@@ -177,7 +175,7 @@ extension Session: Displayable {
         started.formatted()
     }
 
-    var pictogram: FormworkKit.Pictogram {
+    var pictogram: Pictogram {
         workout?.pictogram ?? .unknown
     }
 }
