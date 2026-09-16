@@ -17,13 +17,11 @@ struct OverviewScreen: View {
     @Query(sort: \Workout.name) private var workouts: [Workout]
 
     var body: some View {
-        let statistics = sessions.statistics()
-
         ScreenStack {
-            SummarySection(statistics: statistics.overall)
+            SummarySection(statistics: SessionStatistics(sessions))
 
             TodaySection(
-                state: DayState(workouts: workouts, statistics: statistics, on: .now),
+                state: DayState(workouts: workouts, sessions: sessions),
                 canStart: active.isEmpty,
                 onStart: { workout in replaceSession(workout: workout) }
             )

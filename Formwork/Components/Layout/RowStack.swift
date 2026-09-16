@@ -9,6 +9,7 @@ import SwiftUI
 
 struct RowStack<Item: Identifiable & Hashable, Row: View>: View {
     let items: [Item]
+
     @ViewBuilder let row: (Item) -> Row
 
     var body: some View {

@@ -13,27 +13,70 @@ struct StatisticsScreen: View {
     @Query(Session.finishedDescriptor) private var sessions: [Session]
 
     var body: some View {
-        let statistics = sessions.statistics()
+        let statistics = SessionStatistics(sessions)
 
         ScreenStack {
             TileGrid {
                 StatisticCard(
                     title: .statisticStreakTitle,
-                    value: String(localized: .statisticStreakValue(count: statistics.overall.weekStreak())),
+                    value: String(localized: .statisticStreakValue(count: statistics.currentStreak)),
                     pictogram: .streak
                 )
 
                 StatisticCard(
                     title: .statisticLastSessionTitle,
-                    value: statistics.overall.lastCompleted?.relativeDayDescription().localizedCapitalized,
+                    value: statistics.lastCompleted?.defaultFormattedRelative().localizedCapitalized,
                     pictogram: .date
+                )
+
+                CompletionCalendarCard(
+                    title: .statisticCompletionCalendarTitle,
+                    completedDays: statistics.completedDays,
+                    tint: Pictogram.streak.color
+                )
+                .tileSpan(columns: 2)
+
+                StatisticCard(
+                    title: .statisticTimesCompletedTitle,
+                    value: statistics.completionCount.formatted(),
+                    pictogram: .tally
+                )
+
+                StatisticCard(
+                    title: .statisticSessionsThisMonthTitle,
+                    value: statistics.completionsThisMonth.formatted(),
+                    pictogram: .month
+                )
+
+                StatisticCard(
+                    title: .statisticLongestStreakTitle,
+                    value: String(localized: .statisticStreakValue(count: statistics.longestStreak)),
+                    pictogram: .record
+                )
+
+                StatisticCard(
+                    title: .statisticCompletionRateTitle,
+                    value: statistics.completionRate?.defaultFormattedPercent(),
+                    pictogram: .completed
                 )
 
                 ExerciseCategoryDistributionCard(
                     title: .statisticCompletedDistributionTitle,
-                    distribution: statistics.overall.completedDistribution
+                    shares: statistics.completedShares
                 )
                 .tileSpan(columns: 2)
+
+                StatisticCard(
+                    title: .statisticTypicalDurationTitle,
+                    value: statistics.typicalDuration?.defaultFormatted(),
+                    pictogram: .duration
+                )
+
+                StatisticCard(
+                    title: .statisticTypicalStartTimeTitle,
+                    value: statistics.typicalStartTime?.defaultFormattedTime(),
+                    pictogram: .time
+                )
             }
 
             SectionStack(title: Text(.screenSessionsTitle)) {

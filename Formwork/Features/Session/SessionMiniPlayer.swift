@@ -23,7 +23,7 @@ struct SessionMiniPlayer: View {
             sessionProgress
                 .padding(.trailing)
 
-            controls
+            statusAction
                 .padding(.trailing)
         }
         .matchedTransitionSource(id: session.persistentModelID, in: transitionNamespace)
@@ -68,10 +68,6 @@ struct SessionMiniPlayer: View {
                 }
             }
         }
-    }
-
-    private var controls: some View {
-        statusAction
     }
 
     @ViewBuilder

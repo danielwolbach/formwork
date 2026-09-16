@@ -7,6 +7,7 @@
 
 import FormworkKit
 import Foundation
+import SwiftData
 
 enum DayState {
     case remaining([Workout])
@@ -15,7 +16,8 @@ enum DayState {
 }
 
 extension DayState {
-    init(workouts: [Workout], statistics: Statistics, on date: Date = .now) {
+    init(workouts: [Workout], sessions: [Session], on date: Date = .now) {
+        let calendar = Calendar.autoupdatingCurrent
         let scheduled = workouts.filter { $0.schedule.matches(date) }
 
         guard !scheduled.isEmpty else {
@@ -23,11 +25,35 @@ extension DayState {
             return
         }
 
+        let midnight = calendar.startOfDay(for: date)
+        var missing = Set(scheduled.map(\.persistentModelID))
+        var completed: Set<PersistentIdentifier> = []
+        var startTimes: [PersistentIdentifier: TimeInterval] = [:]
+
+        for session in sessions {
+            guard let workout = session.workout?.persistentModelID else {
+                continue
+            }
+
+            if startTimes[workout] == nil {
+                startTimes[workout] = session.started
+                    .timeIntervalSince(calendar.startOfDay(for: session.started))
+                missing.remove(workout)
+            }
+
+            if session.completion != nil, calendar.isDate(session.started, inSameDayAs: date) {
+                completed.insert(workout)
+            }
+
+            if missing.isEmpty, session.started < midnight {
+                break
+            }
+        }
+
         let remaining = scheduled
-            .filter { !statistics[$0].hasCompletion(on: date) }
-            .map { workout in (workout: workout, time: statistics[workout].lastStartTimeOfDay) }
+            .filter { !completed.contains($0.persistentModelID) }
             .sorted { lhs, rhs in
-                switch (lhs.time, rhs.time) {
+                switch (startTimes[lhs.persistentModelID], startTimes[rhs.persistentModelID]) {
                 case let (left?, right?) where left != right:
                     left < right
                 case (nil, .some):
@@ -35,10 +61,9 @@ extension DayState {
                 case (.some, nil):
                     true
                 default:
-                    lhs.workout.name.localizedStandardCompare(rhs.workout.name) == .orderedAscending
+                    lhs.name.localizedStandardCompare(rhs.name) == .orderedAscending
                 }
             }
-            .map(\.workout)
 
         self = remaining.isEmpty ? .finished : .remaining(remaining)
     }

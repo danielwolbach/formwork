@@ -20,7 +20,7 @@ struct ExerciseScreen: View {
     let exercise: Exercise
 
     var body: some View {
-        let statistics = sessions.statistics()[exercise]
+        let statistics = ExerciseStatistics(sessions, of: exercise)
 
         ScreenStack {
             DisplayableHero(displayable: exercise)
@@ -33,22 +33,36 @@ struct ExerciseScreen: View {
                 )
 
                 StatisticCard(
-                    title: .statisticCompletionRateTitle,
-                    value: statistics.completionRate?.formatted(.percent.precision(.fractionLength(0))),
-                    pictogram: .completed
-                )
-
-                StatisticCard(
                     title: .statisticLastPerformedTitle,
-                    value: statistics.lastCompleted?.relativeDayDescription().localizedCapitalized,
+                    value: statistics.lastCompleted?.defaultFormattedRelative().localizedCapitalized,
                     pictogram: .date
                 )
 
+                ExerciseProgressCard(
+                    title: .statisticProgressTitle,
+                    progress: statistics.progress,
+                    tint: exercise.pictogram.color
+                )
+                .tileSpan(columns: 2)
+
                 StatisticCard(
                     title: .statisticTimesCompletedTitle,
-                    value: statistics.completions.count.formatted(),
+                    value: statistics.completionCount.formatted(),
                     pictogram: .tally
                 )
+
+                StatisticCard(
+                    title: .statisticCompletionRateTitle,
+                    value: statistics.completionRate?.defaultFormattedPercent(),
+                    pictogram: .completed
+                )
+
+                CompletionCalendarCard(
+                    title: .statisticCompletionCalendarTitle,
+                    completedDays: statistics.completedDays,
+                    tint: exercise.pictogram.color
+                )
+                .tileSpan(columns: 2)
             }
         }
         .toolbar {

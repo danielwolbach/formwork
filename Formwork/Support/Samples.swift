@@ -160,7 +160,7 @@ extension Samples {
     static func insertHistory(into context: ModelContext) {
         let calendar = Calendar.autoupdatingCurrent
 
-        guard let currentWeek = calendar.weekStart(for: .now) else {
+        guard let currentWeek = calendar.dateInterval(of: .weekOfYear, for: .now)?.start else {
             return
         }
 
@@ -223,8 +223,8 @@ extension Samples {
         (try? container.mainContext.fetch(Session.finishedDescriptor)) ?? []
     }
 
-    static var statistics: Statistics {
-        finishedSessions.statistics()
+    static var statistics: SessionStatistics {
+        SessionStatistics(finishedSessions)
     }
 }
 

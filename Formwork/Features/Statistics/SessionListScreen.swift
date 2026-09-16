@@ -21,7 +21,7 @@ struct SessionListScreen: View {
                 }
             } else {
                 ScreenStack {
-                    ForEach(sessions.groupedByMonth(), id: \.month) { group in
+                    ForEach(sessions.byMonth, id: \.month) { group in
                         SectionStack(title: Text(verbatim: group.month.monthDescription())) {
                             RowStack(navigating: group.sessions)
                         }
@@ -30,6 +30,18 @@ struct SessionListScreen: View {
             }
         }
         .navigationTitle(.screenSessionsTitle)
+    }
+}
+
+private extension [Session] {
+    var byMonth: [(month: Date, sessions: [Session])] {
+        let calendar = Calendar.autoupdatingCurrent
+
+        return Dictionary(grouping: self) { session in
+            calendar.dateInterval(of: .month, for: session.started)?.start ?? session.started
+        }
+        .map { (month: $0.key, sessions: $0.value) }
+        .sorted { $0.month > $1.month }
     }
 }
 

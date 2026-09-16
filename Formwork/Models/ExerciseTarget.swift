@@ -26,6 +26,17 @@ extension ExerciseTarget {
 }
 
 extension ExerciseTarget {
+    var progress: Double {
+        switch self {
+        case let .weight(weight, _, _): weight
+        case let .bodyweight(_, reps): Double(reps)
+        case let .duration(minutes): Double(minutes)
+        case let .distance(meters): Double(meters)
+        }
+    }
+}
+
+extension ExerciseTarget {
     static func defaults(for type: ExerciseType) -> Self {
         switch type {
         case .weight: .weight(weight: 10, sets: 3, reps: 10)

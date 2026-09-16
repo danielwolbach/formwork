@@ -9,19 +9,19 @@ import FormworkKit
 import SwiftUI
 
 struct SummarySection: View {
-    let statistics: WorkoutStatistics
+    let statistics: SessionStatistics
 
     var body: some View {
         TileGrid {
             StatisticCard(
                 title: .statisticStreakTitle,
-                value: String(localized: .statisticStreakValue(count: statistics.weekStreak())),
+                value: String(localized: .statisticStreakValue(count: statistics.currentStreak)),
                 pictogram: .streak
             )
 
             StatisticCard(
                 title: .statisticLastSessionTitle,
-                value: statistics.lastCompleted?.relativeDayDescription().localizedCapitalized,
+                value: statistics.lastCompleted?.defaultFormattedRelative().localizedCapitalized,
                 pictogram: .date
             )
         }
@@ -29,11 +29,11 @@ struct SummarySection: View {
 }
 
 #Preview("With History") {
-    SummarySection(statistics: Samples.statistics.overall)
+    SummarySection(statistics: Samples.statistics)
         .padding()
 }
 
 #Preview("No History") {
-    SummarySection(statistics: Statistics(sessions: []).overall)
+    SummarySection(statistics: SessionStatistics([]))
         .padding()
 }

@@ -9,24 +9,16 @@ import FormworkKit
 import SwiftUI
 
 struct ScreenStack<Content: View>: View {
-    private static var margin: CGFloat {
-        16
-    }
-
-    private static var spacing: CGFloat {
-        32
-    }
-
     @ViewBuilder let content: () -> Content
 
     var body: some View {
         ScrollView {
-            VStack(spacing: Self.spacing) {
+            VStack(spacing: 32) {
                 content()
             }
             .frame(maxWidth: .infinity)
             .padding(.vertical, 8)
-            .padding(.horizontal, Self.margin)
+            .padding(.horizontal, 16)
         }
     }
 }

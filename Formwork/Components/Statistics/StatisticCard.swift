@@ -37,8 +37,8 @@ struct StatisticCard: View {
                 .opacity(0.35)
                 .offset(x: 24, y: -32)
         }
-        .cardFill(tint: pictogram.color)
         .aspectRatio(1.8, contentMode: .fit)
+        .cardFill(tint: pictogram.color)
         .cardSurface()
     }
 }

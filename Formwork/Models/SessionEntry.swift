@@ -38,42 +38,44 @@ extension SessionEntry {
         case pending
         case completed(at: Date)
         case skipped(at: Date)
-
-        var isPending: Bool {
-            if case .pending = self {
-                true
-            } else {
-                false
-            }
-        }
-
-        var isCompleted: Bool {
-            if case .completed = self {
-                true
-            } else {
-                false
-            }
-        }
-
-        var isSkipped: Bool {
-            if case .skipped = self {
-                true
-            } else {
-                false
-            }
-        }
-
-        var resolved: Date? {
-            switch self {
-            case .pending: nil
-            case let .completed(date), let .skipped(date): date
-            }
-        }
     }
 }
 
 extension SessionEntry: Comparable {
     static func < (lhs: borrowing SessionEntry, rhs: borrowing SessionEntry) -> Bool {
         lhs.order < rhs.order
+    }
+}
+
+extension SessionEntry.Status {
+    nonisolated var isPending: Bool {
+        if case .pending = self {
+            true
+        } else {
+            false
+        }
+    }
+
+    nonisolated var isCompleted: Bool {
+        if case .completed = self {
+            true
+        } else {
+            false
+        }
+    }
+
+    nonisolated var isSkipped: Bool {
+        if case .skipped = self {
+            true
+        } else {
+            false
+        }
+    }
+
+    nonisolated var resolved: Date? {
+        switch self {
+        case .pending: nil
+        case let .completed(date), let .skipped(date): date
+        }
     }
 }

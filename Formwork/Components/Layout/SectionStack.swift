@@ -21,11 +21,13 @@ struct SectionStack<Content: View, Accessory: View>: View {
                     VStack(alignment: .leading) {
                         if let title {
                             title
+                                .lineLimit(1)
                                 .font(.headline)
                         }
 
                         if let subtitle {
                             subtitle
+                                .lineLimit(1)
                                 .font(.subheadline)
                                 .foregroundStyle(.secondary)
                         }

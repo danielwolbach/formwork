@@ -16,30 +16,34 @@ struct WorkoutStatisticsScreen: View {
     let workout: Workout
 
     var body: some View {
-        let statistics = sessions.statistics()[workout]
-        let distribution = Statistics.distribution(of: workout.entries.compactMap { $0.exercise?.categories })
+        let statistics = SessionStatistics(sessions, of: workout)
+        let shares = ExerciseCategory.shares(of: workout.entries.compactMap { $0.exercise?.categories })
 
         ScreenStack {
             TileGrid {
                 StatisticCard(
-                    title: .statisticTypicalDurationTitle,
-                    value: statistics.typicalDuration.map { Duration.seconds($0).formatted(.units(
-                        allowed: [.hours, .minutes],
-                        width: .abbreviated
-                    )) },
-                    pictogram: .duration
-                )
-
-                StatisticCard(
                     title: .statisticLastSessionTitle,
-                    value: statistics.lastCompleted?.relativeDayDescription().localizedCapitalized,
+                    value: statistics.lastCompleted?.defaultFormattedRelative().localizedCapitalized,
                     pictogram: .date
                 )
 
                 StatisticCard(
                     title: .statisticTimesCompletedTitle,
-                    value: statistics.completions.count.formatted(),
+                    value: statistics.completionCount.formatted(),
                     pictogram: .tally
+                )
+
+                CompletionCalendarCard(
+                    title: .statisticCompletionCalendarTitle,
+                    completedDays: statistics.completedDays,
+                    tint: workout.pictogram.color
+                )
+                .tileSpan(columns: 2)
+
+                StatisticCard(
+                    title: .statisticCompletionRateTitle,
+                    value: statistics.completionRate?.defaultFormattedPercent(),
+                    pictogram: .completed
                 )
 
                 StatisticCard(
@@ -48,8 +52,20 @@ struct WorkoutStatisticsScreen: View {
                     pictogram: .skipped
                 )
 
-                ExerciseCategoryDistributionCard(title: .statisticDistributionTitle, distribution: distribution)
+                ExerciseCategoryDistributionCard(title: .statisticDistributionTitle, shares: shares)
                     .tileSpan(columns: 2)
+
+                StatisticCard(
+                    title: .statisticTypicalDurationTitle,
+                    value: statistics.typicalDuration?.defaultFormatted(),
+                    pictogram: .duration
+                )
+
+                StatisticCard(
+                    title: .statisticTypicalStartTimeTitle,
+                    value: statistics.typicalStartTime?.defaultFormattedTime(),
+                    pictogram: .time
+                )
             }
         }
         .navigationTitle(.screenStatisticsTitle)

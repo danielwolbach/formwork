@@ -68,6 +68,7 @@ public extension Pictogram {
     static let tally = Pictogram(icon: "repeat", tint: .orange)
     static let record = Pictogram(icon: "trophy", tint: .yellow)
     static let streak = Pictogram(icon: "flame", tint: .orange)
+    static let month = Pictogram(icon: "calendar.badge.checkmark", tint: .mint)
     static let completed = Pictogram(icon: "checkmark.circle", tint: .green)
     static let skipped = Pictogram(icon: "forward.end", tint: .pink)
 }

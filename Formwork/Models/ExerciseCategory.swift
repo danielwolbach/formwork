@@ -23,3 +23,38 @@ nonisolated enum ExerciseCategory: Identifiable, Codable, CaseIterable {
         self
     }
 }
+
+extension ExerciseCategory {
+    static func shares(of exercises: [Set<ExerciseCategory>]) -> [(category: ExerciseCategory, share: Double)] {
+        var weights: [ExerciseCategory: Double] = [:]
+
+        for categories in exercises where !categories.isEmpty {
+            let weight = 1 / Double(categories.count)
+
+            for category in categories {
+                weights[category, default: 0] += weight
+            }
+        }
+
+        let total = weights.values.reduce(0, +)
+
+        guard total > 0 else {
+            return []
+        }
+
+        var shares: [(category: ExerciseCategory, share: Double)] = []
+
+        for category in allCases {
+            guard let weight = weights[category] else {
+                continue
+            }
+
+            let share = weight / total
+            let index = shares.firstIndex { $0.share < share } ?? shares.count
+
+            shares.insert((category: category, share: share), at: index)
+        }
+
+        return shares
+    }
+}

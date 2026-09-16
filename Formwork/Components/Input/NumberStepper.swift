@@ -44,7 +44,7 @@ struct NumberStepper: View {
             value: Binding(get: { Double(value.wrappedValue) }, set: { value.wrappedValue = Int($0.rounded()) }),
             title: title,
             suffix: suffix,
-            stepSize: stepSize == nil ? nil : Double(stepSize!),
+            stepSize: stepSize.map(Double.init),
             fractionLength: 0,
             range: Double(range.lowerBound) ... Double(range.upperBound)
         )

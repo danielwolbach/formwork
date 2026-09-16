@@ -10,38 +10,22 @@ import SwiftUI
 
 struct ExerciseCategoryDistributionCard: View {
     let title: LocalizedStringResource
-    let distribution: [ExerciseCategory: Double]
-
-    private var categories: [ExerciseCategory] {
-        ExerciseCategory.allCases
-            .filter { distribution[$0] != nil }
-            .sorted { lhs, rhs in
-                let left = distribution[lhs] ?? 0
-                let right = distribution[rhs] ?? 0
-
-                return left == right
-                    ? (ExerciseCategory.allCases.firstIndex(of: lhs) ?? .max)
-                    < (ExerciseCategory.allCases.firstIndex(of : rhs) ?? .max):
-                    left > right
-            }
-    }
+    let shares: [(category: ExerciseCategory, share: Double)]
 
     var body: some View {
-        let categories = categories
-
         VStack(alignment: .leading, spacing: 16) {
             Text(title)
                 .lineLimit(1)
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
 
-            if categories.isEmpty {
+            if shares.isEmpty {
                 Text(verbatim: "—")
                     .font(.title)
             } else {
-                bar(of: categories)
+                bar
 
-                legend(of: categories)
+                legend
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -50,12 +34,12 @@ struct ExerciseCategoryDistributionCard: View {
         .cardSurface()
     }
 
-    private func bar(of categories: [ExerciseCategory]) -> some View {
+    private var bar: some View {
         GeometryReader { proxy in
             HStack(spacing: 0) {
-                ForEach(categories) { category in
-                    category.pictogram.color
-                        .frame(width: proxy.size.width * (distribution[category] ?? 0))
+                ForEach(shares.indices, id: \.self) { index in
+                    shares[index].category.pictogram.color
+                        .frame(width: proxy.size.width * shares[index].share)
                 }
             }
         }
@@ -63,12 +47,12 @@ struct ExerciseCategoryDistributionCard: View {
         .clipShape(.capsule)
     }
 
-    private func legend(of categories: [ExerciseCategory]) -> some View {
+    private var legend: some View {
         FlowLayout {
-            ForEach(categories) { category in
+            ForEach(shares.indices, id: \.self) { index in
                 PictogramChip(
-                    displayable: category,
-                    detail: (distribution[category] ?? 0).formatted(.percent.precision(.fractionLength(0)))
+                    displayable: shares[index].category,
+                    detail: shares[index].share.formatted(.percent.precision(.fractionLength(0)))
                 )
             }
         }
@@ -80,7 +64,7 @@ private struct CategoryDistributionCardGallery: View {
         ScreenStack {
             ExerciseCategoryDistributionCard(
                 title: .statisticDistributionTitle,
-                distribution: Statistics.distribution(of: [
+                shares: ExerciseCategory.shares(of: [
                     [.chest],
                     [.chest, .arms],
                     [.arms],
@@ -91,17 +75,17 @@ private struct CategoryDistributionCardGallery: View {
 
             ExerciseCategoryDistributionCard(
                 title: .statisticCompletedDistributionTitle,
-                distribution: Statistics.distribution(of: [[.mindfulness]])
+                shares: ExerciseCategory.shares(of: [[.mindfulness]])
             )
 
             ExerciseCategoryDistributionCard(
                 title: .statisticDistributionTitle,
-                distribution: Statistics.distribution(of: ExerciseCategory.allCases.map { [$0] })
+                shares: ExerciseCategory.shares(of: ExerciseCategory.allCases.map { [$0] })
             )
 
             ExerciseCategoryDistributionCard(
                 title: .statisticDistributionTitle,
-                distribution: [:]
+                shares: []
             )
         }
     }

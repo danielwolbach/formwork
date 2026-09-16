@@ -35,7 +35,7 @@ extension Session {
     static var activeDescriptor: FetchDescriptor<Session> {
         var descriptor = FetchDescriptor<Session>(
             predicate: #Predicate<Session> { $0.ended == nil },
-            sortBy: [SortDescriptor(\.started, order: .reverse)]
+            sortBy: [SortDescriptor(\.started, order: .reverse)],
         )
         descriptor.fetchLimit = 1
         return descriptor

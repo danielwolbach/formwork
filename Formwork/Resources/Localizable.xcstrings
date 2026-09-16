@@ -1,9 +1,18 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "" : {
+
+    },
     "action.addExercise.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Übung hinzufügen"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -15,6 +24,12 @@
     "action.addToWorkout.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zum Workout hinzufügen"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -26,6 +41,12 @@
     "action.backward.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zurück"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -37,6 +58,12 @@
     "action.cancel.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abbrechen"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -48,6 +75,12 @@
     "action.cancelSession.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Session abbrechen"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -59,6 +92,12 @@
     "action.complete.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abschließen"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -70,6 +109,12 @@
     "action.confirm.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bestätigen"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -81,6 +126,12 @@
     "action.create.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erstellen"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -92,6 +143,12 @@
     "action.decrease.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verringern"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -103,6 +160,12 @@
     "action.delete.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Löschen"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -114,6 +177,12 @@
     "action.edit.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bearbeiten"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -125,6 +194,12 @@
     "action.finishSession.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Session beenden"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -136,6 +211,12 @@
     "action.forward.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weiter"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -147,6 +228,12 @@
     "action.increase.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erhöhen"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -158,6 +245,12 @@
     "action.minimize.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minimieren"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -169,6 +262,12 @@
     "action.more.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mehr"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -180,6 +279,12 @@
     "action.remove.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entfernen"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -191,6 +296,12 @@
     "action.replaceSession.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Session ersetzen"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -202,6 +313,12 @@
     "action.resumeSession.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Session fortsetzen"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -213,6 +330,12 @@
     "action.showAllSessions.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alle Sessions"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -224,6 +347,12 @@
     "action.skipExercise.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Überspringen"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -235,6 +364,12 @@
     "action.startSession.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Session starten"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -246,6 +381,12 @@
     "action.statistics.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Statistiken"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -257,6 +398,12 @@
     "action.undo.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rückgängig"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -268,6 +415,12 @@
     "alert.exercise.delete.message" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Übung wird aus allen Workouts entfernt, die sie verwenden. Vergangene Sessions behalten trotzdem, was Du protokolliert hast."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -279,6 +432,12 @@
     "alert.exercise.delete.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Übung löschen?"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -290,6 +449,12 @@
     "alert.session.cancel.message" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Session wird verworfen, und nichts wird im Workout gespeichert."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -301,6 +466,12 @@
     "alert.session.cancel.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Session abbrechen?"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -312,6 +483,12 @@
     "alert.session.delete.message" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Session wird aus Deinem Verlauf entfernt und zählt nicht mehr zu Deinen Statistiken."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -323,6 +500,12 @@
     "alert.session.delete.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Session löschen?"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -334,6 +517,12 @@
     "alert.session.finish.message" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die von Dir angepassten Zielwerte werden im Workout gespeichert."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -345,6 +534,12 @@
     "alert.session.finish.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Session beenden?"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -356,6 +551,12 @@
     "alert.session.replace.message" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wenn Du dieses Workout startest, wird die laufende Session verworfen."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -367,6 +568,12 @@
     "alert.session.replace.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Session läuft bereits"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -378,6 +585,12 @@
     "alert.workout.delete.message" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das Workout wird entfernt. Vergangene Sessions bleiben aber in Deinem Verlauf und zählen weiterhin zu Deinen Statistiken."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -389,6 +602,12 @@
     "alert.workout.delete.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Workout löschen?"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -400,6 +619,12 @@
     "alert.workout.entry.remove.message" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Übung bleibt in Deinem Katalog und wird nur aus diesem Workout entfernt."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -411,10 +636,16 @@
     "alert.workout.entry.remove.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Übung aus Workout entfernen?"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Remove Entry from Workout?"
+            "value" : "Remove Exercise from Workout?"
           }
         }
       }
@@ -422,6 +653,12 @@
     "common.placeholder.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Platzhalter"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -433,6 +670,12 @@
     "date.today.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Heute"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -444,6 +687,12 @@
     "empty.exercises.message" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erstelle eine Übung, um sie zu Deinen Workouts hinzuzufügen."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -455,6 +704,12 @@
     "empty.exercises.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keine Übungen"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -466,6 +721,12 @@
     "empty.sessions.message" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sessions, die Du beendest, erscheinen hier."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -477,6 +738,12 @@
     "empty.sessions.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keine Sessions"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -488,6 +755,12 @@
     "empty.workoutEntries.message" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Füge Übungen zu diesem Workout hinzu, um eine Session zu starten."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -499,6 +772,12 @@
     "empty.workoutEntries.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keine Übungen"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -510,6 +789,12 @@
     "empty.workouts.message" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erstelle ein Workout, um Deine Übungen zu planen und eine Session zu starten."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -521,6 +806,12 @@
     "empty.workouts.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keine Workouts"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -532,6 +823,12 @@
     "exercise.category.arms.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arme"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -543,6 +840,12 @@
     "exercise.category.back.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rücken"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -554,6 +857,12 @@
     "exercise.category.cardio.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cardio"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -565,6 +874,12 @@
     "exercise.category.chest.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Brust"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -576,6 +891,12 @@
     "exercise.category.core.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Core"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -587,6 +908,12 @@
     "exercise.category.flexibility.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beweglichkeit"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -598,6 +925,12 @@
     "exercise.category.legs.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beine"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -609,6 +942,12 @@
     "exercise.category.mindfulness.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Achtsamkeit"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -620,6 +959,12 @@
     "exercise.category.other.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sonstiges"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -631,6 +976,12 @@
     "exercise.category.shoulders.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schultern"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -642,6 +993,24 @@
     "exercise.category.subtitle" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%1$(exerciseCount)lld Übung"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%1$(exerciseCount)lld Übungen"
+                }
+              }
+            }
+          }
+        },
         "en" : {
           "variations" : {
             "plural" : {
@@ -665,6 +1034,24 @@
     "exercise.target.bodyweight.measure" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%1$(reps)lld Wiederholung"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%1$(reps)lld Wiederholungen"
+                }
+              }
+            }
+          }
+        },
         "en" : {
           "variations" : {
             "plural" : {
@@ -688,6 +1075,12 @@
     "exercise.target.bodyweight.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$(sets)lld × %2$(reps)lld"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -699,6 +1092,12 @@
     "exercise.target.distance.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$(meters)lld m"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -710,6 +1109,12 @@
     "exercise.target.duration.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$(minutes)lld min"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -721,6 +1126,12 @@
     "exercise.target.weight.measure" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$(weight)@ kg"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -732,6 +1143,12 @@
     "exercise.target.weight.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$(weight)@ kg — %2$(sets)lld × %3$(reps)lld"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -743,6 +1160,12 @@
     "exercise.type.bodyweight.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Körpergewicht"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -754,6 +1177,12 @@
     "exercise.type.distance.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Distanz"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -765,6 +1194,12 @@
     "exercise.type.duration.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dauer"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -776,6 +1211,12 @@
     "exercise.type.weight.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gewicht"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -787,6 +1228,12 @@
     "exercise.unknown.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unbekannte Übung"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -798,6 +1245,12 @@
     "field.exercise.categories.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kategorien"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -809,6 +1262,12 @@
     "field.exercise.target.reps.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wiederholungen"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -820,6 +1279,12 @@
     "field.exercise.target.sets.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sätze"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -831,6 +1296,12 @@
     "field.exercise.type.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Typ"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -842,6 +1313,12 @@
     "field.name.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Name"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -853,6 +1330,12 @@
     "field.pictogram.color.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Farbe"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -864,6 +1347,12 @@
     "field.pictogram.icon.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Icon"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -875,6 +1364,12 @@
     "field.workout.entries.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Übungen"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -886,6 +1381,12 @@
     "field.workout.schedule.interval.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wiederholen"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -897,6 +1398,24 @@
     "field.workout.schedule.interval.value" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Jede Woche"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Alle %lld Wochen"
+                }
+              }
+            }
+          }
+        },
         "en" : {
           "variations" : {
             "plural" : {
@@ -920,6 +1439,12 @@
     "field.workout.schedule.startDate.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beginn"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -931,6 +1456,12 @@
     "field.workout.schedule.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeitplan"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -942,6 +1473,12 @@
     "overview.resting.finished.message" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du hast heute alles erledigt, was geplant war."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -953,6 +1490,12 @@
     "overview.resting.finished.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alles erledigt"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -964,6 +1507,12 @@
     "overview.resting.unscheduled.message" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Für heute ist nichts geplant."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -975,6 +1524,12 @@
     "overview.resting.unscheduled.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ruhetag"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -986,6 +1541,12 @@
     "overview.today.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Heute"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -997,6 +1558,12 @@
     "pictogram.tint.blue.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Blau"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1008,6 +1575,12 @@
     "pictogram.tint.brown.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Braun"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1019,6 +1592,12 @@
     "pictogram.tint.cyan.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cyan"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1030,6 +1609,12 @@
     "pictogram.tint.gray.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grau"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1041,6 +1626,12 @@
     "pictogram.tint.green.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grün"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1052,6 +1643,12 @@
     "pictogram.tint.indigo.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Indigo"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1063,6 +1660,12 @@
     "pictogram.tint.mint.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mint"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1074,6 +1677,12 @@
     "pictogram.tint.orange.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Orange"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1085,6 +1694,12 @@
     "pictogram.tint.pink.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pink"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1096,6 +1711,12 @@
     "pictogram.tint.purple.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lila"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1107,6 +1728,12 @@
     "pictogram.tint.red.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rot"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1118,6 +1745,12 @@
     "pictogram.tint.yellow.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gelb"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1129,6 +1762,12 @@
     "screen.catalog.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Katalog"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1140,6 +1779,12 @@
     "screen.exercise.create.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Übung erstellen"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1151,6 +1796,12 @@
     "screen.exercise.edit.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Übung bearbeiten"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1162,6 +1813,12 @@
     "screen.overview.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Übersicht"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1173,6 +1830,12 @@
     "screen.pictogram.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piktogramm"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1184,6 +1847,12 @@
     "screen.sessions.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sessions"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1195,6 +1864,12 @@
     "screen.statistics.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Statistiken"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1206,6 +1881,12 @@
     "screen.workout.addExercise.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Übung hinzufügen"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1217,6 +1898,12 @@
     "screen.workout.create.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Workout erstellen"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1228,6 +1915,12 @@
     "screen.workout.edit.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Workout bearbeiten"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1239,6 +1932,12 @@
     "screen.workouts.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Workouts"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1250,6 +1949,12 @@
     "session.status.completed.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abgeschlossen"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1261,6 +1966,12 @@
     "session.status.pending.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ausstehend"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1272,6 +1983,12 @@
     "session.status.skipped.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Übersprungen"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1283,6 +2000,12 @@
     "statistic.completedDistribution.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abgeschlossene Kategorien"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1291,9 +2014,32 @@
         }
       }
     },
+    "statistic.completionCalendar.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktivität"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activity"
+          }
+        }
+      }
+    },
     "statistic.completionRate.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abschlussrate"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1305,6 +2051,12 @@
     "statistic.distribution.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kategorieverteilung"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1316,6 +2068,12 @@
     "statistic.duration.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dauer"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1327,6 +2085,12 @@
     "statistic.finishedAt.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beendet um"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1338,6 +2102,12 @@
     "statistic.lastPerformed.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zuletzt ausgeführt"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1349,6 +2119,12 @@
     "statistic.lastSession.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Letzte Session"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1357,9 +2133,32 @@
         }
       }
     },
+    "statistic.longestStreak.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Längste Serie"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Longest Streak"
+          }
+        }
+      }
+    },
     "statistic.mostSkipped.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Am häufigsten übersprungen"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1371,6 +2170,12 @@
     "statistic.personalBest.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bestleistung"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1379,9 +2184,49 @@
         }
       }
     },
+    "statistic.progress.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fortschritt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Progress"
+          }
+        }
+      }
+    },
+    "statistic.sessionsThisMonth.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diesen Monat"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This Month"
+          }
+        }
+      }
+    },
     "statistic.streak.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Serie"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1393,6 +2238,24 @@
     "statistic.streak.value" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%1$(count)lld Woche"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%1$(count)lld Wochen"
+                }
+              }
+            }
+          }
+        },
         "en" : {
           "variations" : {
             "plural" : {
@@ -1416,6 +2279,12 @@
     "statistic.timesCompleted.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abschlüsse"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1427,6 +2296,12 @@
     "statistic.typicalDuration.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Typische Dauer"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1435,9 +2310,32 @@
         }
       }
     },
+    "statistic.typicalStartTime.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Typischer Start"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Typical Start"
+          }
+        }
+      }
+    },
     "unit.kilograms.suffix" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "kg"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1449,6 +2347,12 @@
     "unit.meters.suffix" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "m"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1460,6 +2364,12 @@
     "unit.minutes.suffix" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "min"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1471,6 +2381,12 @@
     "unknown" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unbekannt"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1482,6 +2398,24 @@
     "workout.subtitle" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%1$(exerciseCount)lld Übung"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%1$(exerciseCount)lld Übungen"
+                }
+              }
+            }
+          }
+        },
         "en" : {
           "variations" : {
             "plural" : {
@@ -1505,6 +2439,12 @@
     "workout.unknown.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unbekanntes Workout"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",

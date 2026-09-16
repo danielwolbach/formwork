@@ -42,21 +42,13 @@ extension ActionDescriptor {
 
     // Workout
     static let startSession = ActionDescriptor(title: .actionStartSessionTitle, systemImage: "play.fill")
-    static let replaceSession = ActionDescriptor(
-        title: .actionReplaceSessionTitle,
-        systemImage: "arrow.trianglehead.2.clockwise",
-        role: .destructive
-    )
+    static let replaceSession = ActionDescriptor(title: .actionReplaceSessionTitle, systemImage: "arrow.trianglehead.2.clockwise", role: .destructive)
     static let resumeSession = ActionDescriptor(title: .actionResumeSessionTitle, systemImage: "play.fill")
     static let addExercise = ActionDescriptor(title: .actionAddExerciseTitle, systemImage: "text.badge.plus")
 
     // Session
     static let skipExercise = ActionDescriptor(title: .actionSkipExerciseTitle, systemImage: "forward.end")
-    static let cancelSession = ActionDescriptor(
-        title: .actionCancelSessionTitle,
-        systemImage: "xmark",
-        role: .destructive
-    )
+    static let cancelSession = ActionDescriptor(title: .actionCancelSessionTitle, systemImage: "xmark", role: .destructive)
     static let finishSession = ActionDescriptor(title: .actionFinishSessionTitle, systemImage: "flag.pattern.checkered")
 
     /// Statistics
