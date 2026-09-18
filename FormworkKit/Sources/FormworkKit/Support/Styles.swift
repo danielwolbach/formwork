@@ -7,12 +7,42 @@
 
 import SwiftUI
 
-struct ChipLabelStyle: LabelStyle {
+public struct FixedLabelStyle: LabelStyle {
+    @ScaledMetric private var iconSize: CGFloat = 20
+
+    var showsTitle: Bool = true
+
+    public func makeBody(configuration: Configuration) -> some View {
+        HStack(spacing: 6) {
+            icon(configuration)
+
+            if showsTitle {
+                configuration.title
+            }
+        }
+    }
+
+    private func icon(_ configuration: Configuration) -> some View {
+        configuration.icon.frame(width: iconSize, height: iconSize)
+    }
+}
+
+public extension LabelStyle where Self == FixedLabelStyle {
+    static var fixedIconOnly: FixedLabelStyle {
+        FixedLabelStyle(showsTitle: false)
+    }
+
+    static var fixedTitleAndIcon: FixedLabelStyle {
+        FixedLabelStyle(showsTitle: true)
+    }
+}
+
+public struct ChipLabelStyle: LabelStyle {
     @ScaledMetric private var iconSize: CGFloat = 20
 
     var tint: Color = .accentColor
 
-    func makeBody(configuration: Configuration) -> some View {
+    public func makeBody(configuration: Configuration) -> some View {
         HStack(spacing: 6) {
             icon(configuration)
             configuration.title
@@ -33,16 +63,16 @@ struct ChipLabelStyle: LabelStyle {
     }
 }
 
-extension LabelStyle where Self == ChipLabelStyle {
+public extension LabelStyle where Self == ChipLabelStyle {
     static func chip(tint: Color = .accentColor) -> ChipLabelStyle {
         ChipLabelStyle(tint: tint)
     }
 }
 
-struct CardToggleStyle: ToggleStyle {
+public struct CardToggleStyle: ToggleStyle {
     var tint: Color = .accentColor
 
-    func makeBody(configuration: Configuration) -> some View {
+    public func makeBody(configuration: Configuration) -> some View {
         let tint = configuration.isOn ? tint : .secondary
 
         Button {
@@ -65,16 +95,16 @@ struct CardToggleStyle: ToggleStyle {
     }
 }
 
-extension ToggleStyle where Self == CardToggleStyle {
+public extension ToggleStyle where Self == CardToggleStyle {
     static func card(tint: Color = .accentColor) -> CardToggleStyle {
         CardToggleStyle(tint: tint)
     }
 }
 
-struct GlassToggleStyle: ToggleStyle {
+public struct GlassToggleStyle: ToggleStyle {
     var tint: Color = .accentColor
 
-    func makeBody(configuration: Configuration) -> some View {
+    public func makeBody(configuration: Configuration) -> some View {
         let glass: Glass = configuration.isOn ? .regular.tint(tint).interactive() : .regular.interactive()
 
         Button {
@@ -91,10 +121,15 @@ struct GlassToggleStyle: ToggleStyle {
     }
 }
 
-extension ToggleStyle where Self == GlassToggleStyle {
+public extension ToggleStyle where Self == GlassToggleStyle {
     static func glass(tint: Color = .accentColor) -> GlassToggleStyle {
         GlassToggleStyle(tint: tint)
     }
+}
+
+#Preview("Fixed Label") {
+    Label(ExerciseCategory.cardio.title, systemImage: ExerciseCategory.cardio.pictogram.image)
+        .labelStyle(.fixedTitleAndIcon)
 }
 
 #Preview("Chip Label") {

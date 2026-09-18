@@ -28,7 +28,7 @@ enum Sheet: Identifiable, Hashable, View {
             case let .editExercise(exercise): ExerciseForm(exercise: exercise)
             case .createWorkout: WorkoutForm()
             case let .editWorkout(workout): WorkoutForm(workout: workout)
-            case let .addWorkoutExercise(workout): WorkoutAddExerciseScreen(workout: workout)
+            case let .addWorkoutExercise(workout): WorkoutAddExerciseForm(workout: workout)
             }
         }
     }

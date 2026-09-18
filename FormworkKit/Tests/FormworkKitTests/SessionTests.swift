@@ -15,17 +15,18 @@ struct SessionLifecycleTests {
     let store: TestStore
 
     init() throws {
-        store = try TestStore()
+        self.store = try TestStore()
     }
 
     @Test func startCopiesWorkoutEntriesInOrder() throws {
         let session = try store.startSession()
         let active = try Session.active(in: store.context)
+        let allPending = session.entries.allSatisfy(\.status.isPending)
 
         #expect(session.isActive)
         #expect(session.workout === store.workout)
         #expect(session.orderedEntries.map(\.title) == ["Squat", "Bench Press", "Deadlift"])
-        #expect(session.entries.allSatisfy { $0.status.isPending })
+        #expect(allPending)
         #expect(active === session)
     }
 
@@ -81,7 +82,7 @@ struct SessionNavigationTests {
     let store: TestStore
 
     init() throws {
-        store = try TestStore()
+        self.store = try TestStore()
     }
 
     @Test func startsAtFirstEntry() throws {
@@ -154,7 +155,7 @@ struct SessionOrderTests {
     let store: TestStore
 
     init() throws {
-        store = try TestStore()
+        self.store = try TestStore()
     }
 
     @Test func historyIsOrderedByResolutionDate() throws {

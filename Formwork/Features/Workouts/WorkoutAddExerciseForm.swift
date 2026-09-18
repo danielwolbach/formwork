@@ -9,54 +9,92 @@ import FormworkKit
 import SwiftData
 import SwiftUI
 
-struct WorkoutAddExerciseScreen: View {
+struct WorkoutAddExerciseForm: View {
     @Environment(\.dismiss) private var dismiss: DismissAction
     @Environment(\.modelContext) private var modelContext: ModelContext
     @Query(sort: \Exercise.name) private var exercises: [Exercise]
     @State private var selection: [(exercise: Exercise, target: ExerciseTarget)] = []
     @State private var selectedCategories: Set<ExerciseCategory> = []
     @State private var searchText = ""
+    @State private var sheet: Sheet? = nil
 
     let workout: Workout
 
     var body: some View {
-        Form {
-            Section(.sectionWorkoutAddExerciseExercisesTitle) {
-                ForEach(matchingExercises) { exercise in
-                    row(for: exercise)
+        content
+            .sensoryFeedback(.selection, trigger: selection.count)
+            .navigationTitle(.screenWorkoutAddExerciseTitle)
+            .navigationSubtitle(workout.title)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(.confirm) {
+                        commit()
+                        dismiss()
+                    }
+                    .disabled(selection.isEmpty)
+                }
 
-                    if isSelected(exercise).wrappedValue {
-                        editor(for: exercise)
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(.cancel) {
+                        dismiss()
                     }
                 }
             }
-        }
-        .navigationTitle(.screenWorkoutAddExerciseTitle)
-        .navigationSubtitle(workout.title)
-        .navigationBarTitleDisplayMode(.inline)
-        .searchable(text: $searchText.animated())
-        .safeAreaInset(edge: .bottom) {
-            ExerciseCategoryFilterBar(selection: $selectedCategories)
-        }
-        .toolbar {
-            ToolbarItem(placement: .confirmationAction) {
-                Button(.confirm) {
-                    commit()
-                    dismiss()
-                }
-                .disabled(selection.isEmpty)
-            }
+            .sheet(item: $sheet) { $0 }
+    }
 
-            ToolbarItem(placement: .cancellationAction) {
-                Button(.cancel) {
-                    dismiss()
+    @ViewBuilder
+    private var content: some View {
+        if exercises.isEmpty {
+            ContentUnavailableView {
+                Label(.emptyExercisesTitle, systemImage: "dumbbell")
+            } description: {
+                Text(.emptyExercisesDescription)
+            } actions: {
+                Button(.create) {
+                    sheet = .createExercise
+                }
+                .buttonStyle(.glassProminent)
+            }
+        } else {
+            searchContent
+                .searchable(text: $searchText.animated())
+                .safeAreaInset(edge: .bottom) {
+                    ExerciseCategoryFilterBar(selection: $selectedCategories)
+                }
+        }
+    }
+
+    @ViewBuilder
+    private var searchContent: some View {
+        if matchingExercises.isEmpty {
+            if trimmedSearchText.isEmpty {
+                ContentUnavailableView.search
+            } else {
+                ContentUnavailableView.search(text: trimmedSearchText)
+            }
+        } else {
+            Form {
+                Section(.sectionWorkoutAddExerciseExercisesTitle) {
+                    ForEach(matchingExercises) { exercise in
+                        row(for: exercise)
+
+                        if isSelected(exercise).wrappedValue {
+                            editor(for: exercise)
+                        }
+                    }
                 }
             }
         }
     }
 
+    private var trimmedSearchText: String {
+        searchText.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
     private var matchingExercises: [Exercise] {
-        let searchText = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
+        let searchText = trimmedSearchText
         let categorical = selectedCategories.isEmpty ? exercises : exercises
             .filter { selectedCategories.isSubset(of: $0.categories) }
 
@@ -80,6 +118,7 @@ struct WorkoutAddExerciseScreen: View {
                     .toggleStyle(.card())
                     .labelStyle(.fixedIconOnly)
                     .buttonBorderShape(.circle)
+                    .transaction { $0.animation = nil }
             }
             .contentShape(Rectangle())
         }
@@ -121,7 +160,7 @@ struct WorkoutAddExerciseScreen: View {
         Binding(
             get: { index(of: exercise) != nil },
             set: { isOn in
-                withAnimation {
+                withAnimation(.easeOut(duration: 0.1)) {
                     let index = index(of: exercise)
 
                     if isOn, index == nil {
@@ -191,7 +230,7 @@ private struct ExerciseCategoryFilterBar: View {
 
 #Preview {
     NavigationStack {
-        WorkoutAddExerciseScreen(workout: Samples.workouts.first!)
+        WorkoutAddExerciseForm(workout: Samples.workouts.first!)
     }
     .sampleData()
 }

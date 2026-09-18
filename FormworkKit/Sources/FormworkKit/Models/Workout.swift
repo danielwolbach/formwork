@@ -9,7 +9,7 @@ import SwiftData
 
 @Model
 public final class Workout {
-    public var name: String = "" // TODO: Unknown workout title.
+    public var name: String = String(localized: .workoutUnknownTitle)
 
     public var pictogram: Pictogram = Pictogram.unknown
 

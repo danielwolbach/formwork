@@ -20,9 +20,9 @@ struct TestStore {
 
     init() throws {
         let configuration = ModelConfiguration(schema: Storage.schema, isStoredInMemoryOnly: true)
-        container = try ModelContainer(for: Storage.schema, configurations: [configuration])
+        self.container = try ModelContainer(for: Storage.schema, configurations: [configuration])
 
-        workout = Workout(name: "Full Body", pictogram: Pictogram(image: "figure.run", tint: .pink), schedule: .inactive, entries: [])
+        self.workout = Workout(name: "Full Body", pictogram: Pictogram(image: "figure.run", tint: .pink), schedule: .inactive, entries: [])
         container.mainContext.insert(workout)
 
         for name in ["Squat", "Bench Press", "Deadlift"] {

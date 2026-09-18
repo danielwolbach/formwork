@@ -50,8 +50,6 @@ public extension Session {
 public extension Session {
     @discardableResult
     static func start(_ workout: Workout, in context: ModelContext) throws -> Session {
-        precondition(!workout.entries.isEmpty)
-
         let entries = workout.entries.map { workoutEntry in SessionEntry(workoutEntry: workoutEntry) }
         let runningDescriptor = FetchDescriptor<Session>(predicate: #Predicate<Session> { $0.ended == nil })
 

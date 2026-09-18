@@ -12,22 +12,78 @@ import SwiftUI
 struct CatalogScreen: View {
     @Query(sort: \Exercise.name) private var exercises: [Exercise]
     @State private var sheet: Sheet? = nil
+    @State private var searchText = ""
 
     var body: some View {
-        ScrollView {
-            ExerciseCategoryGrid(exercises: exercises)
-                .padding(.horizontal)
+        content
+            .navigationTitle(.screenCatalogTitle)
+            .navigationDestination(for: ExerciseCategory.self) { category in
+                ExerciseCategoryScreen(category: category)
+            }
+            .navigationDestination(for: Exercise.self) { exercise in
+                ExerciseScreen(exercise: exercise)
+            }
+            .toolbar {
+                Button(.create) {
+                    sheet = .createExercise
+                }
+            }
+            .sheet(item: $sheet) { $0 }
+    }
+
+    @ViewBuilder
+    private var content: some View {
+        if exercises.isEmpty {
+            ContentUnavailableView {
+                Label(.emptyExercisesTitle, systemImage: "dumbbell")
+            } description: {
+                Text(.emptyExercisesDescription)
+            } actions: {
+                Button(.create) {
+                    sheet = .createExercise
+                }
+                .buttonStyle(.glassProminent)
+            }
+        } else {
+            searchContent
+                .searchable(text: $searchText.animated())
         }
-        .navigationTitle(.screenCatalogTitle)
-        .navigationDestination(for: ExerciseCategory.self) { category in
-            ExerciseCategoryScreen(category: category)
-        }
-        .toolbar {
-            Button(.create) {
-                sheet = .createExercise
+    }
+
+    @ViewBuilder
+    private var searchContent: some View {
+        if trimmedSearchText.isEmpty {
+            ScrollView {
+                ExerciseCategoryGrid(exercises: exercises)
+                    .padding(.horizontal)
+            }
+        } else if matchingExercises.isEmpty {
+            ContentUnavailableView.search(text: trimmedSearchText)
+        } else {
+            ScrollView {
+                LazyVStack(spacing: 0) {
+                    ForEach(matchingExercises) { exercise in
+                        NavigationLink(value: exercise) {
+                            PictogramRow(exercise)
+
+                            Image(systemName: "chevron.right")
+                                .foregroundStyle(.tertiary)
+                        }
+                        .buttonStyle(.plain)
+                        .padding(.horizontal)
+                        .padding(.vertical, 8)
+                    }
+                }
             }
         }
-        .sheet(item: $sheet) { $0 }
+    }
+
+    private var trimmedSearchText: String {
+        searchText.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    private var matchingExercises: [Exercise] {
+        exercises.filter { $0.name.localizedCaseInsensitiveContains(trimmedSearchText) }
     }
 }
 

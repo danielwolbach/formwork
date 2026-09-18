@@ -42,6 +42,9 @@ struct SessionMiniPlayer: View {
                 .padding(.trailing)
         }
         .matchedTransitionSource(id: session.persistentModelID, in: namespace)
+        .onTapGesture {
+            presentSession(session)
+        }
     }
 
     @ViewBuilder
@@ -68,9 +71,6 @@ struct SessionMiniPlayer: View {
         .padding(.horizontal)
         .contentShape(.rect)
         .accessibilityAddTraits(.isButton)
-        .onTapGesture {
-            presentSession(session)
-        }
     }
 
     @ViewBuilder

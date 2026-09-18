@@ -9,7 +9,7 @@ import SwiftData
 
 @Model
 public final class Exercise {
-    public var name: String = ""
+    public var name: String = String(localized: .exerciseUnknownTitle)
 
     public var type: ExerciseType = ExerciseType.weight
 

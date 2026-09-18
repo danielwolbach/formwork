@@ -9,7 +9,7 @@ import Foundation
 
 struct Statistics {
     let weekStreak: Int
-    
+
     let lastSession: Date
 }
 
@@ -17,6 +17,4 @@ struct WorkoutStatistics {
     let lastSession: Date
 }
 
-struct ExerciseStatistics {
-    
-}
+struct ExerciseStatistics {}

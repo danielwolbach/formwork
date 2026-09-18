@@ -12,35 +12,70 @@ import SwiftUI
 struct ExerciseCategoryScreen: View {
     @Query(sort: \Exercise.name) private var exercises: [Exercise]
     @State private var sheet: Sheet? = nil
+    @State private var searchText = ""
 
     let category: ExerciseCategory
 
     var body: some View {
-        ScrollView {
-            LazyVStack(spacing: 0) {
-                ForEach(categoryExercises) { exercise in
-                    NavigationLink(value: exercise) {
-                        PictogramRow(exercise)
+        content
+            .navigationTitle(category.title)
+            .toolbar {
+                Button(.create) {
+                    sheet = .createExerciseInCategory(category: category)
+                }
+            }
+            .sheet(item: $sheet) { $0 }
+    }
 
-                        Image(systemName: "chevron.right")
-                            .foregroundStyle(.tertiary)
+    @ViewBuilder
+    private var content: some View {
+        if categoryExercises.isEmpty {
+            ContentUnavailableView {
+                Label(.emptyExercisesTitle, systemImage: category.pictogram.image)
+            } description: {
+                Text(.emptyCategoryDescription)
+            } actions: {
+                Button(.create) {
+                    sheet = .createExerciseInCategory(category: category)
+                }
+                .buttonStyle(.glassProminent)
+            }
+        } else {
+            searchContent
+                .searchable(text: $searchText.animated())
+        }
+    }
+
+    @ViewBuilder
+    private var searchContent: some View {
+        if matchingExercises.isEmpty {
+            ContentUnavailableView.search(text: trimmedSearchText)
+        } else {
+            ScrollView {
+                LazyVStack(spacing: 0) {
+                    ForEach(matchingExercises) { exercise in
+                        NavigationLink(value: exercise) {
+                            PictogramRow(exercise)
+
+                            Image(systemName: "chevron.right")
+                                .foregroundStyle(.tertiary)
+                        }
+                        .buttonStyle(.plain)
+                        .padding(.horizontal)
+                        .padding(.vertical, 8)
                     }
-                    .buttonStyle(.plain)
-                    .padding(.horizontal)
-                    .padding(.vertical, 8)
                 }
             }
         }
-        .navigationTitle(category.title)
-        .navigationDestination(for: Exercise.self) { exercise in
-            ExerciseScreen(exercise: exercise)
-        }
-        .toolbar {
-            Button(.create) {
-                sheet = .createExerciseInCategory(category: category)
-            }
-        }
-        .sheet(item: $sheet) { $0 }
+    }
+
+    private var trimmedSearchText: String {
+        searchText.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    private var matchingExercises: [Exercise] {
+        guard !trimmedSearchText.isEmpty else { return categoryExercises }
+        return categoryExercises.filter { $0.name.localizedCaseInsensitiveContains(trimmedSearchText) }
     }
 
     private var categoryExercises: [Exercise] {

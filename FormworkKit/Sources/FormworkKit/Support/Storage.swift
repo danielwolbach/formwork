@@ -15,6 +15,14 @@ public enum Storage {
     public static let container: ModelContainer = if ProcessInfo.processInfo.arguments.contains("--sample-data") {
         Samples.container
     } else {
-        try! ModelContainer(for: schema, configurations: [ModelConfiguration(schema: schema)])
+        try unwrap(ModelContainer(for: schema, configurations: [ModelConfiguration(schema: schema)]), "Failed to initialize storage")
+    }
+}
+
+private func unwrap<T>(_ expression: @autoclosure () throws -> T, _ message: String) -> T {
+    do {
+        return try expression()
+    } catch {
+        fatalError("\(message): \(error)")
     }
 }

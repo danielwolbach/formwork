@@ -70,20 +70,30 @@ public enum Samples {
                 WorkoutEntry(order: 5, exercise: exercises[24], target: .duration(target: .init(duration: Quantity(5, in: .minutes)))),
             ]
         ),
+        Workout(
+            name: "Empty",
+            pictogram: Pictogram(image: "figure.martial.arts", tint: .red),
+            schedule: .inactive,
+            entries: []
+        )
     ]
 
     public static let sessions: [Session] = [
-        try! Session.start(workouts[0], in: container.mainContext),
+        // swiftlint:disable:next force_try
+        try! container.mainContext.fetch(FetchDescriptor<Session>()).first!
     ]
 
     public static let container: ModelContainer = {
         let configuration = ModelConfiguration(schema: Storage.schema, isStoredInMemoryOnly: true)
+
+        // swiftlint:disable:next force_try
         let container = try! ModelContainer(for: Storage.schema, configurations: [configuration])
 
         Samples.exercises.forEach(container.mainContext.insert)
         Samples.workouts.forEach(container.mainContext.insert)
 
-        try! Session.start(Samples.workouts.first!, in: container.mainContext)
+        // swiftlint:disable:next force_try
+        try! Session.start(Samples.workouts[0], in: container.mainContext)
 
         return container
     }()

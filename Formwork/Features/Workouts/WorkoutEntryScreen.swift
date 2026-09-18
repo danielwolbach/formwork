@@ -13,7 +13,7 @@ struct WorkoutEntryScreen: View {
     @Environment(\.modelContext) private var modelContext: ModelContext
     @Environment(\.dismiss) private var dismiss: DismissAction
     @State private var deleteAlert: Bool = false
-    
+
     @Bindable var entry: WorkoutEntry
 
     var body: some View {
@@ -55,7 +55,7 @@ struct WorkoutEntryScreen: View {
             Text(.alertWorkoutEntryRemoveMessage)
         }
     }
-    
+
     private func delete() {
         modelContext.delete(entry)
         dismiss()

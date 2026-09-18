@@ -34,10 +34,12 @@ struct WorkoutCard: View {
                     }
                 }
 
-                FlowLayout(alignment: .leading) {
-                    ForEach(categories) { category in
-                        Label(category.title, systemImage: category.pictogram.image)
-                            .labelStyle(.chip(tint: category.pictogram.color))
+                if !categories.isEmpty {
+                    FlowLayout(alignment: .leading) {
+                        ForEach(categories) { category in
+                            Label(category.title, systemImage: category.pictogram.image)
+                                .labelStyle(.chip(tint: category.pictogram.color))
+                        }
                     }
                 }
             }

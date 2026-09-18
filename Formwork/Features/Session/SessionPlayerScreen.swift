@@ -117,20 +117,13 @@ struct SessionPlayerScreen: View {
             }
             .fontWeight(.semibold)
         } else if let status = session.current?.status {
-            if status.isPending {
-                Button(.complete) {
-                    Haptics.impact(.medium)
-                    navigator.complete()
-                }
-                .fontWeight(.semibold)
-                .tint(.green)
-            } else {
-                Button(status.title, systemImage: status.pictogram.image) {
-                    // Already resolved and therefore always disabled.
-                }
-                .fontWeight(.semibold)
-                .disabled(true)
+            Button(.complete) {
+                Haptics.impact(.medium)
+                navigator.complete()
             }
+            .fontWeight(.semibold)
+            .tint(.green)
+            .disabled(!status.isPending)
         }
     }
 

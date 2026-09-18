@@ -96,6 +96,72 @@
         }
       }
     },
+    "empty.category.description" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Create an exercise in this category to see it here."
+          }
+        }
+      }
+    },
+    "empty.exercises.description" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Create exercises to build your catalog and add them to workouts."
+          }
+        }
+      }
+    },
+    "empty.exercises.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No Exercises"
+          }
+        }
+      }
+    },
+    "empty.workout.exercises.description" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add exercises to this workout to start a session."
+          }
+        }
+      }
+    },
+    "empty.workouts.description" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Create a workout to plan your training."
+          }
+        }
+      }
+    },
+    "empty.workouts.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No Workouts"
+          }
+        }
+      }
+    },
     "field.reps.suffix" : {
       "extractionState" : "manual",
       "localizations" : {

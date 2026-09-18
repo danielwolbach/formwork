@@ -14,27 +14,45 @@ struct WorkoutListScreen: View {
     @State private var sheet: Sheet? = nil
 
     var body: some View {
-        ScrollView {
-            LazyVGrid(columns: [.init(.flexible(), spacing: 8)], spacing: 8) {
-                ForEach(workouts) { workout in
-                    NavigationLink(value: workout) {
-                        WorkoutCard(workout: workout)
-                    }
-                    .buttonStyle(.plain)
+        content
+            .navigationTitle(.screenWorkoutsTitle)
+            .navigationDestination(for: Workout.self) { workout in
+                WorkoutScreen(workout: workout)
+            }
+            .toolbar {
+                Button(.create) {
+                    sheet = .createWorkout
                 }
             }
-            .padding(.horizontal, 16)
-        }
-        .navigationTitle(.screenWorkoutsTitle)
-        .navigationDestination(for: Workout.self) { workout in
-            WorkoutScreen(workout: workout)
-        }
-        .toolbar {
-            Button(.create) {
-                sheet = .createWorkout
+            .sheet(item: $sheet) { $0 }
+    }
+
+    @ViewBuilder
+    private var content: some View {
+        if workouts.isEmpty {
+            ContentUnavailableView {
+                Label(.emptyWorkoutsTitle, systemImage: "clipboard")
+            } description: {
+                Text(.emptyWorkoutsDescription)
+            } actions: {
+                Button(.create) {
+                    sheet = .createWorkout
+                }
+                .buttonStyle(.glassProminent)
+            }
+        } else {
+            ScrollView {
+                LazyVGrid(columns: [.init(.flexible(), spacing: 8)], spacing: 8) {
+                    ForEach(workouts) { workout in
+                        NavigationLink(value: workout) {
+                            WorkoutCard(workout: workout)
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+                .padding(.horizontal, 16)
             }
         }
-        .sheet(item: $sheet) { $0 }
     }
 }
 

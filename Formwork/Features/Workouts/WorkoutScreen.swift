@@ -39,6 +39,7 @@ struct WorkoutScreen: View {
                     .labelStyle(.fixedTitleAndIcon)
                     .buttonStyle(.glassProminent)
                     .tint(.green)
+                    .disabled(workout.entries.isEmpty)
 
                     Button(.viewStatistics) {
                         // TODO:
@@ -49,17 +50,30 @@ struct WorkoutScreen: View {
                 }
                 .controlSize(.large)
 
-                LazyVStack(spacing: 0) {
-                    ForEach(workout.entries.sorted()) { entry in
-                        NavigationLink(value: entry) {
-                            PictogramRow(entry)
-
-                            Image(systemName: "chevron.right")
-                                .foregroundStyle(.tertiary)
+                if workout.entries.isEmpty {
+                    ContentUnavailableView {
+                        Label(.emptyExercisesTitle, systemImage: "dumbbell")
+                    } description: {
+                        Text(.emptyWorkoutExercisesDescription)
+                    } actions: {
+                        Button(.addExercise) {
+                            sheet = .addWorkoutExercise(workout: workout)
                         }
-                        .buttonStyle(.plain)
-                        .padding(.horizontal)
-                        .padding(.vertical, 8)
+                        .buttonStyle(.glassProminent)
+                    }
+                } else {
+                    LazyVStack(spacing: 0) {
+                        ForEach(workout.entries.sorted()) { entry in
+                            NavigationLink(value: entry) {
+                                PictogramRow(entry)
+
+                                Image(systemName: "chevron.right")
+                                    .foregroundStyle(.tertiary)
+                            }
+                            .buttonStyle(.plain)
+                            .padding(.horizontal)
+                            .padding(.vertical, 8)
+                        }
                     }
                 }
             }

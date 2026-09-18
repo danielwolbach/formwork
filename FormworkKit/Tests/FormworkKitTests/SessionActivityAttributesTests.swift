@@ -14,7 +14,7 @@ struct SessionActivityAttributesTests {
     let store: TestStore
 
     init() throws {
-        store = try TestStore()
+        self.store = try TestStore()
     }
 
     @Test func mapsCurrentEntry() throws {
@@ -46,8 +46,8 @@ struct SessionActivityAttributesTests {
     }
 
     @Test func differsBetweenSessionsOfSameWorkout() throws {
-        let first = try #require(SessionActivityAttributes.ContentState(session: try store.startSession()))
-        let second = try #require(SessionActivityAttributes.ContentState(session: try store.startSession()))
+        let first = try #require(try SessionActivityAttributes.ContentState(session: store.startSession()))
+        let second = try #require(try SessionActivityAttributes.ContentState(session: store.startSession()))
 
         // The Live Activity is only updated when the state changes, so a replaced session must never produce the
         // same state as the one it replaces.
