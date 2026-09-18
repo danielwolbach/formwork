@@ -18,8 +18,20 @@ struct ExerciseScreen: View {
     let exercise: Exercise
 
     var body: some View {
+        let statistics = exercise.statistics
+
         ScrollView {
-            PictogramHeader(exercise)
+            VStack(spacing: 32) {
+                PictogramHeader(exercise)
+
+                LazyVGrid(columns: [.init(.flexible(), spacing: 8), .init(.flexible(), spacing: 8)], spacing: 8) {
+                    StatisticCard(statistics.lastCompleted)
+                    StatisticCard(statistics.completionRate)
+                    StatisticCard(statistics.personalBest)
+                    StatisticCard(statistics.completions)
+                }
+                .padding(.horizontal, 16)
+            }
         }
         .toolbar {
             Menu(.more) {

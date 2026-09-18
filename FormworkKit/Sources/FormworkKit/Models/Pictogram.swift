@@ -52,4 +52,13 @@ public extension Pictogram {
 public extension Pictogram {
     static let unknown: Pictogram = .init(image: "questionmark", tint: .gray)
     static let workout = Pictogram(image: "figure.strengthtraining.traditional", tint: .blue)
+    static let duration = Pictogram(image: "stopwatch", tint: .cyan)
+    static let date = Pictogram(image: "calendar", tint: .indigo)
+    static let time = Pictogram(image: "clock", tint: .blue)
+    static let tally = Pictogram(image: "repeat", tint: .orange)
+    static let record = Pictogram(image: "trophy", tint: .yellow)
+    static let streak = Pictogram(image: "flame", tint: .orange)
+    static let month = Pictogram(image: "calendar.badge.checkmark", tint: .mint)
+    static let completed = Pictogram(image: "checkmark.circle", tint: .green)
+    static let skipped = Pictogram(image: "forward.end", tint: .pink)
 }

@@ -70,17 +70,11 @@ public enum Samples {
                 WorkoutEntry(order: 5, exercise: exercises[24], target: .duration(target: .init(duration: Quantity(5, in: .minutes)))),
             ]
         ),
-        Workout(
-            name: "Empty",
-            pictogram: Pictogram(image: "figure.martial.arts", tint: .red),
-            schedule: .inactive,
-            entries: []
-        )
     ]
 
     public static let sessions: [Session] = [
         // swiftlint:disable:next force_try
-        try! container.mainContext.fetch(FetchDescriptor<Session>()).first!
+        try! Session.active(in: container.mainContext)!,
     ]
 
     public static let container: ModelContainer = {
@@ -91,6 +85,9 @@ public enum Samples {
 
         Samples.exercises.forEach(container.mainContext.insert)
         Samples.workouts.forEach(container.mainContext.insert)
+
+        // swiftlint:disable:next force_try
+        try! Samples.seedHistory(in: container.mainContext)
 
         // swiftlint:disable:next force_try
         try! Session.start(Samples.workouts[0], in: container.mainContext)
@@ -108,5 +105,84 @@ public extension View {
 private struct SampleDataModifier: ViewModifier {
     func body(content: Content) -> some View {
         content.modelContainer(Samples.container)
+    }
+}
+
+private extension Samples {
+    static func seedHistory(in context: ModelContext, days: Int = 84, calendar: Calendar = .current) throws {
+        var random = SeededGenerator(seed: 42)
+        let today = calendar.startOfDay(for: .now)
+
+        for offset in (1 ... days).reversed() {
+            guard
+                let day = calendar.date(byAdding: .day, value: -offset, to: today),
+                let weekday = Schedule.Weekday(rawValue: (calendar.component(.weekday, from: day) + 5) % 7)
+            else {
+                continue
+            }
+
+            let progress = 1 - Double(offset) / Double(days)
+
+            for workout in workouts where workout.schedule.weekdays.contains(weekday) {
+                guard Double.random(in: 0 ..< 1, using: &random) < 0.8 else {
+                    continue
+                }
+
+                let session = try Session.start(workout, in: context)
+                var clock = day.addingTimeInterval(TimeInterval.random(in: 17 ... 19.5, using: &random) * 3600)
+                session.started = clock
+
+                for entry in session.entries.sorted() {
+                    clock += TimeInterval.random(in: 180 ... 480, using: &random)
+                    entry.target = entry.target.scaled(by: 0.85 + 0.15 * progress)
+                    entry.status = Double.random(in: 0 ..< 1, using: &random) < 0.1 ? .skipped(at: clock) : .completed(at: clock)
+                }
+
+                // Not `finish()`: that stamps `.now` and writes the targets back into the workout.
+                session.ended = clock
+            }
+        }
+    }
+}
+
+private struct SeededGenerator: RandomNumberGenerator {
+    private var state: UInt64
+
+    init(seed: UInt64) {
+        self.state = seed
+    }
+
+    mutating func next() -> UInt64 {
+        state &+= 0x9E37_79B9_7F4A_7C15
+        var z = state
+        z = (z ^ (z >> 30)) &* 0xBF58_476D_1CE4_E5B9
+        z = (z ^ (z >> 27)) &* 0x94D0_49BB_1331_11EB
+        return z ^ (z >> 31)
+    }
+}
+
+private extension ExerciseTarget {
+    func scaled(by factor: Double) -> Self {
+        switch self {
+        case var .weight(target):
+            target.weight = target.weight.scaled(by: factor)
+            return .weight(target: target)
+        case .bodyweight:
+            return self
+        case var .duration(target):
+            target.duration = target.duration.scaled(by: factor)
+            return .duration(target: target)
+        case var .distance(target):
+            target.distance = target.distance.scaled(by: factor)
+            return .distance(target: target)
+        }
+    }
+}
+
+private extension Quantity {
+    func scaled(by factor: Double) -> Self {
+        var quantity = self
+        quantity.value = (value * factor / stepSize).rounded() * stepSize
+        return quantity
     }
 }

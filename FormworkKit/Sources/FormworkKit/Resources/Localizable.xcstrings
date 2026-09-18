@@ -420,6 +420,29 @@
         }
       }
     },
+    "exercise.target.reps.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Rep"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Reps"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "exercise.target.weight.subtitle" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -515,6 +538,83 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Skipped"
+          }
+        }
+      }
+    },
+    "statistic.completionRate.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Completion Rate"
+          }
+        }
+      }
+    },
+    "statistic.completions.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Times Completed"
+          }
+        }
+      }
+    },
+    "statistic.lastCompleted.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Last Completed"
+          }
+        }
+      }
+    },
+    "statistic.mostSkipped.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Most Skipped"
+          }
+        }
+      }
+    },
+    "statistic.personalBest.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Personal Best"
+          }
+        }
+      }
+    },
+    "statistic.typicalDuration.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Typical Duration"
+          }
+        }
+      }
+    },
+    "statistic.typicalStartTime.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Typical Start"
           }
         }
       }
