@@ -16,13 +16,12 @@ struct WorkoutForm: View {
     @State private var pictogram: Pictogram
     @State private var schedule: Schedule
     @State private var entries: [WorkoutEntry]
-    @State private var isPictogramFormPresented = false
 
     let workout: Workout?
 
     init(workout: Workout? = nil) {
         self._name = State(initialValue: workout?.name ?? "")
-        self._pictogram = State(initialValue: workout?.pictogram ?? Pictogram.workout)
+        self._pictogram = State(initialValue: workout?.pictogram ?? .workout)
         self._entries = State(initialValue: workout?.entries.sorted() ?? [])
         self._schedule = State(initialValue: workout?.schedule ?? .inactive)
         self.workout = workout
@@ -34,31 +33,25 @@ struct WorkoutForm: View {
                 HStack {
                     Spacer()
 
-                    Button {
-                        isPictogramFormPresented = true
-                    } label: {
-                        PictogramView(
-                            pictogram: pictogram,
-                            size: 192,
-                            badge: Pictogram(icon: "pencil.circle.fill", tint: .gray)
-                        )
-                    }
+                    PictogramEditor(pictogram: $pictogram)
 
                     Spacer()
                 }
                 .listRowBackground(Color.clear)
             }
 
-            Section(.fieldNameTitle) {
-                TextField(workout?.name ?? String(localized: .fieldNameTitle), text: $name)
+            Section(.sectionWorkoutNameTitle) {
+                TextField(workout?.name ?? "", text: $name)
             }
 
-            scheduleSection
+            Section(.sectionWorkoutScheduleTitle) {
+                ScheduleEditor(schedule: $schedule)
+            }
 
             if !entries.isEmpty {
-                Section(.fieldWorkoutEntriesTitle) {
+                Section(.sectionWorkoutExercisesTitle) {
                     ForEach(entries) { entry in
-                        DisplayableRow(displayable: entry)
+                        PictogramRow(entry)
                     }
                     .onMove { source, destination in
                         entries.move(fromOffsets: source, toOffset: destination)
@@ -73,7 +66,8 @@ struct WorkoutForm: View {
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 Button(.confirm) {
-                    save()
+                    commit()
+                    dismiss()
                 }
                 .disabled(!valid)
             }
@@ -84,33 +78,6 @@ struct WorkoutForm: View {
                 }
             }
         }
-        .sheet(isPresented: $isPictogramFormPresented) {
-            NavigationStack {
-                PictogramForm(pictogram: $pictogram)
-            }
-        }
-    }
-
-    private var scheduleSection: some View {
-        Section(.fieldWorkoutScheduleTitle) {
-            WeekdayPicker(schedule: $schedule, tint: pictogram.color)
-
-            if schedule.isActive {
-                Picker(selection: $schedule.interval) {
-                    ForEach(1 ... 4, id: \.self) { weeks in
-                        Text(.fieldWorkoutScheduleIntervalValue(weeks)).tag(weeks)
-                    }
-                } label: {
-                    Text(.fieldWorkoutScheduleIntervalTitle)
-                }
-                .listRowSeparator(.hidden)
-
-                DatePicker(selection: $schedule.startDate, displayedComponents: .date) {
-                    Text(.fieldWorkoutScheduleStartDateTitle)
-                }
-                .listRowSeparator(.hidden)
-            }
-        }
     }
 
     private var valid: Bool {
@@ -118,7 +85,7 @@ struct WorkoutForm: View {
         return !name.isEmpty
     }
 
-    private func save() {
+    private func commit() {
         let name = name.trimmingCharacters(in: .whitespacesAndNewlines)
         for (index, entry) in entries.enumerated() {
             entry.order = index
@@ -129,52 +96,42 @@ struct WorkoutForm: View {
             workout.pictogram = pictogram
             workout.schedule = schedule
         } else {
-            let workout = Workout(name: name, pictogram: pictogram, entries: entries, schedule: schedule)
+            let workout = Workout(name: name, pictogram: pictogram, schedule: schedule, entries: entries)
             modelContext.insert(workout)
         }
-
-        dismiss()
     }
 }
 
-private struct WeekdayPicker: View {
+private struct ScheduleEditor: View {
     @Binding var schedule: Schedule
-    let tint: Color
 
     var body: some View {
-        HStack {
-            ForEach(Weekday.ordered()) { candidate in
-                WeekdayChip(day: candidate, tint: tint, isSelected: schedule.days.contains(candidate)) {
-                    schedule.setDay(candidate, isOn: !schedule.days.contains(candidate))
+        LazyVGrid(columns: GridItem.ntile(n: 7, spacing: 0), spacing: 0) {
+            ForEach(Schedule.Weekday.ordered()) { weekday in
+                Toggle(isOn: binding(for: weekday)) {
+                    Text(weekday.symbol())
+                        .font(.headline)
+                        .padding(4)
                 }
+                .toggleStyle(.card())
+                .buttonBorderShape(.circle)
+                .accessibilityLabel(weekday.name())
             }
         }
-        .frame(maxWidth: .infinity)
-        .padding(.vertical, 4)
-        .sensoryFeedback(.selection, trigger: schedule.days)
+        .sensoryFeedback(.selection, trigger: schedule.weekdays)
     }
-}
 
-private struct WeekdayChip: View {
-    let day: Weekday
-    let tint: Color
-    let isSelected: Bool
-    let action: () -> Void
-
-    var body: some View {
-        SelectableTile(
-            outline: Circle(),
-            tint: tint,
-            isSelected: isSelected,
-            action: action
-        ) {
-            Text(day.symbol())
-                .font(.subheadline)
-                .fontWeight(.semibold)
-                .lineLimit(1)
-                .frame(width: 40, height: 40)
-        }
-        .accessibilityLabel(day.name())
+    private func binding(for candidate: Schedule.Weekday) -> Binding<Bool> {
+        Binding(
+            get: { schedule.weekdays.contains(candidate) },
+            set: { selected in
+                if selected {
+                    schedule.weekdays.insert(candidate)
+                } else {
+                    schedule.weekdays.remove(candidate)
+                }
+            }
+        )
     }
 }
 

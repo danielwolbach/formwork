@@ -11,14 +11,29 @@ import SwiftUI
 
 struct SessionMiniPlayer: View {
     @Environment(\.presentSession) private var presentSession: PresentSessionAction
-    @State private var direction: SlideDirection = .forward
+    @State private var navigator: SessionNavigator
 
     let session: Session
-    let transitionNamespace: Namespace.ID
+    let namespace: Namespace.ID
+
+    init(session: Session, namespace: Namespace.ID) {
+        self.session = session
+        self.namespace = namespace
+        _navigator = State(initialValue: SessionNavigator(session: session))
+    }
 
     var body: some View {
         HStack(spacing: 0) {
-            entry
+            SessionEntryPager(navigator: navigator) { entry in
+                row(for: entry)
+            }
+            .mask {
+                HStack(spacing: 0) {
+                    LinearGradient(colors: [.clear, .black], startPoint: .leading, endPoint: .trailing).frame(width: 16)
+                    Rectangle()
+                    LinearGradient(colors: [.black, .clear], startPoint: .leading, endPoint: .trailing).frame(width: 16)
+                }
+            }
 
             sessionProgress
                 .padding(.trailing)
@@ -26,47 +41,35 @@ struct SessionMiniPlayer: View {
             statusAction
                 .padding(.trailing)
         }
-        .matchedTransitionSource(id: session.persistentModelID, in: transitionNamespace)
+        .matchedTransitionSource(id: session.persistentModelID, in: namespace)
     }
 
-    private var entry: some View {
-        SlideStack(
-            key: session.current?.identifier,
-            direction: direction,
-            fade: 16,
-            canMoveForward: session.next != nil,
-            canMoveBackward: session.previous != nil,
-            onForward: advanceToNextEntry,
-            onBackward: returnToPreviousEntry
-        ) { identifier in
-            if let current = session.entry(identifiedBy: identifier) {
-                HStack {
-                    PictogramView(
-                        pictogram: current.pictogram,
-                        size: 32,
-                        badge: current.badge
-                    )
+    @ViewBuilder
+    private func row(for entry: SessionEntry) -> some View {
+        let badge = entry.status.isPending ? nil : entry.status.pictogram
 
-                    VStack(alignment: .leading, spacing: 0) {
-                        Text(current.title)
-                            .font(.caption)
+        HStack {
+            PictogramView(pictogram: entry.pictogram, badge: badge)
+                .frame(width: 32)
 
-                        if let subtitle = current.subtitle {
-                            Text(subtitle)
-                                .font(.caption2)
-                                .foregroundStyle(.secondary)
-                        }
-                    }
+            VStack(alignment: .leading, spacing: 0) {
+                Text(entry.title)
+                    .font(.caption)
 
-                    Spacer()
-                }
-                .padding(.horizontal)
-                .contentShape(.rect)
-                .accessibilityAddTraits(.isButton)
-                .onTapGesture {
-                    presentSession(session)
+                if let subtitle = entry.subtitle {
+                    Text(subtitle)
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
                 }
             }
+
+            Spacer()
+        }
+        .padding(.horizontal)
+        .contentShape(.rect)
+        .accessibilityAddTraits(.isButton)
+        .onTapGesture {
+            presentSession(session)
         }
     }
 
@@ -97,7 +100,7 @@ struct SessionMiniPlayer: View {
                 .buttonBorderShape(.circle)
 
         case .completed, .skipped:
-            Button(.undo, action: undoCurrentEntry)
+            Button(.undo, action: navigator.undo)
                 .labelStyle(.fixedIconOnly)
                 .buttonStyle(.glass)
                 .buttonBorderShape(.circle)
@@ -108,39 +111,27 @@ struct SessionMiniPlayer: View {
     }
 
     private var sessionProgress: some View {
-        Text(verbatim: session.progressText)
+        Text(verbatim: "\(session.resolvedCount) / \(session.entries.count)")
             .font(.caption2)
             .monospacedDigit()
             .foregroundStyle(.secondary)
+            .contentTransition(.numericText(value: Double(session.resolvedCount)))
     }
 
     private func completeCurrentEntry() {
         Haptics.impact(.medium)
-        direction = .forward
-        session.completeAndAdvance()
-    }
-
-    private func undoCurrentEntry() {
-        session.undoStatusChange()
-    }
-
-    private func advanceToNextEntry() {
-        direction = .forward
-        session.moveToNext()
-    }
-
-    private func returnToPreviousEntry() {
-        direction = .backward
-        session.moveToPrevious()
+        navigator.complete()
     }
 }
 
 #Preview {
     @Previewable @Namespace var namespace
 
-    TabView {}
-        .tabViewBottomAccessory {
-            SessionMiniPlayer(session: Samples.session, transitionNamespace: namespace)
-        }
-        .sampleData()
+    TabView {
+        // Empty.
+    }
+    .tabViewBottomAccessory {
+        SessionMiniPlayer(session: Samples.sessions.first!, namespace: namespace)
+    }
+    .sampleData()
 }

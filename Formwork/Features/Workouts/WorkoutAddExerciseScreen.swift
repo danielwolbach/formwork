@@ -11,73 +11,48 @@ import SwiftUI
 
 struct WorkoutAddExerciseScreen: View {
     @Environment(\.dismiss) private var dismiss: DismissAction
+    @Environment(\.modelContext) private var modelContext: ModelContext
     @Query(sort: \Exercise.name) private var exercises: [Exercise]
-    @State private var sheet: Sheet? = nil
+    @State private var selection: [(exercise: Exercise, target: ExerciseTarget)] = []
     @State private var selectedCategories: Set<ExerciseCategory> = []
     @State private var searchText = ""
 
     let workout: Workout
 
     var body: some View {
-        Group {
-            if exercises.isEmpty {
-                ContentUnavailableView {
-                    Label(.emptyExercisesTitle, systemImage: "magazine")
-                } description: {
-                    Text(.emptyExercisesMessage)
-                } actions: {
-                    Button(.create) {
-                        sheet = .createExercise
+        Form {
+            Section(.sectionWorkoutAddExerciseExercisesTitle) {
+                ForEach(matchingExercises) { exercise in
+                    row(for: exercise)
+
+                    if isSelected(exercise).wrappedValue {
+                        editor(for: exercise)
                     }
-                    .labelStyle(.fixedTitleAndIcon)
-                    .buttonStyle(.glassProminent)
                 }
-            } else {
-                searchableExercises
             }
         }
         .navigationTitle(.screenWorkoutAddExerciseTitle)
         .navigationSubtitle(workout.title)
         .navigationBarTitleDisplayMode(.inline)
-        .navigationDestination(for: Exercise.self) { exercise in
-            ExerciseTargetConfigurator(exercise: exercise) { target in
-                save(exercise: exercise, target: target)
-            }
-        }
+        .searchable(text: $searchText.animated())
         .safeAreaInset(edge: .bottom) {
             ExerciseCategoryFilterBar(selection: $selectedCategories)
         }
         .toolbar {
+            ToolbarItem(placement: .confirmationAction) {
+                Button(.confirm) {
+                    commit()
+                    dismiss()
+                }
+                .disabled(selection.isEmpty)
+            }
+
             ToolbarItem(placement: .cancellationAction) {
                 Button(.cancel) {
                     dismiss()
                 }
             }
-
-            ToolbarItem {
-                Button(.create) {
-                    sheet = .createExercise
-                }
-            }
         }
-        .sheet(item: $sheet) { sheet in
-            NavigationStack {
-                sheet
-            }
-        }
-    }
-
-    private var searchableExercises: some View {
-        Group {
-            if matchingExercises.isEmpty {
-                ContentUnavailableView.search(text: searchText)
-            } else {
-                ScreenStack {
-                    RowStack(navigating: matchingExercises)
-                }
-            }
-        }
-        .searchable(text: $searchText.animated())
     }
 
     private var matchingExercises: [Exercise] {
@@ -92,9 +67,86 @@ struct WorkoutAddExerciseScreen: View {
         }
     }
 
-    private func save(exercise: Exercise, target: ExerciseTarget) {
-        workout.append(exercise: exercise, target: target)
-        dismiss()
+    private func row(for exercise: Exercise) -> some View {
+        let isSelected = isSelected(exercise)
+
+        return Button {
+            isSelected.wrappedValue.toggle()
+        } label: {
+            HStack {
+                PictogramRow(exercise)
+
+                Toggle(.select, isOn: isSelected)
+                    .toggleStyle(.card())
+                    .labelStyle(.fixedIconOnly)
+                    .buttonBorderShape(.circle)
+            }
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .listRowSeparator(isSelected.wrappedValue ? .hidden : .automatic, edges: .bottom)
+    }
+
+    private func editor(for exercise: Exercise) -> some View {
+        VStack {
+            ExerciseTargetEditor(target: target(for: exercise))
+                .padding()
+
+            ExerciseTargetUnitPicker(target: target(for: exercise))
+                .padding()
+        }
+    }
+
+    private func index(of exercise: Exercise) -> Int? {
+        selection.firstIndex { $0.exercise == exercise }
+    }
+
+    private func target(for exercise: Exercise) -> Binding<ExerciseTarget> {
+        Binding(
+            get: {
+                index(of: exercise).map { selection[$0].target }
+                    ?? defaultTarget(for: exercise.type)
+            },
+            set: { newValue in
+                withAnimation {
+                    if let index = index(of: exercise) {
+                        selection[index].target = newValue
+                    }
+                }
+            }
+        )
+    }
+
+    private func isSelected(_ exercise: Exercise) -> Binding<Bool> {
+        Binding(
+            get: { index(of: exercise) != nil },
+            set: { isOn in
+                withAnimation {
+                    let index = index(of: exercise)
+
+                    if isOn, index == nil {
+                        selection.append((exercise, defaultTarget(for: exercise.type)))
+                    } else if !isOn, let index {
+                        selection.remove(at: index)
+                    }
+                }
+            }
+        )
+    }
+
+    private func commit() {
+        for entry in selection {
+            workout.append(exercise: entry.exercise, target: entry.target)
+        }
+    }
+
+    private func defaultTarget(for type: ExerciseType) -> ExerciseTarget {
+        switch type {
+        case .weight: .weight(target: .init(weight: .defaultWeight, sets: 3, reps: 10))
+        case .bodyweight: .bodyweight(target: .init(sets: 3, reps: 10))
+        case .duration: .duration(target: .init(duration: .defaultDuration))
+        case .distance: .distance(target: .init(distance: .defaultDistance))
+        }
     }
 }
 
@@ -103,10 +155,14 @@ private struct ExerciseCategoryFilterBar: View {
 
     var body: some View {
         ScrollView(.horizontal) {
-            HStack(spacing: 8) {
-                ForEach(ExerciseCategory.allCases) { category in
-                    ExerciseCategoryFilterChip(category: category, isHighlighted: highlighted(category)) {
-                        toggle(category)
+            GlassEffectContainer(spacing: 8) {
+                HStack(spacing: 8) {
+                    ForEach(ExerciseCategory.allCases) { category in
+                        Toggle(isOn: binding(for: category)) {
+                            Label(category.title, systemImage: category.pictogram.image)
+                        }
+                        .labelStyle(.fixedTitleAndIcon)
+                        .toggleStyle(.glass(tint: category.pictogram.color))
                     }
                 }
             }
@@ -121,36 +177,21 @@ private struct ExerciseCategoryFilterBar: View {
         selection.isEmpty || selection.contains(category)
     }
 
-    private func toggle(_ category: ExerciseCategory) {
-        withAnimation {
-            selection.formSymmetricDifference([category])
-        }
-    }
-}
-
-private struct ExerciseCategoryFilterChip: View {
-    let category: ExerciseCategory
-    let isHighlighted: Bool
-    let action: () -> Void
-
-    var body: some View {
-        if isHighlighted {
-            Button(category.title, systemImage: category.pictogram.icon, action: action)
-                .tint(category.pictogram.color)
-                .labelStyle(.fixedTitleAndIcon)
-                .buttonStyle(.glassProminent)
-                .accessibilityAddTraits(.isSelected)
-        } else {
-            Button(category.title, systemImage: category.pictogram.icon, action: action)
-                .labelStyle(.fixedTitleAndIcon)
-                .buttonStyle(.glass)
-        }
+    private func binding(for category: ExerciseCategory) -> Binding<Bool> {
+        Binding(
+            get: { highlighted(category) },
+            set: { _ in
+                withAnimation {
+                    selection.formSymmetricDifference([category])
+                }
+            }
+        )
     }
 }
 
 #Preview {
     NavigationStack {
         WorkoutAddExerciseScreen(workout: Samples.workouts.first!)
-            .sampleData()
     }
+    .sampleData()
 }

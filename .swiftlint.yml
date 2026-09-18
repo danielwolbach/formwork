@@ -1,0 +1,50 @@
+# SwiftLint only reports code that can be wrong. How code looks, including redundant syntax, is up to
+# SwiftFormat (see .swiftformat), so formatting, naming, length and redundancy rules stay off.
+only_rules:
+  # Likely bugs and crashes
+  - block_based_kvo
+  - class_delegate_protocol
+  - compiler_protocol_init
+  - deployment_target
+  - discouraged_direct_init
+  - duplicate_conditions
+  - duplicate_enum_cases
+  - duplicated_key_in_dictionary_literal
+  - dynamic_inline
+  - fallthrough
+  - fatal_error_message
+  - force_cast
+  - force_try
+  - invisible_character
+  - legacy_hashing
+  - no_fallthrough_only
+  - non_optional_string_data_conversion
+  - notification_center_detachment
+  - ns_number_init_as_function_reference
+  - nsobject_prefer_isequal
+  - optional_data_string_conversion
+  - private_unit_test
+  - self_in_property_initialization
+  - valid_ibinspectable
+  - void_function_in_ternary
+  - xctfail_message
+
+  # Values that are computed but never used
+  - unused_control_flow_label
+  - unused_enumerated
+  - unused_optional_binding
+  - unused_setter_value
+
+  # Performance
+  - empty_count
+  - empty_string
+  - is_disjoint
+  - reduce_boolean
+
+  # SwiftLint's own disable commands
+  - blanket_disable_command
+  - invalid_swiftlint_command
+  - superfluous_disable_command
+
+analyzer_rules:
+  - unused_declaration

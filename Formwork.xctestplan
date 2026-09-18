@@ -1,0 +1,24 @@
+{
+  "configurations" : [
+    {
+      "id" : "83F6652F-6BBF-4E52-9516-FBE847C7FD4F",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:FormworkKit",
+        "identifier" : "FormworkKitTests",
+        "name" : "FormworkKitTests"
+      }
+    }
+  ],
+  "version" : 1
+}

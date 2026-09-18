@@ -34,21 +34,20 @@ struct ExerciseForm: View {
 
     var body: some View {
         Form {
-            Section(.fieldNameTitle) {
-                TextField(exercise?.name ?? String(localized: .fieldNameTitle), text: $name)
+            Section(.sectionExerciseNameTitle) {
+                TextField(exercise?.name ?? "", text: $name)
             }
 
-            Section(.fieldExerciseTypeTitle) {
+            Section(.sectionExerciseTypeTitle) {
                 ExerciseTypePicker(type: $type)
             }
 
-            Section(.fieldExerciseCategoriesTitle) {
+            Section(.sectionExerciseCategoriesTitle) {
                 ExerciseCategoryPicker(categories: $categories)
             }
         }
         .navigationTitle(exercise == nil ? .screenExerciseCreateTitle : .screenExerciseEditTitle)
         .navigationBarTitleDisplayMode(.inline)
-        .scrollDismissesKeyboard(.immediately)
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 Button(.confirm) {
@@ -91,40 +90,35 @@ private struct ExerciseTypePicker: View {
     @Binding var type: ExerciseType
 
     var body: some View {
-        TileGrid(spacing: 12) {
-            ForEach(ExerciseType.allCases, id: \.self) { candidate in
-                ExerciseTypeOption(type: candidate, isSelected: candidate == type) {
+        LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())]) {
+            ForEach(ExerciseType.allCases) { candidate in
+                Toggle(isOn: binding(for: candidate)) {
+                    VStack {
+                        Image(systemName: candidate.pictogram.image)
+                            .frame(width: 24, height: 24)
+
+                        Text(candidate.title)
+                            .lineLimit(1)
+                    }
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                }
+                .toggleStyle(.card(tint: candidate.pictogram.color))
+            }
+        }
+        .buttonBorderShape(.roundedRectangle(radius: 12))
+        .sensoryFeedback(.selection, trigger: type)
+    }
+
+    private func binding(for candidate: ExerciseType) -> Binding<Bool> {
+        Binding(
+            get: { type == candidate },
+            set: { selected in
+                if selected {
                     type = candidate
                 }
             }
-        }
-        .sensoryFeedback(.selection, trigger: type)
-    }
-}
-
-private struct ExerciseTypeOption: View {
-    let type: ExerciseType
-    let isSelected: Bool
-    let action: () -> Void
-
-    var body: some View {
-        SelectableTile(
-            outline: RoundedRectangle(cornerRadius: 12, style: .continuous),
-            tint: type.pictogram.color,
-            isSelected: isSelected,
-            borderWidth: 2,
-            action: action
-        ) {
-            VStack {
-                Image(systemName: type.pictogram.icon)
-                    .frame(width: 24, height: 24)
-
-                Text(type.title)
-                    .lineLimit(1)
-            }
-            .padding()
-            .frame(maxWidth: .infinity)
-        }
+        )
     }
 }
 
@@ -132,45 +126,30 @@ private struct ExerciseCategoryPicker: View {
     @Binding var categories: Set<ExerciseCategory>
 
     var body: some View {
-        FlowLayout(alignment: .center) {
+        FlowLayout(spacing: 8) {
             ForEach(ExerciseCategory.allCases, id: \.self) { candidate in
-                ExerciseCategoryChip(category: candidate, isSelected: categories.contains(candidate)) {
-                    if categories.contains(candidate) {
-                        categories.remove(candidate)
-                    } else {
-                        categories.insert(candidate)
-                    }
-                }
-            }
-        }
-        .padding(.vertical, 4)
-        .sensoryFeedback(.selection, trigger: categories)
-    }
-}
-
-private struct ExerciseCategoryChip: View {
-    let category: ExerciseCategory
-    let isSelected: Bool
-    let action: () -> Void
-
-    var body: some View {
-        SelectableTile(
-            outline: Capsule(),
-            tint: category.pictogram.color,
-            isSelected: isSelected,
-            action: action
-        ) {
-            HStack(spacing: 6) {
-                Image(systemName: category.pictogram.icon)
-                    .font(.subheadline)
-
-                Text(category.title)
+                Toggle(candidate.title, systemImage: candidate.pictogram.image, isOn: binding(for: candidate))
                     .font(.subheadline)
                     .lineLimit(1)
+                    .toggleStyle(.card(tint: candidate.pictogram.color))
+                    .labelStyle(.fixedTitleAndIcon)
             }
-            .padding(.horizontal, 12)
-            .padding(.vertical, 8)
         }
+        .buttonBorderShape(.capsule)
+        .sensoryFeedback(.selection, trigger: categories)
+    }
+
+    private func binding(for candidate: ExerciseCategory) -> Binding<Bool> {
+        Binding(
+            get: { categories.contains(candidate) },
+            set: { selected in
+                if selected {
+                    categories.insert(candidate)
+                } else {
+                    categories.remove(candidate)
+                }
+            }
+        )
     }
 }
 

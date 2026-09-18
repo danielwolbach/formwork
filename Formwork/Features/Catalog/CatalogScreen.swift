@@ -12,50 +12,22 @@ import SwiftUI
 struct CatalogScreen: View {
     @Query(sort: \Exercise.name) private var exercises: [Exercise]
     @State private var sheet: Sheet? = nil
-    @State private var searchText = ""
 
     var body: some View {
-        Group {
-            if let matchingExercises, matchingExercises.isEmpty {
-                ContentUnavailableView.search(text: searchText)
-            } else {
-                ScreenStack {
-                    if let matchingExercises {
-                        RowStack(navigating: matchingExercises)
-                    } else {
-                        ExerciseCategoryGrid(exercises: exercises)
-                    }
-                }
-            }
+        ScrollView {
+            ExerciseCategoryGrid(exercises: exercises)
+                .padding(.horizontal)
         }
         .navigationTitle(.screenCatalogTitle)
         .navigationDestination(for: ExerciseCategory.self) { category in
             ExerciseCategoryScreen(category: category)
         }
-        .navigationDestination(for: Exercise.self) { exercise in
-            ExerciseScreen(exercise: exercise)
-        }
-        .searchable(text: $searchText.animated())
         .toolbar {
             Button(.create) {
                 sheet = .createExercise
             }
         }
-        .sheet(item: $sheet) { sheet in
-            NavigationStack {
-                sheet
-            }
-        }
-    }
-
-    private var matchingExercises: [Exercise]? {
-        let searchText = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
-
-        guard !searchText.isEmpty else {
-            return nil
-        }
-
-        return exercises.filter { $0.name.localizedCaseInsensitiveContains(searchText) }
+        .sheet(item: $sheet) { $0 }
     }
 }
 
@@ -63,7 +35,7 @@ private struct ExerciseCategoryGrid: View {
     let exercises: [Exercise]
 
     var body: some View {
-        TileGrid {
+        LazyVGrid(columns: [.init(.flexible(), spacing: 8), .init(.flexible(), spacing: 8)], spacing: 8) {
             ForEach(ExerciseCategory.allCases) { category in
                 NavigationLink(value: category) {
                     ExerciseCategoryTile(category: category, exerciseCount: countExercises(in: category))
@@ -83,8 +55,7 @@ private struct ExerciseCategoryTile: View {
 
     var body: some View {
         ZStack(alignment: .topTrailing) {
-            Image(systemName: category.pictogram.icon)
-                .padding(8)
+            Image(systemName: category.pictogram.image)
                 .font(.system(size: 48))
                 .foregroundStyle(.secondary)
 
@@ -93,12 +64,12 @@ private struct ExerciseCategoryTile: View {
                     Spacer()
 
                     Text(category.title)
+                        .lineLimit(1)
                         .font(.headline)
-                        .lineLimit(1)
 
-                    Text(.exerciseCategorySubtitle(exerciseCount: exerciseCount))
-                        .font(.subheadline)
+                    Text(Exercise.countTitle(exerciseCount))
                         .lineLimit(1)
+                        .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }
 
@@ -107,9 +78,10 @@ private struct ExerciseCategoryTile: View {
             .padding()
         }
         .foregroundStyle(.white)
+        .background(category.pictogram.color)
         .aspectRatio(1.8, contentMode: .fit)
-        .glassEffect(.regular.tint(category.pictogram.color), in: .card)
-        .cardSurface()
+        .clipShape(.rect(cornerRadius: 16, style: .continuous))
+        .contentShape(.rect)
     }
 }
 

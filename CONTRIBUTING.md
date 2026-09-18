@@ -1,11 +1,11 @@
-# Contributing
+#  Contributing
 
 ## Guidelines
 
 The following guidelines form the basis of every contributed code:
 
 - **Simplicity**: Code should only be as complex as necessary while being as simple as possible. Prefer maintainable solutions over clever ones.
-- **Maintainability**: Maintainability and code cleanness should be the top priority for any contributed code.
+- **Maintainability**: Maintainability and code cleanliness should be the top priority for any contributed code.
 - **Consistency**: Code should be consistent with existing code in terms of patterns and style.
 - **Canonicality**: Prefer canonical, recommended or industry-standard solutions over highly specific, custom ones.
 
@@ -13,7 +13,6 @@ The following guidelines form the basis of every contributed code:
 
 What follows are less important hints for contributed code:
 
-- Every UI view should have at least one but possibly more sensible previews.
+- Every UI view should have at least one sensible preview.
 - Every action should be added as an `ActionDescriptor`.
 - User facing strings should never be in code but rather in the `Localizable` catalog.
-- Sub-views stay `private` in their parent's file. A file of its own is for a view another screen could use, or one owning state or logic that can be wrong on its own.

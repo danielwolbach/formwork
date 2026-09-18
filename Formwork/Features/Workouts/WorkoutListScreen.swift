@@ -5,30 +5,25 @@
 //  Created by Daniel Wolbach on 04.09.26.
 //
 
+import FormworkKit
 import SwiftData
 import SwiftUI
 
 struct WorkoutListScreen: View {
     @Query(sort: \Workout.name) private var workouts: [Workout]
     @State private var sheet: Sheet? = nil
-    @State private var searchText = ""
 
     var body: some View {
-        Group {
-            if workouts.isEmpty {
-                ContentUnavailableView {
-                    Label(.emptyWorkoutsTitle, systemImage: "clipboard")
-                } description: {
-                    Text(.emptyWorkoutsMessage)
-                } actions: {
-                    Button(.create) {
-                        sheet = .createWorkout
+        ScrollView {
+            LazyVGrid(columns: [.init(.flexible(), spacing: 8)], spacing: 8) {
+                ForEach(workouts) { workout in
+                    NavigationLink(value: workout) {
+                        WorkoutCard(workout: workout)
                     }
-                    .buttonStyle(.glassProminent)
+                    .buttonStyle(.plain)
                 }
-            } else {
-                searchableWorkouts
             }
+            .padding(.horizontal, 16)
         }
         .navigationTitle(.screenWorkoutsTitle)
         .navigationDestination(for: Workout.self) { workout in
@@ -39,41 +34,7 @@ struct WorkoutListScreen: View {
                 sheet = .createWorkout
             }
         }
-        .sheet(item: $sheet) { sheet in
-            NavigationStack {
-                sheet
-            }
-        }
-    }
-
-    private var searchableWorkouts: some View {
-        Group {
-            if matchingWorkouts.isEmpty {
-                ContentUnavailableView.search(text: searchText)
-            } else {
-                ScreenStack {
-                    TileGrid(columns: 1) {
-                        ForEach(matchingWorkouts) { workout in
-                            NavigationLink(value: workout) {
-                                WorkoutCard(workout: workout)
-                            }
-                            .buttonStyle(.plain)
-                        }
-                    }
-                }
-            }
-        }
-        .searchable(text: $searchText.animated())
-    }
-
-    private var matchingWorkouts: [Workout] {
-        let searchText = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
-
-        if searchText.isEmpty {
-            return workouts
-        } else {
-            return workouts.filter { $0.name.localizedCaseInsensitiveContains(searchText) }
-        }
+        .sheet(item: $sheet) { $0 }
     }
 }
 

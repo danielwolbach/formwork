@@ -13,12 +13,6 @@ struct DecimalKeypad: View {
     let fractionLength: Int
     let upperBound: Double
 
-    init(text: Binding<String>, fractionLength: Int = 1, upperBound: Double = 1_000_000_000) {
-        self._text = text
-        self.fractionLength = fractionLength
-        self.upperBound = upperBound
-    }
-
     var body: some View {
         LazyVGrid(columns: GridItem.ntile(n: 3, spacing: 12), spacing: 12) {
             ForEach(1 ... 9, id: \.self) { digit in
@@ -93,8 +87,8 @@ struct DecimalKeypad: View {
     private func key(action: @escaping () -> Void, @ViewBuilder label: () -> some View) -> some View {
         Button(action: action) {
             label()
-                .frame(maxWidth: .infinity)
-                .frame(height: 48)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .aspectRatio(2, contentMode: .fill)
                 .contentShape(.rect)
         }
         .buttonStyle(.glass)
@@ -102,27 +96,11 @@ struct DecimalKeypad: View {
 }
 
 #Preview("Decimal") {
-    @Previewable @State var text = ""
-
-    VStack(spacing: 32) {
-        Text(verbatim: text.isEmpty ? "0,0" : text)
-            .font(.title)
-            .fontWeight(.semibold)
-
-        DecimalKeypad(text: $text, fractionLength: 1, upperBound: 200)
-    }
-    .padding()
+    DecimalKeypad(text: .constant(""), fractionLength: 1, upperBound: 100)
+        .padding()
 }
 
 #Preview("Integer") {
-    @Previewable @State var text = ""
-
-    VStack(spacing: 32) {
-        Text(verbatim: text.isEmpty ? "0" : text)
-            .font(.title)
-            .fontWeight(.semibold)
-
-        DecimalKeypad(text: $text, fractionLength: 0, upperBound: 1000)
-    }
-    .padding()
+    DecimalKeypad(text: .constant(""), fractionLength: 0, upperBound: 100)
+        .padding()
 }

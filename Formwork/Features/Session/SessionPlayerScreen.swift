@@ -10,95 +10,76 @@ import SwiftUI
 
 struct SessionPlayerScreen: View {
     @Environment(\.dismiss) private var dismiss: DismissAction
+    @State private var navigator: SessionNavigator
     @State private var finishAlert: Bool = false
     @State private var cancelAlert: Bool = false
-    @State private var direction: SlideDirection = .forward
 
     let session: Session
 
-    var body: some View {
-        currentView
-            .safeAreaBar(edge: .bottom, spacing: 0) {
-                controls
-            }
-            .toolbar {
-                ToolbarItem(placement: .principal) {
-                    SessionTimer(session: session)
-                }
-
-                ToolbarItem(placement: .topBarLeading) {
-                    Button(.minimize) {
-                        dismiss()
-                    }
-                }
-
-                ToolbarItem(placement: .topBarTrailing) {
-                    Menu(.more) {
-                        Section {
-                            Button(.finishSession) {
-                                finishAlert = true
-                            }
-                        }
-
-                        Section {
-                            Button(.cancelSession) {
-                                cancelAlert = true
-                            }
-                        }
-                    }
-                }
-            }
-            .alert(.alertSessionFinishTitle, isPresented: $finishAlert) {
-                Button(.finishSession) {
-                    finish()
-                }
-
-                Button(.cancel) {}
-            } message: {
-                Text(.alertSessionFinishMessage)
-            }
-            .alert(.alertSessionCancelTitle, isPresented: $cancelAlert) {
-                Button(.cancelSession) {
-                    cancel()
-                }
-
-                Button(.cancel) {}
-            } message: {
-                Text(.alertSessionCancelMessage)
-            }
+    init(session: Session) {
+        self.session = session
+        _navigator = State(initialValue: SessionNavigator(session: session))
     }
 
-    private var currentView: some View {
-        SlideStack(
-            key: session.current?.identifier,
-            direction: direction,
-            canMoveForward: session.next != nil,
-            canMoveBackward: session.previous != nil,
-            onForward: { advance(.forward) { session.moveToNext() } },
-            onBackward: { advance(.backward) { session.moveToPrevious() } }
-        ) { identifier in
-            if let entry = session.entry(identifiedBy: identifier) {
-                @Bindable var entry = entry
+    var body: some View {
+        SessionEntryPager(navigator: navigator) { entry in
+            SessionEntryPage(entry: entry)
+        }
+        .safeAreaBar(edge: .bottom) {
+            controls
+        }
+        .toolbar {
+            ToolbarItem(placement: .principal) {
+                SessionStatus(session: session)
+            }
 
-                VStack(spacing: 32) {
-                    DisplayableHero(displayable: entry.exercise)
+            ToolbarItem(placement: .topBarLeading) {
+                Button(.minimize) {
+                    dismiss()
+                }
+            }
 
-                    ExerciseTargetView(target: $entry.target)
+            ToolbarItem(placement: .topBarTrailing) {
+                Menu(.more) {
+                    Section {
+                        Button(.finishSession) {
+                            finishAlert = true
+                        }
+                    }
 
-                    Spacer()
+                    Section {
+                        Button(.discardSession) {
+                            cancelAlert = true
+                        }
+                    }
                 }
             }
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+        .alert(.alertSessionFinishTitle, isPresented: $finishAlert) {
+            Button(.finishSession) {
+                finish()
+            }
+
+            Button(.cancel) {}
+        } message: {
+            Text(.alertSessionFinishMessage)
+        }
+        .alert(.alertSessionCancelTitle, isPresented: $cancelAlert) {
+            Button(.discardSession) {
+                cancel()
+            }
+
+            Button(.cancel) {}
+        } message: {
+            Text(.alertSessionCancelMessage)
+        }
     }
 
     private var controls: some View {
         VStack(spacing: 16) {
             HStack {
                 Button(.backward) {
-                    advance(.backward) {
-                        session.moveToPrevious()
-                    }
+                    navigator.backward()
                 }
                 .disabled(session.previous == nil)
                 .buttonStyle(.glass)
@@ -110,9 +91,7 @@ struct SessionPlayerScreen: View {
                     .labelStyle(.fixedTitleAndIcon)
 
                 Button(.forward) {
-                    advance(.forward) {
-                        session.moveToNext()
-                    }
+                    navigator.forward()
                 }
                 .disabled(session.next == nil)
                 .buttonStyle(.glass)
@@ -141,16 +120,13 @@ struct SessionPlayerScreen: View {
             if status.isPending {
                 Button(.complete) {
                     Haptics.impact(.medium)
-
-                    advance(.forward) {
-                        session.completeAndAdvance()
-                    }
+                    navigator.complete()
                 }
                 .fontWeight(.semibold)
                 .tint(.green)
             } else {
-                Button(status.title, systemImage: status.pictogram.icon) {
-                    // Already resolved and always disabled.
+                Button(status.title, systemImage: status.pictogram.image) {
+                    // Already resolved and therefore always disabled.
                 }
                 .fontWeight(.semibold)
                 .disabled(true)
@@ -162,22 +138,15 @@ struct SessionPlayerScreen: View {
     private var secondaryAction: some View {
         if let status = session.current?.status {
             if status.isPending {
-                Button(.skipExercise) {
-                    advance(.forward) {
-                        session.skipAndAdvance()
-                    }
+                Button(.skip) {
+                    navigator.skip()
                 }
             } else {
                 Button(.undo) {
-                    session.undoStatusChange()
+                    navigator.undo()
                 }
             }
         }
-    }
-
-    private func advance(_ direction: SlideDirection, _ action: () -> Void) {
-        self.direction = direction
-        action()
     }
 
     private func finish() {
@@ -192,9 +161,26 @@ struct SessionPlayerScreen: View {
     }
 }
 
+private struct SessionEntryPage: View {
+    @Bindable var entry: SessionEntry
+
+    var body: some View {
+        let badge = entry.status.isPending ? nil : entry.status.pictogram
+
+        VStack(spacing: 32) {
+            // Show the exercise's categories, not the entry's target since
+            // the target editor below already shows it.
+            PictogramHeader(pictogram: entry.pictogram, title: entry.title, subtitle: entry.exercise?.subtitle, badge: badge)
+            ExerciseTargetEditor(target: $entry.target)
+            Spacer()
+        }
+        .frame(maxHeight: .infinity, alignment: .top)
+    }
+}
+
 #Preview {
     NavigationStack {
-        SessionPlayerScreen(session: Samples.session)
+        SessionPlayerScreen(session: Samples.sessions.first!)
     }
     .sampleData()
 }

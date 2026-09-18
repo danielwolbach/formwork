@@ -5,6 +5,7 @@
 //  Created by Daniel Wolbach on 04.09.26.
 //
 
+import FormworkKit
 import SwiftData
 import SwiftUI
 
@@ -20,48 +21,47 @@ struct WorkoutScreen: View {
     let workout: Workout
 
     var body: some View {
-        ScreenStack {
-            DisplayableHero(displayable: workout)
+        ScrollView {
+            VStack(spacing: 32) {
+                PictogramHeader(workout)
 
-            HStack {
-                Button(.addExercise) {
-                    sheet = .addWorkoutExercise(workout: workout)
-                }
-                .labelStyle(.fixedIconOnly)
-                .buttonStyle(.glass)
-                .buttonBorderShape(.circle)
-
-                Button(.startSession) {
-                    startSession()
-                }
-                .disabled(workout.entries.isEmpty)
-                .labelStyle(.fixedTitleAndIcon)
-                .buttonStyle(.glassProminent)
-                .tint(.green)
-
-                Button(.statistics) {
-                    sheet = .workoutStats(workout: workout)
-                }
-                .labelStyle(.fixedIconOnly)
-                .buttonStyle(.glass)
-                .buttonBorderShape(.circle)
-            }
-            .controlSize(.large)
-
-            if workout.entries.isEmpty {
-                ContentUnavailableView {
-                    Label(.emptyWorkoutEntriesTitle, systemImage: "magazine")
-                } description: {
-                    Text(.emptyWorkoutEntriesMessage)
-                } actions: {
+                HStack {
                     Button(.addExercise) {
                         sheet = .addWorkoutExercise(workout: workout)
                     }
+                    .labelStyle(.fixedIconOnly)
+                    .buttonStyle(.glass)
+                    .buttonBorderShape(.circle)
+
+                    Button(.startSession) {
+                        startSession()
+                    }
                     .labelStyle(.fixedTitleAndIcon)
                     .buttonStyle(.glassProminent)
+                    .tint(.green)
+
+                    Button(.viewStatistics) {
+                        // TODO:
+                    }
+                    .labelStyle(.fixedIconOnly)
+                    .buttonStyle(.glass)
+                    .buttonBorderShape(.circle)
                 }
-            } else {
-                RowStack(navigating: workout.entries.sorted())
+                .controlSize(.large)
+
+                LazyVStack(spacing: 0) {
+                    ForEach(workout.entries.sorted()) { entry in
+                        NavigationLink(value: entry) {
+                            PictogramRow(entry)
+
+                            Image(systemName: "chevron.right")
+                                .foregroundStyle(.tertiary)
+                        }
+                        .buttonStyle(.plain)
+                        .padding(.horizontal)
+                        .padding(.vertical, 8)
+                    }
+                }
             }
         }
         .navigationDestination(for: WorkoutEntry.self) { entry in
@@ -74,10 +74,11 @@ struct WorkoutScreen: View {
                         sheet = .addWorkoutExercise(workout: workout)
                     }
 
-                    Button(.statistics) {
-                        sheet = .workoutStats(workout: workout)
+                    Button(.viewStatistics) {
+                        // TODO:
                     }
                 }
+
                 Section {
                     Button(.edit) {
                         sheet = .editWorkout(workout: workout)
@@ -91,11 +92,7 @@ struct WorkoutScreen: View {
                 }
             }
         }
-        .sheet(item: $sheet) { sheet in
-            NavigationStack {
-                sheet
-            }
-        }
+        .sheet(item: $sheet) { $0 }
         .alert(.alertWorkoutDeleteTitle, isPresented: $deleteAlert) {
             Button(.delete) {
                 delete()
@@ -105,12 +102,12 @@ struct WorkoutScreen: View {
         } message: {
             Text(.alertWorkoutDeleteMessage)
         }
-        .alert(.alertSessionReplaceTitle, isPresented: $sessionActiveAlert) {
+        .alert(.alertSessionActiveTitle, isPresented: $sessionActiveAlert) {
             Button(.replaceSession) {
                 replaceSession()
             }
 
-            if let activeSession {
+            if let activeSession = activeSessions.first {
                 Button(.resumeSession) {
                     presentSession(activeSession)
                 }
@@ -118,7 +115,7 @@ struct WorkoutScreen: View {
 
             Button(.cancel) {}
         } message: {
-            Text(.alertSessionReplaceMessage)
+            Text(.alertSessionActiveMessage)
         }
     }
 
@@ -127,12 +124,8 @@ struct WorkoutScreen: View {
         dismiss()
     }
 
-    private var activeSession: Session? {
-        activeSessions.first
-    }
-
     private func startSession() {
-        guard activeSession == nil else {
+        guard activeSessions.first == nil else {
             sessionActiveAlert = true
             return
         }
@@ -143,10 +136,7 @@ struct WorkoutScreen: View {
     private func replaceSession() {
         do {
             let session = try Session.start(workout, in: modelContext)
-
-            DispatchQueue.main.async {
-                presentSession(session)
-            }
+            DispatchQueue.main.async { presentSession(session) }
         } catch {
             // TODO: Log error
         }

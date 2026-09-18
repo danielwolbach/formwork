@@ -5,22 +5,23 @@
 //  Created by Daniel Wolbach on 04.09.26.
 //
 
+import FormworkKit
 import SwiftUI
 
 struct NumberStepper: View {
     @State private var showKeypad = false
     @Binding var value: Double
 
-    let title: LocalizedStringResource
-    let suffix: LocalizedStringResource?
+    let title: String
+    let suffix: String?
     let stepSize: Double?
     let fractionLength: Int
     let range: ClosedRange<Double>
 
     init(
         value: Binding<Double>,
-        title: LocalizedStringResource,
-        suffix: LocalizedStringResource? = nil,
+        title: String,
+        suffix: String? = nil,
         stepSize: Double? = nil,
         fractionLength: Int = 1,
         range: ClosedRange<Double> = 0.0 ... 1000.0
@@ -35,8 +36,8 @@ struct NumberStepper: View {
 
     init(
         value: Binding<Int>,
-        title: LocalizedStringResource,
-        suffix: LocalizedStringResource? = nil,
+        title: String,
+        suffix: String? = nil,
         stepSize: Int? = nil,
         range: ClosedRange<Int> = 0 ... 1000
     ) {
@@ -121,8 +122,8 @@ private struct NumberEntrySheet: View {
     @State private var draft = ""
     @Binding var value: Double
 
-    let title: LocalizedStringResource
-    let suffix: LocalizedStringResource?
+    let title: String
+    let suffix: String?
     let fractionLength: Int
     let range: ClosedRange<Double>
 
@@ -177,7 +178,7 @@ private struct NumberEntrySheet: View {
 
 private struct ValueLabel: View {
     let text: String
-    let suffix: LocalizedStringResource?
+    let suffix: String?
     let value: Double
     var isPlaceholder: Bool = false
 
@@ -205,10 +206,10 @@ private struct ValueLabel: View {
 
 #Preview("Decimal") {
     @Previewable @State var value: Double = 0
-    NumberStepper(value: $value, title: .exerciseTypeWeightTitle, suffix: .unitKilogramsSuffix)
+    NumberStepper(value: $value, title: "Weight", suffix: "kg", stepSize: 5)
 }
 
 #Preview("Integer") {
     @Previewable @State var value = 0
-    NumberStepper(value: $value, title: .fieldExerciseTargetRepsTitle)
+    NumberStepper(value: $value, title: "Reps")
 }
