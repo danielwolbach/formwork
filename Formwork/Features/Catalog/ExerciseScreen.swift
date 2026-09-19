@@ -18,7 +18,7 @@ struct ExerciseScreen: View {
     let exercise: Exercise
 
     var body: some View {
-        let statistics = exercise.statistics
+        let statistics = exercise.statistics()
 
         ScrollView {
             VStack(spacing: 32) {

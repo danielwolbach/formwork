@@ -21,12 +21,15 @@ public final class Session {
 
     private var currentIdentifier: UUID?
 
+    public var timeZoneIdentifier: String = TimeZone.current.identifier
+
     private init(workout: Workout, entries: [SessionEntry]) {
         self.started = .now
         self.ended = nil
         self.workout = workout
         self.entries = entries
         self.currentIdentifier = entries.sorted().first?.identifier
+        self.timeZoneIdentifier = TimeZone.current.identifier
     }
 }
 
@@ -205,5 +208,36 @@ public extension Session {
         }
 
         return ordered.indices.contains(index + offset) ? ordered[index + offset] : nil
+    }
+}
+
+/// Wall-clock time: dates as they read in the timezone the session was recorded in.
+public extension Session {
+    /// The timezone the session was recorded in.
+    var timeZone: TimeZone {
+        TimeZone(identifier: timeZoneIdentifier) ?? .current
+    }
+
+    /// When the session started, as it read on the clock where it happened, projected into `calendar`.
+    func localStarted(in calendar: Calendar) -> Date {
+        local(started, in: calendar)
+    }
+
+    /// When the session ended, as it read on the clock where it happened, projected into `calendar`.
+    func localEnded(in calendar: Calendar) -> Date? {
+        ended.map { local($0, in: calendar) }
+    }
+}
+
+private extension Session {
+    func local(_ date: Date, in calendar: Calendar) -> Date {
+        guard timeZone != calendar.timeZone else { return date }
+
+        var original = calendar
+        original.timeZone = timeZone
+        // Nanosecond components aren't exact, so only whole seconds go through the calendar.
+        let components = original.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
+        let fraction = date.timeIntervalSinceReferenceDate - date.timeIntervalSinceReferenceDate.rounded(.down)
+        return calendar.date(from: components)?.addingTimeInterval(fraction) ?? date
     }
 }

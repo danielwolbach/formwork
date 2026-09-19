@@ -575,6 +575,17 @@
         }
       }
     },
+    "statistic.longestWeekStreak.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Longest Streak"
+          }
+        }
+      }
+    },
     "statistic.mostSkipped.title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -615,6 +626,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Typical Start"
+          }
+        }
+      }
+    },
+    "statistic.weekStreak.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Week Streak"
           }
         }
       }

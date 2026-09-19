@@ -12,7 +12,7 @@ struct WorkoutStatisticsScreen: View {
     let workout: Workout
 
     var body: some View {
-        let statistics = workout.statistics
+        let statistics = workout.statistics()
 
         ScrollView {
             LazyVGrid(columns: [.init(.flexible(), spacing: 8), .init(.flexible(), spacing: 8)], spacing: 8) {
