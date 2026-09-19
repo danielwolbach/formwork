@@ -5,58 +5,51 @@
 //  Created by Daniel Wolbach on 19.09.26.
 //
 
-// MARK: - Guidelines
-
+//
+// Guidelines
 //
 // - Use the injected `calendar` for all date math (no fixed calendars, no `86_400` arithmetic).
-//   Weeks start on the current locale's first weekday.
-// - Use wall-clock time: sessions are dated by `localStarted(in:)` and `localEnded(in:)`, never
-//   `started` or `ended` directly.
-//   Raw instants are only for durations, ordering and relative formatting.
-// - A session belongs to the interval its local start falls in (half-open: `start <= date < end`)
-//   and counts only if it ended by `interval.end`.
-// - Streaks: the current streak is as of `interval.end` and uses all earlier history. The longest
-//   streak is measured within the interval. An unfinished week doesn't break a streak.
+//   Weeks start on `calendar.firstWeekday`.
+// - Sessions are dated by the clock where they started: ask them which period they fall into
+//   (`falls(into:in:)`, `period(of:in:)`) and at which time of day they started (`timeOfDay(in:)`),
+//   and show their dates with `localCalendar(from:)`. `started` and `ended` are real instants, only for
+//   durations, ordering, comparisons with now and relative formatting.
+// - Only finished sessions count. A session belongs to the interval it started in, half-open
+//   (`start <= date < end`). `DateInterval.contains` includes the end, so don't use it.
+//   Intervals are whole days in `calendar`, e.g. a month, or unbounded, never ending at now.
+// - Everything but streaks only counts sessions within the interval (`sessions`).
+// - Streaks are what the user saw on the last day of the interval, or sees now while it's ongoing:
+//   both use all history from `.distantPast` up to then (`history`), and there's none before the
+//   interval starts. The week containing that day doesn't break a streak until it's over.
 //
 
 import Foundation
 
 struct StatisticsContext {
-    struct Record {
-        let session: Session
-        let started: Date
-        let ended: Date
-    }
-
     let calendar: Calendar
 
     let interval: DateInterval
 
-    /// All sessions started before and finished by `interval.end`.
-    let history: [Record]
+    /// All finished sessions started before the end of `interval`.
+    let history: [Session]
 
-    /// The part of `history` started within `interval`.
-    let records: [Record]
+    /// The part of `history` that falls into `interval`.
+    let sessions: [Session]
 
     init(sessions: [Session], interval: DateInterval, calendar: Calendar) {
+        let earlier = DateInterval(start: .distantPast, end: interval.end)
         self.calendar = calendar
         self.interval = interval
-        self.history = sessions
-            .compactMap { session in
-                session.localEnded(in: calendar).map {
-                    Record(session: session, started: session.localStarted(in: calendar), ended: $0)
-                }
-            }
-            .filter { $0.started < interval.end && $0.ended <= interval.end }
-        self.records = history.filter { $0.started >= interval.start }
+        self.history = sessions.filter { !$0.isActive && $0.falls(into: earlier, in: calendar) }
+        self.sessions = history.filter { $0.falls(into: interval, in: calendar) }
     }
 }
 
 extension StatisticsContext {
-    /// Consecutive weeks with a session, up to the week containing `interval.end`.
-    var currentWeekStreak: Int {
+    /// Consecutive weeks with a session as seen on the last day of `interval`, or `now` while it's ongoing.
+    func currentWeekStreak(at now: Date) -> Int {
         let weeks = weekStarts(of: history)
-        guard let current = startOfWeek(containing: interval.end) else { return 0 }
+        guard let day = day(at: now), let current = calendar.dateInterval(of: .weekOfYear, for: day)?.start else { return 0 }
 
         var week = weeks.contains(current) ? current : adding(weeks: -1, to: current)
         var streak = 0
@@ -67,10 +60,12 @@ extension StatisticsContext {
         return streak
     }
 
-    /// The longest run of consecutive weeks with a session within `interval`.
-    var longestWeekStreak: Int {
+    /// The longest run of consecutive weeks with a session up to the end of `interval`, or up to `now` while it's ongoing.
+    func longestWeekStreak(at now: Date) -> Int {
+        guard day(at: now) != nil else { return 0 }
+
         var longest = 0, streak = 0, previous: Date?
-        for week in weekStarts(of: records).sorted() {
+        for week in weekStarts(of: history).sorted() {
             streak = previous.flatMap { adding(weeks: 1, to: $0) } == week ? streak + 1 : 1
             longest = max(longest, streak)
             previous = week
@@ -78,23 +73,27 @@ extension StatisticsContext {
         return longest
     }
 
-    private func weekStarts(of records: [Record]) -> Set<Date> {
-        Set(records.compactMap { startOfWeek(containing: $0.started) })
+    /// The session within `interval` that ended last.
+    var lastSession: Session? {
+        sessions.max { ($0.ended ?? .distantPast) < ($1.ended ?? .distantPast) }
     }
 
-    private func startOfWeek(containing date: Date) -> Date? {
-        calendar.dateInterval(of: .weekOfYear, for: date)?.start
+    private func weekStarts(of sessions: [Session]) -> Set<Date> {
+        Set(sessions.compactMap { $0.period(of: .weekOfYear, in: calendar)?.start })
     }
 
     private func adding(weeks: Int, to week: Date) -> Date? {
         calendar.date(byAdding: .weekOfYear, value: weeks, to: week)
     }
+
+    private func day(at now: Date) -> Date? {
+        guard now > interval.start else { return nil }
+        return now < interval.end ? now : calendar.date(byAdding: .day, value: -1, to: interval.end)
+    }
 }
 
 public extension DateInterval {
-    static func until(_ end: Date) -> Self {
-        DateInterval(start: .distantPast, end: end)
-    }
+    static let allTime = DateInterval(start: .distantPast, end: .distantFuture)
 
     static func month(_ month: Int, year: Int? = nil, calendar: Calendar = .current) -> Self {
         precondition((1 ... 12).contains(month), "Month must be between 1 and 12.")

@@ -50,9 +50,17 @@ extension Statistic where Value == Double {
 }
 
 extension Statistic where Value == Date {
-    static func lastCompleted(_ date: Date?) -> Self {
-        Statistic(date, title: String(localized: .statisticLastCompletedTitle), pictogram: .date) {
-            $0.formatted(.relative(presentation: .named)).localizedCapitalized
+    static func lastCompleted(_ date: Date?, in session: Session?, calendar: Calendar) -> Self {
+        let local = session?.localCalendar(from: calendar) ?? calendar
+
+        return Statistic(date, title: String(localized: .statisticLastCompletedTitle), pictogram: .date) { date in
+            guard let weekAgo = calendar.date(byAdding: .day, value: -7, to: .now), date < weekAgo else {
+                return date.formatted(Date.RelativeFormatStyle(presentation: .named, calendar: calendar, capitalizationContext: .beginningOfSentence))
+            }
+
+            let day = session?.started ?? date
+            let style = Date.FormatStyle(calendar: local, timeZone: local.timeZone).day().month()
+            return local.isDate(day, equalTo: .now, toGranularity: .year) ? day.formatted(style) : day.formatted(style.year())
         }
     }
 }
@@ -60,7 +68,7 @@ extension Statistic where Value == Date {
 extension Statistic where Value == DateComponents {
     static func typicalStartTime(_ time: DateComponents?, calendar: Calendar) -> Self {
         Statistic(time, title: String(localized: .statisticTypicalStartTimeTitle), pictogram: .time) {
-            calendar.date(from: $0)?.formatted(date: .omitted, time: .shortened)
+            calendar.date(from: $0)?.formatted(Date.FormatStyle(date: .omitted, time: .shortened, calendar: calendar, timeZone: calendar.timeZone))
         }
     }
 }

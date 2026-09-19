@@ -20,13 +20,14 @@ public struct ExerciseStatistics {
     /// The best completed target of the exercise's current type, e.g. the heaviest weight.
     public let personalBest: Statistic<ExerciseTarget>
 
-    init(exercise: Exercise, interval: DateInterval = .until(.now), calendar: Calendar = .current) {
+    init(exercise: Exercise, interval: DateInterval = .allTime, calendar: Calendar = .current) {
         let context = StatisticsContext(sessions: exercise.sessionEntries.compactMap(\.session), interval: interval, calendar: calendar)
-        let included = Set(context.records.map(\.session))
+        let included = Set(context.sessions)
         let entries = exercise.sessionEntries.filter { $0.session.map(included.contains) ?? false }
         let completed = entries.filter(\.status.isCompleted)
+        let last = completed.max { ($0.status.resolved ?? .distantPast) < ($1.status.resolved ?? .distantPast) }
 
-        self.lastCompleted = .lastCompleted(completed.compactMap(\.status.resolved).max())
+        self.lastCompleted = .lastCompleted(last?.status.resolved, in: last?.session, calendar: calendar)
         self.completions = .completions(completed.count)
         self.completionRate = .completionRate(entries.isEmpty ? nil : Double(completed.count) / Double(entries.count))
         self.personalBest = .personalBest(completed.map(\.target).filter { $0.type == exercise.type }.max { $0.rank < $1.rank })
@@ -34,7 +35,7 @@ public struct ExerciseStatistics {
 }
 
 public extension Exercise {
-    func statistics(in interval: DateInterval = .until(.now)) -> ExerciseStatistics {
+    func statistics(in interval: DateInterval = .allTime) -> ExerciseStatistics {
         ExerciseStatistics(exercise: self, interval: interval)
     }
 }

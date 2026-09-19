@@ -26,18 +26,19 @@ public struct WorkoutStatistics {
     /// The exercise skipped most often across finished sessions.
     public let mostSkippedExercise: Statistic<Exercise>
 
-    init(workout: Workout, interval: DateInterval = .until(.now), calendar: Calendar = .current) {
+    init(workout: Workout, interval: DateInterval = .allTime, calendar: Calendar = .current) {
         let context = StatisticsContext(sessions: workout.sessions, interval: interval, calendar: calendar)
-        let sessions = context.records.map(\.session)
+        let sessions = context.sessions
+        let last = context.lastSession
         let entries = sessions.flatMap(\.entries)
         let skipped = entries.filter(\.status.isSkipped).compactMap(\.exercise)
-        let startTime = context.records
-            .map { calendar.dateComponents([.hour, .minute], from: $0.started) }
+        let startTime = sessions
+            .map { $0.timeOfDay(in: calendar) }
             .map { Double(($0.hour ?? 0) * 60 + ($0.minute ?? 0)) }
             .median
             .map { DateComponents(hour: Int($0) / 60, minute: Int($0) % 60) }
 
-        self.lastCompleted = .lastCompleted(sessions.compactMap(\.ended).max())
+        self.lastCompleted = .lastCompleted(last?.ended, in: last, calendar: calendar)
         self.completions = .completions(sessions.count)
         self.completionRate = .completionRate(entries.isEmpty ? nil : Double(entries.count(where: \.status.isCompleted)) / Double(entries.count))
         self.typicalDuration = .typicalDuration(sessions.compactMap(\.duration).median.map { .seconds($0) })
@@ -47,7 +48,7 @@ public struct WorkoutStatistics {
 }
 
 public extension Workout {
-    func statistics(in interval: DateInterval = .until(.now)) -> WorkoutStatistics {
+    func statistics(in interval: DateInterval = .allTime) -> WorkoutStatistics {
         WorkoutStatistics(workout: self, interval: interval)
     }
 }

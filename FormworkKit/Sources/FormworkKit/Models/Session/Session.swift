@@ -21,7 +21,7 @@ public final class Session {
 
     private var currentIdentifier: UUID?
 
-    public var timeZoneIdentifier: String = TimeZone.current.identifier
+    var timeZoneIdentifier: String = TimeZone.current.identifier
 
     private init(workout: Workout, entries: [SessionEntry]) {
         self.started = .now
@@ -211,33 +211,47 @@ public extension Session {
     }
 }
 
-/// Wall-clock time: dates as they read in the timezone the session was recorded in.
-public extension Session {
-    /// The timezone the session was recorded in.
-    var timeZone: TimeZone {
-        TimeZone(identifier: timeZoneIdentifier) ?? .current
+/// Wall-clock time: where a session falls in the calendar, by the clock where it started.
+extension Session {
+    func localCalendar(from calendar: Calendar) -> Calendar {
+        var local = calendar
+        local.timeZone = timeZone
+        return local
     }
 
-    /// When the session started, as it read on the clock where it happened, projected into `calendar`.
-    func localStarted(in calendar: Calendar) -> Date {
-        local(started, in: calendar)
+    func falls(into interval: DateInterval, in calendar: Calendar) -> Bool {
+        assert(
+            calendar.isDayBoundary(interval.start) && calendar.isDayBoundary(interval.end),
+            "\(interval) isn't made of whole days, so it can't be compared with wall-clock time."
+        )
+        let started = localStarted(in: calendar)
+        return interval.start <= started && started < interval.end
     }
 
-    /// When the session ended, as it read on the clock where it happened, projected into `calendar`.
-    func localEnded(in calendar: Calendar) -> Date? {
-        ended.map { local($0, in: calendar) }
+    func period(of component: Calendar.Component, in calendar: Calendar) -> DateInterval? {
+        calendar.dateInterval(of: component, for: localStarted(in: calendar))
+    }
+
+    func timeOfDay(in calendar: Calendar) -> DateComponents {
+        localCalendar(from: calendar).dateComponents([.hour, .minute], from: started)
     }
 }
 
 private extension Session {
-    func local(_ date: Date, in calendar: Calendar) -> Date {
-        guard timeZone != calendar.timeZone else { return date }
+    var timeZone: TimeZone {
+        TimeZone(identifier: timeZoneIdentifier) ?? .current
+    }
 
-        var original = calendar
-        original.timeZone = timeZone
-        // Nanosecond components aren't exact, so only whole seconds go through the calendar.
-        let components = original.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
-        let fraction = date.timeIntervalSinceReferenceDate - date.timeIntervalSinceReferenceDate.rounded(.down)
-        return calendar.date(from: components)?.addingTimeInterval(fraction) ?? date
+    func localStarted(in calendar: Calendar) -> Date {
+        guard timeZone != calendar.timeZone else { return started }
+
+        let components = localCalendar(from: calendar).dateComponents([.year, .month, .day, .hour, .minute, .second], from: started)
+        return calendar.date(from: components) ?? started
+    }
+}
+
+private extension Calendar {
+    func isDayBoundary(_ date: Date) -> Bool {
+        date == .distantPast || date == .distantFuture || startOfDay(for: date) == date
     }
 }
