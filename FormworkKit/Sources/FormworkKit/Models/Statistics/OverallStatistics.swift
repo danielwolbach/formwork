@@ -19,12 +19,17 @@ public struct OverallStatistics {
     /// When the most recent session within the interval ended.
     public let lastSession: Statistic<Date>
 
+    /// The average number of finished sessions per week within the interval, counted from the first session
+    /// ever if it's later, up to the last day of the interval, or now while it's ongoing. Covers at least a week.
+    public let sessionsPerWeek: Statistic<Double>
+
     init(sessions: [Session], interval: DateInterval = .allTime, now: Date = .now, calendar: Calendar = .current) {
         let context = StatisticsContext(sessions: sessions, interval: interval, calendar: calendar)
         let last = context.lastSession
 
         self.weekStreak = .weekStreak(context.currentWeekStreak(at: now))
         self.longestWeekStreak = .longestWeekStreak(context.longestWeekStreak(at: now))
+        self.sessionsPerWeek = .sessionsPerWeek(context.sessionsPerWeek(at: now))
         self.lastSession = .lastCompleted(last?.ended, in: last, calendar: calendar)
     }
 }

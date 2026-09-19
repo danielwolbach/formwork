@@ -64,6 +64,11 @@ struct StatisticTests {
         #expect(Statistic<Int>.completions(3).subtitle == "3")
     }
 
+    @Test func sessionsPerWeekShowAtMostOneDecimal() {
+        #expect(Statistic<Double>.sessionsPerWeek(2).subtitle == 2.0.formatted(.number.precision(.fractionLength(0 ... 1))))
+        #expect(Statistic<Double>.sessionsPerWeek(1.46).subtitle == 1.5.formatted(.number.precision(.fractionLength(0 ... 1))))
+    }
+
     @Test func lastCompletedWithinAWeekIsRelative() throws {
         let date = try #require(Calendar.berlin().date(byAdding: .day, value: -2, to: .now))
         let style = Date.RelativeFormatStyle(presentation: .named, calendar: .berlin(), capitalizationContext: .beginningOfSentence)
@@ -419,6 +424,50 @@ struct OverallStatisticsTests {
         }
 
         #expect(try statistics(at: calendar.date(16), in: month(8)).longestWeekStreak.value == 2)
+    }
+
+    @Test func withoutSessionsThereAreNoSessionsPerWeek() throws {
+        #expect(try statistics(at: calendar.date(16)).sessionsPerWeek.value == nil)
+    }
+
+    @Test func sessionsPerWeekCountFromTheFirstSessionToToday() throws {
+        // Four sessions over the two weeks from Sep 1 through Sep 14.
+        for day in [1, 3, 8, 10] {
+            try store.session(day)
+        }
+
+        #expect(try statistics(at: calendar.date(14)).sessionsPerWeek.value == 2)
+    }
+
+    @Test func sessionsPerWeekCoverAtLeastAWeek() throws {
+        try store.session(15)
+
+        #expect(try statistics(at: calendar.date(16)).sessionsPerWeek.value == 1)
+    }
+
+    @Test func sessionsPerWeekCountTheDaysOfTheIntervalSinceTheFirstSession() throws {
+        // September started before Sep 8 and is ongoing, so it covers the two weeks from Sep 8 through Sep 21.
+        try store.session(8)
+        try store.session(10)
+
+        #expect(try statistics(at: calendar.date(21), in: month(9)).sessionsPerWeek.value == 1)
+    }
+
+    @Test func pastIntervalCountsItsWholeLengthForSessionsPerWeek() throws {
+        // August has 31 days. The sessions in July and September only mark when training began and don't count.
+        for (day, month) in [(20, 7), (3, 8), (17, 8), (7, 9)] {
+            try store.session(day, month: month)
+        }
+
+        let rate = try #require(try statistics(at: calendar.date(16), in: month(8)).sessionsPerWeek.value)
+
+        #expect(abs(rate - 2 / (31.0 / 7)) < 1e-9)
+    }
+
+    @Test func intervalInTheFutureHasNoSessionsPerWeek() throws {
+        try store.session(7)
+
+        #expect(try statistics(at: calendar.date(16), in: month(10)).sessionsPerWeek.value == nil)
     }
 
     @Test func intervalIsHalfOpen() throws {

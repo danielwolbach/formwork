@@ -73,6 +73,19 @@ extension StatisticsContext {
         return longest
     }
 
+    /// Sessions within `interval` per week, over the days from its start, or the first session if later,
+    /// to its last day, or `now` while it's ongoing. At least a week, so a first session doesn't count as seven.
+    func sessionsPerWeek(at now: Date) -> Double? {
+        guard
+            let day = day(at: now),
+            let first = history.compactMap({ $0.period(of: .day, in: calendar)?.start }).min(),
+            let end = calendar.date(byAdding: .day, value: 1, to: calendar.startOfDay(for: day)),
+            let days = calendar.dateComponents([.day], from: max(interval.start, first), to: end).day
+        else { return nil }
+
+        return Double(sessions.count) / (Double(max(days, 7)) / 7)
+    }
+
     /// The session within `interval` that ended last.
     var lastSession: Session? {
         sessions.max { ($0.ended ?? .distantPast) < ($1.ended ?? .distantPast) }

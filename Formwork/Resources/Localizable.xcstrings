@@ -239,6 +239,17 @@
         }
       }
     },
+    "screen.statistics.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Statistics"
+          }
+        }
+      }
+    },
     "screen.workout.addExercise.title" : {
       "extractionState" : "manual",
       "localizations" : {

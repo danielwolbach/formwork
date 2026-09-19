@@ -68,6 +68,12 @@ private struct MainTabView: View {
                     CatalogScreen()
                 }
             }
+
+            Tab(.screenStatisticsTitle, systemImage: "flame") {
+                NavigationStack {
+                    StatisticsScreen()
+                }
+            }
         }
         .tabBarMinimizeBehavior(activeSession == nil ? .automatic : .onScrollDown)
         .tabViewBottomAccessory(isEnabled: activeSession != nil) {

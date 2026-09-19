@@ -271,7 +271,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "View Stats"
+            "value" : "View Statistics"
           }
         }
       }
@@ -604,6 +604,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Personal Best"
+          }
+        }
+      }
+    },
+    "statistic.sessionsPerWeek.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sessions per Week"
           }
         }
       }

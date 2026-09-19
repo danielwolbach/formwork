@@ -47,6 +47,12 @@ extension Statistic where Value == Double {
             $0.formatted(.percent.precision(.fractionLength(0)))
         }
     }
+
+    static func sessionsPerWeek(_ rate: Double?) -> Self {
+        Statistic(rate, title: String(localized: .statisticSessionsPerWeekTitle), pictogram: .frequency) {
+            $0.formatted(.number.precision(.fractionLength(0 ... 1)))
+        }
+    }
 }
 
 extension Statistic where Value == Date {
