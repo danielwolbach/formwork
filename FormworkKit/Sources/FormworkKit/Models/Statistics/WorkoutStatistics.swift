@@ -20,7 +20,8 @@ public struct WorkoutStatistics {
     /// The median duration of a finished session.
     public let typicalDuration: Statistic<Duration>
 
-    /// The median wall-clock time a session was started at, as hour and minute.
+    /// The wall-clock time a session was typically started at, as hour and minute: the recorded start time
+    /// closest to all the others on the clock.
     public let typicalStartTime: Statistic<DateComponents>
 
     /// The exercise skipped most often across finished sessions.
@@ -33,10 +34,9 @@ public struct WorkoutStatistics {
         let entries = sessions.flatMap(\.entries)
         let skipped = entries.filter(\.status.isSkipped).compactMap(\.exercise)
         let startTime = sessions
-            .map { $0.timeOfDay(in: calendar) }
-            .map { Double(($0.hour ?? 0) * 60 + ($0.minute ?? 0)) }
-            .median
-            .map { DateComponents(hour: Int($0) / 60, minute: Int($0) % 60) }
+            .compactMap { $0.startMinute(in: calendar) }
+            .clockMedoid
+            .map { DateComponents(hour: $0 / 60, minute: $0 % 60) }
 
         self.lastCompleted = .lastCompleted(last?.ended, in: last, calendar: calendar)
         self.completions = .completions(sessions.count)

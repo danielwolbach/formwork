@@ -11,7 +11,7 @@
 // - Use the injected `calendar` for all date math (no fixed calendars, no `86_400` arithmetic).
 //   Weeks start on `calendar.firstWeekday`.
 // - Sessions are dated by the clock where they started: ask them which period they fall into
-//   (`falls(into:in:)`, `period(of:in:)`) and at which time of day they started (`timeOfDay(in:)`),
+//   (`falls(into:in:)`, `period(of:in:)`) and at which time of day they started (`startMinute(in:)`),
 //   and show their dates with `localCalendar(from:)`. `started` and `ended` are real instants, only for
 //   durations, ordering, comparisons with now and relative formatting.
 // - Only finished sessions count. A session belongs to the interval it started in, half-open
@@ -122,6 +122,23 @@ public extension DateInterval {
             preconditionFailure("No \(component) for \(components).")
         }
         return interval
+    }
+}
+
+private extension Int {
+    static let minutesPerDay = 24 * 60
+}
+
+extension [Int] {
+    var clockMedoid: Element? {
+        sorted().min { distance(to: $0) < distance(to: $1) }
+    }
+
+    private func distance(to minute: Element) -> Element {
+        reduce(0) { total, other in
+            let delta = abs(other - minute)
+            return total + Swift.min(delta, .minutesPerDay - delta)
+        }
     }
 }
 

@@ -5,6 +5,7 @@
 //  Created by Daniel Wolbach on 04.09.26.
 //
 
+import Foundation
 import SwiftData
 
 @Model
@@ -31,5 +32,31 @@ public final class Workout {
     public func append(exercise: Exercise, target: ExerciseTarget) {
         let order = (entries.map(\.order).max() ?? -1) + 1
         entries.append(WorkoutEntry(order: order, exercise: exercise, target: target))
+    }
+}
+
+public extension [Workout] {
+    /// Workouts scheduled on `date` without a finished session that day, by typical start time; never-trained ones last.
+    func pending(on date: Date = .now, calendar: Calendar = .current) -> [Workout] {
+        guard let day = calendar.dateInterval(of: .day, for: date) else { return [] }
+
+        return filter { $0.schedule.isScheduled(on: date, in: calendar) }
+            .filter { workout in !workout.sessions.contains { !$0.isActive && $0.falls(into: day, in: calendar) } }
+            .map { workout in
+                let startMinute = workout.sessions
+                    .filter { !$0.isActive }
+                    .compactMap { $0.startMinute(in: calendar) }
+                    .clockMedoid
+                return (workout, startMinute)
+            }
+            .sorted { lhs, rhs in
+                switch (lhs.1, rhs.1) {
+                case let (left?, right?) where left != right: left < right
+                case (_?, nil): true
+                case (nil, _?): false
+                default: lhs.0.name.localizedStandardCompare(rhs.0.name) == .orderedAscending
+                }
+            }
+            .map(\.0)
     }
 }

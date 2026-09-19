@@ -114,12 +114,11 @@ private extension Samples {
         let today = calendar.startOfDay(for: .now)
 
         for offset in (1 ... days).reversed() {
-            guard
-                let day = calendar.date(byAdding: .day, value: -offset, to: today),
-                let weekday = Schedule.Weekday(rawValue: (calendar.component(.weekday, from: day) + 5) % 7)
-            else {
+            guard let day = calendar.date(byAdding: .day, value: -offset, to: today) else {
                 continue
             }
+
+            let weekday = Schedule.Weekday(calendarNumber: calendar.component(.weekday, from: day))
 
             let progress = 1 - Double(offset) / Double(days)
 

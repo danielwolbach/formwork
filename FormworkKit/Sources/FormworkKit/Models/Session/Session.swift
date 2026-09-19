@@ -232,8 +232,10 @@ extension Session {
         calendar.dateInterval(of: component, for: localStarted(in: calendar))
     }
 
-    func timeOfDay(in calendar: Calendar) -> DateComponents {
-        localCalendar(from: calendar).dateComponents([.hour, .minute], from: started)
+    func startMinute(in calendar: Calendar) -> Int? {
+        let time = localCalendar(from: calendar).dateComponents([.hour, .minute], from: started)
+        guard let hour = time.hour, let minute = time.minute else { return nil }
+        return hour * 60 + minute
     }
 }
 

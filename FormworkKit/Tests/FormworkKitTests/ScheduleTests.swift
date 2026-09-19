@@ -34,6 +34,15 @@ struct ScheduleTests {
         #expect(weekday.name(in: Self.calendar()) == name)
     }
 
+    @Test(arguments: zip(
+        Schedule.Weekday.allCases,
+        [2, 3, 4, 5, 6, 7, 1]
+    ))
+    func calendarNumberMatchesCalendar(weekday: Schedule.Weekday, number: Int) {
+        #expect(weekday.calendarNumber == number)
+        #expect(Schedule.Weekday(calendarNumber: number) == weekday)
+    }
+
     @Test func symbolMatchesCalendar() {
         let calendar = Self.calendar()
 

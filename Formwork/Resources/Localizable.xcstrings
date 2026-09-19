@@ -129,6 +129,50 @@
         }
       }
     },
+    "empty.overview.allDone.description" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Every workout scheduled for today is finished."
+          }
+        }
+      }
+    },
+    "empty.overview.allDone.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All Done"
+          }
+        }
+      }
+    },
+    "empty.overview.restDay.description" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nothing is scheduled for today."
+          }
+        }
+      }
+    },
+    "empty.overview.restDay.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rest Day"
+          }
+        }
+      }
+    },
     "empty.workout.exercises.description" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -224,6 +268,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Edit Exercise"
+          }
+        }
+      }
+    },
+    "screen.overview.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Overview"
           }
         }
       }
@@ -334,6 +389,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Type"
+          }
+        }
+      }
+    },
+    "section.overview.today" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Today"
           }
         }
       }

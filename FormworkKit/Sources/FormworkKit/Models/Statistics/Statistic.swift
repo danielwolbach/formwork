@@ -61,7 +61,9 @@ extension Statistic where Value == Date {
 
         return Statistic(date, title: String(localized: .statisticLastCompletedTitle), pictogram: .date) { date in
             guard let weekAgo = calendar.date(byAdding: .day, value: -7, to: .now), date < weekAgo else {
-                return date.formatted(Date.RelativeFormatStyle(presentation: .named, calendar: calendar, capitalizationContext: .beginningOfSentence))
+                var style = Date.RelativeFormatStyle(presentation: .named, calendar: calendar, capitalizationContext: .beginningOfSentence)
+                style.allowedFields = [.day]
+                return date.formatted(style)
             }
 
             let day = session?.started ?? date

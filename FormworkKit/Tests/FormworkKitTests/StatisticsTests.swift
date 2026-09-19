@@ -71,9 +71,22 @@ struct StatisticTests {
 
     @Test func lastCompletedWithinAWeekIsRelative() throws {
         let date = try #require(Calendar.berlin().date(byAdding: .day, value: -2, to: .now))
-        let style = Date.RelativeFormatStyle(presentation: .named, calendar: .berlin(), capitalizationContext: .beginningOfSentence)
+        var style = Date.RelativeFormatStyle(presentation: .named, calendar: .berlin(), capitalizationContext: .beginningOfSentence)
+        style.allowedFields = [.day]
 
         #expect(Statistic<Date>.lastCompleted(date, in: nil, calendar: .berlin()).subtitle == date.formatted(style))
+    }
+
+    @Test func lastCompletedTodayIsTheDayAndNotTheHour() throws {
+        // Two times on the same day, so neither may be shown as hours or minutes ago.
+        let calendar = Calendar.berlin()
+        let midnight = calendar.startOfDay(for: .now)
+        let later = try #require(calendar.date(byAdding: .minute, value: 1, to: midnight))
+
+        #expect(
+            Statistic<Date>.lastCompleted(midnight, in: nil, calendar: calendar).subtitle
+                == Statistic<Date>.lastCompleted(later, in: nil, calendar: calendar).subtitle
+        )
     }
 
     @Test func lastCompletedEarlierIsItsDateInTheCalendar() throws {
@@ -229,11 +242,11 @@ struct WallClockTests {
         #expect(session.falls(into: sunday, in: calendar))
     }
 
-    @Test func timeOfDayIsTheClockTimeItWasRecordedAt() throws {
+    @Test func startMinuteIsTheClockTimeItWasRecordedAt() throws {
         // 08:30 in New York is 14:30 in Berlin, but the user saw 08:30.
         let session = try store.session(14, hour: 8, minute: 30, zone: "America/New_York")
 
-        #expect(session.timeOfDay(in: calendar) == DateComponents(hour: 8, minute: 30))
+        #expect(session.startMinute(in: calendar) == 8 * 60 + 30)
     }
 
     @Test func unknownTimeZoneFallsBackToTheCurrentOne() throws {
@@ -558,12 +571,29 @@ struct WorkoutStatisticsTests {
         #expect(statistics().typicalDuration.value == .seconds(3600))
     }
 
-    @Test func typicalStartTimeIsTheMedianClockTime() throws {
+    @Test func typicalStartTimeIsARecordedStartTime() throws {
         for (day, hour, minute) in [(7, 7, 0), (8, 8, 15), (9, 19, 30)] {
             try store.session(day, hour: hour, minute: minute)
         }
 
         #expect(statistics().typicalStartTime.value == DateComponents(hour: 8, minute: 15))
+    }
+
+    @Test func typicalStartTimeIsNeverBetweenTwoStartTimes() throws {
+        // An even count: the middle of 07:00 and 19:30 is 13:15, which was never trained at.
+        try store.session(7, hour: 7)
+        try store.session(8, hour: 19, minute: 30)
+
+        #expect(statistics().typicalStartTime.value == DateComponents(hour: 7, minute: 0))
+    }
+
+    @Test func typicalStartTimeWrapsAroundMidnight() throws {
+        // 23:30 and 00:30 are an hour apart on the clock, so neither midday nor anything between them.
+        try store.session(7, hour: 23, minute: 30)
+        try store.session(9, hour: 0, minute: 30)
+        try store.session(10, hour: 0, minute: 30)
+
+        #expect(statistics().typicalStartTime.value == DateComponents(hour: 0, minute: 30))
     }
 
     @Test func typicalStartTimeUsesTheRecordedTimeZone() throws {
