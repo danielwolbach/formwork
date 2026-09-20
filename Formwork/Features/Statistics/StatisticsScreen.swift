@@ -26,17 +26,8 @@ struct StatisticsScreen: View {
                 .padding(.horizontal)
 
                 SectionView(.sectionRecentSessionsTitle) {
-                    LazyVStack(spacing: 0) {
-                        ForEach(sessions.prefix(5)) { session in
-                            NavigationLink(value: session) {
-                                PictogramRow(session)
-
-                                Image(systemName: "chevron.right")
-                                    .foregroundStyle(.tertiary)
-                            }
-                            .buttonStyle(.plain)
-                            .padding(.vertical, 8)
-                        }
+                    NavigationList(sessions.prefix(5)) { session in
+                        PictogramRow(session)
                     }
                 } accessory: {
                     NavigationLink(value: Route.sessions) {
@@ -45,7 +36,6 @@ struct StatisticsScreen: View {
                     .labelStyle(.fixedTitleAndIcon)
                     .buttonStyle(.glass)
                 }
-                .padding(.horizontal)
             }
         }
         .navigationTitle(.screenStatisticsTitle)

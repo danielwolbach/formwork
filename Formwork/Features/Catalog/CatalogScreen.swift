@@ -61,18 +61,8 @@ struct CatalogScreen: View {
             ContentUnavailableView.search(text: trimmedSearchText)
         } else {
             ScrollView {
-                LazyVStack(spacing: 0) {
-                    ForEach(matchingExercises) { exercise in
-                        NavigationLink(value: exercise) {
-                            PictogramRow(exercise)
-
-                            Image(systemName: "chevron.right")
-                                .foregroundStyle(.tertiary)
-                        }
-                        .buttonStyle(.plain)
-                        .padding(.horizontal)
-                        .padding(.vertical, 8)
-                    }
+                NavigationList(matchingExercises) { exercise in
+                    PictogramRow(exercise)
                 }
             }
         }

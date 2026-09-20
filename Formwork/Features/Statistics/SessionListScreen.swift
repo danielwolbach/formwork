@@ -15,18 +15,8 @@ struct SessionListScreen: View {
 
     var body: some View {
         ScrollView {
-            LazyVStack(spacing: 0) {
-                ForEach(sessions) { session in
-                    NavigationLink(value: session) {
-                        PictogramRow(session)
-
-                        Image(systemName: "chevron.right")
-                            .foregroundStyle(.tertiary)
-                    }
-                    .buttonStyle(.plain)
-                    .padding(.horizontal)
-                    .padding(.vertical, 8)
-                }
+            NavigationList(sessions) { session in
+                PictogramRow(session)
             }
         }
         .navigationTitle(.screenSessionsTitle)

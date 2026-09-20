@@ -63,18 +63,8 @@ struct WorkoutScreen: View {
                         .buttonStyle(.glassProminent)
                     }
                 } else {
-                    LazyVStack(spacing: 0) {
-                        ForEach(workout.entries.sorted()) { entry in
-                            NavigationLink(value: entry) {
-                                PictogramRow(entry)
-
-                                Image(systemName: "chevron.right")
-                                    .foregroundStyle(.tertiary)
-                            }
-                            .buttonStyle(.plain)
-                            .padding(.horizontal)
-                            .padding(.vertical, 8)
-                        }
+                    NavigationList(workout.entries.sorted()) { entry in
+                        PictogramRow(entry)
                     }
                 }
             }

@@ -47,6 +47,7 @@ struct SectionView<Content: View, Accessory: View>: View {
 
             accessory
         }
+        .padding(.horizontal)
         // Optical alignment: the heading sits flush with the rounded cards and rows below it.
         .padding(.horizontal, 2)
     }
@@ -65,6 +66,7 @@ extension SectionView where Accessory == EmptyView {
         VStack(spacing: 32) {
             SectionView(.screenSessionsTitle, subtitle: String(localized: Session.countTitle(34))) {
                 StatisticCard(title: "Card", value: "Content", pictogram: .workout)
+                    .padding(.horizontal)
             } accessory: {
                 Button(.viewAll) {}
                     .labelStyle(.fixedTitleAndIcon)
@@ -73,8 +75,8 @@ extension SectionView where Accessory == EmptyView {
 
             SectionView(.screenStatisticsTitle) {
                 StatisticCard(title: "Card", value: "No accessory", pictogram: .streak)
+                    .padding(.horizontal)
             }
         }
-        .padding(.horizontal)
     }
 }

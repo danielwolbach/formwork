@@ -23,7 +23,6 @@ struct OverviewScreen: View {
                 statisticsSection
                 todaySection
             }
-            .padding(.horizontal)
         }
         .navigationTitle(.screenOverviewTitle)
         .navigationDestination(for: Workout.self) { workout in
@@ -56,6 +55,7 @@ struct OverviewScreen: View {
             StatisticCard(statistics.weekStreak)
             StatisticCard(statistics.lastSession)
         }
+        .padding(.horizontal)
     }
 
     @ViewBuilder
@@ -63,32 +63,35 @@ struct OverviewScreen: View {
         let pending = workouts.pending()
 
         SectionView(.sectionOverviewToday, subtitle: Date.now.formatted(date: .abbreviated, time: .omitted)) {
-            if pending.isEmpty {
-                if workouts.contains(where: { $0.schedule.isScheduled(on: .now) }) {
-                    StateCard(
-                        title: .emptyOverviewAllDoneTitle,
-                        description: .emptyOverviewAllDoneDescription,
-                        image: "checkmark.seal",
-                        tint: .green
-                    )
+            Group {
+                if pending.isEmpty {
+                    if workouts.contains(where: { $0.schedule.isScheduled(on: .now) }) {
+                        StateCard(
+                            title: .emptyOverviewAllDoneTitle,
+                            description: .emptyOverviewAllDoneDescription,
+                            image: "checkmark.seal",
+                            tint: .green
+                        )
+                    } else {
+                        StateCard(
+                            title: .emptyOverviewRestDayTitle,
+                            description: .emptyOverviewRestDayDescription,
+                            image: "moon.zzz",
+                            tint: .purple
+                        )
+                    }
                 } else {
-                    StateCard(
-                        title: .emptyOverviewRestDayTitle,
-                        description: .emptyOverviewRestDayDescription,
-                        image: "moon.zzz",
-                        tint: .purple
-                    )
-                }
-            } else {
-                LazyVStack(spacing: 8) {
-                    ForEach(pending) { workout in
-                        NavigationLink(value: workout) {
-                            WorkoutCard(workout: workout)
+                    LazyVStack(spacing: 8) {
+                        ForEach(pending) { workout in
+                            NavigationLink(value: workout) {
+                                WorkoutCard(workout: workout)
+                            }
+                            .buttonStyle(.plain)
                         }
-                        .buttonStyle(.plain)
                     }
                 }
             }
+            .padding(.horizontal)
         } accessory: {
             if let workout = pending.first {
                 Button(.startSession) {
