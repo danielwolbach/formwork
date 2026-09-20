@@ -44,6 +44,13 @@ public extension Session {
         return descriptor
     }
 
+    static var finishedDescriptor: FetchDescriptor<Session> {
+        FetchDescriptor<Session>(
+            predicate: #Predicate<Session> { $0.ended != nil },
+            sortBy: [SortDescriptor(\.started, order: .reverse)]
+        )
+    }
+
     static func active(in context: ModelContext) throws -> Session? {
         try context.fetch(activeDescriptor).first
     }
@@ -213,6 +220,12 @@ public extension Session {
 
 /// Wall-clock time: where a session falls in the calendar, by the clock where it started.
 extension Session {
+    /// The time of day on the clock the session was recorded on, so an exercise resolved at 08:00 still
+    /// reads as 08:00 wherever it is read back.
+    public func wallClockTime() -> Date.FormatStyle {
+        localCalendar(from: .current).formatStyle(time: .shortened)
+    }
+
     func localCalendar(from calendar: Calendar) -> Calendar {
         var local = calendar
         local.timeZone = timeZone

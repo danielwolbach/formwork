@@ -39,6 +39,20 @@ extension Statistic where Value == Int {
             $0.formatted()
         }
     }
+
+    static func completedExercises(_ count: Int) -> Self {
+        Statistic(count, title: String(localized: .statisticCompletedExercisesTitle), pictogram: .completed) {
+            $0.formatted()
+        }
+    }
+}
+
+extension Statistic where Value == Quantity {
+    static func totalVolume(_ volume: Quantity?) -> Self {
+        Statistic(volume, title: String(localized: .statisticTotalVolumeTitle), pictogram: .volume) {
+            $0.formatted
+        }
+    }
 }
 
 extension Statistic where Value == Double {
@@ -51,6 +65,12 @@ extension Statistic where Value == Double {
     static func sessionsPerWeek(_ rate: Double?) -> Self {
         Statistic(rate, title: String(localized: .statisticSessionsPerWeekTitle), pictogram: .frequency) {
             $0.formatted(.number.precision(.fractionLength(0 ... 1)))
+        }
+    }
+
+    static func skipRate(_ rate: Double?) -> Self {
+        Statistic(rate, title: String(localized: .statisticSkipRateTitle), pictogram: .skipped) {
+            $0.formatted(.percent.precision(.fractionLength(0)))
         }
     }
 }
@@ -67,8 +87,16 @@ extension Statistic where Value == Date {
             }
 
             let day = session?.started ?? date
-            let style = Date.FormatStyle(calendar: local, timeZone: local.timeZone).day().month()
+            let style = local.formatStyle().day().month()
             return local.isDate(day, equalTo: .now, toGranularity: .year) ? day.formatted(style) : day.formatted(style.year())
+        }
+    }
+
+    static func endTime(_ date: Date?, in session: Session?, calendar: Calendar) -> Self {
+        let local = session?.localCalendar(from: calendar) ?? calendar
+
+        return Statistic(date, title: String(localized: .statisticEndTimeTitle), pictogram: .time) {
+            $0.formatted(local.formatStyle(time: .shortened))
         }
     }
 }
@@ -76,7 +104,7 @@ extension Statistic where Value == Date {
 extension Statistic where Value == DateComponents {
     static func typicalStartTime(_ time: DateComponents?, calendar: Calendar) -> Self {
         Statistic(time, title: String(localized: .statisticTypicalStartTimeTitle), pictogram: .time) {
-            calendar.date(from: $0)?.formatted(Date.FormatStyle(date: .omitted, time: .shortened, calendar: calendar, timeZone: calendar.timeZone))
+            calendar.date(from: $0)?.formatted(calendar.formatStyle(time: .shortened))
         }
     }
 }
@@ -84,7 +112,19 @@ extension Statistic where Value == DateComponents {
 extension Statistic where Value == Duration {
     static func typicalDuration(_ duration: Duration?) -> Self {
         Statistic(duration, title: String(localized: .statisticTypicalDurationTitle), pictogram: .duration) {
-            $0.formatted(.units(allowed: [.hours, .minutes], width: .abbreviated))
+            $0.formatted(.sessionDuration)
+        }
+    }
+
+    static func duration(_ duration: Duration?) -> Self {
+        Statistic(duration, title: String(localized: .statisticDurationTitle), pictogram: .duration) {
+            $0.formatted(.sessionDuration)
+        }
+    }
+
+    static func medianExerciseDuration(_ duration: Duration?) -> Self {
+        Statistic(duration, title: String(localized: .statisticMedianExerciseDurationTitle), pictogram: .pace) {
+            $0.formatted(.exerciseDuration)
         }
     }
 }
@@ -101,26 +141,6 @@ extension Statistic where Value == ExerciseTarget {
     static func personalBest(_ target: ExerciseTarget?) -> Self {
         Statistic(target, title: String(localized: .statisticPersonalBestTitle), pictogram: .record) {
             $0.formattedRank
-        }
-    }
-}
-
-extension ExerciseTarget {
-    var rank: Double {
-        switch self {
-        case let .weight(target): target.weight.base
-        case let .bodyweight(target): Double(target.reps)
-        case let .duration(target): target.duration.base
-        case let .distance(target): target.distance.base
-        }
-    }
-
-    var formattedRank: String {
-        switch self {
-        case let .weight(target): target.weight.formatted
-        case let .bodyweight(target): String(localized: .exerciseTargetRepsTitle(target.reps))
-        case let .duration(target): target.duration.formatted
-        case let .distance(target): target.distance.formatted
         }
     }
 }

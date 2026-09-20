@@ -10,6 +10,34 @@ public enum ExerciseTarget: Codable, Sendable {
     case bodyweight(target: BodyweightTarget)
     case duration(target: DurationTarget)
     case distance(target: DistanceTarget)
+
+    var rank: Double {
+        switch self {
+        case let .weight(target): target.weight.base
+        case let .bodyweight(target): Double(target.reps)
+        case let .duration(target): target.duration.base
+        case let .distance(target): target.distance.base
+        }
+    }
+
+    var formattedRank: String {
+        switch self {
+        case let .weight(target): target.weight.formatted
+        case let .bodyweight(target): String(localized: .exerciseTargetRepsTitle(target.reps))
+        case let .duration(target): target.duration.formatted
+        case let .distance(target): target.distance.formatted
+        }
+    }
+
+    var volume: Quantity? {
+        guard case let .weight(target) = self else {
+            return nil
+        }
+
+        var quantity = target.weight
+        quantity.base = target.weight.base * Double(target.sets * target.reps)
+        return quantity
+    }
 }
 
 public extension ExerciseTarget {

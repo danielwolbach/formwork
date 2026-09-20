@@ -105,26 +105,6 @@ extension StatisticsContext {
     }
 }
 
-public extension DateInterval {
-    static let allTime = DateInterval(start: .distantPast, end: .distantFuture)
-
-    static func month(_ month: Int, year: Int? = nil, calendar: Calendar = .current) -> Self {
-        precondition((1 ... 12).contains(month), "Month must be between 1 and 12.")
-        return period(.month, of: DateComponents(year: year ?? calendar.component(.year, from: .now), month: month), calendar: calendar)
-    }
-
-    static func year(_ year: Int? = nil, calendar: Calendar = .current) -> Self {
-        period(.year, of: DateComponents(year: year ?? calendar.component(.year, from: .now)), calendar: calendar)
-    }
-
-    private static func period(_ component: Calendar.Component, of components: DateComponents, calendar: Calendar) -> Self {
-        guard let date = calendar.date(from: components), let interval = calendar.dateInterval(of: component, for: date) else {
-            preconditionFailure("No \(component) for \(components).")
-        }
-        return interval
-    }
-}
-
 private extension Int {
     static let minutesPerDay = 24 * 60
 }

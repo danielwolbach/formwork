@@ -61,4 +61,45 @@ public extension Pictogram {
     static let frequency = Pictogram(image: "chart.bar", tint: .purple)
     static let completed = Pictogram(image: "checkmark.circle", tint: .green)
     static let skipped = Pictogram(image: "forward.end", tint: .pink)
+    static let pace = Pictogram(image: "hourglass", tint: .mint)
+    static let increase = Pictogram(image: "arrow.up.right", tint: .green)
+    static let decrease = Pictogram(image: "arrow.down.right", tint: .red)
+    static let volume = Pictogram(image: "scalemass", tint: .indigo)
+}
+
+public extension Pictogram {
+    static let pendingBadge = Pictogram(image: "ellipsis.circle.fill", tint: .gray)
+    static let completedBadge = Pictogram(image: "checkmark.circle.fill", tint: .green)
+    static let skippedBadge = Pictogram(image: "arrowtriangle.forward.circle.fill", tint: .orange)
+    static let recordBadge = Pictogram(image: "trophy.circle.fill", tint: .yellow)
+    static let editBadge = Pictogram(image: "pencil.circle.fill", tint: .gray)
+}
+
+public extension Pictogram {
+    static let workoutImageOptions: [String] = [
+        Pictogram.workout.image,
+        "figure",
+        "figure.walk",
+        "figure.run",
+        "figure.barre",
+        "figure.boxing",
+        "figure.cooldown",
+        "figure.dance",
+        "figure.flexibility",
+        "figure.gymnastics",
+        "figure.jumprope",
+        "figure.pilates",
+        "figure.play",
+        "figure.rolling",
+        "figure.yoga",
+        "figure.cross.training",
+        "figure.strengthtraining.functional",
+        "figure.highintensity.intervaltraining",
+        "figure.martial.arts",
+        "figure.indoor.rowing",
+        "figure.step.training",
+        "figure.run.treadmill",
+        "figure.indoor.cycle",
+        "figure.stair.stepper",
+    ]
 }

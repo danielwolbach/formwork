@@ -37,6 +37,28 @@ struct DisplayableTests {
     }
 
     @MainActor
+    @Test func sessionIsDatedByTheClockItWasRecordedOn() throws {
+        let store = try TestStore()
+        let session = try store.session(7, hour: 8, zone: "America/New_York")
+        var local = Calendar.current
+        local.timeZone = try #require(TimeZone(identifier: "America/New_York"))
+        let inNewYork = Date.FormatStyle(date: .numeric, time: .shortened, calendar: local, timeZone: local.timeZone)
+
+        // 08:00 in New York is 14:00 in Berlin, but the user remembers starting at 08:00.
+        #expect(session.subtitle == session.started.formatted(inNewYork))
+    }
+
+    @MainActor
+    @Test func wallClockTimeIsTheClockItWasRecordedOn() throws {
+        let store = try TestStore()
+        let session = try store.session(7, hour: 8, zone: "America/New_York")
+        var local = Calendar.current
+        local.timeZone = try #require(TimeZone(identifier: "America/New_York"))
+
+        #expect(session.started.formatted(session.wallClockTime()) == session.started.formatted(local.formatStyle(time: .shortened)))
+    }
+
+    @MainActor
     @Test func entryWithoutExerciseHasFallbackTitle() throws {
         let store = try TestStore()
         let entry = try #require(store.workout.entries.first)

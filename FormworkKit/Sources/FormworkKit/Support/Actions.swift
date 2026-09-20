@@ -38,6 +38,7 @@ public extension ActionDescriptor {
     static let minimize = ActionDescriptor(title: .actionMinimizeTitle, systemImage: "chevron.down")
     static let select = ActionDescriptor(title: .actionSelectTitle, systemImage: "plus")
     static let skip = ActionDescriptor(title: .actionSkipTitle, systemImage: "arrowtriangle.forward")
+    static let viewAll = ActionDescriptor(title: .actionViewAllTitle, systemImage: "list.bullet")
 
     // Workout
     static let startSession = ActionDescriptor(title: .actionStartSessionTitle, systemImage: "play.fill")
@@ -71,6 +72,12 @@ public extension Button where Label == SwiftUI.Label<Text, Image> {
                 Image(systemName: descriptor.systemImage)
             }
         }
+    }
+}
+
+public extension SwiftUI.Label where Title == Text, Icon == Image {
+    init(_ descriptor: ActionDescriptor) {
+        self.init(descriptor.title, systemImage: descriptor.systemImage)
     }
 }
 

@@ -30,7 +30,14 @@ private struct AppContent: View {
             .environment(\.presentSession, PresentSessionAction(action: presentSession))
             .fullScreenCover(item: $presentedSession) { session in
                 NavigationStack {
-                    SessionPlayerScreen(session: session)
+                    SessionScreen(session: session)
+                        .toolbar {
+                            ToolbarItem(placement: .topBarLeading) {
+                                Button(.minimize) {
+                                    presentedSession = nil
+                                }
+                            }
+                        }
                 }
                 .navigationTransition(.zoom(sourceID: session.persistentModelID, in: sessionNamespace))
             }

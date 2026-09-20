@@ -5,15 +5,17 @@ struct PictogramEditor: View {
     @State private var showEditor: Bool = false
     @Binding var pictogram: Pictogram
 
+    let imageOptions: [String]
+
     var body: some View {
-        PictogramView(pictogram: pictogram, badge: Pictogram(image: "pencil.circle.fill", tint: .gray))
+        PictogramView(pictogram: pictogram, badge: .editBadge)
             .frame(width: 192)
             .onTapGesture {
                 showEditor = true
             }
             .sheet(isPresented: $showEditor) {
                 NavigationStack {
-                    PictogramSheet(pictogram: $pictogram)
+                    PictogramSheet(pictogram: $pictogram, imageOptions: imageOptions)
                 }
             }
     }
@@ -26,36 +28,12 @@ private struct PictogramSheet: View {
 
     private static let columns: Int = 6
 
-    private static let imageOptions: [String] = [
-        "figure.strengthtraining.traditional",
-        "figure",
-        "figure.walk",
-        "figure.run",
-        "figure.barre",
-        "figure.boxing",
-        "figure.cooldown",
-        "figure.dance",
-        "figure.flexibility",
-        "figure.gymnastics",
-        "figure.jumprope",
-        "figure.pilates",
-        "figure.play",
-        "figure.rolling",
-        "figure.yoga",
-        "figure.cross.training",
-        "figure.strengthtraining.functional",
-        "figure.highintensity.intervaltraining",
-        "figure.martial.arts",
-        "figure.indoor.rowing",
-        "figure.step.training",
-        "figure.run.treadmill",
-        "figure.indoor.cycle",
-        "figure.stair.stepper",
-    ]
+    let imageOptions: [String]
 
-    init(pictogram: Binding<Pictogram>) {
+    init(pictogram: Binding<Pictogram>, imageOptions: [String]) {
         self._pictogram = pictogram
         self._draft = State(initialValue: pictogram.wrappedValue)
+        self.imageOptions = imageOptions
     }
 
     var body: some View {
@@ -118,7 +96,7 @@ private struct PictogramSheet: View {
     private var imageSection: some View {
         Section(.sectionPictogramImageTitle) {
             LazyVGrid(columns: GridItem.ntile(n: Self.columns)) {
-                ForEach(Self.imageOptions, id: \.self) { option in
+                ForEach(imageOptions, id: \.self) { option in
                     PictogramSwatch(
                         fill: AnyShapeStyle(Color.gray.quinary),
                         ring: AnyShapeStyle(Color.gray.secondary),
@@ -171,6 +149,6 @@ private struct PictogramSwatch: View {
     @Previewable @State var pictogram: Pictogram = .unknown
 
     NavigationStack {
-        PictogramEditor(pictogram: $pictogram)
+        PictogramEditor(pictogram: $pictogram, imageOptions: Pictogram.workoutImageOptions)
     }
 }

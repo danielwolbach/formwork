@@ -62,32 +62,7 @@ struct OverviewScreen: View {
     private var todaySection: some View {
         let pending = workouts.pending()
 
-        VStack {
-            HStack {
-                VStack(alignment: .leading) {
-                    Text(.sectionOverviewToday)
-                        .lineLimit(1)
-                        .font(.headline)
-
-                    Text(Date.now.formatted(date: .abbreviated, time: .omitted))
-                        .lineLimit(1)
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                }
-
-                Spacer()
-
-                if let workout = pending.first {
-                    Button(.startSession) {
-                        startSession(workout: workout)
-                    }
-                    .labelStyle(.fixedTitleAndIcon)
-                    .buttonStyle(.glassProminent)
-                    .tint(.green)
-                }
-            }
-            .padding(.horizontal, 2)
-
+        SectionView(.sectionOverviewToday, subtitle: Date.now.formatted(date: .abbreviated, time: .omitted)) {
             if pending.isEmpty {
                 if workouts.contains(where: { $0.schedule.isScheduled(on: .now) }) {
                     StateCard(
@@ -113,6 +88,15 @@ struct OverviewScreen: View {
                         .buttonStyle(.plain)
                     }
                 }
+            }
+        } accessory: {
+            if let workout = pending.first {
+                Button(.startSession) {
+                    startSession(workout: workout)
+                }
+                .labelStyle(.fixedTitleAndIcon)
+                .buttonStyle(.glassProminent)
+                .tint(.green)
             }
         }
     }

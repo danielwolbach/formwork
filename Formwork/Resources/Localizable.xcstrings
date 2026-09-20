@@ -54,6 +54,12 @@
         }
       }
     },
+    "alert.session.delete.message" : {
+      "extractionState" : "manual"
+    },
+    "alert.session.delete.title" : {
+      "extractionState" : "manual"
+    },
     "alert.session.finish.message" : {
       "extractionState" : "manual"
     },
@@ -294,6 +300,17 @@
         }
       }
     },
+    "screen.sessions.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sessions"
+          }
+        }
+      }
+    },
     "screen.statistics.title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -422,6 +439,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Color"
+          }
+        }
+      }
+    },
+    "section.recentSessions.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recent Sessions"
           }
         }
       }

@@ -37,6 +37,90 @@ public final class SessionEntry: Comparable {
     }
 }
 
+/// How long an exercise took within its session.
+public extension SessionEntry {
+    var elapsed: TimeInterval? {
+        guard let session, let resolved = status.resolved else {
+            return nil
+        }
+
+        // One pass: every exercise of the session asks this, so each allocating a list of the others' times
+        // over again is the session's own length squared.
+        var previous = session.started
+
+        for other in session.entries {
+            if let other = other.status.resolved, other < resolved, other > previous {
+                previous = other
+            }
+        }
+
+        return resolved.timeIntervalSince(previous)
+    }
+}
+
+/// How an exercise went compared with the last times it was done.
+public extension SessionEntry {
+    var isPersonalBest: Bool {
+        guard status.isCompleted, let exercise, target.type == exercise.type, session?.isActive == false else {
+            return false
+        }
+
+        guard let best = earlier.map(\.target.rank).max() else {
+            return false
+        }
+
+        return target.rank > best
+    }
+
+    var change: Change? {
+        guard let previous = earlier.max(by: { ($0.session?.started ?? .distantPast) < ($1.session?.started ?? .distantPast) })?.target else {
+            return nil
+        }
+
+        let difference = target.rank - previous.rank
+
+        guard difference != 0 else {
+            return nil
+        }
+
+        // Reps are the one rank that isn't a measurement, so they have no quantity to carry the difference.
+        var quantity: Quantity? = switch target {
+        case let .weight(current): current.weight
+        case .bodyweight: nil
+        case let .duration(current): current.duration
+        case let .distance(current): current.distance
+        }
+        quantity?.base = abs(difference)
+
+        return Change(
+            difference: difference,
+            magnitude: quantity?.formatted ?? String(localized: .exerciseTargetRepsTitle(Int(abs(difference))))
+        )
+    }
+
+    struct Change: Sendable {
+        public let difference: Double
+        public let magnitude: String
+    }
+}
+
+private extension SessionEntry {
+    var earlier: [SessionEntry] {
+        guard let session, !session.isActive, let exercise, target.type == exercise.type else {
+            return []
+        }
+
+        return (workoutEntry?.sessionEntries ?? []).filter { other in
+            guard let theirs = other.session, !theirs.isActive else {
+                return false
+            }
+
+            // The type has to match: `rank` would otherwise weigh reps against kilograms.
+            return other.status.isCompleted && other.target.type == exercise.type && theirs.started < session.started
+        }
+    }
+}
+
 public extension SessionEntry {
     enum Status: Codable, Hashable, Sendable {
         case pending

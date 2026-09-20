@@ -265,6 +265,17 @@
         }
       }
     },
+    "action.viewAll.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All"
+          }
+        }
+      }
+    },
     "action.viewStats.title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -509,6 +520,29 @@
         }
       }
     },
+    "session.count.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Session"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Sessions"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "session.entry.status.completed.title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -542,6 +576,17 @@
         }
       }
     },
+    "statistic.completedExercises.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Completed"
+          }
+        }
+      }
+    },
     "statistic.completionRate.title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -564,6 +609,28 @@
         }
       }
     },
+    "statistic.duration.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Duration"
+          }
+        }
+      }
+    },
+    "statistic.endTime.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "End Time"
+          }
+        }
+      }
+    },
     "statistic.lastCompleted.title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -582,6 +649,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Longest Streak"
+          }
+        }
+      }
+    },
+    "statistic.medianExerciseDuration.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Per Exercise"
           }
         }
       }
@@ -615,6 +693,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sessions per Week"
+          }
+        }
+      }
+    },
+    "statistic.skipRate.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skip Rate"
+          }
+        }
+      }
+    },
+    "statistic.totalVolume.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Total Volume"
           }
         }
       }

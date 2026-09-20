@@ -17,7 +17,6 @@ struct WorkoutScreen: View {
     @State private var sheet: Sheet? = nil
     @State private var deleteAlert: Bool = false
     @State private var sessionActiveAlert: Bool = false
-    @State private var statisticsScreen: Bool = false
 
     let workout: Workout
 
@@ -37,13 +36,14 @@ struct WorkoutScreen: View {
                     Button(.startSession) {
                         startSession()
                     }
+                    .fontWeight(.semibold)
                     .labelStyle(.fixedTitleAndIcon)
                     .buttonStyle(.glassProminent)
                     .tint(.green)
                     .disabled(workout.entries.isEmpty)
 
-                    Button(.viewStatistics) {
-                        statisticsScreen = true
+                    NavigationLink(value: Route.workoutStatistics(workout: workout)) {
+                        Label(.viewStatistics)
                     }
                     .labelStyle(.fixedIconOnly)
                     .buttonStyle(.glass)
@@ -82,9 +82,7 @@ struct WorkoutScreen: View {
         .navigationDestination(for: WorkoutEntry.self) { entry in
             WorkoutEntryScreen(entry: entry)
         }
-        .navigationDestination(isPresented: $statisticsScreen) {
-            WorkoutStatisticsScreen(workout: workout)
-        }
+        .navigationDestination(for: Route.self) { $0 }
         .toolbar {
             Menu(.more) {
                 Section {
@@ -92,8 +90,8 @@ struct WorkoutScreen: View {
                         sheet = .addWorkoutExercise(workout: workout)
                     }
 
-                    Button(.viewStatistics) {
-                        statisticsScreen = true
+                    NavigationLink(value: Route.workoutStatistics(workout: workout)) {
+                        Label(.viewStatistics)
                     }
                 }
 

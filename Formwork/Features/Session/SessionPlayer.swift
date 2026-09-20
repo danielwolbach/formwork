@@ -1,5 +1,5 @@
 //
-//  SessionPlayerScreen.swift
+//  SessionPlayer.swift
 //  Formwork
 //
 //  Created by Daniel Wolbach on 05.09.26.
@@ -8,16 +8,15 @@
 import FormworkKit
 import SwiftUI
 
-struct SessionPlayerScreen: View {
-    @Environment(\.dismiss) private var dismiss: DismissAction
+struct SessionPlayer: View {
     @State private var navigator: SessionNavigator
-    @State private var finishAlert: Bool = false
-    @State private var cancelAlert: Bool = false
 
     let session: Session
+    let requestFinish: () -> Void
 
-    init(session: Session) {
+    init(session: Session, requestFinish: @escaping () -> Void) {
         self.session = session
+        self.requestFinish = requestFinish
         _navigator = State(initialValue: SessionNavigator(session: session))
     }
 
@@ -27,51 +26,6 @@ struct SessionPlayerScreen: View {
         }
         .safeAreaBar(edge: .bottom) {
             controls
-        }
-        .toolbar {
-            ToolbarItem(placement: .principal) {
-                SessionStatus(session: session)
-            }
-
-            ToolbarItem(placement: .topBarLeading) {
-                Button(.minimize) {
-                    dismiss()
-                }
-            }
-
-            ToolbarItem(placement: .topBarTrailing) {
-                Menu(.more) {
-                    Section {
-                        Button(.finishSession) {
-                            finishAlert = true
-                        }
-                    }
-
-                    Section {
-                        Button(.discardSession) {
-                            cancelAlert = true
-                        }
-                    }
-                }
-            }
-        }
-        .alert(.alertSessionFinishTitle, isPresented: $finishAlert) {
-            Button(.finishSession) {
-                finish()
-            }
-
-            Button(.cancel) {}
-        } message: {
-            Text(.alertSessionFinishMessage)
-        }
-        .alert(.alertSessionCancelTitle, isPresented: $cancelAlert) {
-            Button(.discardSession) {
-                cancel()
-            }
-
-            Button(.cancel) {}
-        } message: {
-            Text(.alertSessionCancelMessage)
         }
     }
 
@@ -112,10 +66,8 @@ struct SessionPlayerScreen: View {
     @ViewBuilder
     private var primaryAction: some View {
         if session.isComplete {
-            Button(.finishSession) {
-                finishAlert = true
-            }
-            .fontWeight(.semibold)
+            Button(.finishSession, action: requestFinish)
+                .fontWeight(.semibold)
         } else if let status = session.current?.status {
             Button(.complete) {
                 Haptics.impact(.medium)
@@ -141,17 +93,6 @@ struct SessionPlayerScreen: View {
             }
         }
     }
-
-    private func finish() {
-        session.finish()
-        Haptics.notification(.success)
-        dismiss()
-    }
-
-    private func cancel() {
-        session.cancel()
-        dismiss()
-    }
 }
 
 private struct SessionEntryPage: View {
@@ -173,7 +114,7 @@ private struct SessionEntryPage: View {
 
 #Preview {
     NavigationStack {
-        SessionPlayerScreen(session: Samples.sessions.first!)
+        SessionPlayer(session: Samples.sessions.first!) {}
     }
     .sampleData()
 }

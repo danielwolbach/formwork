@@ -152,13 +152,21 @@ extension WorkoutEntry: Displayable {
     }
 }
 
+public extension Session {
+    static func countTitle(_ count: Int) -> LocalizedStringResource {
+        .sessionCountTitle(count)
+    }
+}
+
 extension Session: Displayable {
     public var title: String {
         workout?.title ?? String(localized: .workoutUnknownTitle)
     }
 
+    /// On the clock the session was recorded on: an 08:00 workout stays 08:00 wherever it is read back.
     public var subtitle: String? {
-        started.formatted()
+        let local = localCalendar(from: .current)
+        return started.formatted(local.formatStyle(date: .numeric, time: .shortened))
     }
 
     public var pictogram: Pictogram {
@@ -183,9 +191,9 @@ extension SessionEntry: Displayable {
 extension SessionEntry.Status: Displayable {
     public var pictogram: Pictogram {
         switch self {
-        case .pending: Pictogram(image: "ellipsis.circle.fill", tint: .gray)
-        case .completed: Pictogram(image: "checkmark.circle.fill", tint: .green)
-        case .skipped: Pictogram(image: "arrowtriangle.forward.circle.fill", tint: .orange)
+        case .pending: .pendingBadge
+        case .completed: .completedBadge
+        case .skipped: .skippedBadge
         }
     }
 

@@ -33,7 +33,7 @@ struct WorkoutForm: View {
                 HStack {
                     Spacer()
 
-                    PictogramEditor(pictogram: $pictogram)
+                    PictogramEditor(pictogram: $pictogram, imageOptions: Pictogram.workoutImageOptions)
 
                     Spacer()
                 }
