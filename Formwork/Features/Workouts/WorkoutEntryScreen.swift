@@ -40,7 +40,7 @@ struct WorkoutEntryScreen: View {
 
                 Section {
                     Button(.remove) {
-                        delete()
+                        deleteAlert = true
                     }
                 }
             }

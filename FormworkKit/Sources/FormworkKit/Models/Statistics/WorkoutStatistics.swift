@@ -32,7 +32,13 @@ public struct WorkoutStatistics {
         let sessions = context.sessions
         let last = context.lastSession
         let entries = sessions.flatMap(\.entries)
-        let skipped = entries.filter(\.status.isSkipped).compactMap(\.exercise)
+        let skips = entries
+            .filter(\.status.isSkipped)
+            .reduce(into: [Exercise: (count: Int, latest: Date)]()) { tally, entry in
+                guard let exercise = entry.exercise, let skipped = entry.status.resolved else { return }
+                let current = tally[exercise] ?? (0, .distantPast)
+                tally[exercise] = (current.count + 1, max(current.latest, skipped))
+            }
         let startTime = sessions
             .compactMap { $0.startMinute(in: calendar) }
             .clockMedoid
@@ -43,7 +49,7 @@ public struct WorkoutStatistics {
         self.completionRate = .completionRate(entries.isEmpty ? nil : Double(entries.count(where: \.status.isCompleted)) / Double(entries.count))
         self.typicalDuration = .typicalDuration(sessions.compactMap(\.duration).median.map { .seconds($0) })
         self.typicalStartTime = .typicalStartTime(startTime, calendar: calendar)
-        self.mostSkippedExercise = .mostSkipped(Dictionary(grouping: skipped) { $0 }.max { $0.value.count < $1.value.count }?.key)
+        self.mostSkippedExercise = .mostSkipped(skips.max { ($0.value.count, $0.value.latest) < ($1.value.count, $1.value.latest) }?.key)
     }
 }
 

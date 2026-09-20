@@ -37,10 +37,8 @@ extension Exercise: Displayable {
     }
 
     public var subtitle: String? {
-        ExerciseCategory.allCases
-            .filter { categories.contains($0) }
-            .map(\.title)
-            .joined(separator: ", ")
+        let titles = ExerciseCategory.allCases.filter { categories.contains($0) }.map(\.title)
+        return titles.isEmpty ? nil : titles.joined(separator: ", ")
     }
 }
 

@@ -96,7 +96,7 @@ struct WorkoutAddExerciseForm: View {
     private var matchingExercises: [Exercise] {
         let searchText = trimmedSearchText
         let categorical = selectedCategories.isEmpty ? exercises : exercises
-            .filter { selectedCategories.isSubset(of: $0.categories) }
+            .filter { !selectedCategories.isDisjoint(with: $0.categories) }
 
         if searchText.isEmpty {
             return categorical

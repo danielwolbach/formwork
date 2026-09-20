@@ -20,6 +20,8 @@ public struct FixedLabelStyle: LabelStyle {
                 configuration.title
             }
         }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel { _ in configuration.title }
     }
 
     private func icon(_ configuration: Configuration) -> some View {

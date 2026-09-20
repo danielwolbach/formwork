@@ -91,7 +91,7 @@ private struct ExerciseCategoryGrid: View {
     let exercises: [Exercise]
 
     var body: some View {
-        LazyVGrid(columns: [.init(.flexible(), spacing: 8), .init(.flexible(), spacing: 8)], spacing: 8) {
+        LazyVGrid(columns: GridItem.ntile(n: 2, spacing: 8), spacing: 8) {
             ForEach(ExerciseCategory.allCases) { category in
                 NavigationLink(value: category) {
                     ExerciseCategoryTile(category: category, exerciseCount: countExercises(in: category))

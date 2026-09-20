@@ -168,6 +168,7 @@ private struct NumberEntrySheet: View {
         let parsed = Double(draft.replacingOccurrences(of: Locale.currentDecimalSeparator, with: "."))
 
         guard let parsed else {
+            dismiss()
             return
         }
 

@@ -42,7 +42,7 @@ struct WorkoutListScreen: View {
             }
         } else {
             ScrollView {
-                LazyVGrid(columns: [.init(.flexible(), spacing: 8)], spacing: 8) {
+                LazyVGrid(columns: GridItem.ntile(n: 1, spacing: 8), spacing: 8) {
                     ForEach(workouts) { workout in
                         NavigationLink(value: workout) {
                             WorkoutCard(workout: workout)

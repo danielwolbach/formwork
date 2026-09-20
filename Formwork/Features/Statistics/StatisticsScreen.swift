@@ -16,7 +16,7 @@ struct StatisticsScreen: View {
         let statistics = sessions.statistics()
 
         ScrollView {
-            LazyVGrid(columns: [.init(.flexible(), spacing: 8), .init(.flexible(), spacing: 8)], spacing: 8) {
+            LazyVGrid(columns: GridItem.ntile(n: 2, spacing: 8), spacing: 8) {
                 StatisticCard(statistics.weekStreak)
                 StatisticCard(statistics.lastSession)
                 StatisticCard(statistics.longestWeekStreak)

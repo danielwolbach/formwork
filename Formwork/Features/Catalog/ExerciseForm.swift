@@ -90,7 +90,7 @@ private struct ExerciseTypePicker: View {
     @Binding var type: ExerciseType
 
     var body: some View {
-        LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())]) {
+        LazyVGrid(columns: GridItem.ntile(n: 2)) {
             ForEach(ExerciseType.allCases) { candidate in
                 Toggle(isOn: binding(for: candidate)) {
                     VStack {

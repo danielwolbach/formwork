@@ -15,7 +15,7 @@ struct WorkoutStatisticsScreen: View {
         let statistics = workout.statistics()
 
         ScrollView {
-            LazyVGrid(columns: [.init(.flexible(), spacing: 8), .init(.flexible(), spacing: 8)], spacing: 8) {
+            LazyVGrid(columns: GridItem.ntile(n: 2, spacing: 8), spacing: 8) {
                 StatisticCard(statistics.lastCompleted)
                 StatisticCard(statistics.typicalDuration)
                 StatisticCard(statistics.completionRate)
