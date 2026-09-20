@@ -10,12 +10,15 @@ import SwiftData
 
 @MainActor
 public enum Storage {
-    public static let schema = Schema([Exercise.self, Workout.self, WorkoutEntry.self, Session.self, SessionEntry.self])
+    public static let schema = Schema(versionedSchema: CurrentSchema.self)
 
     public static let container: ModelContainer = if ProcessInfo.processInfo.arguments.contains("--sample-data") {
         Samples.container
     } else {
-        try unwrap(ModelContainer(for: schema, configurations: [ModelConfiguration(schema: schema)]), "Failed to initialize storage")
+        try unwrap(
+            ModelContainer(for: schema, migrationPlan: Migrations.self, configurations: [ModelConfiguration(schema: schema)]),
+            "Failed to initialize storage"
+        )
     }
 }
 

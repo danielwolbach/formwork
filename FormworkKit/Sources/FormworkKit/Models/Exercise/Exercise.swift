@@ -13,7 +13,7 @@ public final class Exercise {
 
     public var type: ExerciseType = ExerciseType.weight
 
-    public var categories: Set<ExerciseCategory> = [.other]
+    public var categories: Set<ExerciseCategory> = [ExerciseCategory.other]
 
     @Relationship(deleteRule: .cascade, inverse: \WorkoutEntry.exercise)
     public var workoutEntries: [WorkoutEntry] = []
