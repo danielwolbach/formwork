@@ -179,6 +179,28 @@
         }
       }
     },
+    "empty.statistics.description" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finish a session to see your statistics here."
+          }
+        }
+      }
+    },
+    "empty.statistics.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No Statistics"
+          }
+        }
+      }
+    },
     "empty.workout.exercises.description" : {
       "extractionState" : "manual",
       "localizations" : {

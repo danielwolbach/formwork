@@ -13,6 +13,29 @@ struct StatisticsScreen: View {
     @Query(Session.finishedDescriptor) private var sessions: [Session]
 
     var body: some View {
+        content
+            .navigationTitle(.screenStatisticsTitle)
+            .navigationDestination(for: Session.self) { session in
+                SessionScreen(session: session)
+            }
+            .navigationDestination(for: Route.self) { $0 }
+    }
+
+    @ViewBuilder
+    private var content: some View {
+        if sessions.isEmpty {
+            ContentUnavailableView {
+                Label(.emptyStatisticsTitle, systemImage: "flame")
+            } description: {
+                Text(.emptyStatisticsDescription)
+            }
+        } else {
+            statisticsContent
+        }
+    }
+
+    @ViewBuilder
+    private var statisticsContent: some View {
         let statistics = sessions.statistics()
 
         ScrollView {
@@ -38,11 +61,6 @@ struct StatisticsScreen: View {
                 }
             }
         }
-        .navigationTitle(.screenStatisticsTitle)
-        .navigationDestination(for: Session.self) { session in
-            SessionScreen(session: session)
-        }
-        .navigationDestination(for: Route.self) { $0 }
     }
 }
 
