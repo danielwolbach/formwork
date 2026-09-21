@@ -1126,3 +1126,79 @@ struct SessionEntryScopeTests {
         #expect(try #require(lighter.change).magnitude == Quantity(10, in: .kilograms).formatted)
     }
 }
+
+// MARK: - Current highest target
+
+@MainActor
+struct ExerciseCurrentHighestTargetTests {
+    let store: TestStore
+    let squat: Exercise
+
+    init() throws {
+        self.store = try TestStore()
+        self.squat = try #require(store.workout.entries.sorted().first?.exercise)
+    }
+
+    /// A second workout holding the squat at the given number of reps.
+    @discardableResult
+    func workout(_ name: String, reps: Int) throws -> Workout {
+        let workout = Workout(name: name, pictogram: .workout, schedule: .inactive, entries: [])
+        store.context.insert(workout)
+        workout.append(exercise: squat, target: .bodyweight(target: .init(sets: 3, reps: reps)))
+        return workout
+    }
+
+    @Test func anExerciseInNoWorkoutHasNothingToGoOn() {
+        let rows = Exercise(name: "Rows", type: .bodyweight, categories: [])
+        store.context.insert(rows)
+
+        #expect(rows.currentHighestTarget == nil)
+    }
+
+    @Test func theHighestRankedSlotWinsAcrossWorkouts() throws {
+        try workout("Heavy", reps: 15)
+        try workout("Light", reps: 5)
+
+        // The squat sits at 10 reps in the store's own workout, so 15 is the one to beat.
+        #expect(squat.currentHighestTarget?.bodyweightTarget == .init(sets: 3, reps: 15))
+    }
+
+    @Test func aSlotNeverPerformedStillCounts() throws {
+        try workout("Planned", reps: 15)
+
+        // No session has ever touched it, but it is what the exercise is programmed at.
+        #expect(squat.currentHighestTarget?.bodyweightTarget == .init(sets: 3, reps: 15))
+    }
+
+    @Test func finishingASessionPutsWhatWasDoneOnOffer() throws {
+        let session = try store.startSession()
+        let entry = try #require(session.entries.first { $0.exercise === squat })
+        entry.target = .bodyweight(target: .init(sets: 3, reps: 20))
+        entry.status = .completed(at: .now)
+        session.finish()
+
+        // `finish` writes targets back to their slots, so the workout now holds what was actually done.
+        #expect(squat.currentHighestTarget?.bodyweightTarget == .init(sets: 3, reps: 20))
+    }
+
+    @Test func deletingAWorkoutTakesItsNumbersWithIt() throws {
+        let heavy = try workout("Heavy", reps: 15)
+
+        #expect(squat.currentHighestTarget?.bodyweightTarget == .init(sets: 3, reps: 15))
+
+        store.context.delete(heavy)
+        // The `.cascade` rule only reaches the workout's entries once the deletion is processed.
+        try store.context.save()
+
+        // Giving the heavy workout up drops its numbers, which is what keeps stale weights from coming back.
+        #expect(squat.currentHighestTarget?.bodyweightTarget == .init(sets: 3, reps: 10))
+    }
+
+    @Test func targetsOfAnotherTypeAreIgnored() throws {
+        try workout("Heavy", reps: 15)
+        squat.type = .weight
+
+        // Every slot still holds reps, which say nothing about how heavy the exercise is now measured in.
+        #expect(squat.currentHighestTarget == nil)
+    }
+}

@@ -144,7 +144,7 @@ struct WorkoutAddExerciseForm: View {
         Binding(
             get: {
                 index(of: exercise).map { selection[$0].target }
-                    ?? defaultTarget(for: exercise.type)
+                    ?? initialTarget(for: exercise)
             },
             set: { newValue in
                 withAnimation {
@@ -164,7 +164,7 @@ struct WorkoutAddExerciseForm: View {
                     let index = index(of: exercise)
 
                     if isOn, index == nil {
-                        selection.append((exercise, defaultTarget(for: exercise.type)))
+                        selection.append((exercise, initialTarget(for: exercise)))
                     } else if !isOn, let index {
                         selection.remove(at: index)
                     }
@@ -179,8 +179,12 @@ struct WorkoutAddExerciseForm: View {
         }
     }
 
-    private func defaultTarget(for type: ExerciseType) -> ExerciseTarget {
-        switch type {
+    private func initialTarget(for exercise: Exercise) -> ExerciseTarget {
+        if let current = exercise.currentHighestTarget {
+            return current
+        }
+
+        return switch exercise.type {
         case .weight: .weight(target: .init(weight: .defaultWeight, sets: 3, reps: 10))
         case .bodyweight: .bodyweight(target: .init(sets: 3, reps: 10))
         case .duration: .duration(target: .init(duration: .defaultDuration))

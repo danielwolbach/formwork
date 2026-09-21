@@ -27,3 +27,12 @@ public final class Exercise {
         self.categories = categories
     }
 }
+
+public extension Exercise {
+    var currentHighestTarget: ExerciseTarget? {
+        workoutEntries
+            .filter { $0.target.type == type }
+            .max { $0.target.rank < $1.target.rank }?
+            .target
+    }
+}

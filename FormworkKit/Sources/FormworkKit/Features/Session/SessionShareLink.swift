@@ -122,7 +122,7 @@ private struct SessionShareCard: View {
         let personalBest = session.orderedEntries
             .filter(\.isPersonalBest)
             .max { ($0.improvement ?? 0) < ($1.improvement ?? 0) }
-        
+
         if let personalBest {
             HStack {
                 Image(systemName: Pictogram.record.image)
@@ -166,7 +166,6 @@ private struct SessionShareCard: View {
             .frame(maxHeight: .infinity)
             .background(Pictogram.record.color.quinary)
             .clipShape(.rect(cornerRadius: 16, style: .continuous))
-   
         }
     }
 
