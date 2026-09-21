@@ -39,6 +39,7 @@ public extension ActionDescriptor {
     static let minimize = ActionDescriptor(title: .actionMinimizeTitle, systemImage: "chevron.down")
     static let select = ActionDescriptor(title: .actionSelectTitle, systemImage: "plus")
     static let skip = ActionDescriptor(title: .actionSkipTitle, systemImage: "arrowtriangle.forward")
+    static let share = ActionDescriptor(title: .actionShareTitle, systemImage: "square.and.arrow.up")
     static let viewAll = ActionDescriptor(title: .actionViewAllTitle, systemImage: "list.bullet")
     static let debug = ActionDescriptor(title: .actionDebugTitle, systemImage: "ladybug")
 

@@ -12,6 +12,7 @@ import SwiftUI
 struct SessionScreen: View {
     @Environment(\.modelContext) private var modelContext: ModelContext
     @Environment(\.dismiss) private var dismiss: DismissAction
+    @State private var justFinished = false
     @State private var finishAlert = false
     @State private var cancelAlert = false
     @State private var deleteAlert = false
@@ -26,7 +27,21 @@ struct SessionScreen: View {
                 }
                 .transition(.blurReplace)
             } else {
-                summary.transition(.blurReplace)
+                summary
+                    .safeAreaInset(edge: .bottom) {
+                        if justFinished {
+                            HStack {
+                                Spacer()
+                                SessionShareLink(session: session)
+                                    .labelStyle(.fixedTitleAndIcon)
+                                    .buttonStyle(.glassProminent)
+                                    .fontWeight(.semibold)
+                                    .controlSize(.large)
+                            }
+                            .padding(.horizontal)
+                        }
+                    }
+                    .transition(.blurReplace)
             }
         }
         .toolbar {
@@ -115,6 +130,12 @@ struct SessionScreen: View {
             ToolbarItem(placement: .topBarTrailing) {
                 Menu(.more) {
                     Section {
+                        if session.endedRecently {
+                            SessionShareLink(session: session)
+                        }
+                    }
+
+                    Section {
                         Button(.delete) {
                             deleteAlert = true
                         }
@@ -151,6 +172,7 @@ struct SessionScreen: View {
 
         withAnimation(.smooth) {
             session.finish()
+            justFinished = true
         }
     }
 

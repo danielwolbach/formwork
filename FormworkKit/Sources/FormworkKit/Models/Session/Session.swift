@@ -97,6 +97,11 @@ public extension Session {
         ended == nil
     }
 
+    var endedRecently: Bool {
+        guard let ended else { return false }
+        return Date.now.timeIntervalSince(ended) < 12 * 60 * 60 // 12h
+    }
+
     var duration: TimeInterval? {
         guard let ended else {
             return nil

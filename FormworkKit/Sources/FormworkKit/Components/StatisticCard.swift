@@ -5,25 +5,24 @@
 //  Created by Daniel Wolbach on 18.09.26.
 //
 
-import FormworkKit
 import SwiftUI
 
-struct StatisticCard: View {
+public struct StatisticCard: View {
     let title: String
     let value: String?
     let pictogram: Pictogram
 
-    init(title: String, value: String?, pictogram: Pictogram) {
+    public init(title: String, value: String?, pictogram: Pictogram) {
         self.title = title
         self.value = value
         self.pictogram = pictogram
     }
 
-    init(_ statistic: some Displayable) {
+    public init(_ statistic: some Displayable) {
         self.init(title: statistic.title, value: statistic.subtitle, pictogram: statistic.pictogram)
     }
 
-    var body: some View {
+    public var body: some View {
         VStack(alignment: .leading, spacing: 2) {
             Spacer(minLength: 0)
 

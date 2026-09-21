@@ -72,6 +72,22 @@ public extension SessionEntry {
         return target.rank > best
     }
 
+    var previousBest: ExerciseTarget? {
+        guard status.isCompleted, let exercise, target.type == exercise.type, session?.isActive == false else {
+            return nil
+        }
+
+        return earlier.map(\.target).max { $0.rank < $1.rank }
+    }
+
+    var improvement: Double? {
+        guard let previousBest, previousBest.rank > 0 else {
+            return nil
+        }
+
+        return (target.rank - previousBest.rank) / previousBest.rank
+    }
+
     var change: Change? {
         guard let previous = earlier.max(by: { ($0.session?.started ?? .distantPast) < ($1.session?.started ?? .distantPast) })?.target else {
             return nil

@@ -5,27 +5,26 @@
 //  Created by Daniel Wolbach on 04.09.26.
 //
 
-import FormworkKit
 import SwiftUI
 
-struct PictogramRow: View {
+public struct PictogramRow: View {
     let pictogram: Pictogram
     let title: String
     let subtitle: String?
     let badge: Pictogram?
 
-    init(pictogram: Pictogram, title: String, subtitle: String? = nil, badge: Pictogram? = nil) {
+    public init(pictogram: Pictogram, title: String, subtitle: String? = nil, badge: Pictogram? = nil) {
         self.pictogram = pictogram
         self.title = title
         self.subtitle = subtitle
         self.badge = badge
     }
 
-    init(_ item: some Displayable, badge: Pictogram? = nil) {
+    public init(_ item: some Displayable, badge: Pictogram? = nil) {
         self.init(pictogram: item.pictogram, title: item.title, subtitle: item.subtitle, badge: badge)
     }
 
-    var body: some View {
+    public var body: some View {
         HStack {
             PictogramView(pictogram: pictogram, badge: badge)
                 .frame(width: 64, height: 64)

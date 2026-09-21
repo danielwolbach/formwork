@@ -11,7 +11,7 @@ public enum ExerciseTarget: Codable, Sendable {
     case duration(target: DurationTarget)
     case distance(target: DistanceTarget)
 
-    var rank: Double {
+    public var rank: Double {
         switch self {
         case let .weight(target): target.weight.base
         case let .bodyweight(target): Double(target.reps)
@@ -20,7 +20,7 @@ public enum ExerciseTarget: Codable, Sendable {
         }
     }
 
-    var formattedRank: String {
+    public var formattedRank: String {
         switch self {
         case let .weight(target): target.weight.formatted
         case let .bodyweight(target): String(localized: .exerciseTargetRepsTitle(target.reps))

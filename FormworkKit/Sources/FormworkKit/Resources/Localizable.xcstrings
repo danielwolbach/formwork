@@ -243,6 +243,17 @@
         }
       }
     },
+    "action.share.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Share"
+          }
+        }
+      }
+    },
     "action.skip.title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -594,6 +605,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Skipped"
+          }
+        }
+      }
+    },
+    "session.share.headline" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I just completed a workout session!"
+          }
+        }
+      }
+    },
+    "session.share.record.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New Record"
           }
         }
       }
