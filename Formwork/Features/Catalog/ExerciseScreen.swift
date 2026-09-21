@@ -24,7 +24,7 @@ struct ExerciseScreen: View {
             VStack(spacing: 32) {
                 PictogramHeader(exercise)
 
-                LazyVGrid(columns: GridItem.ntile(n: 2, spacing: 8), spacing: 8) {
+                TileGrid {
                     StatisticCard(statistics.lastCompleted)
                     StatisticCard(statistics.completionRate)
                     StatisticCard(statistics.personalBest)

@@ -18,7 +18,7 @@ struct SessionRecap: View {
         VStack(spacing: 32) {
             PictogramHeader(session)
 
-            LazyVGrid(columns: GridItem.ntile(n: 2, spacing: 8), spacing: 8) {
+            TileGrid(columns: 2) {
                 StatisticCard(summary.duration)
                 StatisticCard(summary.endTime)
                 StatisticCard(summary.skipRate)

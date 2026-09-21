@@ -56,7 +56,7 @@ struct OverviewScreen: View {
     private var statisticsSection: some View {
         let statistics = sessions.statistics()
 
-        LazyVGrid(columns: GridItem.ntile(n: 2, spacing: 8), spacing: 8) {
+        TileGrid {
             StatisticCard(statistics.weekStreak)
             StatisticCard(statistics.lastSession)
         }

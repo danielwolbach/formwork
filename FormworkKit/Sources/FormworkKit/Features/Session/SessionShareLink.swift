@@ -94,19 +94,13 @@ private struct SessionShareCard: View {
     @ViewBuilder
     private var summary: some View {
         let summary = session.summary()
-        VStack(spacing: 8) {
-            Grid(horizontalSpacing: 8, verticalSpacing: 8) {
-                GridRow {
-                    StatisticCard(summary.duration)
-                    StatisticCard(summary.totalVolume)
-                }
-                GridRow {
-                    StatisticCard(summary.completedExercises)
-                    StatisticCard(summary.medianExerciseDuration)
-                }
-            }
 
-            personalBest
+        TileGrid(columns: 2, spacing: 8, aspectRatio: 2) {
+            StatisticCard(summary.duration)
+            StatisticCard(summary.totalVolume)
+            StatisticCard(summary.completedExercises)
+            StatisticCard(summary.medianExerciseDuration)
+            personalBest.tileSpan(columns: 2)
         }
     }
 
@@ -128,7 +122,7 @@ private struct SessionShareCard: View {
         let personalBest = session.orderedEntries
             .filter(\.isPersonalBest)
             .max { ($0.improvement ?? 0) < ($1.improvement ?? 0) }
-
+        
         if let personalBest {
             HStack {
                 Image(systemName: Pictogram.record.image)
@@ -169,8 +163,10 @@ private struct SessionShareCard: View {
                 }
             }
             .padding()
+            .frame(maxHeight: .infinity)
             .background(Pictogram.record.color.quinary)
             .clipShape(.rect(cornerRadius: 16, style: .continuous))
+   
         }
     }
 
@@ -192,7 +188,7 @@ private struct SessionShareImage: Transferable {
         }
 
         self.image = image
-        self.name = "\(session.title) - \(session.started.formatted())"
+        self.name = "\(session.title), \(session.started.formatted())"
     }
 
     static var transferRepresentation: some TransferRepresentation {

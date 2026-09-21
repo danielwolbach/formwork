@@ -40,7 +40,7 @@ struct StatisticsScreen: View {
 
         ScrollView {
             VStack(spacing: 32) {
-                LazyVGrid(columns: GridItem.ntile(n: 2, spacing: 8), spacing: 8) {
+                TileGrid {
                     StatisticCard(statistics.weekStreak)
                     StatisticCard(statistics.lastSession)
                     StatisticCard(statistics.longestWeekStreak)

@@ -40,7 +40,7 @@ public struct StatisticCard: View {
         .padding()
         .background {
             GeometryReader { geometry in
-                let side = geometry.size.height
+                let side = min(geometry.size.height, geometry.size.width)
 
                 Image(systemName: pictogram.image)
                     .font(.system(size: side))
@@ -49,7 +49,6 @@ public struct StatisticCard: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
             }
         }
-        .aspectRatio(1.8, contentMode: .fit)
         .background(pictogram.tint.color.quinary)
         .clipShape(.rect(cornerRadius: 16, style: .continuous))
     }

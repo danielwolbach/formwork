@@ -252,7 +252,7 @@ private struct SessionPreview: View {
 
 private struct StatisticsPreview: View {
     var body: some View {
-        LazyVGrid(columns: GridItem.ntile(n: 2, spacing: 8), spacing: 8) {
+        TileGrid {
             ForEach(Array(Samples.statistics.enumerated()), id: \.offset) { _, statistic in
                 StatisticCard(statistic)
             }

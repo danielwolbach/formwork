@@ -81,7 +81,7 @@ private struct ExerciseCategoryGrid: View {
     let exercises: [Exercise]
 
     var body: some View {
-        LazyVGrid(columns: GridItem.ntile(n: 2, spacing: 8), spacing: 8) {
+        TileGrid {
             ForEach(ExerciseCategory.allCases) { category in
                 NavigationLink(value: category) {
                     ExerciseCategoryTile(category: category, exerciseCount: countExercises(in: category))
@@ -125,7 +125,6 @@ private struct ExerciseCategoryTile: View {
         }
         .foregroundStyle(.white)
         .background(category.pictogram.color)
-        .aspectRatio(1.8, contentMode: .fit)
         .clipShape(.rect(cornerRadius: 16, style: .continuous))
         .contentShape(.rect)
     }
