@@ -11,3 +11,7 @@ public enum DeepLink {
     public static let scheme = "formwork"
     public static let session = URL(string: "\(scheme)://session")!
 }
+
+public enum StorageKeys {
+    public static let onboardingPending = "onboarding.pending"
+}

@@ -59,4 +59,9 @@ public extension Schedule {
 
 public extension Schedule {
     static let inactive = Schedule(weekdays: [])
+
+    /// Today's weekday, so a workout put on this schedule is due the day it is created.
+    static func today(in calendar: Calendar = .current) -> Schedule {
+        Schedule(weekdays: [Weekday(calendarNumber: calendar.component(.weekday, from: .now))])
+    }
 }

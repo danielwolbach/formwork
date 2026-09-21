@@ -34,11 +34,13 @@ public extension ActionDescriptor {
     static let forward = ActionDescriptor(title: .actionForwardTitle, systemImage: "chevron.forward")
     static let backward = ActionDescriptor(title: .actionBackwardTitle, systemImage: "chevron.backward")
     static let complete = ActionDescriptor(title: .actionCompleteTitle, systemImage: "checkmark")
+    static let coninue = ActionDescriptor(title: .actionContinueTitle, systemImage: "chevron.forward")
     static let undo = ActionDescriptor(title: .actionUndoTitle, systemImage: "arrow.uturn.backward")
     static let minimize = ActionDescriptor(title: .actionMinimizeTitle, systemImage: "chevron.down")
     static let select = ActionDescriptor(title: .actionSelectTitle, systemImage: "plus")
     static let skip = ActionDescriptor(title: .actionSkipTitle, systemImage: "arrowtriangle.forward")
     static let viewAll = ActionDescriptor(title: .actionViewAllTitle, systemImage: "list.bullet")
+    static let debug = ActionDescriptor(title: .actionDebugTitle, systemImage: "ladybug")
 
     // Workout
     static let startSession = ActionDescriptor(title: .actionStartSessionTitle, systemImage: "play.fill")

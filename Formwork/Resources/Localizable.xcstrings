@@ -58,7 +58,15 @@
       "extractionState" : "manual"
     },
     "alert.session.delete.title" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete Session?"
+          }
+        }
+      }
     },
     "alert.session.finish.message" : {
       "extractionState" : "manual"
@@ -103,26 +111,10 @@
       }
     },
     "empty.category.description" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Create an exercise in this category to see it here."
-          }
-        }
-      }
+      "extractionState" : "manual"
     },
     "empty.exercises.description" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Create exercises to build your catalog and add them to workouts."
-          }
-        }
-      }
+      "extractionState" : "manual"
     },
     "empty.exercises.title" : {
       "extractionState" : "manual",
@@ -180,15 +172,7 @@
       }
     },
     "empty.statistics.description" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Finish a session to see your statistics here."
-          }
-        }
-      }
+      "extractionState" : "manual"
     },
     "empty.statistics.title" : {
       "extractionState" : "manual",
@@ -202,26 +186,10 @@
       }
     },
     "empty.workout.exercises.description" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Add exercises to this workout to start a session."
-          }
-        }
-      }
+      "extractionState" : "manual"
     },
     "empty.workouts.description" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Create a workout to plan your training."
-          }
-        }
-      }
+      "extractionState" : "manual"
     },
     "empty.workouts.title" : {
       "extractionState" : "manual",
@@ -263,6 +231,76 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sets"
+          }
+        }
+      }
+    },
+    "onboarding.catalog.message" : {
+      "extractionState" : "manual"
+    },
+    "onboarding.catalog.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Build Your Catalog"
+          }
+        }
+      }
+    },
+    "onboarding.sessions.message" : {
+      "extractionState" : "manual"
+    },
+    "onboarding.sessions.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Accompany Your Sessions"
+          }
+        }
+      }
+    },
+    "onboarding.statistics.message" : {
+      "extractionState" : "manual"
+    },
+    "onboarding.statistics.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "See Your Progress"
+          }
+        }
+      }
+    },
+    "onboarding.welcome.message" : {
+      "extractionState" : "manual"
+    },
+    "onboarding.welcome.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Welcome to Formwork"
+          }
+        }
+      }
+    },
+    "onboarding.workouts.message" : {
+      "extractionState" : "manual"
+    },
+    "onboarding.workouts.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plan Your Workouts"
           }
         }
       }

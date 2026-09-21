@@ -28,6 +28,11 @@ struct OverviewScreen: View {
         .navigationDestination(for: Workout.self) { workout in
             WorkoutScreen(workout: workout)
         }
+        .toolbar {
+            Menu(.more) {
+                DebugMenu()
+            }
+        }
         .alert(.alertSessionActiveTitle, isPresented: $sessionActiveAlert) {
             if let workout = workouts.pending().first {
                 Button(.replaceSession) {

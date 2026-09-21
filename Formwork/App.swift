@@ -14,21 +14,17 @@ struct App: SwiftUI.App {
 
 private struct AppContent: View {
     @Query(Session.activeDescriptor) private var activeSessions: [Session]
-    @State private var presentedSession: Session? = nil
     @Namespace private var sessionNamespace
-
-    private var activeSession: Session? {
-        activeSessions.first
-    }
-
-    private var activityState: SessionActivityAttributes.ContentState? {
-        activeSession.flatMap(SessionActivityAttributes.ContentState.init(session:))
-    }
+    @AppStorage(StorageKeys.onboardingPending) private var onboardingPending: Bool = true
+    @State private var presentedSession: Session? = nil
 
     var body: some View {
         MainTabView(activeSession: activeSession, sessionNamespace: sessionNamespace)
             .environment(\.presentSession, PresentSessionAction(action: presentSession))
-            .fullScreenCover(item: $presentedSession) { session in
+            .fullScreenCover(isPresented: onboardingPendingBinding) {
+                OnboardingScreen()
+            }
+            .fullScreenCover(item: presentedSessionBinding) { session in
                 NavigationStack {
                     SessionScreen(session: session)
                         .toolbar {
@@ -51,6 +47,22 @@ private struct AppContent: View {
 
                 presentedSession = activeSession
             }
+    }
+
+    private var activeSession: Session? {
+        activeSessions.first
+    }
+
+    private var activityState: SessionActivityAttributes.ContentState? {
+        activeSession.flatMap(SessionActivityAttributes.ContentState.init(session:))
+    }
+
+    private var presentedSessionBinding: Binding<Session?> {
+        Binding(get: { presentedSession }, set: { presentedSession = $0 })
+    }
+
+    private var onboardingPendingBinding: Binding<Bool> {
+        Binding(get: { onboardingPending }, set: { onboardingPending = $0 })
     }
 
     private func presentSession(session: Session) {

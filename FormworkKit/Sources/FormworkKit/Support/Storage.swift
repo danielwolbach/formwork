@@ -20,6 +20,24 @@ public enum Storage {
             "Failed to initialize storage"
         )
     }
+
+    public static func deleteEverything(in modelContext: ModelContext) {
+        do {
+            for session in try modelContext.fetch(FetchDescriptor<Session>()) {
+                modelContext.delete(session)
+            }
+
+            for workout in try modelContext.fetch(FetchDescriptor<Workout>()) {
+                modelContext.delete(workout)
+            }
+
+            for exercise in try modelContext.fetch(FetchDescriptor<Exercise>()) {
+                modelContext.delete(exercise)
+            }
+        } catch {
+            // TODO: Log error
+        }
+    }
 }
 
 private func unwrap<T>(_ expression: @autoclosure () throws -> T, _ message: String) -> T {

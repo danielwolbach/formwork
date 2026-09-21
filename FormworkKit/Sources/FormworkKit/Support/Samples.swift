@@ -72,6 +72,36 @@ public enum Samples {
         ),
     ]
 
+    public static var statistics: [any Displayable] {
+        let best: Quantity
+        let volume: Quantity
+
+        switch Locale.current.measurementSystem {
+        case .us:
+            best = Quantity(200, in: .pounds)
+            volume = Quantity(27500, in: .pounds)
+        default:
+            best = Quantity(90, in: .kilograms)
+            volume = Quantity(12480, in: .kilograms)
+        }
+
+        return [
+            Statistic.weekStreak(6),
+            Statistic.sessionsPerWeek(2.8),
+            Statistic.personalBest(.weight(target: .init(weight: best, sets: 3, reps: 10))),
+            Statistic.totalVolume(volume),
+        ]
+    }
+
+    public static var weightTarget: ExerciseTarget {
+        switch Locale.current.measurementSystem {
+        case .us:
+            ExerciseTarget.weight(target: .init(weight: Quantity(185, in: .pounds), sets: 3, reps: 10))
+        default:
+            ExerciseTarget.weight(target: .init(weight: Quantity(85, in: .kilograms), sets: 3, reps: 10))
+        }
+    }
+
     public static let sessions: [Session] = [
         // swiftlint:disable:next force_try
         try! Session.active(in: container.mainContext)!,
