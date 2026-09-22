@@ -96,10 +96,10 @@ private struct SessionShareCard: View {
         let summary = session.summary()
 
         TileGrid(columns: 2, spacing: 8, aspectRatio: 2) {
-            StatisticCard(summary.duration)
-            StatisticCard(summary.totalVolume)
-            StatisticCard(summary.completedExercises)
-            StatisticCard(summary.medianExerciseDuration)
+            MetricCard(summary.duration)
+            MetricCard(summary.totalVolume)
+            MetricCard(summary.completedExercises)
+            MetricCard(summary.medianExerciseDuration)
             personalBest.tileSpan(columns: 2)
         }
     }

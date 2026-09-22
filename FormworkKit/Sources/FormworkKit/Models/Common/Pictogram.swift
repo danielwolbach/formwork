@@ -65,6 +65,9 @@ public extension Pictogram {
     static let increase = Pictogram(image: "arrow.up.right", tint: .green)
     static let decrease = Pictogram(image: "arrow.down.right", tint: .red)
     static let volume = Pictogram(image: "scalemass", tint: .indigo)
+    static let progression = Pictogram(image: "chart.line.uptrend.xyaxis", tint: .blue)
+    static let activity = Pictogram(image: "square.grid.3x3", tint: .orange)
+    static let categories = Pictogram(image: "chart.pie", tint: .gray)
 }
 
 public extension Pictogram {

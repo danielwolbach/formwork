@@ -35,42 +35,27 @@ public struct TileGrid: Layout {
         static let defaultValue = Span(rows: 1, columns: 1)
     }
 
-    public struct Cache {
-        let slots: [Slot]
-        let rows: Int
-    }
-
     private let columns: Int
     private let spacing: CGFloat
     private let aspectRatio: CGFloat
 
-    public init(columns: Int = 2, spacing: CGFloat = 8, aspectRatio: CGFloat = 1.8) {
+    public init(columns: Int = 2, spacing: CGFloat = 8, aspectRatio: CGFloat = 1.7) {
         self.columns = max(1, columns)
         self.spacing = spacing
         self.aspectRatio = aspectRatio
     }
 
-    public func makeCache(subviews: Subviews) -> Cache {
-        var occupancy: [[Bool]] = []
-        var slots: [Slot] = []
-
-        for subview in subviews {
-            slots.append(pack(subview[SpanKey.self].clamped(toColumns: columns), into: &occupancy))
-        }
-
-        return Cache(slots: slots, rows: occupancy.count)
-    }
-
-    public func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout Cache) -> CGSize {
+    public func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache _: inout ()) -> CGSize {
         let width = proposal.replacingUnspecifiedDimensions().width
-        let cell = cellSize(forWidth: width, subviews: subviews, cache: cache)
-        return CGSize(width: width, height: cache.rows > 0 ? length(ofCells: cache.rows, cell: cell.height) : 0)
+        let cell = cellSize(forWidth: width)
+        let grid = grid(forWidth: width, subviews: subviews)
+        return CGSize(width: width, height: grid.rows > 0 ? length(ofCells: grid.rows, cell: cell.height) : 0)
     }
 
-    public func placeSubviews(in bounds: CGRect, proposal _: ProposedViewSize, subviews: Subviews, cache: inout Cache) {
-        let cell = cellSize(forWidth: bounds.width, subviews: subviews, cache: cache)
+    public func placeSubviews(in bounds: CGRect, proposal _: ProposedViewSize, subviews: Subviews, cache _: inout ()) {
+        let cell = cellSize(forWidth: bounds.width)
 
-        for (subview, slot) in zip(subviews, cache.slots) {
+        for (subview, slot) in zip(subviews, grid(forWidth: bounds.width, subviews: subviews).slots) {
             let origin = CGPoint(
                 x: bounds.minX + CGFloat(slot.column) * (cell.width + spacing),
                 y: bounds.minY + CGFloat(slot.row) * (cell.height + spacing)
@@ -81,6 +66,38 @@ public struct TileGrid: Layout {
             )
             subview.place(at: origin, anchor: .topLeading, proposal: ProposedViewSize(size))
         }
+    }
+
+    /// Packs every tile into the grid. Each one is offered the room its span asks for, and only a tile that
+    /// answers with more than that takes further rows: a cell is always `aspectRatio`, so a tile that can't
+    /// be made to fit grows into the grid rather than stretching every other tile with it. Anything that can
+    /// make do with the room it was offered, like a chart, stays the size it was asked to be.
+    private func grid(forWidth width: CGFloat, subviews: Subviews) -> (slots: [Slot], rows: Int) {
+        let cell = cellSize(forWidth: width)
+        var occupancy: [[Bool]] = []
+        var slots: [Slot] = []
+
+        for subview in subviews {
+            let span = subview[SpanKey.self].clamped(toColumns: columns)
+            let tileWidth = length(ofCells: span.columns, cell: cell.width)
+            let tileHeight = length(ofCells: span.rows, cell: cell.height)
+            let needed = subview.sizeThatFits(ProposedViewSize(width: tileWidth, height: tileHeight)).height
+            let rows = max(span.rows, rows(forHeight: needed, cell: cell.height))
+
+            slots.append(pack(Span(rows: rows, columns: span.columns), into: &occupancy))
+        }
+
+        return (slots, occupancy.count)
+    }
+
+    /// How many whole cells a tile of that height covers. The hair of tolerance keeps a tile that fits
+    /// exactly from rounding up into a row it doesn't need.
+    private func rows(forHeight height: CGFloat, cell: CGFloat) -> Int {
+        guard height > 0, cell > 0 else {
+            return 1
+        }
+
+        return max(1, Int(((height + spacing) / (cell + spacing) - 0.001).rounded(.up)))
     }
 
     /// Takes the first slot the tile fits into and grows the grid by as many rows as that takes.
@@ -120,18 +137,10 @@ public struct TileGrid: Layout {
         }
     }
 
-    /// Cells are as wide as the columns allow and as tall as `aspectRatio` asks for, but never shorter than the
-    /// tallest tile needs. A row that squeezed its tiles would only let them spill over the row below.
-    private func cellSize(forWidth width: CGFloat, subviews: Subviews, cache: Cache) -> CGSize {
+    /// Cells are as wide as the columns allow and as tall as `aspectRatio` asks for, whatever the tiles hold.
+    private func cellSize(forWidth width: CGFloat) -> CGSize {
         let cellWidth = (width - spacing * CGFloat(columns - 1)) / CGFloat(columns)
-
-        let required = zip(subviews, cache.slots).map { subview, slot in
-            let tileWidth = length(ofCells: slot.span.columns, cell: cellWidth)
-            let tileHeight = subview.sizeThatFits(ProposedViewSize(width: tileWidth, height: nil)).height
-            return (tileHeight - spacing * CGFloat(slot.span.rows - 1)) / CGFloat(slot.span.rows)
-        }
-
-        return CGSize(width: cellWidth, height: max(cellWidth / aspectRatio, required.max() ?? 0))
+        return CGSize(width: cellWidth, height: cellWidth / aspectRatio)
     }
 
     private func length(ofCells count: Int, cell: CGFloat) -> CGFloat {
@@ -180,6 +189,9 @@ private struct PreviewTile: View {
 
             PreviewTile(label: "2 × 2", pictogram: .streak)
                 .tileSpan(rows: 2, columns: 2)
+
+            PreviewTile(label: "A tile that holds more than a single row of cells can take", pictogram: .categories)
+                .tileSpan(columns: 2)
         }
         .padding()
     }

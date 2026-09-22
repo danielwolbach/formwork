@@ -16,12 +16,23 @@ struct WorkoutStatisticsScreen: View {
 
         ScrollView {
             TileGrid {
-                StatisticCard(statistics.lastCompleted)
-                StatisticCard(statistics.typicalDuration)
-                StatisticCard(statistics.completionRate)
-                StatisticCard(statistics.mostSkippedExercise)
-                StatisticCard(statistics.typicalStartTime)
-                StatisticCard(statistics.completions)
+                MetricCard(statistics.lastCompleted)
+
+                MetricCard(statistics.typicalDuration)
+
+                MetricCard(statistics.completionRate)
+
+                MetricCard(statistics.mostSkippedExercise)
+
+                HeatmapCard(statistics.activity)
+                    .tileSpan(rows: 2, columns: 2)
+
+                MetricCard(statistics.typicalStartTime)
+
+                MetricCard(statistics.completions)
+
+                DistributionCard(statistics.categories)
+                    .tileSpan(columns: 2)
             }
             .padding(.horizontal, 16)
         }

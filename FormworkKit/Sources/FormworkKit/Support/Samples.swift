@@ -72,25 +72,35 @@ public enum Samples {
         ),
     ]
 
-    public static var statistics: [any Displayable] {
-        let best: Quantity
-        let volume: Quantity
+    public static var weekStreak: Metric<Int> {
+        .weekStreak(6)
+    }
 
+    public static var sessionsPerWeek: Metric<Double> {
+        .sessionsPerWeek(2.8)
+    }
+
+    public static var personalBest: Metric<ExerciseTarget> {
+        .personalBest(.weight(target: .init(weight: best, sets: 3, reps: 10)))
+    }
+
+    public static var totalVolume: Metric<Quantity> {
+        .totalVolume(volume)
+    }
+
+    /// Read in whatever the reader measures in, so a sample card doesn't show kilograms to a pounds user.
+    private static var best: Quantity {
         switch Locale.current.measurementSystem {
-        case .us:
-            best = Quantity(200, in: .pounds)
-            volume = Quantity(27500, in: .pounds)
-        default:
-            best = Quantity(90, in: .kilograms)
-            volume = Quantity(12480, in: .kilograms)
+        case .us: Quantity(200, in: .pounds)
+        default: Quantity(90, in: .kilograms)
         }
+    }
 
-        return [
-            Statistic.weekStreak(6),
-            Statistic.sessionsPerWeek(2.8),
-            Statistic.personalBest(.weight(target: .init(weight: best, sets: 3, reps: 10))),
-            Statistic.totalVolume(volume),
-        ]
+    private static var volume: Quantity {
+        switch Locale.current.measurementSystem {
+        case .us: Quantity(27500, in: .pounds)
+        default: Quantity(12480, in: .kilograms)
+        }
     }
 
     public static var weightTarget: ExerciseTarget {
@@ -194,24 +204,24 @@ private extension ExerciseTarget {
     func scaled(by factor: Double) -> Self {
         switch self {
         case var .weight(target):
-            target.weight = target.weight.scaled(by: factor)
+            target.weight = target.weight.scaled(by: factor, to: target.stepSize)
             return .weight(target: target)
         case .bodyweight:
             return self
         case var .duration(target):
-            target.duration = target.duration.scaled(by: factor)
+            target.duration = target.duration.scaled(by: factor, to: target.stepSize)
             return .duration(target: target)
         case var .distance(target):
-            target.distance = target.distance.scaled(by: factor)
+            target.distance = target.distance.scaled(by: factor, to: target.stepSize)
             return .distance(target: target)
         }
     }
 }
 
 private extension Quantity {
-    func scaled(by factor: Double) -> Self {
+    func scaled(by factor: Double, to step: Double) -> Self {
         var quantity = self
-        quantity.value = (value * factor / stepSize).rounded() * stepSize
+        quantity.value = (value * factor / step).rounded() * step
         return quantity
     }
 }

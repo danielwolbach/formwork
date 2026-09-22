@@ -7,6 +7,7 @@
 
 @testable import FormworkKit
 import Foundation
+import SwiftData
 import Testing
 
 extension Calendar {
@@ -48,11 +49,11 @@ extension TestStore {
     }
 }
 
-// MARK: - Statistic
+// MARK: - Metric
 
-struct StatisticTests {
+struct MetricTests {
     @Test func missingValueHasNoSubtitle() {
-        let statistic = Statistic<Date>.lastCompleted(nil, in: nil, calendar: .berlin())
+        let statistic = Metric<Date>.lastCompleted(nil, in: nil, calendar: .berlin())
 
         #expect(statistic.value == nil)
         #expect(statistic.subtitle == nil)
@@ -61,12 +62,12 @@ struct StatisticTests {
     }
 
     @Test func valueIsFormattedAsSubtitle() {
-        #expect(Statistic<Int>.completions(3).subtitle == "3")
+        #expect(Metric<Int>.completions(3).subtitle == "3")
     }
 
     @Test func sessionsPerWeekShowAtMostOneDecimal() {
-        #expect(Statistic<Double>.sessionsPerWeek(2).subtitle == 2.0.formatted(.number.precision(.fractionLength(0 ... 1))))
-        #expect(Statistic<Double>.sessionsPerWeek(1.46).subtitle == 1.5.formatted(.number.precision(.fractionLength(0 ... 1))))
+        #expect(Metric<Double>.sessionsPerWeek(2).subtitle == 2.0.formatted(.number.precision(.fractionLength(0 ... 1))))
+        #expect(Metric<Double>.sessionsPerWeek(1.46).subtitle == 1.5.formatted(.number.precision(.fractionLength(0 ... 1))))
     }
 
     @Test func lastCompletedWithinAWeekIsRelative() throws {
@@ -74,7 +75,7 @@ struct StatisticTests {
         var style = Date.RelativeFormatStyle(presentation: .named, calendar: .berlin(), capitalizationContext: .beginningOfSentence)
         style.allowedFields = [.day]
 
-        #expect(Statistic<Date>.lastCompleted(date, in: nil, calendar: .berlin()).subtitle == date.formatted(style))
+        #expect(Metric<Date>.lastCompleted(date, in: nil, calendar: .berlin()).subtitle == date.formatted(style))
     }
 
     @Test func lastCompletedTodayIsTheDayAndNotTheHour() throws {
@@ -84,8 +85,8 @@ struct StatisticTests {
         let later = try #require(calendar.date(byAdding: .minute, value: 1, to: midnight))
 
         #expect(
-            Statistic<Date>.lastCompleted(midnight, in: nil, calendar: calendar).subtitle
-                == Statistic<Date>.lastCompleted(later, in: nil, calendar: calendar).subtitle
+            Metric<Date>.lastCompleted(midnight, in: nil, calendar: calendar).subtitle
+                == Metric<Date>.lastCompleted(later, in: nil, calendar: calendar).subtitle
         )
     }
 
@@ -97,7 +98,7 @@ struct StatisticTests {
         let date = try newYork.date(28, month: 5, year: 2025, hour: 23, minute: 30)
         let style = Date.FormatStyle(calendar: calendar, timeZone: calendar.timeZone).day().month().year()
 
-        let statistic = Statistic<Date>.lastCompleted(date, in: nil, calendar: newYork)
+        let statistic = Metric<Date>.lastCompleted(date, in: nil, calendar: newYork)
 
         #expect(try statistic.subtitle == calendar.date(28, month: 5, year: 2025).formatted(style))
     }
@@ -108,9 +109,9 @@ struct StatisticTests {
         newYork.timeZone = try #require(TimeZone(identifier: "America/New_York"))
         let time = DateComponents(hour: 8, minute: 15)
 
-        let subtitle = try #require(Statistic<DateComponents>.typicalStartTime(time, calendar: tokyo).subtitle)
+        let subtitle = try #require(Metric<DateComponents>.typicalStartTime(time, calendar: tokyo).subtitle)
 
-        #expect(subtitle == Statistic<DateComponents>.typicalStartTime(time, calendar: newYork).subtitle)
+        #expect(subtitle == Metric<DateComponents>.typicalStartTime(time, calendar: newYork).subtitle)
     }
 
     @Test(arguments: [
@@ -120,10 +121,10 @@ struct StatisticTests {
         (ExerciseTarget.distance(target: .init(distance: Quantity(5, in: .kilometers))), Quantity(5, in: .kilometers).formatted),
     ])
     func personalBestShowsOnlyTheRank(target: ExerciseTarget, expected: String) {
-        #expect(Statistic<ExerciseTarget>.personalBest(target).subtitle == expected)
+        #expect(Metric<ExerciseTarget>.personalBest(target).subtitle == expected)
     }
 
-    @Test(arguments: [(1, "1 Rep"), (12, "12 Reps")])
+    @Test(arguments: [(1, "1 rep"), (12, "12 reps")])
     func repsArePluralized(count: Int, expected: String) {
         var resource = LocalizedStringResource.exerciseTargetRepsTitle(count)
         resource.locale = Locale(identifier: "en")
@@ -269,7 +270,13 @@ struct OverallStatisticsTests {
     }
 
     func statistics(at now: Date, in interval: DateInterval = .allTime, calendar: Calendar? = nil) -> OverallStatistics {
-        OverallStatistics(sessions: store.workout.sessions, interval: interval, now: now, calendar: calendar ?? self.calendar)
+        OverallStatistics(sessions: sessions, interval: interval, now: now, calendar: calendar ?? self.calendar)
+    }
+
+    /// Every session in the store, whichever workout it belongs to: the overall statistics are read over all
+    /// of them.
+    var sessions: [Session] {
+        (try? store.context.fetch(FetchDescriptor<Session>())) ?? []
     }
 
     func month(_ month: Int) throws -> DateInterval {
@@ -437,6 +444,105 @@ struct OverallStatisticsTests {
         }
 
         #expect(try statistics(at: calendar.date(16), in: month(8)).longestWeekStreak.value == 2)
+    }
+
+    /// A finished session of another workout, so that there is something to be favourite over.
+    @discardableResult
+    func session(of workout: Workout, day: Int, month: Int = 9, hour: Int = 8) throws -> Session {
+        let session = try Session.start(workout, in: store.context)
+        session.started = try calendar.date(day, month: month, hour: hour)
+        session.ended = session.started.addingTimeInterval(3600)
+        return session
+    }
+
+    /// A second workout of the store's own exercises.
+    func workout(_ name: String) -> Workout {
+        let workout = Workout(name: name, pictogram: .workout, schedule: .inactive, entries: [])
+        store.context.insert(workout)
+        return workout
+    }
+
+    @Test func completionsCountTheFinishedSessionsOfTheInterval() throws {
+        try store.session(31, month: 8)
+        try store.session(7)
+        try store.session(8)
+        _ = try store.startSession()
+
+        #expect(try statistics(at: calendar.date(16)).completions.value == 3)
+        #expect(try statistics(at: calendar.date(16), in: month(9)).completions.value == 2)
+    }
+
+    @Test func withoutSessionsThereIsNoFavouriteWorkout() throws {
+        let statistics = try statistics(at: calendar.date(16))
+
+        #expect(statistics.completions.value == 0)
+        #expect(statistics.favoriteWorkout.value == nil)
+    }
+
+    @Test func favoriteWorkoutIsTheOneDoneMostOften() throws {
+        let legs = workout("Leg Day")
+        try store.session(7)
+        try store.session(8)
+        try session(of: legs, day: 9)
+
+        let statistics = try statistics(at: calendar.date(16))
+
+        #expect(statistics.favoriteWorkout.value === store.workout)
+        #expect(statistics.favoriteWorkout.subtitle == store.workout.name)
+    }
+
+    @Test func workoutsLevelOnCountGoToTheOneDoneLast() throws {
+        let legs = workout("Leg Day")
+        try store.session(7)
+        try session(of: legs, day: 8)
+
+        #expect(try statistics(at: calendar.date(16)).favoriteWorkout.value === legs)
+
+        try store.session(9)
+        try session(of: legs, day: 10)
+        try store.session(11)
+
+        // Three each now, and the full body one was the last of them.
+        #expect(try statistics(at: calendar.date(16)).favoriteWorkout.value === store.workout)
+    }
+
+    @Test func favoriteWorkoutCountsOnlyTheIntervalsSessions() throws {
+        let legs = workout("Leg Day")
+        try session(of: legs, day: 25, month: 8)
+        try session(of: legs, day: 26, month: 8)
+        try store.session(7)
+
+        #expect(try statistics(at: calendar.date(16), in: month(9)).favoriteWorkout.value === store.workout)
+        #expect(try statistics(at: calendar.date(16)).favoriteWorkout.value === legs)
+    }
+
+    @Test func withoutSessionsThereIsNoTypicalSessionEither() throws {
+        let statistics = try statistics(at: calendar.date(16))
+
+        #expect(statistics.typicalDuration.value == nil)
+        #expect(statistics.typicalStartTime.value == nil)
+    }
+
+    @Test func typicalSessionIsTheMedianLengthAndARecordedStartTime() throws {
+        for (day, hour, minutes) in [(7, 7, 30), (8, 8, 60), (9, 19, 120)] {
+            try store.session(day, hour: hour, minutes: minutes)
+        }
+
+        let statistics = try statistics(at: calendar.date(16))
+
+        // The middle of 30, 60 and 120 minutes, started at the recorded time closest to all the others.
+        #expect(statistics.typicalDuration.value == .seconds(3600))
+        #expect(statistics.typicalStartTime.value == DateComponents(hour: 8, minute: 0))
+    }
+
+    @Test func typicalSessionCountsOnlyTheIntervalsSessions() throws {
+        try store.session(31, month: 8, hour: 7, minutes: 30)
+        try store.session(7, hour: 19, minutes: 90)
+
+        let statistics = try statistics(at: calendar.date(16), in: month(9))
+
+        #expect(statistics.typicalDuration.value == .seconds(90 * 60))
+        #expect(statistics.typicalStartTime.value == DateComponents(hour: 19, minute: 0))
     }
 
     @Test func withoutSessionsThereAreNoSessionsPerWeek() throws {
@@ -609,8 +715,8 @@ struct WorkoutStatisticsTests {
         try store.session(28, month: 5, hour: 23, minute: 30, zone: "America/New_York")
         let subtitle = statistics().lastCompleted.subtitle
 
-        #expect(try subtitle == Statistic<Date>.lastCompleted(calendar.date(28, month: 5), in: nil, calendar: calendar).subtitle)
-        #expect(try subtitle != Statistic<Date>.lastCompleted(calendar.date(29, month: 5), in: nil, calendar: calendar).subtitle)
+        #expect(try subtitle == Metric<Date>.lastCompleted(calendar.date(28, month: 5), in: nil, calendar: calendar).subtitle)
+        #expect(try subtitle != Metric<Date>.lastCompleted(calendar.date(29, month: 5), in: nil, calendar: calendar).subtitle)
     }
 
     @Test func onlySessionsWithinTheIntervalCount() throws {
@@ -1200,5 +1306,449 @@ struct ExerciseCurrentHighestTargetTests {
 
         // Every slot still holds reps, which say nothing about how heavy the exercise is now measured in.
         #expect(squat.currentHighestTarget == nil)
+    }
+}
+
+// MARK: - Progression
+
+@MainActor
+struct ProgressionTests {
+    let store: TestStore
+    let squat: Exercise
+    let calendar = Calendar.berlin()
+
+    init() throws {
+        self.store = try TestStore()
+        self.squat = try #require(store.workout.entries.sorted().first?.exercise)
+    }
+
+    func progression(in interval: DateInterval = .allTime) -> Progression<ExerciseTarget> {
+        ExerciseStatistics(exercise: squat, interval: interval, calendar: calendar).progression
+    }
+
+    /// A session with its squat completed at the given number of reps.
+    @discardableResult
+    func squatSession(_ day: Int, month: Int = 9, hour: Int = 8, reps: Int) throws -> Session {
+        let session = try store.session(day, month: month, hour: hour)
+        let entry = try #require(session.entries.sorted().first)
+        entry.target = .bodyweight(target: .init(sets: 3, reps: reps))
+        entry.status = .completed(at: session.started)
+        return session
+    }
+
+    @Test func exerciseWithoutCompletionsHasNoPoints() {
+        #expect(progression().points.isEmpty)
+    }
+
+    @Test func everyDayItWasCompletedOnIsAPoint() throws {
+        try squatSession(7, reps: 10)
+        try squatSession(9, reps: 12)
+
+        let points = progression().points
+
+        #expect(points.map(\.rank) == [10, 12])
+        #expect(try points.map(\.date) == [calendar.date(7, hour: 0), calendar.date(9, hour: 0)])
+    }
+
+    @Test func pointsAreOldestFirst() throws {
+        try squatSession(9, reps: 12)
+        try squatSession(7, reps: 10)
+
+        #expect(progression().points.map(\.rank) == [10, 12])
+    }
+
+    @Test func aDayIsOnePointAtItsBest() throws {
+        // A warmup in the morning and the real thing in the evening: the day is worth what it got to.
+        try squatSession(7, hour: 8, reps: 5)
+        try squatSession(7, hour: 18, reps: 12)
+
+        #expect(progression().points.map(\.rank) == [12])
+    }
+
+    @Test func skippedAndPendingExercisesAreNoPoints() throws {
+        try store.session(7) { $0.skipAndAdvance() }
+        try store.session(8)
+
+        #expect(progression().points.isEmpty)
+    }
+
+    @Test func runningSessionsAreNoPoints() throws {
+        let running = try store.startSession()
+        running.completeAndAdvance()
+
+        #expect(progression().points.isEmpty)
+    }
+
+    @Test func targetsOfAnotherTypeAreLeftOut() throws {
+        try squatSession(7, reps: 10)
+
+        #expect(progression().points.count == 1)
+
+        // Reps say nothing about how heavy the exercise is now measured in.
+        squat.type = .weight
+
+        #expect(progression().points.isEmpty)
+    }
+
+    @Test func onlySessionsWithinTheIntervalCount() throws {
+        try squatSession(31, month: 8, reps: 10)
+        try squatSession(7, reps: 12)
+
+        let september = try #require(calendar.dateInterval(of: .month, for: calendar.date(10)))
+
+        #expect(progression(in: september).points.map(\.rank) == [12])
+    }
+
+    @Test func pointsAreDatedByTheClockTheyWereRecordedOn() throws {
+        // Sunday 23:00 in New York is already Monday in Berlin, but the user trained on Sunday.
+        let session = try store.session(13, hour: 23, zone: "America/New_York")
+        let entry = try #require(session.entries.sorted().first)
+        entry.status = .completed(at: session.started)
+
+        #expect(try progression().points.map(\.date) == [calendar.date(13, hour: 0)])
+    }
+
+    @Test func labelsReadInTheUnitTheTargetsWereRecordedIn() throws {
+        squat.type = .weight
+        let session = try store.session(7)
+        let entry = try #require(session.entries.sorted().first)
+        entry.target = .weight(target: .init(weight: Quantity(100, in: .pounds), sets: 3, reps: 5))
+        entry.status = .completed(at: session.started)
+
+        let progression = progression()
+
+        // The rank is in kilograms, but the axis reads in the pounds it was logged in, unit and all.
+        #expect(progression.points.map(\.rank) == [Quantity(100, in: .pounds).base])
+        #expect(progression.label(for: Quantity(100, in: .pounds).base) == Quantity(100, in: .pounds).formatted)
+    }
+
+    @Test(arguments: [
+        (ExerciseTarget.weight(target: .init(weight: Quantity(100, in: .kilograms), sets: 3, reps: 5)), "kg"),
+        (ExerciseTarget.duration(target: .init(duration: Quantity(10, in: .minutes))), "min"),
+        (ExerciseTarget.distance(target: .init(distance: Quantity(5, in: .kilometers))), "km"),
+    ])
+    func targetsAreMeasuredInWhatTheyWereRecordedIn(target: ExerciseTarget, symbol: String) {
+        #expect(target.symbol == symbol)
+        #expect(target.label(for: target.rank).hasSuffix(" \(symbol)"))
+        #expect(target.formattedRank == target.label(for: target.rank))
+    }
+
+    @Test(arguments: [1, 12])
+    func repsAreTheirOwnUnit(reps: Int) {
+        let target = ExerciseTarget.bodyweight(target: .init(sets: 3, reps: reps))
+
+        // The axis is headed with the unit whatever the count, while the rank itself reads as a count and
+        // leaves the plural to the catalog.
+        #expect(target.symbol == String(localized: .unitRepsSymbol))
+        #expect(target.formattedRank == String(localized: .exerciseTargetRepsTitle(reps)))
+    }
+
+    @Test func repsAreTheUnitToReadRepsBackIn() throws {
+        try squatSession(7, reps: 10)
+
+        let expected = "\(10.0.formatted(.number.precision(.fractionLength(0)))) \(String(localized: .unitRepsSymbol))"
+
+        #expect(progression().label(for: 10) == expected)
+    }
+}
+
+// MARK: - Activity
+
+@MainActor
+struct HeatmapTests {
+    let store: TestStore
+    let calendar = Calendar.berlin()
+
+    init() throws {
+        self.store = try TestStore()
+    }
+
+    func heatmap(at now: Date, in interval: DateInterval = .allTime, calendar: Calendar? = nil) -> Heatmap {
+        OverallStatistics(sessions: store.workout.sessions, interval: interval, now: now, calendar: calendar ?? self.calendar).activity
+    }
+
+    /// The twelve weeks a card asks for.
+    func weeks(at now: Date, in interval: DateInterval = .allTime, calendar: Calendar? = nil) -> [Heatmap.Week] {
+        heatmap(at: now, in: interval, calendar: calendar).weeks(12)
+    }
+
+    /// The cell the given day sits in, if the grid reaches back that far.
+    func day(_ date: Date, in weeks: [Heatmap.Week]) -> Heatmap.Day? {
+        weeks.flatMap(\.days).first { calendar.isDate($0.date, inSameDayAs: date) }
+    }
+
+    func activeDays(in weeks: [Heatmap.Week]) -> Int {
+        weeks.flatMap(\.days).count { $0.value != nil }
+    }
+
+    @Test func gridIsAsManyWeeksOfSevenDaysAsAskedFor() throws {
+        let heatmap = try heatmap(at: calendar.date(16))
+
+        #expect(heatmap.weeks(12).count == 12)
+        #expect(heatmap.weeks(4).count == 4)
+        #expect(heatmap.weeks(12).allSatisfy { $0.days.count == 7 })
+        #expect(activeDays(in: heatmap.weeks(12)) == 0)
+    }
+
+    @Test(arguments: [0, -1])
+    func gridOfNoWeeksIsEmpty(count: Int) throws {
+        #expect(try heatmap(at: calendar.date(16)).weeks(count).isEmpty)
+    }
+
+    @Test func gridEndsWithTheWeekItWasReadOn() throws {
+        let now = try calendar.date(16)
+        let weeks = weeks(at: now)
+
+        #expect(try #require(weeks.last).start == #require(calendar.dateInterval(of: .weekOfYear, for: now)).start)
+        #expect(day(now, in: weeks) != nil)
+    }
+
+    @Test func pastIntervalEndsWithTheWeekItDid() throws {
+        try store.session(1, month: 10)
+        let september = try #require(calendar.dateInterval(of: .month, for: calendar.date(10)))
+        let weeks = try weeks(at: calendar.date(16, month: 10), in: september)
+
+        // Read in October, September's grid still ends where September did.
+        #expect(try #require(weeks.last).start == #require(calendar.dateInterval(of: .weekOfYear, for: calendar.date(30))).start)
+        // October is in that last week, but not in September, so its session stays off the grid.
+        #expect(try #require(day(calendar.date(1, month: 10), in: weeks)).value == nil)
+    }
+
+    @Test func intervalInTheFutureHasNoGrid() throws {
+        let october = try #require(calendar.dateInterval(of: .month, for: calendar.date(10, month: 10)))
+
+        // Read in September, October has no day to be read against yet, so there's nothing to lay out.
+        #expect(try weeks(at: calendar.date(16), in: october).isEmpty)
+    }
+
+    @Test(arguments: [1, 2])
+    func rowsStartOnTheCalendarsFirstWeekday(firstWeekday: Int) throws {
+        let calendar = Calendar.berlin(firstWeekday: firstWeekday)
+        let heatmap = try heatmap(at: calendar.date(16), calendar: calendar)
+
+        #expect(heatmap.weeks(12).allSatisfy { calendar.component(.weekday, from: $0.start) == firstWeekday })
+        #expect(heatmap.weeks(12).allSatisfy { $0.days.count == 7 })
+        // The rows stand for the weekdays in the same order, which is what the card labels them with.
+        #expect(heatmap.weekdays.count == 7)
+        #expect(heatmap.weekdays.first == Schedule.Weekday(calendarNumber: firstWeekday))
+    }
+
+    @Test func aDayCountsEverythingDoneOnIt() throws {
+        try store.session(7, hour: 8)
+        try store.session(7, hour: 18)
+        try store.session(8)
+
+        let weeks = try weeks(at: calendar.date(16))
+
+        #expect(try day(calendar.date(7), in: weeks)?.value == 2)
+        #expect(try day(calendar.date(7), in: weeks)?.intensity == 1)
+        #expect(try day(calendar.date(8), in: weeks)?.value == 1)
+        #expect(try day(calendar.date(8), in: weeks)?.intensity == 0.5)
+        #expect(try #require(day(calendar.date(9), in: weeks)).value == nil)
+        #expect(activeDays(in: weeks) == 2)
+    }
+
+    @Test func daysAfterTheOneItWasReadOnAreStillAhead() throws {
+        // Wednesday, so the rest of its week is still to come and stands for nothing.
+        let weeks = try weeks(at: calendar.date(16))
+        let last = try #require(weeks.last)
+
+        #expect(try day(calendar.date(16), in: weeks)?.isAhead == false)
+        #expect(try day(calendar.date(17), in: weeks)?.isAhead == true)
+        #expect(last.days.count(where: \.isAhead) == 4)
+        #expect(weeks.dropLast().allSatisfy { $0.days.allSatisfy { !$0.isAhead } })
+    }
+
+    @Test func daysAreShadedAgainstTheBusiestOneShown() throws {
+        // Three sessions in February, long off the grid, and one on the grid in September.
+        for hour in [8, 12, 18] {
+            try store.session(1, month: 2, hour: hour)
+        }
+        try store.session(7)
+
+        let weeks = try weeks(at: calendar.date(16))
+
+        #expect(try day(calendar.date(7), in: weeks)?.intensity == 1)
+    }
+
+    @Test func daysAreTheOnesTheyWereRecordedOn() throws {
+        // Sunday 23:00 in New York is already Monday in Berlin, but the user trained on Sunday.
+        try store.session(13, hour: 23, zone: "America/New_York")
+
+        let weeks = try weeks(at: calendar.date(16))
+
+        #expect(try day(calendar.date(13), in: weeks)?.value == 1)
+        #expect(try #require(day(calendar.date(14), in: weeks)).value == nil)
+    }
+
+    @Test func historyOlderThanTheGridIsNotOnIt() throws {
+        // Twelve weeks up to the week of Sep 14 reach back to the week of Jun 29.
+        try store.session(1, month: 2)
+        try store.session(22, month: 6)
+        try store.session(29, month: 6)
+
+        let weeks = try weeks(at: calendar.date(16))
+
+        #expect(try day(calendar.date(29, month: 6), in: weeks)?.value == 1)
+        #expect(try day(calendar.date(22, month: 6), in: weeks) == nil)
+        #expect(activeDays(in: weeks) == 1)
+    }
+
+    @Test func runningSessionsAreNotOnTheGrid() throws {
+        let running = try store.startSession()
+        running.started = try calendar.date(15)
+
+        #expect(try activeDays(in: weeks(at: calendar.date(16))) == 0)
+    }
+
+    @Test func workoutCountsTheDaysItWasDoneOn() throws {
+        try store.session(7, hour: 8)
+        try store.session(7, hour: 18)
+
+        let weeks = try WorkoutStatistics(workout: store.workout, now: calendar.date(16), calendar: calendar).activity.weeks(12)
+
+        #expect(try day(calendar.date(7), in: weeks)?.value == 2)
+        #expect(activeDays(in: weeks) == 1)
+    }
+
+    @Test func exerciseCountsTheDaysItWasCompletedOn() throws {
+        // The squat is completed on the seventh and skipped on the eighth.
+        try store.session(7) { session in
+            session.completeAndAdvance()
+            session.skipAndAdvance()
+        }
+        try store.session(8) { $0.skipAndAdvance() }
+
+        let squat = try #require(store.workout.entries.sorted().first?.exercise)
+        let weeks = try ExerciseStatistics(exercise: squat, now: calendar.date(16), calendar: calendar).activity.weeks(12)
+
+        #expect(try day(calendar.date(7), in: weeks)?.value == 1)
+        #expect(try #require(day(calendar.date(8), in: weeks)).value == nil)
+        #expect(activeDays(in: weeks) == 1)
+    }
+}
+
+// MARK: - Categories
+
+@MainActor
+struct DistributionTests {
+    let store: TestStore
+    let exercises: [Exercise]
+    let calendar = Calendar.berlin()
+
+    init() throws {
+        self.store = try TestStore()
+        self.exercises = store.workout.entries.sorted().compactMap(\.exercise)
+    }
+
+    /// What the workout plans to train.
+    func planned() -> Distribution<ExerciseCategory> {
+        WorkoutStatistics(workout: store.workout, calendar: calendar).categories
+    }
+
+    /// What was actually completed.
+    func completed(in interval: DateInterval = .allTime) -> Distribution<ExerciseCategory> {
+        OverallStatistics(sessions: store.workout.sessions, interval: interval, calendar: calendar).categories
+    }
+
+    /// Gives the workout's exercises a category each, in workout order.
+    func categorize(_ categories: [Set<ExerciseCategory>]) {
+        for (exercise, categories) in zip(exercises, categories) {
+            exercise.categories = categories
+        }
+    }
+
+    @Test func withoutCategoriesThereIsNothingToShow() {
+        categorize([[], [], []])
+
+        #expect(planned().shares.isEmpty)
+    }
+
+    @Test func anExerciseCountsInEachOfItsCategories() {
+        categorize([[.legs, .back], [.chest], []])
+
+        let distribution = planned()
+
+        let third = 1.0 / 3.0
+
+        // Three tallies over three categories, which tie and stay in the order they are declared in.
+        #expect(distribution.shares.map(\.value) == [.legs, .chest, .back])
+        #expect(distribution.shares.map(\.count) == [1, 1, 1])
+        #expect(distribution.shares.map(\.fraction) == [third, third, third])
+    }
+
+    @Test func theMostTrainedCategoryComesFirst() {
+        categorize([[.legs], [.legs, .chest], [.legs]])
+
+        let distribution = planned()
+
+        #expect(distribution.shares.map(\.value) == [.legs, .chest])
+        #expect(distribution.shares.map(\.count) == [3, 1])
+        #expect(distribution.shares.map(\.fraction) == [0.75, 0.25])
+    }
+
+    @Test func workoutCountsWhatItPlansAndNotWhatWasDone() throws {
+        categorize([[.legs], [.chest], [.back]])
+        try store.session(7) { $0.completeAndAdvance() }
+
+        // Only the squat was done, but all three exercises are still on the plan.
+        #expect(planned().shares.map(\.value) == [.legs, .chest, .back])
+        #expect(planned().shares.allSatisfy { $0.count == 1 })
+    }
+
+    @Test func droppingAnExerciseTakesItsCategoriesWithIt() throws {
+        categorize([[.legs], [.chest], [.back]])
+        let bench = try #require(store.workout.entries.sorted().dropFirst().first)
+
+        store.context.delete(bench)
+        // The `.cascade` rule only reaches the workout's entries once the deletion is processed.
+        try store.context.save()
+
+        #expect(planned().shares.map(\.value) == [.legs, .back])
+    }
+
+    @Test func completedCountsOnlyTheExercisesThatWereDone() throws {
+        categorize([[.legs], [.chest], [.back]])
+        try store.session(7) { session in
+            session.completeAndAdvance()
+            session.skipAndAdvance()
+        }
+
+        // The bench press was skipped and the deadlift left pending, so neither was trained.
+        #expect(completed().shares.map(\.value) == [.legs])
+        #expect(completed().shares.map(\.fraction) == [1])
+    }
+
+    @Test func completedCountsEachTimeAnExerciseWasDone() throws {
+        categorize([[.legs], [.legs, .chest], []])
+
+        for day in [7, 8] {
+            try store.session(day) { session in
+                session.completeAndAdvance()
+                session.completeAndAdvance()
+            }
+        }
+
+        // Two squats and two bench presses, and the bench press trains two categories: six tallies in all.
+        #expect(completed().shares.map(\.value) == [.legs, .chest])
+        #expect(completed().shares.map(\.count) == [4, 2])
+    }
+
+    @Test func completedCountsOnlySessionsWithinTheInterval() throws {
+        categorize([[.legs], [], []])
+        try store.session(31, month: 8) { $0.completeAndAdvance() }
+
+        let september = try #require(calendar.dateInterval(of: .month, for: calendar.date(10)))
+
+        #expect(completed(in: september).shares.isEmpty)
+        #expect(completed().shares.map(\.value) == [.legs])
+    }
+
+    @Test func runningSessionsAreNotCounted() throws {
+        categorize([[.legs], [], []])
+        let running = try store.startSession()
+        running.completeAndAdvance()
+
+        #expect(completed().shares.isEmpty)
     }
 }

@@ -35,7 +35,7 @@ struct WorkoutCard: View {
                 }
 
                 if !categories.isEmpty {
-                    FlowLayout(alignment: .leading) {
+                    FlowLayout(alignment: .leading, rowLimit: 2) {
                         ForEach(categories) { category in
                             Label(category.title, systemImage: category.pictogram.image)
                                 .labelStyle(.chip(tint: category.pictogram.color))

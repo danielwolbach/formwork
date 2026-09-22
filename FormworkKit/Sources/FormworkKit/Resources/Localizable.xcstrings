@@ -320,6 +320,17 @@
         }
       }
     },
+    "chart.date.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Date"
+          }
+        }
+      }
+    },
     "exercise.category.arms.title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -473,13 +484,13 @@
               "one" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%lld Rep"
+                  "value" : "%lld rep"
                 }
               },
               "other" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%lld Reps"
+                  "value" : "%lld reps"
                 }
               }
             }
@@ -631,6 +642,28 @@
         }
       }
     },
+    "statistic.activity.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activity"
+          }
+        }
+      }
+    },
+    "statistic.categories.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Categories"
+          }
+        }
+      }
+    },
     "statistic.completedExercises.title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -686,6 +719,17 @@
         }
       }
     },
+    "statistic.favoriteWorkout.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Favorite Workout"
+          }
+        }
+      }
+    },
     "statistic.lastCompleted.title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -737,6 +781,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Personal Best"
+          }
+        }
+      }
+    },
+    "statistic.progression.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Progression"
           }
         }
       }
@@ -880,6 +935,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pounds"
+          }
+        }
+      }
+    },
+    "unit.reps.symbol" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "reps"
           }
         }
       }

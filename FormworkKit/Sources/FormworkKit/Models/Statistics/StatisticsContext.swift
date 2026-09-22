@@ -21,6 +21,7 @@
 // - Streaks are what the user saw on the last day of the interval, or sees now while it's ongoing:
 //   both use all history from `.distantPast` up to then (`history`), and there's none before the
 //   interval starts. The week containing that day doesn't break a streak until it's over.
+// - Grids of days end on that same day (`day(at:)`), so a heat map shows what the streaks were read against.
 //
 
 import Foundation
@@ -91,17 +92,44 @@ extension StatisticsContext {
         sessions.max { ($0.ended ?? .distantPast) < ($1.ended ?? .distantPast) }
     }
 
+    /// The median length of a session within `interval`.
+    var typicalDuration: Duration? {
+        sessions.compactMap(\.duration).median.map { .seconds($0) }
+    }
+
+    /// The wall-clock time a session within `interval` was typically started at, as hour and minute: the
+    /// recorded start time closest to all the others on the clock.
+    var typicalStartTime: DateComponents? {
+        sessions
+            .compactMap { $0.startMinute(in: calendar) }
+            .clockMedoid
+            .map { DateComponents(hour: $0 / 60, minute: $0 % 60) }
+    }
+
+    /// The given sessions laid out as weeks, ending with the week of the last day of `interval`, or `now`
+    /// while it's ongoing. Each session counts on the day it was recorded on, as everything else does, and
+    /// a session passed twice counts twice. There's no grid at all before the interval starts, since there's
+    /// no day to read one against.
+    func heatmap(of sessions: [Session], at now: Date) -> Heatmap {
+        .activity(
+            sessions.compactMap { $0.period(of: .day, in: calendar)?.start },
+            endingOn: day(at: now),
+            calendar: calendar
+        )
+    }
+
+    /// The last day of `interval`, or `now` while it's ongoing. There's no such day before it starts.
+    private func day(at now: Date) -> Date? {
+        guard now > interval.start else { return nil }
+        return now < interval.end ? now : calendar.date(byAdding: .day, value: -1, to: interval.end)
+    }
+
     private func weekStarts(of sessions: [Session]) -> Set<Date> {
         Set(sessions.compactMap { $0.period(of: .weekOfYear, in: calendar)?.start })
     }
 
     private func adding(weeks: Int, to week: Date) -> Date? {
         calendar.date(byAdding: .weekOfYear, value: weeks, to: week)
-    }
-
-    private func day(at now: Date) -> Date? {
-        guard now > interval.start else { return nil }
-        return now < interval.end ? now : calendar.date(byAdding: .day, value: -1, to: interval.end)
     }
 }
 

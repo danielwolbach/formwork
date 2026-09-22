@@ -253,9 +253,10 @@ private struct SessionPreview: View {
 private struct StatisticsPreview: View {
     var body: some View {
         TileGrid {
-            ForEach(Array(Samples.statistics.enumerated()), id: \.offset) { _, statistic in
-                StatisticCard(statistic)
-            }
+            MetricCard(Samples.weekStreak)
+            MetricCard(Samples.sessionsPerWeek)
+            MetricCard(Samples.personalBest)
+            MetricCard(Samples.totalVolume)
         }
     }
 }

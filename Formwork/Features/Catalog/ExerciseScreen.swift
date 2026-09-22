@@ -25,10 +25,16 @@ struct ExerciseScreen: View {
                 PictogramHeader(exercise)
 
                 TileGrid {
-                    StatisticCard(statistics.lastCompleted)
-                    StatisticCard(statistics.completionRate)
-                    StatisticCard(statistics.personalBest)
-                    StatisticCard(statistics.completions)
+                    MetricCard(statistics.lastCompleted)
+                    MetricCard(statistics.completionRate)
+                    MetricCard(statistics.personalBest)
+                    MetricCard(statistics.completions)
+
+                    ProgressionCard(statistics.progression)
+                        .tileSpan(rows: 2, columns: 2)
+
+                    HeatmapCard(statistics.activity)
+                        .tileSpan(rows: 2, columns: 2)
                 }
                 .padding(.horizontal, 16)
             }

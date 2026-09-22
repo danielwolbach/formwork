@@ -65,7 +65,7 @@ extension SectionView where Accessory == EmptyView {
     ScrollView {
         VStack(spacing: 32) {
             SectionView(.screenSessionsTitle, subtitle: String(localized: Session.countTitle(34))) {
-                StatisticCard(title: "Card", value: "Content", pictogram: .workout)
+                MetricCard(Samples.weekStreak)
                     .padding(.horizontal)
             } accessory: {
                 Button(.viewAll) {}
@@ -74,7 +74,7 @@ extension SectionView where Accessory == EmptyView {
             }
 
             SectionView(.screenStatisticsTitle) {
-                StatisticCard(title: "Card", value: "No accessory", pictogram: .streak)
+                MetricCard(Samples.sessionsPerWeek)
                     .padding(.horizontal)
             }
         }

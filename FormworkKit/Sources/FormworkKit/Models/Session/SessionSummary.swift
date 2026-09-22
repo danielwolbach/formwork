@@ -9,24 +9,24 @@ import Foundation
 
 public struct SessionSummary {
     /// How long the session ran, from when it was started to when it was finished.
-    public let duration: Statistic<Duration>
+    public let duration: Metric<Duration>
 
     /// When the session was finished, on the clock where it was recorded.
-    public let endTime: Statistic<Date>
+    public let endTime: Metric<Date>
 
     /// The share of the session's exercises that were skipped, rather than completed or left pending.
-    public let skipRate: Statistic<Double>
+    public let skipRate: Metric<Double>
 
     /// How long a typical exercise took, so it covers the rest before each one. The median of
     /// `SessionEntry.elapsed`, which is what the session's exercises show, so one long interruption skews
     /// it no more than the mean of two would.
-    public let medianExerciseDuration: Statistic<Duration>
+    public let medianExerciseDuration: Metric<Duration>
 
     /// How many of the session's exercises were completed, rather than skipped or left pending.
-    public let completedExercises: Statistic<Int>
+    public let completedExercises: Metric<Int>
 
     /// The weight moved by the exercises that were completed: load times sets times reps, added up.
-    public let totalVolume: Statistic<Quantity>
+    public let totalVolume: Metric<Quantity>
 
     init(session: Session, calendar: Calendar = .current) {
         let entries = session.entries

@@ -33,10 +33,10 @@ private struct WeightTargetEditor: View {
             NumberStepper(
                 value: $target.weight.value,
                 title: ExerciseType.weight.title,
-                suffix: target.weight.symbol,
-                stepSize: target.weight.stepSize,
-                fractionLength: target.weight.fractionLength,
-                range: 1 ... 1000
+                suffix: target.symbol,
+                stepSize: target.stepSize,
+                fractionLength: target.fractionLength,
+                range: target.range
             )
 
             HStack {
@@ -67,9 +67,9 @@ private struct BodyweightTargetEditor: View {
             NumberStepper(
                 value: $target.reps,
                 title: ExerciseType.bodyweight.title,
-                suffix: String(localized: .fieldRepsSuffix),
-                stepSize: 2,
-                range: 1 ... 1_000_000
+                suffix: target.symbol,
+                stepSize: target.stepSize,
+                range: target.range
             )
 
             NumberStepper(
@@ -88,10 +88,10 @@ private struct DurationTargetEditor: View {
         NumberStepper(
             value: $target.duration.value,
             title: ExerciseType.duration.title,
-            suffix: target.duration.symbol,
-            stepSize: target.duration.stepSize,
-            fractionLength: target.duration.fractionLength,
-            range: 1 ... 1_000_000
+            suffix: target.symbol,
+            stepSize: target.stepSize,
+            fractionLength: target.fractionLength,
+            range: target.range
         )
     }
 }
@@ -103,10 +103,10 @@ private struct DistanceTargetEditor: View {
         NumberStepper(
             value: $target.distance.value,
             title: ExerciseType.distance.title,
-            suffix: target.distance.symbol,
-            stepSize: target.distance.stepSize,
-            fractionLength: target.distance.fractionLength,
-            range: 1 ... 1_000_000
+            suffix: target.symbol,
+            stepSize: target.stepSize,
+            fractionLength: target.fractionLength,
+            range: target.range
         )
     }
 }

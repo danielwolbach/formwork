@@ -18,7 +18,8 @@ public struct Quantity: Codable, Hashable, Sendable {
 
     public var value: Double {
         get {
-            unit.value(base)
+            let scale = pow(10.0, Double(unit.fractionLength))
+            return (base / unit.factor * scale).rounded() / scale
         }
         set {
             base = newValue * unit.factor
@@ -26,19 +27,7 @@ public struct Quantity: Codable, Hashable, Sendable {
     }
 
     public var formatted: String {
-        unit.formatted(base)
-    }
-
-    public var symbol: String {
-        unit.symbol
-    }
-
-    public var stepSize: Double {
-        unit.stepSize
-    }
-
-    public var fractionLength: Int {
-        unit.fractionLength
+        "\(value.formatted(.number.precision(.fractionLength(unit.fractionLength)))) \(unit.symbol)"
     }
 }
 
@@ -88,33 +77,12 @@ public extension Quantity {
             }
         }
 
-        public var stepSize: Double {
-            switch self {
-            case .kilograms: 5
-            case .pounds: 2.5
-            case .seconds: 10
-            case .minutes: 5
-            case .hours: 0.25
-            case .meters: 100
-            case .kilometers, .miles: 0.25
-            }
-        }
-
         public var fractionLength: Int {
             switch self {
             case .kilograms, .pounds: 1
             case .seconds, .minutes, .meters: 0
             case .hours, .kilometers, .miles: 2
             }
-        }
-
-        public func value(_ base: Double) -> Double {
-            let scale = pow(10.0, Double(fractionLength))
-            return (base / factor * scale).rounded() / scale
-        }
-
-        public func formatted(_ base: Double) -> String {
-            "\(value(base).formatted(.number.precision(.fractionLength(fractionLength)))) \(symbol)"
         }
     }
 }

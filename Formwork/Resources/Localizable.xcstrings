@@ -202,17 +202,6 @@
         }
       }
     },
-    "field.reps.suffix" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "reps"
-          }
-        }
-      }
-    },
     "field.reps.title" : {
       "extractionState" : "manual",
       "localizations" : {

@@ -57,8 +57,8 @@ struct OverviewScreen: View {
         let statistics = sessions.statistics()
 
         TileGrid {
-            StatisticCard(statistics.weekStreak)
-            StatisticCard(statistics.lastSession)
+            MetricCard(statistics.weekStreak)
+            MetricCard(statistics.lastSession)
         }
         .padding(.horizontal)
     }

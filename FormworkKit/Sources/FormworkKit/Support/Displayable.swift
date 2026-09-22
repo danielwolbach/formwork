@@ -205,5 +205,3 @@ extension SessionEntry.Status: Displayable {
         }
     }
 }
-
-extension Statistic: Displayable {}

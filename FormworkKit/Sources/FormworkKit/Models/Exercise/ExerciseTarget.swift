@@ -11,24 +11,6 @@ public enum ExerciseTarget: Codable, Sendable {
     case duration(target: DurationTarget)
     case distance(target: DistanceTarget)
 
-    public var rank: Double {
-        switch self {
-        case let .weight(target): target.weight.base
-        case let .bodyweight(target): Double(target.reps)
-        case let .duration(target): target.duration.base
-        case let .distance(target): target.distance.base
-        }
-    }
-
-    public var formattedRank: String {
-        switch self {
-        case let .weight(target): target.weight.formatted
-        case let .bodyweight(target): String(localized: .exerciseTargetRepsTitle(target.reps))
-        case let .duration(target): target.duration.formatted
-        case let .distance(target): target.distance.formatted
-        }
-    }
-
     var volume: Quantity? {
         guard case let .weight(target) = self else {
             return nil
@@ -51,8 +33,32 @@ public extension ExerciseTarget {
             self.sets = sets
             self.reps = reps
         }
-    }
 
+        public var symbol: String {
+            weight.unit.symbol
+        }
+
+        public var stepSize: Double {
+            switch weight.unit {
+            case .pounds: 2.5
+            default: 5
+            }
+        }
+
+        public var fractionLength: Int {
+            weight.unit.fractionLength
+        }
+
+        public var range: ClosedRange<Double> {
+            switch weight.unit {
+            case .pounds: 1 ... 2000
+            default: 1 ... 1000
+            }
+        }
+    }
+}
+
+public extension ExerciseTarget {
     struct BodyweightTarget: Codable, Hashable, Sendable {
         public var sets: Int
         public var reps: Int
@@ -61,21 +67,83 @@ public extension ExerciseTarget {
             self.sets = sets
             self.reps = reps
         }
-    }
 
+        public var symbol: String {
+            String(localized: .unitRepsSymbol)
+        }
+
+        public var stepSize: Int {
+            2
+        }
+
+        public var range: ClosedRange<Int> {
+            1 ... 1000
+        }
+    }
+}
+
+public extension ExerciseTarget {
     struct DurationTarget: Codable, Hashable, Sendable {
         public var duration: Quantity
 
         public init(duration: Quantity) {
             self.duration = duration
         }
-    }
 
+        public var symbol: String {
+            duration.unit.symbol
+        }
+
+        public var stepSize: Double {
+            switch duration.unit {
+            case .hours: 0.25
+            case .minutes: 5
+            default: 10
+            }
+        }
+
+        public var fractionLength: Int {
+            duration.unit.fractionLength
+        }
+
+        public var range: ClosedRange<Double> {
+            switch duration.unit {
+            case .hours: 1 ... 100
+            case .minutes: 1 ... 10000
+            default: 1 ... 100_000
+            }
+        }
+    }
+}
+
+public extension ExerciseTarget {
     struct DistanceTarget: Codable, Hashable, Sendable {
         public var distance: Quantity
 
         public init(distance: Quantity) {
             self.distance = distance
+        }
+
+        public var symbol: String {
+            distance.unit.symbol
+        }
+
+        public var stepSize: Double {
+            switch distance.unit {
+            case .meters: 100
+            default: 0.25
+            }
+        }
+
+        public var fractionLength: Int {
+            distance.unit.fractionLength
+        }
+
+        public var range: ClosedRange<Double> {
+            switch distance.unit {
+            case .meters: 1 ... 100_000
+            default: 1 ... 1000
+            }
         }
     }
 }
