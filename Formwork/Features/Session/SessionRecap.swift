@@ -50,7 +50,9 @@ struct SessionRecap: View {
         }
 
         if let elapsed = entry.elapsed {
-            details.append((.pace, Duration.seconds(elapsed).formatted(.exerciseDuration)))
+            if entry.status.isCompleted {
+                details.append((.pace, Duration.seconds(elapsed).formatted(.exerciseDuration)))
+            }
         }
 
         if let change = entry.change {
