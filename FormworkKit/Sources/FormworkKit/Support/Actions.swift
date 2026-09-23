@@ -55,6 +55,12 @@ public extension ActionDescriptor {
     static let finishSession = ActionDescriptor(title: .actionFinishSessionTitle, systemImage: "flag.pattern.checkered")
 }
 
+public extension Label where Title == Text, Icon == Image {
+    init(_ descriptor: ActionDescriptor) {
+        self.init(descriptor.title, systemImage: descriptor.systemImage)
+    }
+}
+
 public extension Button where Label == SwiftUI.Label<Text, Image> {
     init(_ descriptor: ActionDescriptor, action: @escaping () -> Void) {
         self.init(
@@ -75,12 +81,6 @@ public extension Button where Label == SwiftUI.Label<Text, Image> {
                 Image(systemName: descriptor.systemImage)
             }
         }
-    }
-}
-
-public extension SwiftUI.Label where Title == Text, Icon == Image {
-    init(_ descriptor: ActionDescriptor) {
-        self.init(descriptor.title, systemImage: descriptor.systemImage)
     }
 }
 

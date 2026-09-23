@@ -6,11 +6,51 @@
 //
 
 public enum ExerciseTarget: Codable, Sendable {
+    public struct WeightTarget: Codable, Hashable, Sendable {
+        public var weight: Quantity
+        public var sets: Int
+        public var reps: Int
+
+        public init(weight: Quantity, sets: Int, reps: Int) {
+            self.weight = weight
+            self.sets = sets
+            self.reps = reps
+        }
+    }
+
+    public struct BodyweightTarget: Codable, Hashable, Sendable {
+        public var sets: Int
+        public var reps: Int
+
+        public init(sets: Int, reps: Int) {
+            self.sets = sets
+            self.reps = reps
+        }
+    }
+
+    public struct DurationTarget: Codable, Hashable, Sendable {
+        public var duration: Quantity
+
+        public init(duration: Quantity) {
+            self.duration = duration
+        }
+    }
+
+    public struct DistanceTarget: Codable, Hashable, Sendable {
+        public var distance: Quantity
+
+        public init(distance: Quantity) {
+            self.distance = distance
+        }
+    }
+
     case weight(target: WeightTarget)
     case bodyweight(target: BodyweightTarget)
     case duration(target: DurationTarget)
     case distance(target: DistanceTarget)
+}
 
+public extension ExerciseTarget {
     var volume: Quantity? {
         guard case let .weight(target) = self else {
             return nil
@@ -22,128 +62,169 @@ public enum ExerciseTarget: Codable, Sendable {
     }
 }
 
-public extension ExerciseTarget {
-    struct WeightTarget: Codable, Hashable, Sendable {
-        public var weight: Quantity
-        public var sets: Int
-        public var reps: Int
+public extension ExerciseTarget.WeightTarget {
+    var symbol: String {
+        weight.unit.symbol
+    }
 
-        public init(weight: Quantity, sets: Int, reps: Int) {
-            self.weight = weight
-            self.sets = sets
-            self.reps = reps
+    var stepSize: Double {
+        switch weight.unit {
+        case .pounds: 2.5
+        default: 5
         }
+    }
 
-        public var symbol: String {
-            weight.unit.symbol
-        }
+    var fractionLength: Int {
+        weight.unit.fractionLength
+    }
 
-        public var stepSize: Double {
-            switch weight.unit {
-            case .pounds: 2.5
-            default: 5
-            }
-        }
-
-        public var fractionLength: Int {
-            weight.unit.fractionLength
-        }
-
-        public var range: ClosedRange<Double> {
-            switch weight.unit {
-            case .pounds: 1 ... 2000
-            default: 1 ... 1000
-            }
+    var range: ClosedRange<Double> {
+        switch weight.unit {
+        case .pounds: 1 ... 2000
+        default: 1 ... 1000
         }
     }
 }
 
-public extension ExerciseTarget {
-    struct BodyweightTarget: Codable, Hashable, Sendable {
-        public var sets: Int
-        public var reps: Int
+public extension ExerciseTarget.BodyweightTarget {
+    var symbol: String {
+        String(localized: .unitRepsSymbol)
+    }
 
-        public init(sets: Int, reps: Int) {
-            self.sets = sets
-            self.reps = reps
+    var stepSize: Int {
+        2
+    }
+
+    var range: ClosedRange<Int> {
+        1 ... 1000
+    }
+}
+
+public extension ExerciseTarget.DurationTarget {
+    var symbol: String {
+        duration.unit.symbol
+    }
+
+    var stepSize: Double {
+        switch duration.unit {
+        case .hours: 0.25
+        case .minutes: 5
+        default: 10
         }
+    }
 
-        public var symbol: String {
-            String(localized: .unitRepsSymbol)
-        }
+    var fractionLength: Int {
+        duration.unit.fractionLength
+    }
 
-        public var stepSize: Int {
-            2
-        }
-
-        public var range: ClosedRange<Int> {
-            1 ... 1000
+    var range: ClosedRange<Double> {
+        switch duration.unit {
+        case .hours: 1 ... 100
+        case .minutes: 1 ... 10000
+        default: 1 ... 100_000
         }
     }
 }
 
-public extension ExerciseTarget {
-    struct DurationTarget: Codable, Hashable, Sendable {
-        public var duration: Quantity
+public extension ExerciseTarget.DistanceTarget {
+    var symbol: String {
+        distance.unit.symbol
+    }
 
-        public init(duration: Quantity) {
-            self.duration = duration
+    var stepSize: Double {
+        switch distance.unit {
+        case .meters: 100
+        default: 0.25
         }
+    }
 
-        public var symbol: String {
-            duration.unit.symbol
-        }
+    var fractionLength: Int {
+        distance.unit.fractionLength
+    }
 
-        public var stepSize: Double {
-            switch duration.unit {
-            case .hours: 0.25
-            case .minutes: 5
-            default: 10
-            }
-        }
-
-        public var fractionLength: Int {
-            duration.unit.fractionLength
-        }
-
-        public var range: ClosedRange<Double> {
-            switch duration.unit {
-            case .hours: 1 ... 100
-            case .minutes: 1 ... 10000
-            default: 1 ... 100_000
-            }
+    var range: ClosedRange<Double> {
+        switch distance.unit {
+        case .meters: 1 ... 100_000
+        default: 1 ... 1000
         }
     }
 }
 
-public extension ExerciseTarget {
-    struct DistanceTarget: Codable, Hashable, Sendable {
-        public var distance: Quantity
+extension ExerciseTarget: Displayable {
+    public var type: ExerciseType {
+        switch self {
+        case .weight: .weight
+        case .bodyweight: .bodyweight
+        case .duration: .duration
+        case .distance: .distance
+        }
+    }
 
-        public init(distance: Quantity) {
-            self.distance = distance
+    public var pictogram: Pictogram {
+        type.pictogram
+    }
+
+    public var title: String {
+        type.title
+    }
+
+    public var subtitle: String? {
+        switch self {
+        case let .weight(target): String(localized: .exerciseTargetWeightSubtitle(target.weight.formatted, target.sets, target.reps))
+        case let .bodyweight(target): String(localized: .exerciseTargetBodyweightSubtitle(target.sets, target.reps))
+        case let .duration(target): target.duration.formatted
+        case let .distance(target): target.distance.formatted
+        }
+    }
+}
+
+extension ExerciseTarget: Rankable {
+    public var rank: Double {
+        switch self {
+        case let .weight(target): target.weight.base
+        case let .bodyweight(target): Double(target.reps)
+        case let .duration(target): target.duration.base
+        case let .distance(target): target.distance.base
+        }
+    }
+
+    public var symbol: String {
+        switch self {
+        case let .weight(target): target.symbol
+        case let .bodyweight(target): target.symbol
+        case let .duration(target): target.symbol
+        case let .distance(target): target.symbol
+        }
+    }
+
+    public func label(for rank: Double) -> String {
+        guard let quantity else {
+            return "\(rank.rounded().formatted(.number.precision(.fractionLength(0)))) \(symbol)"
         }
 
-        public var symbol: String {
-            distance.unit.symbol
+        var measured = quantity
+        measured.base = rank
+        return measured.formatted
+    }
+
+    public var formattedRank: String {
+        formattedRank(rank)
+    }
+
+    public func formattedRank(_ rank: Double) -> String {
+        guard case .bodyweight = self else {
+            return label(for: rank)
         }
 
-        public var stepSize: Double {
-            switch distance.unit {
-            case .meters: 100
-            default: 0.25
-            }
-        }
+        return String(localized: .exerciseTargetRepsTitle(Int(rank.rounded())))
+    }
 
-        public var fractionLength: Int {
-            distance.unit.fractionLength
-        }
-
-        public var range: ClosedRange<Double> {
-            switch distance.unit {
-            case .meters: 1 ... 100_000
-            default: 1 ... 1000
-            }
+    private var quantity: Quantity? {
+        switch self {
+        case let .weight(target): target.weight
+        case let .duration(target): target.duration
+        case let .distance(target): target.distance
+        case .bodyweight: nil
         }
     }
 }

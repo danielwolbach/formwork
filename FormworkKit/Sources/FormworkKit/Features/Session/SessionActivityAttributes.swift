@@ -53,7 +53,7 @@ public struct SessionActivityAttributes: ActivityAttributes {
 
 public extension SessionActivityAttributes.ContentState {
     init?(session: Session) {
-        guard let current = session.current else {
+        guard let current = session.currentEntry else {
             return nil
         }
 
@@ -66,8 +66,8 @@ public extension SessionActivityAttributes.ContentState {
             started: session.started,
             resolved: session.resolvedCount,
             total: session.entries.count,
-            canMoveForward: session.next != nil,
-            canMoveBackward: session.previous != nil
+            canMoveForward: session.nextEntry != nil,
+            canMoveBackward: session.previousEntry != nil
         )
     }
 }

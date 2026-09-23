@@ -8,17 +8,13 @@
 import FormworkKit
 import SwiftUI
 
-enum Sheet: Identifiable, Hashable, View {
+enum Sheet: Hashable, View {
     case createExercise
     case createExerciseInCategory(category: ExerciseCategory)
     case editExercise(exercise: Exercise)
     case createWorkout
     case editWorkout(workout: Workout)
     case addWorkoutExercise(workout: Workout)
-
-    var id: Self {
-        self
-    }
 
     var body: some View {
         NavigationStack {
@@ -31,5 +27,11 @@ enum Sheet: Identifiable, Hashable, View {
             case let .addWorkoutExercise(workout): WorkoutAddExerciseForm(workout: workout)
             }
         }
+    }
+}
+
+extension Sheet: Identifiable {
+    var id: Self {
+        self
     }
 }

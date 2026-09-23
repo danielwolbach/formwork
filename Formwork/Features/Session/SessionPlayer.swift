@@ -35,7 +35,7 @@ struct SessionPlayer: View {
                 Button(.backward) {
                     navigator.backward()
                 }
-                .disabled(session.previous == nil)
+                .disabled(session.previousEntry == nil)
                 .buttonStyle(.glass)
                 .buttonBorderShape(.circle)
                 .labelStyle(.fixedIconOnly)
@@ -47,7 +47,7 @@ struct SessionPlayer: View {
                 Button(.forward) {
                     navigator.forward()
                 }
-                .disabled(session.next == nil)
+                .disabled(session.nextEntry == nil)
                 .buttonStyle(.glass)
                 .buttonBorderShape(.circle)
                 .labelStyle(.fixedIconOnly)
@@ -68,7 +68,7 @@ struct SessionPlayer: View {
         if session.isComplete {
             Button(.finishSession, action: requestFinish)
                 .fontWeight(.semibold)
-        } else if let status = session.current?.status {
+        } else if let status = session.currentEntry?.status {
             Button(.complete) {
                 Haptics.impact(.medium)
                 navigator.complete()
@@ -81,7 +81,7 @@ struct SessionPlayer: View {
 
     @ViewBuilder
     private var secondaryAction: some View {
-        if let status = session.current?.status {
+        if let status = session.currentEntry?.status {
             if status.isPending {
                 Button(.skip) {
                     navigator.skip()

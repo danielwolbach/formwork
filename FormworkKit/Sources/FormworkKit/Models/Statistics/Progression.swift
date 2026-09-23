@@ -8,6 +8,12 @@
 import Foundation
 
 public struct Progression<Value: Rankable> {
+    public struct Point {
+        public let date: Date
+
+        public let value: Value
+    }
+
     public let pictogram: Pictogram
     public let title: String
     public let points: [Point]
@@ -23,19 +29,15 @@ public struct Progression<Value: Rankable> {
     }
 }
 
-public extension Progression {
-    struct Point: Identifiable {
-        public let date: Date
+extension Progression.Point: Identifiable {
+    public var id: Date {
+        date
+    }
+}
 
-        public let value: Value
-
-        public var rank: Double {
-            value.rank
-        }
-
-        public var id: Date {
-            date
-        }
+public extension Progression.Point {
+    var rank: Double {
+        value.rank
     }
 }
 

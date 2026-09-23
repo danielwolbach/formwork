@@ -8,7 +8,7 @@
 import SwiftData
 
 @Model
-public final class WorkoutEntry: Comparable {
+public final class WorkoutEntry {
     public var order: Int = 0
 
     public var exercise: Exercise?
@@ -25,8 +25,24 @@ public final class WorkoutEntry: Comparable {
         self.exercise = exercise
         self.target = target
     }
+}
 
+extension WorkoutEntry: Comparable {
     public static func < (lhs: borrowing WorkoutEntry, rhs: borrowing WorkoutEntry) -> Bool {
         lhs.order < rhs.order
+    }
+}
+
+extension WorkoutEntry: Displayable {
+    public var pictogram: Pictogram {
+        exercise?.pictogram ?? .unknown
+    }
+
+    public var title: String {
+        exercise?.title ?? String(localized: .exerciseUnknownTitle)
+    }
+
+    public var subtitle: String? {
+        target.subtitle
     }
 }

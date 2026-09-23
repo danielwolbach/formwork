@@ -9,43 +9,48 @@ import Foundation
 import SwiftUI
 
 public struct Pictogram: Hashable, Codable, Sendable {
+    public enum Tint: Codable, CaseIterable, Sendable {
+        case blue, indigo, purple, pink, red, orange, yellow, green, mint, cyan, brown, gray
+    }
+
     public var image: String
+
     public var tint: Tint
 
     public init(image: String, tint: Tint) {
         self.image = image
         self.tint = tint
     }
+}
 
-    public var color: Color {
-        tint.color
+extension Pictogram.Tint: Identifiable {
+    public var id: Self {
+        self
+    }
+}
+
+public extension Pictogram.Tint {
+    var color: Color {
+        switch self {
+        case .blue: .blue
+        case .indigo: .indigo
+        case .purple: .purple
+        case .pink: .pink
+        case .red: .red
+        case .orange: .orange
+        case .yellow: .yellow
+        case .green: .green
+        case .mint: .mint
+        case .cyan: .cyan
+        case .brown: .brown
+        case .gray: .gray
+        }
     }
 }
 
 public extension Pictogram {
-    enum Tint: Identifiable, Codable, CaseIterable, Sendable {
-        case blue, indigo, purple, pink, red, orange, yellow, green, mint, cyan, brown, gray
-
-        public var id: Self {
-            self
-        }
-
-        public var color: Color {
-            switch self {
-            case .blue: .blue
-            case .indigo: .indigo
-            case .purple: .purple
-            case .pink: .pink
-            case .red: .red
-            case .orange: .orange
-            case .yellow: .yellow
-            case .green: .green
-            case .mint: .mint
-            case .cyan: .cyan
-            case .brown: .brown
-            case .gray: .gray
-            }
-        }
+    var color: Color {
+        tint.color
     }
 }
 
@@ -68,17 +73,12 @@ public extension Pictogram {
     static let progression = Pictogram(image: "chart.line.uptrend.xyaxis", tint: .blue)
     static let activity = Pictogram(image: "square.grid.3x3", tint: .orange)
     static let categories = Pictogram(image: "chart.pie", tint: .gray)
-}
-
-public extension Pictogram {
     static let pendingBadge = Pictogram(image: "ellipsis.circle.fill", tint: .gray)
     static let completedBadge = Pictogram(image: "checkmark.circle.fill", tint: .green)
     static let skippedBadge = Pictogram(image: "arrowtriangle.forward.circle.fill", tint: .orange)
     static let recordBadge = Pictogram(image: "trophy.circle.fill", tint: .yellow)
     static let editBadge = Pictogram(image: "pencil.circle.fill", tint: .gray)
-}
 
-public extension Pictogram {
     static let workoutImageOptions: [String] = [
         Pictogram.workout.image,
         "figure",

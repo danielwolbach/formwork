@@ -47,7 +47,7 @@ struct SessionLifecycleTests {
 
     @Test func finishWritesTargetsBackToWorkout() throws {
         let session = try store.startSession()
-        session.current?.target = .bodyweight(target: .init(sets: 5, reps: 12))
+        session.currentEntry?.target = .bodyweight(target: .init(sets: 5, reps: 12))
         session.finish()
         try store.context.save()
 
@@ -88,9 +88,9 @@ struct SessionNavigationTests {
     @Test func startsAtFirstEntry() throws {
         let session = try store.startSession()
 
-        #expect(session.current?.title == "Squat")
-        #expect(session.previous == nil)
-        #expect(session.next?.title == "Bench Press")
+        #expect(session.currentEntry?.title == "Squat")
+        #expect(session.previousEntry == nil)
+        #expect(session.nextEntry?.title == "Bench Press")
         #expect(session.resolvedCount == 0)
         #expect(!session.isComplete)
     }
@@ -99,13 +99,13 @@ struct SessionNavigationTests {
         let session = try store.startSession()
 
         session.moveToPrevious()
-        #expect(session.current?.title == "Squat")
+        #expect(session.currentEntry?.title == "Squat")
 
         session.moveToNext()
         session.moveToNext()
         session.moveToNext()
-        #expect(session.current?.title == "Deadlift")
-        #expect(session.next == nil)
+        #expect(session.currentEntry?.title == "Deadlift")
+        #expect(session.nextEntry == nil)
     }
 
     @Test func completingAdvancesToNextPendingEntry() throws {
@@ -114,7 +114,7 @@ struct SessionNavigationTests {
         session.completeAndAdvance()
 
         #expect(session.orderedEntries.first?.status.isCompleted == true)
-        #expect(session.current?.title == "Bench Press")
+        #expect(session.currentEntry?.title == "Bench Press")
         #expect(session.resolvedCount == 1)
     }
 
@@ -124,7 +124,7 @@ struct SessionNavigationTests {
         session.skipAndAdvance()
 
         #expect(session.orderedEntries.first?.status.isSkipped == true)
-        #expect(session.current?.title == "Bench Press")
+        #expect(session.currentEntry?.title == "Bench Press")
     }
 
     @Test func completingOutOfOrderReturnsToFirstPendingEntry() throws {
@@ -133,7 +133,7 @@ struct SessionNavigationTests {
         session.moveToNext()
         session.completeAndAdvance()
 
-        #expect(session.current?.title == "Squat")
+        #expect(session.currentEntry?.title == "Squat")
         #expect(session.orderedEntries.map(\.title) == ["Bench Press", "Squat", "Deadlift"])
     }
 
@@ -146,7 +146,7 @@ struct SessionNavigationTests {
 
         #expect(session.isComplete)
         #expect(session.resolvedCount == 3)
-        #expect(session.current?.title == "Deadlift")
+        #expect(session.currentEntry?.title == "Deadlift")
     }
 }
 
@@ -189,8 +189,8 @@ struct SessionOrderTests {
 
         session.undoStatusChange()
 
-        #expect(session.current?.title == "Squat")
-        #expect(session.current?.status.isPending == true)
+        #expect(session.currentEntry?.title == "Squat")
+        #expect(session.currentEntry?.status.isPending == true)
         #expect(session.pending.map(\.title) == ["Squat", "Deadlift"])
         #expect(session.orderedEntries.map(\.title) == ["Bench Press", "Squat", "Deadlift"])
     }
@@ -204,7 +204,7 @@ struct SessionOrderTests {
 
         session.undoStatusChange()
 
-        #expect(session.current?.title == "Deadlift")
+        #expect(session.currentEntry?.title == "Deadlift")
         #expect(session.orderedEntries.map(\.title) == ["Deadlift", "Squat", "Bench Press"])
     }
 
@@ -213,7 +213,7 @@ struct SessionOrderTests {
 
         session.undoStatusChange()
 
-        #expect(session.current?.title == "Squat")
+        #expect(session.currentEntry?.title == "Squat")
         #expect(session.orderedEntries.map(\.order) == [0, 1, 2])
     }
 }

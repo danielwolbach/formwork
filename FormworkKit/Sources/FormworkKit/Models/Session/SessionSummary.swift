@@ -18,7 +18,7 @@ public struct SessionSummary {
     public let skipRate: Metric<Double>
 
     /// How long a typical exercise took, so it covers the rest before each one. The median of
-    /// `SessionEntry.elapsed`, which is what the session's exercises show, so one long interruption skews
+    /// `SessionEntry.duration`, which is what the session's exercises show, so one long interruption skews
     /// it no more than the mean of two would.
     public let medianExerciseDuration: Metric<Duration>
 
@@ -30,7 +30,7 @@ public struct SessionSummary {
 
     init(session: Session, calendar: Calendar = .current) {
         let entries = session.entries
-        let durations = entries.compactMap(\.elapsed)
+        let durations = entries.compactMap(\.duration)
         let completed = entries.filter(\.status.isCompleted)
         let volumes = completed.compactMap(\.target.volume)
 

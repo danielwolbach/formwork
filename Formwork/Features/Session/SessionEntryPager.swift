@@ -50,13 +50,13 @@ final class SessionNavigator {
     }
 
     private func navigate(by step: Int, _ change: () -> Void) {
-        let previous = session.current?.identifier
+        let previous = session.currentEntry?.identifier
 
         withAnimation(.snappy) {
             change()
 
             // Completing the last pending entry keeps it current, which must not slide.
-            if session.current?.identifier != previous {
+            if session.currentEntry?.identifier != previous {
                 index += step
                 direction = step
             }
@@ -111,7 +111,7 @@ struct SessionEntryPager<Page: View>: View {
         let session = navigator.session
         let ordered = session.orderedEntries
 
-        guard let current = session.current, let center = ordered.firstIndex(where: { $0 === current }) else {
+        guard let current = session.currentEntry, let center = ordered.firstIndex(where: { $0 === current }) else {
             return []
         }
 
@@ -123,7 +123,7 @@ struct SessionEntryPager<Page: View>: View {
     }
 
     private func dragChanged(_ translation: CGFloat) {
-        let hasTarget = translation < 0 ? navigator.session.next != nil : navigator.session.previous != nil
+        let hasTarget = translation < 0 ? navigator.session.nextEntry != nil : navigator.session.previousEntry != nil
 
         // Follow the finger 1-to-1, and resist when there is nothing to page to.
         dragOffset = hasTarget ? translation : translation / 3
@@ -133,14 +133,14 @@ struct SessionEntryPager<Page: View>: View {
         let session = navigator.session
 
         if predicted < -width / 2 {
-            if session.next != nil {
+            if session.nextEntry != nil {
                 Haptics.impact(.soft)
                 navigator.forward()
             } else {
                 Haptics.impact(.rigid, intensity: 0.5)
             }
         } else if predicted > width / 2 {
-            if session.previous != nil {
+            if session.previousEntry != nil {
                 Haptics.impact(.soft)
                 navigator.backward()
             } else {
@@ -204,10 +204,12 @@ private struct PagingPanGesture: UIGestureRecognizerRepresentable {
 
 /// A page position together with the entry it shows. When a position switches to a different entry, the page is
 /// replaced instead of updated, so the new entry slides in rather than swapping its content mid-slide.
-private struct Slot: Identifiable {
+private struct Slot {
     let key: Int
     let entry: SessionEntry
+}
 
+extension Slot: Identifiable {
     var id: String {
         "\(key):\(entry.identifier)"
     }

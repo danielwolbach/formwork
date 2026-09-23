@@ -39,7 +39,7 @@ struct SessionRecap: View {
     }
 
     private func badge(for entry: SessionEntry) -> Pictogram {
-        entry.isPersonalBest ? .recordBadge : entry.status.pictogram
+        entry.isBest ? .recordBadge : entry.status.pictogram
     }
 
     private func details(for entry: SessionEntry) -> [(pictogram: Pictogram, text: String)] {
@@ -49,14 +49,15 @@ struct SessionRecap: View {
             details.append((.time, resolved.formatted(session.wallClockTime())))
         }
 
-        if let elapsed = entry.elapsed {
+        if let duration = entry.duration {
             if entry.status.isCompleted {
-                details.append((.pace, Duration.seconds(elapsed).formatted(.exerciseDuration)))
+                details.append((.pace, Duration.seconds(duration).formatted(.exerciseDuration)))
             }
         }
 
-        if let change = entry.change {
-            details.append((change.difference > 0 ? .increase : .decrease, change.magnitude))
+        if let previous = entry.previous, previous.rank != entry.target.rank {
+            let change = entry.target.rank - previous.rank
+            details.append((change > 0 ? .increase : .decrease, entry.target.formattedRank(abs(change))))
         }
 
         return details

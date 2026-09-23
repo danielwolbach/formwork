@@ -8,6 +8,22 @@
 import Foundation
 
 public struct Heatmap {
+    public struct Day {
+        public let date: Date
+
+        public let value: Int?
+
+        public let intensity: Double
+
+        public let isAhead: Bool
+    }
+
+    public struct Week {
+        public let start: Date
+
+        public let days: [Day]
+    }
+
     public let pictogram: Pictogram
     public let title: String
 
@@ -62,31 +78,15 @@ public struct Heatmap {
     }
 }
 
-public extension Heatmap {
-    struct Day: Identifiable {
-        public let date: Date
-
-        public let value: Int?
-
-        public let intensity: Double
-
-        public let isAhead: Bool
-
-        public var id: Date {
-            date
-        }
+extension Heatmap.Day: Identifiable {
+    public var id: Date {
+        date
     }
 }
 
-public extension Heatmap {
-    struct Week: Identifiable {
-        public let start: Date
-
-        public let days: [Day]
-
-        public var id: Date {
-            start
-        }
+extension Heatmap.Week: Identifiable {
+    public var id: Date {
+        start
     }
 }
 

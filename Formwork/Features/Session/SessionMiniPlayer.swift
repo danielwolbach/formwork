@@ -90,7 +90,7 @@ struct SessionMiniPlayer: View {
 
     @ViewBuilder
     private var pendingStatusAction: some View {
-        switch session.current?.status {
+        switch session.currentEntry?.status {
         case .pending:
             Button(.complete, action: completeCurrentEntry)
                 .fontWeight(.bold)

@@ -9,7 +9,13 @@ import Foundation
 import SwiftData
 
 @Model
-public final class SessionEntry: Comparable {
+public final class SessionEntry {
+    public enum Status: Codable, Hashable, Sendable {
+        case pending
+        case completed(at: Date)
+        case skipped(at: Date)
+    }
+
     public var identifier: UUID = UUID()
 
     public var order: Int = 0
@@ -31,21 +37,20 @@ public final class SessionEntry: Comparable {
         self.target = workoutEntry.target
         self.workoutEntry = workoutEntry
     }
+}
 
+extension SessionEntry: Comparable {
     public static func < (lhs: borrowing SessionEntry, rhs: borrowing SessionEntry) -> Bool {
         lhs.order < rhs.order
     }
 }
 
-/// How long an exercise took within its session.
 public extension SessionEntry {
-    var elapsed: TimeInterval? {
+    var duration: TimeInterval? {
         guard let session, let resolved = status.resolved else {
             return nil
         }
 
-        // One pass: every exercise of the session asks this, so each allocating a list of the others' times
-        // over again is the session's own length squared.
         var previous = session.started
 
         for other in session.entries {
@@ -56,73 +61,21 @@ public extension SessionEntry {
 
         return resolved.timeIntervalSince(previous)
     }
-}
 
-/// How an exercise went compared with the last times it was done.
-public extension SessionEntry {
-    var isPersonalBest: Bool {
-        guard status.isCompleted, let exercise, target.type == exercise.type, session?.isActive == false else {
-            return false
-        }
+    var isBest: Bool {
+        previousBest.map { target.rank > $0.rank } ?? false
+    }
 
-        guard let best = earlier.map(\.target.rank).max() else {
-            return false
-        }
-
-        return target.rank > best
+    var previous: ExerciseTarget? {
+        earlier.max { ($0.session?.started ?? .distantPast) < ($1.session?.started ?? .distantPast) }?.target
     }
 
     var previousBest: ExerciseTarget? {
-        guard status.isCompleted, let exercise, target.type == exercise.type, session?.isActive == false else {
-            return nil
-        }
-
-        return earlier.map(\.target).max { $0.rank < $1.rank }
+        earlier.map(\.target).max { $0.rank < $1.rank }
     }
 
-    var improvement: Double? {
-        guard let previousBest, previousBest.rank > 0 else {
-            return nil
-        }
-
-        return (target.rank - previousBest.rank) / previousBest.rank
-    }
-
-    var change: Change? {
-        guard let previous = earlier.max(by: { ($0.session?.started ?? .distantPast) < ($1.session?.started ?? .distantPast) })?.target else {
-            return nil
-        }
-
-        let difference = target.rank - previous.rank
-
-        guard difference != 0 else {
-            return nil
-        }
-
-        // Reps are the one rank that isn't a measurement, so they have no quantity to carry the difference.
-        var quantity: Quantity? = switch target {
-        case let .weight(current): current.weight
-        case .bodyweight: nil
-        case let .duration(current): current.duration
-        case let .distance(current): current.distance
-        }
-        quantity?.base = abs(difference)
-
-        return Change(
-            difference: difference,
-            magnitude: quantity?.formatted ?? String(localized: .exerciseTargetRepsTitle(Int(abs(difference))))
-        )
-    }
-
-    struct Change: Sendable {
-        public let difference: Double
-        public let magnitude: String
-    }
-}
-
-private extension SessionEntry {
-    var earlier: [SessionEntry] {
-        guard let session, !session.isActive, let exercise, target.type == exercise.type else {
+    private var earlier: [SessionEntry] {
+        guard status.isCompleted, let session, !session.isActive, let exercise, target.type == exercise.type else {
             return []
         }
 
@@ -131,47 +84,74 @@ private extension SessionEntry {
                 return false
             }
 
-            // The type has to match: `rank` would otherwise weigh reps against kilograms.
-            return other.status.isCompleted && other.target.type == exercise.type && theirs.started < session.started
+            return other.status.isCompleted
+                && other.target.type == exercise.type
+                && theirs.started < session.started
         }
     }
 }
 
-public extension SessionEntry {
-    enum Status: Codable, Hashable, Sendable {
-        case pending
-        case completed(at: Date)
-        case skipped(at: Date)
+extension SessionEntry: Displayable {
+    public var pictogram: Pictogram {
+        exercise?.pictogram ?? .unknown
+    }
 
-        public var isPending: Bool {
-            if case .pending = self {
-                true
-            } else {
-                false
-            }
+    public var title: String {
+        exercise?.title ?? String(localized: .exerciseUnknownTitle)
+    }
+
+    public var subtitle: String? {
+        target.subtitle
+    }
+}
+
+public extension SessionEntry.Status {
+    var isPending: Bool {
+        if case .pending = self {
+            true
+        } else {
+            false
         }
+    }
 
-        public var isCompleted: Bool {
-            if case .completed = self {
-                true
-            } else {
-                false
-            }
+    var isCompleted: Bool {
+        if case .completed = self {
+            true
+        } else {
+            false
         }
+    }
 
-        public var isSkipped: Bool {
-            if case .skipped = self {
-                true
-            } else {
-                false
-            }
+    var isSkipped: Bool {
+        if case .skipped = self {
+            true
+        } else {
+            false
         }
+    }
 
-        public var resolved: Date? {
-            switch self {
-            case .pending: nil
-            case let .completed(date), let .skipped(date): date
-            }
+    var resolved: Date? {
+        switch self {
+        case .pending: nil
+        case let .completed(date), let .skipped(date): date
+        }
+    }
+}
+
+extension SessionEntry.Status: Displayable {
+    public var pictogram: Pictogram {
+        switch self {
+        case .pending: .pendingBadge
+        case .completed: .completedBadge
+        case .skipped: .skippedBadge
+        }
+    }
+
+    public var title: String {
+        switch self {
+        case .pending: String(localized: .sessionEntryStatusPendingTitle)
+        case .completed: String(localized: .sessionEntryStatusCompletedTitle)
+        case .skipped: String(localized: .sessionEntryStatusSkippedTitle)
         }
     }
 }

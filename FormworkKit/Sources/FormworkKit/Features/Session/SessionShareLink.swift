@@ -119,9 +119,8 @@ private struct SessionShareCard: View {
 
     @ViewBuilder
     private var personalBest: some View {
-        let personalBest = session.orderedEntries
-            .filter(\.isPersonalBest)
-            .max { ($0.improvement ?? 0) < ($1.improvement ?? 0) }
+        let ratio = { (entry: SessionEntry) in entry.previousBest.map { entry.target.rank / $0.rank } ?? 0 }
+        let personalBest = session.orderedEntries.filter(\.isBest).max { ratio($0) < ratio($1) }
 
         if let personalBest {
             HStack {

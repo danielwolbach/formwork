@@ -5,6 +5,7 @@
 //  Created by Daniel Wolbach on 04.09.26.
 //
 
+import Foundation
 import SwiftData
 
 @Model
@@ -34,5 +35,24 @@ public extension Exercise {
             .filter { $0.target.type == type }
             .max { $0.target.rank < $1.target.rank }?
             .target
+    }
+
+    static func countTitle(_ count: Int) -> LocalizedStringResource {
+        .exerciseCountTitle(count)
+    }
+}
+
+extension Exercise: Displayable {
+    public var pictogram: Pictogram {
+        type.pictogram
+    }
+
+    public var title: String {
+        name
+    }
+
+    public var subtitle: String? {
+        let titles = ExerciseCategory.allCases.filter { categories.contains($0) }.map(\.title)
+        return titles.isEmpty ? nil : titles.joined(separator: ", ")
     }
 }

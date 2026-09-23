@@ -8,6 +8,14 @@
 import Foundation
 
 public struct Distribution<Value: Displayable & CaseIterable & Hashable> {
+    public struct Share {
+        public let value: Value
+
+        public let count: Int
+
+        public let fraction: Double
+    }
+
     public let pictogram: Pictogram
     public let title: String
     public let shares: [Share]
@@ -33,17 +41,9 @@ public struct Distribution<Value: Displayable & CaseIterable & Hashable> {
     }
 }
 
-public extension Distribution {
-    struct Share: Identifiable {
-        public let value: Value
-
-        public let count: Int
-
-        public let fraction: Double
-
-        public var id: Value {
-            value
-        }
+extension Distribution.Share: Identifiable {
+    public var id: Value {
+        value
     }
 }
 

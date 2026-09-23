@@ -150,7 +150,7 @@ public extension Session {
 
 /// Which entry the player is on, and every way of leaving it.
 public extension Session {
-    var current: SessionEntry? {
+    var currentEntry: SessionEntry? {
         get {
             entries.first { $0.identifier == currentIdentifier }
                 ?? pending.first
@@ -161,28 +161,28 @@ public extension Session {
         }
     }
 
-    var previous: SessionEntry? {
+    var previousEntry: SessionEntry? {
         neighbor(by: -1)
     }
 
-    var next: SessionEntry? {
+    var nextEntry: SessionEntry? {
         neighbor(by: 1)
     }
 
     func moveToPrevious() {
-        guard let previous else {
+        guard let previousEntry else {
             return
         }
 
-        current = previous
+        currentEntry = previousEntry
     }
 
     func moveToNext() {
-        guard let next else {
+        guard let nextEntry else {
             return
         }
 
-        current = next
+        currentEntry = nextEntry
     }
 
     func completeAndAdvance() {
@@ -194,7 +194,7 @@ public extension Session {
     }
 
     func undoStatusChange() {
-        guard let entry = current, !entry.status.isPending else {
+        guard let entry = currentEntry, !entry.status.isPending else {
             return
         }
 
@@ -203,19 +203,19 @@ public extension Session {
     }
 
     private func advance(as status: SessionEntry.Status) {
-        guard let entry = current else {
+        guard let entry = currentEntry else {
             return
         }
 
         let following = pending.first { $0 !== entry }
         entry.status = status
-        current = following ?? entry
+        currentEntry = following ?? entry
     }
 
     private func neighbor(by offset: Int) -> SessionEntry? {
         let ordered = orderedEntries
 
-        guard let current, let index = ordered.firstIndex(where: { $0 === current }) else {
+        guard let currentEntry, let index = ordered.firstIndex(where: { $0 === currentEntry }) else {
             return nil
         }
 
@@ -225,8 +225,6 @@ public extension Session {
 
 /// Wall-clock time: where a session falls in the calendar, by the clock where it started.
 extension Session {
-    /// The time of day on the clock the session was recorded on, so an exercise resolved at 08:00 still
-    /// reads as 08:00 wherever it is read back.
     public func wallClockTime() -> Date.FormatStyle {
         localCalendar(from: .current).formatStyle(time: .shortened)
     }
@@ -255,18 +253,37 @@ extension Session {
         guard let hour = time.hour, let minute = time.minute else { return nil }
         return hour * 60 + minute
     }
-}
 
-private extension Session {
-    var timeZone: TimeZone {
+    private var timeZone: TimeZone {
         TimeZone(identifier: timeZoneIdentifier) ?? .current
     }
 
-    func localStarted(in calendar: Calendar) -> Date {
+    private func localStarted(in calendar: Calendar) -> Date {
         guard timeZone != calendar.timeZone else { return started }
 
         let components = localCalendar(from: calendar).dateComponents([.year, .month, .day, .hour, .minute, .second], from: started)
         return calendar.date(from: components) ?? started
+    }
+}
+
+public extension Session {
+    static func countTitle(_ count: Int) -> LocalizedStringResource {
+        .sessionCountTitle(count)
+    }
+}
+
+extension Session: Displayable {
+    public var title: String {
+        workout?.title ?? String(localized: .workoutUnknownTitle)
+    }
+
+    public var subtitle: String? {
+        let local = localCalendar(from: .current)
+        return started.formatted(local.formatStyle(date: .numeric, time: .shortened))
+    }
+
+    public var pictogram: Pictogram {
+        workout?.pictogram ?? .unknown
     }
 }
 

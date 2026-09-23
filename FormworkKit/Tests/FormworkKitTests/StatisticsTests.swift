@@ -914,7 +914,7 @@ struct SessionSummaryTests {
         let session = try store.session(7, minutes: 90)
         resolve(session, after: [10, 20, 60])
 
-        let durations: [TimeInterval] = session.orderedEntries.compactMap(\.elapsed)
+        let durations: [TimeInterval] = session.orderedEntries.compactMap(\.duration)
 
         // 10, 10 and 40 minutes: the first exercise counts from the start of the session, the others from
         // the one resolved before them.
@@ -925,16 +925,16 @@ struct SessionSummaryTests {
         let session = try store.session(7, minutes: 90)
         resolve(session, after: [10])
 
-        #expect(try #require(session.orderedEntries.last).elapsed == nil)
+        #expect(try #require(session.orderedEntries.last).duration == nil)
     }
 
     @Test func exerciseDurationRunsFromTheLastResolutionAndNotTheEntryBeforeIt() throws {
         let session = try store.session(7, minutes: 90)
         resolve(session, after: [60, 10, 20])
-        let elapsed: [TimeInterval] = session.entries.sorted().compactMap(\.elapsed)
+        let durations: [TimeInterval] = session.entries.sorted().compactMap(\.duration)
 
         // In workout order: the first was resolved last, so it took the 40 minutes since the one before it.
-        #expect(elapsed == [2400, 600, 600])
+        #expect(durations == [2400, 600, 600])
     }
 
     @Test func medianExerciseDurationIsTheMiddleOfTheExerciseDurations() throws {
@@ -981,7 +981,7 @@ struct SessionSummaryTests {
         let quick = try #require(session.entries.sorted().first)
         quick.status = .completed(at: session.started.addingTimeInterval(40))
 
-        #expect(quick.elapsed == 40)
+        #expect(quick.duration == 40)
         #expect(Duration.seconds(40).formatted(.exerciseDuration) == Duration.seconds(40).formatted(.units(allowed: [.seconds], width: .abbreviated)))
         #expect(Duration.seconds(150).formatted(.exerciseDuration) == Duration.seconds(150).formatted(.units(allowed: [.minutes], width: .abbreviated)))
         #expect(summary(session).medianExerciseDuration.subtitle == Duration.seconds(0).formatted(.exerciseDuration))
@@ -1026,19 +1026,19 @@ struct SessionEntryComparisonTests {
 
     @Test func firstTimeAnExerciseIsCompletedIsNotAPersonalBest() throws {
         // There is nothing on record to have beaten, and a first session of nothing but trophies marks nothing.
-        #expect(try squatSession(7, reps: 10).isPersonalBest == false)
+        #expect(try squatSession(7, reps: 10).isBest == false)
     }
 
     @Test func beatingEveryEarlierTimeIsAPersonalBest() throws {
         try squatSession(7, reps: 10)
 
-        #expect(try squatSession(8, reps: 12).isPersonalBest)
+        #expect(try squatSession(8, reps: 12).isBest)
     }
 
     @Test func matchingTheBestIsNotAPersonalBest() throws {
         try squatSession(7, reps: 12)
 
-        #expect(try squatSession(8, reps: 12).isPersonalBest == false)
+        #expect(try squatSession(8, reps: 12).isBest == false)
     }
 
     @Test func personalBestStandsEvenAfterALaterBetterOne() throws {
@@ -1047,8 +1047,8 @@ struct SessionEntryComparisonTests {
         let later = try squatSession(9, reps: 12)
 
         // Both beat everything on record on the day they were done, which is what the trophy marks.
-        #expect(earlier.isPersonalBest)
-        #expect(later.isPersonalBest)
+        #expect(earlier.isBest)
+        #expect(later.isBest)
     }
 
     @Test func skippedExerciseIsNeverAPersonalBest() throws {
@@ -1057,7 +1057,7 @@ struct SessionEntryComparisonTests {
         entry.target = .bodyweight(target: .init(sets: 3, reps: 20))
         entry.status = .skipped(at: session.started)
 
-        #expect(entry.isPersonalBest == false)
+        #expect(entry.isBest == false)
     }
 
     @Test func exerciseDroppedFromTheWorkoutIsNoLongerAPersonalBest() throws {
@@ -1065,7 +1065,7 @@ struct SessionEntryComparisonTests {
         let entry = try squatSession(8, reps: 12)
         let slot = try #require(entry.workoutEntry)
 
-        #expect(entry.isPersonalBest)
+        #expect(entry.isBest)
 
         store.context.delete(slot)
         // The `.nullify` rule only reaches the session entry once the deletion is processed.
@@ -1073,46 +1073,53 @@ struct SessionEntryComparisonTests {
 
         // The slot took its history with it, so there is nothing left to say this beat anything.
         #expect(entry.workoutEntry == nil)
-        #expect(entry.isPersonalBest == false)
+        #expect(entry.isBest == false)
     }
 
     @Test func runningSessionIsNeverAPersonalBest() throws {
         let running = try store.startSession()
         running.completeAndAdvance()
 
-        #expect(try #require(running.entries.sorted().first).isPersonalBest == false)
+        #expect(try #require(running.entries.sorted().first).isBest == false)
     }
 
-    @Test func changeIsMeasuredAgainstTheLastComparableTime() throws {
-        try squatSession(7, reps: 8)
+    @Test func previousIsTheLastComparableTime() throws {
+        try squatSession(7, reps: 12)
         try squatSession(8, reps: 10)
 
-        let change = try #require(try squatSession(9, reps: 12).change)
-
-        #expect(change.difference == 2.0)
-        #expect(change.magnitude == String(localized: .exerciseTargetRepsTitle(2)))
+        #expect(try squatSession(9, reps: 11).previous?.rank == 10)
     }
 
-    @Test func changeIsSignedWhenItDrops() throws {
+    @Test func previousBestIsTheHighestComparableTime() throws {
         try squatSession(7, reps: 12)
+        try squatSession(8, reps: 10)
 
-        let change = try #require(try squatSession(8, reps: 10).change)
-
-        #expect(change.difference == -2.0)
-        #expect(change.magnitude == String(localized: .exerciseTargetRepsTitle(2)))
-    }
-
-    @Test func unchangedTargetHasNoChange() throws {
-        try squatSession(7, reps: 10)
-
-        #expect(try squatSession(8, reps: 10).change == nil)
+        #expect(try squatSession(9, reps: 11).previousBest?.rank == 12)
     }
 
     @Test func firstTimeHasNothingToCompareWith() throws {
-        #expect(try squatSession(7, reps: 10).change == nil)
+        let entry = try squatSession(7, reps: 10)
+
+        #expect(entry.previous == nil)
+        #expect(entry.previousBest == nil)
     }
 
-    @Test func changeReadsInTheUnitItWasRecordedIn() throws {
+    @Test func skippedExerciseHasNothingToCompareWith() throws {
+        try squatSession(7, reps: 10)
+        let entry = try squatSession(8, reps: 12)
+        entry.status = try .skipped(at: #require(entry.session).started)
+
+        #expect(entry.previous == nil)
+        #expect(entry.previousBest == nil)
+    }
+
+    @Test func differenceInRepsReadsAsACount() {
+        let target = ExerciseTarget.bodyweight(target: .init(sets: 3, reps: 12))
+
+        #expect(target.formattedRank(2) == String(localized: .exerciseTargetRepsTitle(2)))
+    }
+
+    @Test func differenceReadsInTheUnitItWasRecordedIn() throws {
         squat.type = .weight
         let earlier = try store.session(7)
         let later = try store.session(8)
@@ -1124,10 +1131,9 @@ struct SessionEntryComparisonTests {
         }
 
         let entry = try #require(later.entries.sorted().first)
-        let change = try #require(entry.change)
+        let previous = try #require(entry.previous)
 
-        #expect(change.difference == 2.5)
-        #expect(change.magnitude == Quantity(2.5, in: .kilograms).formatted)
+        #expect(entry.target.formattedRank(entry.target.rank - previous.rank) == Quantity(2.5, in: .kilograms).formatted)
     }
 
     @Test func targetsOfAnotherTypeAreNotComparable() throws {
@@ -1137,8 +1143,8 @@ struct SessionEntryComparisonTests {
         // The exercise is a weight exercise now, so neither bodyweight target can be ranked against it.
         squat.type = .weight
 
-        #expect(entry.change == nil)
-        #expect(entry.isPersonalBest == false)
+        #expect(entry.previous == nil)
+        #expect(entry.isBest == false)
     }
 }
 
@@ -1180,8 +1186,8 @@ struct SessionEntryScopeTests {
         try lift(warmupSlot, of: warmups, day: 8, kilograms: 40)
         let main = try lift(mainSlot, of: store.workout, day: 9, kilograms: 102.5)
 
-        // Without slot scoping this would read as 62.5 kg over the warmup.
-        #expect(try #require(main.change).magnitude == Quantity(2.5, in: .kilograms).formatted)
+        // Without slot scoping the previous time would be the warmup at 40 kg.
+        #expect(try #require(main.previous).formattedRank == Quantity(100, in: .kilograms).formatted)
     }
 
     @Test func trendKeepsTheTwoSlotsOfOneWorkoutApart() throws {
@@ -1198,10 +1204,7 @@ struct SessionEntryScopeTests {
         try lift(light, of: store.workout, day: 7, kilograms: 60)
         let laterHeavy = try lift(heavy, of: store.workout, day: 8, kilograms: 105)
 
-        let change = try #require(laterHeavy.change)
-
-        #expect(change.difference == 5.0)
-        #expect(change.magnitude == Quantity(5, in: .kilograms).formatted)
+        #expect(try #require(laterHeavy.previous).formattedRank == Quantity(100, in: .kilograms).formatted)
     }
 
     @Test func personalBestIsScopedToTheSlotToo() throws {
@@ -1216,20 +1219,20 @@ struct SessionEntryScopeTests {
         let first = try lift(warmupSlot, of: warmups, day: 8, kilograms: 40)
 
         // The slot has no history of its own yet, so there is nothing for the warmup to have beaten.
-        #expect(first.change == nil)
-        #expect(first.isPersonalBest == false)
+        #expect(first.previous == nil)
+        #expect(first.isBest == false)
 
         let heavier = try lift(warmupSlot, of: warmups, day: 9, kilograms: 45)
 
         // The trophy is per slot, so beating the warmup's own 40 kg earns one despite the 100 kg on record.
-        #expect(heavier.isPersonalBest)
+        #expect(heavier.isBest)
 
         let lighter = try lift(warmupSlot, of: warmups, day: 10, kilograms: 35)
 
         // The slot's own history still applies, so a lighter one afterwards doesn't.
-        #expect(lighter.isPersonalBest == false)
-        #expect(try #require(lighter.change).difference == -10.0)
-        #expect(try #require(lighter.change).magnitude == Quantity(10, in: .kilograms).formatted)
+        #expect(lighter.isBest == false)
+        #expect(try #require(lighter.previous).formattedRank == Quantity(45, in: .kilograms).formatted)
+        #expect(try #require(lighter.previousBest).formattedRank == Quantity(45, in: .kilograms).formatted)
     }
 }
 

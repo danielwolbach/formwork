@@ -28,15 +28,26 @@ public final class Workout {
         self.schedule = schedule
         self.entries = entries
     }
+}
 
-    public func append(exercise: Exercise, target: ExerciseTarget) {
+public extension Workout {
+    func append(exercise: Exercise, target: ExerciseTarget) {
         let order = (entries.map(\.order).max() ?? -1) + 1
         entries.append(WorkoutEntry(order: order, exercise: exercise, target: target))
     }
 }
 
+extension Workout: Displayable {
+    public var title: String {
+        name
+    }
+
+    public var subtitle: String? {
+        String(localized: Exercise.countTitle(entries.count))
+    }
+}
+
 public extension [Workout] {
-    /// Workouts scheduled on `date` without a finished session that day, by typical start time; never-trained ones last.
     func pending(on date: Date = .now, calendar: Calendar = .current) -> [Workout] {
         guard let day = calendar.dateInterval(of: .day, for: date) else { return [] }
 
