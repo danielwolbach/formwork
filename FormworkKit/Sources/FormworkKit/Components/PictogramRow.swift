@@ -9,8 +9,11 @@ import SwiftUI
 
 public struct PictogramRow: View {
     let pictogram: Pictogram
+
     let title: String
+
     let subtitle: String?
+
     let badge: Pictogram?
 
     public init(pictogram: Pictogram, title: String, subtitle: String? = nil, badge: Pictogram? = nil) {

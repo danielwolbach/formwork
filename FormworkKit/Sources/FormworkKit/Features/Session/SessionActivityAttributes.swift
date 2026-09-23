@@ -13,14 +13,23 @@ import Foundation
 public struct SessionActivityAttributes: ActivityAttributes {
     public struct ContentState: Codable, Hashable, Sendable {
         public var title: String
+
         public var subtitle: String?
+
         public var pictogram: Pictogram
+
         public var workout: Pictogram
+
         public var status: Pictogram?
+
         public var started: Date
+
         public var resolved: Int
+
         public var total: Int
+
         public var canMoveForward: Bool
+
         public var canMoveBackward: Bool
 
         public init(
@@ -51,8 +60,8 @@ public struct SessionActivityAttributes: ActivityAttributes {
     public init() {}
 }
 
-public extension SessionActivityAttributes.ContentState {
-    init?(session: Session) {
+extension SessionActivityAttributes.ContentState {
+    public init?(session: Session) {
         guard let current = session.currentEntry else {
             return nil
         }

@@ -8,9 +8,10 @@
 import SwiftUI
 
 public struct FixedLabelStyle: LabelStyle {
-    @ScaledMetric private var iconSize: CGFloat = 20
-
     var showsTitle: Bool = true
+
+    @ScaledMetric
+    private var iconSize: CGFloat = 20
 
     public func makeBody(configuration: Configuration) -> some View {
         HStack(spacing: 6) {
@@ -29,20 +30,21 @@ public struct FixedLabelStyle: LabelStyle {
     }
 }
 
-public extension LabelStyle where Self == FixedLabelStyle {
-    static var fixedIconOnly: FixedLabelStyle {
+extension LabelStyle where Self == FixedLabelStyle {
+    public static var fixedIconOnly: FixedLabelStyle {
         FixedLabelStyle(showsTitle: false)
     }
 
-    static var fixedTitleAndIcon: FixedLabelStyle {
+    public static var fixedTitleAndIcon: FixedLabelStyle {
         FixedLabelStyle(showsTitle: true)
     }
 }
 
 public struct ChipLabelStyle: LabelStyle {
-    @ScaledMetric private var iconSize: CGFloat = 20
-
     var tint: Color = .accentColor
+
+    @ScaledMetric
+    private var iconSize: CGFloat = 20
 
     public func makeBody(configuration: Configuration) -> some View {
         HStack(spacing: 6) {
@@ -65,8 +67,8 @@ public struct ChipLabelStyle: LabelStyle {
     }
 }
 
-public extension LabelStyle where Self == ChipLabelStyle {
-    static func chip(tint: Color = .accentColor) -> ChipLabelStyle {
+extension LabelStyle where Self == ChipLabelStyle {
+    public static func chip(tint: Color = .accentColor) -> ChipLabelStyle {
         ChipLabelStyle(tint: tint)
     }
 }
@@ -97,8 +99,8 @@ public struct CardToggleStyle: ToggleStyle {
     }
 }
 
-public extension ToggleStyle where Self == CardToggleStyle {
-    static func card(tint: Color = .accentColor) -> CardToggleStyle {
+extension ToggleStyle where Self == CardToggleStyle {
+    public static func card(tint: Color = .accentColor) -> CardToggleStyle {
         CardToggleStyle(tint: tint)
     }
 }
@@ -123,8 +125,8 @@ public struct GlassToggleStyle: ToggleStyle {
     }
 }
 
-public extension ToggleStyle where Self == GlassToggleStyle {
-    static func glass(tint: Color = .accentColor) -> GlassToggleStyle {
+extension ToggleStyle where Self == GlassToggleStyle {
+    public static func glass(tint: Color = .accentColor) -> GlassToggleStyle {
         GlassToggleStyle(tint: tint)
     }
 }
@@ -140,14 +142,18 @@ public extension ToggleStyle where Self == GlassToggleStyle {
 }
 
 #Preview("Card Toggle") {
-    @Previewable @State var selected = false
+    @Previewable
+    @State
+    var selected = false
 
     Toggle("Running", systemImage: "figure.run", isOn: $selected)
         .toggleStyle(.card())
 }
 
 #Preview("Glass Toggle") {
-    @Previewable @State var selected = false
+    @Previewable
+    @State
+    var selected = false
 
     Toggle("Running", systemImage: "figure.run", isOn: $selected)
         .toggleStyle(.glass())

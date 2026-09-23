@@ -46,20 +46,6 @@ public struct HeatmapCard: View {
         .clipShape(.rect(cornerRadius: 16, style: .continuous))
     }
 
-    private func cell(_ style: some ShapeStyle) -> some View {
-        RoundedRectangle(cornerRadius: 4, style: .continuous)
-            .fill(style)
-            .aspectRatio(1, contentMode: .fit)
-    }
-
-    private func column(of week: Heatmap.Week) -> some View {
-        VStack(spacing: 2) {
-            ForEach(week.days) { day in
-                cell(fill(of: day))
-            }
-        }
-    }
-
     private var weekdays: some View {
         VStack(spacing: 2) {
             ForEach(heatmap.weekdays) { weekday in
@@ -73,6 +59,20 @@ public struct HeatmapCard: View {
         }
         .font(.caption2)
         .foregroundStyle(.tertiary)
+    }
+
+    private func cell(_ style: some ShapeStyle) -> some View {
+        RoundedRectangle(cornerRadius: 4, style: .continuous)
+            .fill(style)
+            .aspectRatio(1, contentMode: .fit)
+    }
+
+    private func column(of week: Heatmap.Week) -> some View {
+        VStack(spacing: 2) {
+            ForEach(week.days) { day in
+                cell(fill(of: day))
+            }
+        }
     }
 
     private func fill(of day: Heatmap.Day) -> AnyShapeStyle {

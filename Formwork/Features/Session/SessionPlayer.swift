@@ -9,10 +9,12 @@ import FormworkKit
 import SwiftUI
 
 struct SessionPlayer: View {
-    @State private var navigator: SessionNavigator
-
     let session: Session
+
     let requestFinish: () -> Void
+
+    @State
+    private var navigator: SessionNavigator
 
     init(session: Session, requestFinish: @escaping () -> Void) {
         self.session = session
@@ -96,7 +98,8 @@ struct SessionPlayer: View {
 }
 
 private struct SessionEntryPage: View {
-    @Bindable var entry: SessionEntry
+    @Bindable
+    var entry: SessionEntry
 
     var body: some View {
         let badge = entry.status.isPending ? nil : entry.status.pictogram

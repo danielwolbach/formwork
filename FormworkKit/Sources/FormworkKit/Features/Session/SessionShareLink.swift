@@ -10,9 +10,10 @@ import SwiftUI
 import UniformTypeIdentifiers
 
 public struct SessionShareLink: View {
-    @State private var shareImage: SessionShareImage?
-
     private let session: Session
+
+    @State
+    private var shareImage: SessionShareImage?
 
     public init(session: Session) {
         self.session = session
@@ -46,11 +47,18 @@ public struct SessionShareLink: View {
 
 private struct SessionShareCard: View {
     let session: Session
+
     let tint: Color
 
     init(session: Session) {
         self.session = session
         self.tint = session.workout?.pictogram.color ?? Pictogram.workout.color
+    }
+
+    private static var appName: String {
+        Bundle.main.object(forInfoDictionaryKey: "CFBundleDisplayName") as? String
+            ?? Bundle.main.object(forInfoDictionaryKey: "CFBundleName") as? String
+            ?? "Formwork"
     }
 
     var body: some View {
@@ -167,16 +175,11 @@ private struct SessionShareCard: View {
             .clipShape(.rect(cornerRadius: 16, style: .continuous))
         }
     }
-
-    private static var appName: String {
-        Bundle.main.object(forInfoDictionaryKey: "CFBundleDisplayName") as? String
-            ?? Bundle.main.object(forInfoDictionaryKey: "CFBundleName") as? String
-            ?? "Formwork"
-    }
 }
 
 private struct SessionShareImage: Transferable {
     let image: UIImage
+
     let name: String
 
     @MainActor

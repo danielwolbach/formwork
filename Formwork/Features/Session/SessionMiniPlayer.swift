@@ -10,11 +10,15 @@ import SwiftData
 import SwiftUI
 
 struct SessionMiniPlayer: View {
-    @Environment(\.presentSession) private var presentSession: PresentSessionAction
-    @State private var navigator: SessionNavigator
-
     let session: Session
+
     let namespace: Namespace.ID
+
+    @Environment(\.presentSession)
+    private var presentSession: PresentSessionAction
+
+    @State
+    private var navigator: SessionNavigator
 
     init(session: Session, namespace: Namespace.ID) {
         self.session = session
@@ -45,32 +49,6 @@ struct SessionMiniPlayer: View {
         .onTapGesture {
             presentSession(session)
         }
-    }
-
-    @ViewBuilder
-    private func row(for entry: SessionEntry) -> some View {
-        let badge = entry.status.isPending ? nil : entry.status.pictogram
-
-        HStack {
-            PictogramView(pictogram: entry.pictogram, badge: badge)
-                .frame(width: 32)
-
-            VStack(alignment: .leading, spacing: 0) {
-                Text(entry.title)
-                    .font(.caption)
-
-                if let subtitle = entry.subtitle {
-                    Text(subtitle)
-                        .font(.caption2)
-                        .foregroundStyle(.secondary)
-                }
-            }
-
-            Spacer()
-        }
-        .padding(.horizontal)
-        .contentShape(.rect)
-        .accessibilityAddTraits(.isButton)
     }
 
     @ViewBuilder
@@ -118,6 +96,32 @@ struct SessionMiniPlayer: View {
             .contentTransition(.numericText(value: Double(session.resolvedCount)))
     }
 
+    @ViewBuilder
+    private func row(for entry: SessionEntry) -> some View {
+        let badge = entry.status.isPending ? nil : entry.status.pictogram
+
+        HStack {
+            PictogramView(pictogram: entry.pictogram, badge: badge)
+                .frame(width: 32)
+
+            VStack(alignment: .leading, spacing: 0) {
+                Text(entry.title)
+                    .font(.caption)
+
+                if let subtitle = entry.subtitle {
+                    Text(subtitle)
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                }
+            }
+
+            Spacer()
+        }
+        .padding(.horizontal)
+        .contentShape(.rect)
+        .accessibilityAddTraits(.isButton)
+    }
+
     private func completeCurrentEntry() {
         Haptics.impact(.medium)
         navigator.complete()
@@ -125,7 +129,9 @@ struct SessionMiniPlayer: View {
 }
 
 #Preview {
-    @Previewable @Namespace var namespace
+    @Previewable
+    @Namespace
+    var namespace
 
     TabView {
         // Empty.

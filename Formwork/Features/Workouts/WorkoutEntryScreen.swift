@@ -10,11 +10,17 @@ import SwiftData
 import SwiftUI
 
 struct WorkoutEntryScreen: View {
-    @Environment(\.modelContext) private var modelContext: ModelContext
-    @Environment(\.dismiss) private var dismiss: DismissAction
-    @State private var deleteAlert: Bool = false
+    @Bindable
+    var entry: WorkoutEntry
 
-    @Bindable var entry: WorkoutEntry
+    @Environment(\.modelContext)
+    private var modelContext: ModelContext
+
+    @Environment(\.dismiss)
+    private var dismiss: DismissAction
+
+    @State
+    private var deleteAlert: Bool = false
 
     var body: some View {
         ScrollView {

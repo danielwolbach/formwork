@@ -21,5 +21,6 @@ struct PresentSessionAction {
 }
 
 extension EnvironmentValues {
-    @Entry var presentSession = PresentSessionAction { _ in }
+    @Entry
+    var presentSession = PresentSessionAction { _ in }
 }

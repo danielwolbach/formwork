@@ -52,7 +52,8 @@ extension TestStore {
 // MARK: - Metric
 
 struct MetricTests {
-    @Test func missingValueHasNoSubtitle() {
+    @Test
+    func missingValueHasNoSubtitle() {
         let statistic = Metric<Date>.lastCompleted(nil, in: nil, calendar: .berlin())
 
         #expect(statistic.value == nil)
@@ -61,16 +62,19 @@ struct MetricTests {
         #expect(statistic.pictogram == .date)
     }
 
-    @Test func valueIsFormattedAsSubtitle() {
+    @Test
+    func valueIsFormattedAsSubtitle() {
         #expect(Metric<Int>.completions(3).subtitle == "3")
     }
 
-    @Test func sessionsPerWeekShowAtMostOneDecimal() {
+    @Test
+    func sessionsPerWeekShowAtMostOneDecimal() {
         #expect(Metric<Double>.sessionsPerWeek(2).subtitle == 2.0.formatted(.number.precision(.fractionLength(0 ... 1))))
         #expect(Metric<Double>.sessionsPerWeek(1.46).subtitle == 1.5.formatted(.number.precision(.fractionLength(0 ... 1))))
     }
 
-    @Test func lastCompletedWithinAWeekIsRelative() throws {
+    @Test
+    func lastCompletedWithinAWeekIsRelative() throws {
         let date = try #require(Calendar.berlin().date(byAdding: .day, value: -2, to: .now))
         var style = Date.RelativeFormatStyle(presentation: .named, calendar: .berlin(), capitalizationContext: .beginningOfSentence)
         style.allowedFields = [.day]
@@ -78,7 +82,8 @@ struct MetricTests {
         #expect(Metric<Date>.lastCompleted(date, in: nil, calendar: .berlin()).subtitle == date.formatted(style))
     }
 
-    @Test func lastCompletedTodayIsTheDayAndNotTheHour() throws {
+    @Test
+    func lastCompletedTodayIsTheDayAndNotTheHour() throws {
         // Two times on the same day, so neither may be shown as hours or minutes ago.
         let calendar = Calendar.berlin()
         let midnight = calendar.startOfDay(for: .now)
@@ -90,7 +95,8 @@ struct MetricTests {
         )
     }
 
-    @Test func lastCompletedEarlierIsItsDateInTheCalendar() throws {
+    @Test
+    func lastCompletedEarlierIsItsDateInTheCalendar() throws {
         // 23:30 on May 28 in New York is already May 29 in Berlin.
         let calendar = Calendar.berlin()
         var newYork = calendar
@@ -103,7 +109,8 @@ struct MetricTests {
         #expect(try statistic.subtitle == calendar.date(28, month: 5, year: 2025).formatted(style))
     }
 
-    @Test func typicalStartTimeIsFormattedInTheCalendarsTimeZone() throws {
+    @Test
+    func typicalStartTimeIsFormattedInTheCalendarsTimeZone() throws {
         var tokyo = Calendar.berlin(), newYork = Calendar.berlin()
         tokyo.timeZone = try #require(TimeZone(identifier: "Asia/Tokyo"))
         newYork.timeZone = try #require(TimeZone(identifier: "America/New_York"))
@@ -138,14 +145,16 @@ struct MetricTests {
 struct DateIntervalTests {
     let calendar = Calendar.berlin()
 
-    @Test func monthRunsFromMidnightOnTheFirstToTheNextMonth() throws {
+    @Test
+    func monthRunsFromMidnightOnTheFirstToTheNextMonth() throws {
         let interval = DateInterval.month(9, year: 2026, calendar: calendar)
 
         #expect(try interval.start == calendar.date(1, month: 9, hour: 0))
         #expect(try interval.end == calendar.date(1, month: 10, hour: 0))
     }
 
-    @Test func decemberEndsInTheNextYear() throws {
+    @Test
+    func decemberEndsInTheNextYear() throws {
         let interval = DateInterval.month(12, year: 2026, calendar: calendar)
 
         #expect(try interval.end == calendar.date(1, month: 1, year: 2027, hour: 0))
@@ -158,14 +167,16 @@ struct DateIntervalTests {
         #expect(calendar.dateComponents([.day], from: interval.start, to: interval.end).day == days)
     }
 
-    @Test func monthFollowsDaylightSavingTime() {
+    @Test
+    func monthFollowsDaylightSavingTime() {
         // Daylight saving time ends in October, so it's one hour longer than 31 days.
         let interval = DateInterval.month(10, year: 2026, calendar: calendar)
 
         #expect(interval.duration == TimeInterval(31 * 24 * 3600 + 3600))
     }
 
-    @Test func monthBoundariesUseTheCalendarsTimeZone() throws {
+    @Test
+    func monthBoundariesUseTheCalendarsTimeZone() throws {
         var tokyo = calendar
         tokyo.timeZone = try #require(TimeZone(identifier: "Asia/Tokyo"))
 
@@ -175,21 +186,24 @@ struct DateIntervalTests {
         #expect(berlin.start.timeIntervalSince(japan.start) == 7 * 3600)
     }
 
-    @Test func yearRunsFromNewYearToNewYear() throws {
+    @Test
+    func yearRunsFromNewYearToNewYear() throws {
         let interval = DateInterval.year(2026, calendar: calendar)
 
         #expect(try interval.start == calendar.date(1, month: 1, hour: 0))
         #expect(try interval.end == calendar.date(1, month: 1, year: 2027, hour: 0))
     }
 
-    @Test func yearDefaultsToTheCurrentOne() {
+    @Test
+    func yearDefaultsToTheCurrentOne() {
         let year = calendar.component(.year, from: .now)
 
         #expect(DateInterval.year(calendar: calendar) == .year(year, calendar: calendar))
         #expect(DateInterval.month(3, calendar: calendar) == .month(3, year: year, calendar: calendar))
     }
 
-    @Test func allTimeRunsFromTheDistantPastToTheDistantFuture() {
+    @Test
+    func allTimeRunsFromTheDistantPastToTheDistantFuture() {
         #expect(DateInterval.allTime.start == .distantPast)
         // `DateInterval` stores a duration, so the end is only accurate to a few microseconds.
         #expect(abs(DateInterval.allTime.end.timeIntervalSince(.distantFuture)) < 0.001)
@@ -201,13 +215,15 @@ struct DateIntervalTests {
 @MainActor
 struct WallClockTests {
     let store: TestStore
+
     let calendar = Calendar.berlin()
 
     init() throws {
         self.store = try TestStore()
     }
 
-    @Test func fallsIntoTheDayItWasRecordedOn() throws {
+    @Test
+    func fallsIntoTheDayItWasRecordedOn() throws {
         // Sunday 23:00 in New York is already Monday in Berlin.
         let session = try store.session(13, hour: 23, zone: "America/New_York")
         let sunday = try #require(calendar.dateInterval(of: .day, for: calendar.date(13)))
@@ -217,7 +233,8 @@ struct WallClockTests {
         #expect(!session.falls(into: monday, in: calendar))
     }
 
-    @Test func periodIsTheOneItWasRecordedIn() throws {
+    @Test
+    func periodIsTheOneItWasRecordedIn() throws {
         // Sunday 23:00 in New York is already Monday in Berlin, the start of the next week.
         let session = try store.session(13, hour: 23, zone: "America/New_York")
 
@@ -235,7 +252,8 @@ struct WallClockTests {
         #expect(session.falls(into: monday, in: calendar))
     }
 
-    @Test func sessionEndingTheDayFallsIntoIt() throws {
+    @Test
+    func sessionEndingTheDayFallsIntoIt() throws {
         let session = try store.session(13, hour: 23, minute: 59, zone: "America/New_York")
         session.started = session.started.addingTimeInterval(59.75)
         let sunday = try #require(calendar.dateInterval(of: .day, for: calendar.date(13)))
@@ -243,14 +261,16 @@ struct WallClockTests {
         #expect(session.falls(into: sunday, in: calendar))
     }
 
-    @Test func startMinuteIsTheClockTimeItWasRecordedAt() throws {
+    @Test
+    func startMinuteIsTheClockTimeItWasRecordedAt() throws {
         // 08:30 in New York is 14:30 in Berlin, but the user saw 08:30.
         let session = try store.session(14, hour: 8, minute: 30, zone: "America/New_York")
 
         #expect(session.startMinute(in: calendar) == 8 * 60 + 30)
     }
 
-    @Test func unknownTimeZoneFallsBackToTheCurrentOne() throws {
+    @Test
+    func unknownTimeZoneFallsBackToTheCurrentOne() throws {
         let session = try store.session(14)
         session.timeZoneIdentifier = "Nowhere/Invalid"
 
@@ -263,14 +283,11 @@ struct WallClockTests {
 @MainActor
 struct OverallStatisticsTests {
     let store: TestStore
+
     let calendar = Calendar.berlin()
 
     init() throws {
         self.store = try TestStore()
-    }
-
-    func statistics(at now: Date, in interval: DateInterval = .allTime, calendar: Calendar? = nil) -> OverallStatistics {
-        OverallStatistics(sessions: sessions, interval: interval, now: now, calendar: calendar ?? self.calendar)
     }
 
     /// Every session in the store, whichever workout it belongs to: the overall statistics are read over all
@@ -279,11 +296,16 @@ struct OverallStatisticsTests {
         (try? store.context.fetch(FetchDescriptor<Session>())) ?? []
     }
 
+    func statistics(at now: Date, in interval: DateInterval = .allTime, calendar: Calendar? = nil) -> OverallStatistics {
+        OverallStatistics(sessions: sessions, interval: interval, now: now, calendar: calendar ?? self.calendar)
+    }
+
     func month(_ month: Int) throws -> DateInterval {
         try #require(calendar.dateInterval(of: .month, for: calendar.date(10, month: month)))
     }
 
-    @Test func withoutSessionsThereIsNoStreak() throws {
+    @Test
+    func withoutSessionsThereIsNoStreak() throws {
         let statistics = try statistics(at: calendar.date(16))
 
         #expect(statistics.weekStreak.value == 0)
@@ -291,7 +313,8 @@ struct OverallStatisticsTests {
         #expect(statistics.lastSession.value == nil)
     }
 
-    @Test func unfinishedWeekDoesNotBreakTheStreak() throws {
+    @Test
+    func unfinishedWeekDoesNotBreakTheStreak() throws {
         // Weeks of Aug 24, Aug 31 and Sep 7. Nothing yet in the week of Sep 14.
         try store.session(25, month: 8)
         try store.session(1)
@@ -304,14 +327,16 @@ struct OverallStatisticsTests {
         #expect(try statistics(at: calendar.date(16)).weekStreak.value == 4)
     }
 
-    @Test func emptyWeekBreaksTheStreak() throws {
+    @Test
+    func emptyWeekBreaksTheStreak() throws {
         try store.session(1)
         try store.session(3)
 
         #expect(try statistics(at: calendar.date(16)).weekStreak.value == 0)
     }
 
-    @Test func severalSessionsInOneWeekCountOnce() throws {
+    @Test
+    func severalSessionsInOneWeekCountOnce() throws {
         for day in [7, 8, 9, 14] {
             try store.session(day)
         }
@@ -319,7 +344,8 @@ struct OverallStatisticsTests {
         #expect(try statistics(at: calendar.date(16)).weekStreak.value == 2)
     }
 
-    @Test func runningSessionDoesNotCount() throws {
+    @Test
+    func runningSessionDoesNotCount() throws {
         try store.session(9)
         let running = try store.startSession()
         running.started = try calendar.date(15, hour: 8)
@@ -339,7 +365,8 @@ struct OverallStatisticsTests {
         #expect(try statistics(at: calendar.date(13), calendar: calendar).weekStreak.value == streak)
     }
 
-    @Test func streakSurvivesDaylightSavingTimeChanges() throws {
+    @Test
+    func streakSurvivesDaylightSavingTimeChanges() throws {
         // Daylight saving time ends on Sunday, Oct 25.
         try store.session(20, month: 10)
         try store.session(25, month: 10, hour: 22)
@@ -349,7 +376,8 @@ struct OverallStatisticsTests {
         #expect(try statistics(at: calendar.date(4, month: 11)).weekStreak.value == 3)
     }
 
-    @Test func sessionsAreDatedByTheirRecordedTimeZone() throws {
+    @Test
+    func sessionsAreDatedByTheirRecordedTimeZone() throws {
         // Sunday 23:00 in New York is already Monday in Berlin, but it belongs to the week it was recorded in.
         try store.session(13, hour: 23, zone: "America/New_York")
         try store.session(7)
@@ -357,7 +385,8 @@ struct OverallStatisticsTests {
         #expect(try statistics(at: calendar.date(16)).weekStreak.value == 1)
     }
 
-    @Test func recentSessionRecordedFurtherEastCounts() throws {
+    @Test
+    func recentSessionRecordedFurtherEastCounts() throws {
         // Trained in Berlin until 09:00, then flew to New York, where it's 05:00, two hours later.
         // By the clock it was recorded at, the session ended four hours from now.
         let session = try store.session(15)
@@ -380,7 +409,8 @@ struct OverallStatisticsTests {
         #expect(try statistics(at: calendar.date(16), in: self.month(month)).weekStreak.value == streak)
     }
 
-    @Test func pastIntervalKeepsTheStreakItEndedWith() throws {
+    @Test
+    func pastIntervalKeepsTheStreakItEndedWith() throws {
         // Every week from Apr 27 to the week of Jun 1. The session on Jun 2 doesn't count for May.
         for (day, month) in [(28, 4), (5, 5), (12, 5), (19, 5), (26, 5), (2, 6)] {
             try store.session(day, month: month)
@@ -393,7 +423,8 @@ struct OverallStatisticsTests {
         #expect(try statistics(at: calendar.date(10, month: 6)).weekStreak.value == 6)
     }
 
-    @Test func pastIntervalIsAsSeenOnItsLastDay() throws {
+    @Test
+    func pastIntervalIsAsSeenOnItsLastDay() throws {
         // Every week from Apr 27 to May 18. On Sunday, May 31, the week of May 25 isn't over yet.
         for (day, month) in [(28, 4), (5, 5), (12, 5), (19, 5)] {
             try store.session(day, month: month)
@@ -402,7 +433,8 @@ struct OverallStatisticsTests {
         #expect(try statistics(at: calendar.date(10, month: 6), in: month(5)).weekStreak.value == 4)
     }
 
-    @Test func longestStreakIsTheBestOneWhenTheIntervalEnded() throws {
+    @Test
+    func longestStreakIsTheBestOneWhenTheIntervalEnded() throws {
         // Five weeks from Jul 6 to Aug 3, a gap, then four weeks from Sep 7 to Sep 28.
         for (day, month) in [(6, 7), (13, 7), (20, 7), (27, 7), (3, 8), (7, 9), (14, 9), (21, 9), (28, 9)] {
             try store.session(day, month: month)
@@ -414,7 +446,8 @@ struct OverallStatisticsTests {
         #expect(september.longestWeekStreak.value == 5)
     }
 
-    @Test func intervalInTheFutureHasNoStreak() throws {
+    @Test
+    func intervalInTheFutureHasNoStreak() throws {
         try store.session(7)
         try store.session(14)
 
@@ -424,7 +457,8 @@ struct OverallStatisticsTests {
         #expect(october.longestWeekStreak.value == 0)
     }
 
-    @Test func longestStreakCountsItsWeeksBeforeTheInterval() throws {
+    @Test
+    func longestStreakCountsItsWeeksBeforeTheInterval() throws {
         // Weeks of Aug 24, Aug 31 and Sep 7, a gap, then the week of Sep 21.
         try store.session(24, month: 8)
         try store.session(1)
@@ -437,7 +471,8 @@ struct OverallStatisticsTests {
         #expect(statistics.weekStreak.value == 1)
     }
 
-    @Test func longestStreakDoesNotCountWeeksAfterTheInterval() throws {
+    @Test
+    func longestStreakDoesNotCountWeeksAfterTheInterval() throws {
         // Weeks of Aug 24, Aug 31, Sep 7 and Sep 14.
         for (day, month) in [(24, 8), (31, 8), (7, 9), (14, 9)] {
             try store.session(day, month: month)
@@ -462,7 +497,8 @@ struct OverallStatisticsTests {
         return workout
     }
 
-    @Test func completionsCountTheFinishedSessionsOfTheInterval() throws {
+    @Test
+    func completionsCountTheFinishedSessionsOfTheInterval() throws {
         try store.session(31, month: 8)
         try store.session(7)
         try store.session(8)
@@ -472,14 +508,16 @@ struct OverallStatisticsTests {
         #expect(try statistics(at: calendar.date(16), in: month(9)).completions.value == 2)
     }
 
-    @Test func withoutSessionsThereIsNoFavouriteWorkout() throws {
+    @Test
+    func withoutSessionsThereIsNoFavouriteWorkout() throws {
         let statistics = try statistics(at: calendar.date(16))
 
         #expect(statistics.completions.value == 0)
         #expect(statistics.favoriteWorkout.value == nil)
     }
 
-    @Test func favoriteWorkoutIsTheOneDoneMostOften() throws {
+    @Test
+    func favoriteWorkoutIsTheOneDoneMostOften() throws {
         let legs = workout("Leg Day")
         try store.session(7)
         try store.session(8)
@@ -491,7 +529,8 @@ struct OverallStatisticsTests {
         #expect(statistics.favoriteWorkout.subtitle == store.workout.name)
     }
 
-    @Test func workoutsLevelOnCountGoToTheOneDoneLast() throws {
+    @Test
+    func workoutsLevelOnCountGoToTheOneDoneLast() throws {
         let legs = workout("Leg Day")
         try store.session(7)
         try session(of: legs, day: 8)
@@ -506,7 +545,8 @@ struct OverallStatisticsTests {
         #expect(try statistics(at: calendar.date(16)).favoriteWorkout.value === store.workout)
     }
 
-    @Test func favoriteWorkoutCountsOnlyTheIntervalsSessions() throws {
+    @Test
+    func favoriteWorkoutCountsOnlyTheIntervalsSessions() throws {
         let legs = workout("Leg Day")
         try session(of: legs, day: 25, month: 8)
         try session(of: legs, day: 26, month: 8)
@@ -516,14 +556,16 @@ struct OverallStatisticsTests {
         #expect(try statistics(at: calendar.date(16)).favoriteWorkout.value === legs)
     }
 
-    @Test func withoutSessionsThereIsNoTypicalSessionEither() throws {
+    @Test
+    func withoutSessionsThereIsNoTypicalSessionEither() throws {
         let statistics = try statistics(at: calendar.date(16))
 
         #expect(statistics.typicalDuration.value == nil)
         #expect(statistics.typicalStartTime.value == nil)
     }
 
-    @Test func typicalSessionIsTheMedianLengthAndARecordedStartTime() throws {
+    @Test
+    func typicalSessionIsTheMedianLengthAndARecordedStartTime() throws {
         for (day, hour, minutes) in [(7, 7, 30), (8, 8, 60), (9, 19, 120)] {
             try store.session(day, hour: hour, minutes: minutes)
         }
@@ -535,7 +577,8 @@ struct OverallStatisticsTests {
         #expect(statistics.typicalStartTime.value == DateComponents(hour: 8, minute: 0))
     }
 
-    @Test func typicalSessionCountsOnlyTheIntervalsSessions() throws {
+    @Test
+    func typicalSessionCountsOnlyTheIntervalsSessions() throws {
         try store.session(31, month: 8, hour: 7, minutes: 30)
         try store.session(7, hour: 19, minutes: 90)
 
@@ -545,11 +588,13 @@ struct OverallStatisticsTests {
         #expect(statistics.typicalStartTime.value == DateComponents(hour: 19, minute: 0))
     }
 
-    @Test func withoutSessionsThereAreNoSessionsPerWeek() throws {
+    @Test
+    func withoutSessionsThereAreNoSessionsPerWeek() throws {
         #expect(try statistics(at: calendar.date(16)).sessionsPerWeek.value == nil)
     }
 
-    @Test func sessionsPerWeekCountFromTheFirstSessionToToday() throws {
+    @Test
+    func sessionsPerWeekCountFromTheFirstSessionToToday() throws {
         // Four sessions over the two weeks from Sep 1 through Sep 14.
         for day in [1, 3, 8, 10] {
             try store.session(day)
@@ -558,13 +603,15 @@ struct OverallStatisticsTests {
         #expect(try statistics(at: calendar.date(14)).sessionsPerWeek.value == 2)
     }
 
-    @Test func sessionsPerWeekCoverAtLeastAWeek() throws {
+    @Test
+    func sessionsPerWeekCoverAtLeastAWeek() throws {
         try store.session(15)
 
         #expect(try statistics(at: calendar.date(16)).sessionsPerWeek.value == 1)
     }
 
-    @Test func sessionsPerWeekCountTheDaysOfTheIntervalSinceTheFirstSession() throws {
+    @Test
+    func sessionsPerWeekCountTheDaysOfTheIntervalSinceTheFirstSession() throws {
         // September started before Sep 8 and is ongoing, so it covers the two weeks from Sep 8 through Sep 21.
         try store.session(8)
         try store.session(10)
@@ -572,7 +619,8 @@ struct OverallStatisticsTests {
         #expect(try statistics(at: calendar.date(21), in: month(9)).sessionsPerWeek.value == 1)
     }
 
-    @Test func pastIntervalCountsItsWholeLengthForSessionsPerWeek() throws {
+    @Test
+    func pastIntervalCountsItsWholeLengthForSessionsPerWeek() throws {
         // August has 31 days. The sessions in July and September only mark when training began and don't count.
         for (day, month) in [(20, 7), (3, 8), (17, 8), (7, 9)] {
             try store.session(day, month: month)
@@ -583,13 +631,15 @@ struct OverallStatisticsTests {
         #expect(abs(rate - 2 / (31.0 / 7)) < 1e-9)
     }
 
-    @Test func intervalInTheFutureHasNoSessionsPerWeek() throws {
+    @Test
+    func intervalInTheFutureHasNoSessionsPerWeek() throws {
         try store.session(7)
 
         #expect(try statistics(at: calendar.date(16), in: month(10)).sessionsPerWeek.value == nil)
     }
 
-    @Test func intervalIsHalfOpen() throws {
+    @Test
+    func intervalIsHalfOpen() throws {
         // Starts exactly at midnight on Oct 1, so it belongs to October only.
         try store.session(1, month: 10, hour: 0)
 
@@ -599,7 +649,8 @@ struct OverallStatisticsTests {
         #expect(try statistics(at: now, in: month(10)).lastSession.value != nil)
     }
 
-    @Test func sessionBelongsToTheIntervalItStartedIn() throws {
+    @Test
+    func sessionBelongsToTheIntervalItStartedIn() throws {
         // Starts on Sep 30 at 23:30 and ends in October.
         try store.session(30, hour: 23, minute: 30)
 
@@ -615,6 +666,7 @@ struct OverallStatisticsTests {
 @MainActor
 struct WorkoutStatisticsTests {
     let store: TestStore
+
     let calendar = Calendar.berlin()
 
     init() throws {
@@ -625,7 +677,8 @@ struct WorkoutStatisticsTests {
         WorkoutStatistics(workout: store.workout, interval: interval, calendar: calendar)
     }
 
-    @Test func workoutWithoutSessionsHasNoValues() {
+    @Test
+    func workoutWithoutSessionsHasNoValues() {
         let statistics = statistics()
 
         #expect(statistics.lastCompleted.value == nil)
@@ -636,7 +689,8 @@ struct WorkoutStatisticsTests {
         #expect(statistics.mostSkippedExercise.value == nil)
     }
 
-    @Test func countsFinishedSessionsAndMostSkippedExercise() throws {
+    @Test
+    func countsFinishedSessionsAndMostSkippedExercise() throws {
         for day in [7, 8] {
             try store.session(day) { session in
                 session.completeAndAdvance()
@@ -652,7 +706,8 @@ struct WorkoutStatisticsTests {
         #expect(try statistics.lastCompleted.value == calendar.date(8, hour: 9))
     }
 
-    @Test func completionRateCoversEveryExerciseOfFinishedSessions() throws {
+    @Test
+    func completionRateCoversEveryExerciseOfFinishedSessions() throws {
         try store.session(7) { session in
             session.completeAndAdvance()
             session.completeAndAdvance()
@@ -669,7 +724,8 @@ struct WorkoutStatisticsTests {
         #expect(statistics().completionRate.value == 4.0 / 6.0)
     }
 
-    @Test func typicalDurationIsTheMedian() throws {
+    @Test
+    func typicalDurationIsTheMedian() throws {
         for (day, minutes) in [(7, 30), (8, 60), (9, 120)] {
             try store.session(day, minutes: minutes)
         }
@@ -677,7 +733,8 @@ struct WorkoutStatisticsTests {
         #expect(statistics().typicalDuration.value == .seconds(3600))
     }
 
-    @Test func typicalStartTimeIsARecordedStartTime() throws {
+    @Test
+    func typicalStartTimeIsARecordedStartTime() throws {
         for (day, hour, minute) in [(7, 7, 0), (8, 8, 15), (9, 19, 30)] {
             try store.session(day, hour: hour, minute: minute)
         }
@@ -685,7 +742,8 @@ struct WorkoutStatisticsTests {
         #expect(statistics().typicalStartTime.value == DateComponents(hour: 8, minute: 15))
     }
 
-    @Test func typicalStartTimeIsNeverBetweenTwoStartTimes() throws {
+    @Test
+    func typicalStartTimeIsNeverBetweenTwoStartTimes() throws {
         // An even count: the middle of 07:00 and 19:30 is 13:15, which was never trained at.
         try store.session(7, hour: 7)
         try store.session(8, hour: 19, minute: 30)
@@ -693,7 +751,8 @@ struct WorkoutStatisticsTests {
         #expect(statistics().typicalStartTime.value == DateComponents(hour: 7, minute: 0))
     }
 
-    @Test func typicalStartTimeWrapsAroundMidnight() throws {
+    @Test
+    func typicalStartTimeWrapsAroundMidnight() throws {
         // 23:30 and 00:30 are an hour apart on the clock, so neither midday nor anything between them.
         try store.session(7, hour: 23, minute: 30)
         try store.session(9, hour: 0, minute: 30)
@@ -702,7 +761,8 @@ struct WorkoutStatisticsTests {
         #expect(statistics().typicalStartTime.value == DateComponents(hour: 0, minute: 30))
     }
 
-    @Test func typicalStartTimeUsesTheRecordedTimeZone() throws {
+    @Test
+    func typicalStartTimeUsesTheRecordedTimeZone() throws {
         // 08:00 in New York is 14:00 in Berlin, but the user saw 08:00.
         try store.session(7, hour: 8)
         try store.session(8, hour: 8, zone: "America/New_York")
@@ -710,7 +770,8 @@ struct WorkoutStatisticsTests {
         #expect(statistics().typicalStartTime.value == DateComponents(hour: 8, minute: 0))
     }
 
-    @Test func lastCompletedShowsTheDayItStartedOnItsClock() throws {
+    @Test
+    func lastCompletedShowsTheDayItStartedOnItsClock() throws {
         // Runs from 23:30 on May 28 to 00:30 on May 29 in New York. It started at 05:30 on May 29 in Berlin.
         try store.session(28, month: 5, hour: 23, minute: 30, zone: "America/New_York")
         let subtitle = statistics().lastCompleted.subtitle
@@ -719,7 +780,8 @@ struct WorkoutStatisticsTests {
         #expect(try subtitle != Metric<Date>.lastCompleted(calendar.date(29, month: 5), in: nil, calendar: calendar).subtitle)
     }
 
-    @Test func onlySessionsWithinTheIntervalCount() throws {
+    @Test
+    func onlySessionsWithinTheIntervalCount() throws {
         try store.session(31, month: 8)
         try store.session(7)
         try store.session(14)
@@ -737,7 +799,9 @@ struct WorkoutStatisticsTests {
 @MainActor
 struct ExerciseStatisticsTests {
     let store: TestStore
+
     let squat: Exercise
+
     let calendar = Calendar.berlin()
 
     init() throws {
@@ -749,7 +813,8 @@ struct ExerciseStatisticsTests {
         ExerciseStatistics(exercise: squat, interval: interval, calendar: calendar)
     }
 
-    @Test func exerciseWithoutSessionsHasNoValues() {
+    @Test
+    func exerciseWithoutSessionsHasNoValues() {
         let statistics = statistics()
 
         #expect(statistics.lastCompleted.value == nil)
@@ -759,7 +824,8 @@ struct ExerciseStatisticsTests {
         #expect(statistics.completions.subtitle == "0")
     }
 
-    @Test func onlyFinishedSessionsCount() throws {
+    @Test
+    func onlyFinishedSessionsCount() throws {
         try store.session(7) { $0.completeAndAdvance() }
         let running = try store.startSession()
         running.skipAndAdvance()
@@ -771,7 +837,8 @@ struct ExerciseStatisticsTests {
         #expect(statistics.lastCompleted.value != nil)
     }
 
-    @Test func skippedEntriesLowerTheCompletionRate() throws {
+    @Test
+    func skippedEntriesLowerTheCompletionRate() throws {
         try store.session(7) { $0.completeAndAdvance() }
         try store.session(8) { $0.skipAndAdvance() }
 
@@ -781,7 +848,8 @@ struct ExerciseStatisticsTests {
         #expect(statistics.completionRate.value == 0.5)
     }
 
-    @Test func onlySessionsWithinTheIntervalCount() throws {
+    @Test
+    func onlySessionsWithinTheIntervalCount() throws {
         try store.session(31, month: 8) { $0.completeAndAdvance() }
         try store.session(7) { $0.skipAndAdvance() }
 
@@ -792,7 +860,8 @@ struct ExerciseStatisticsTests {
         #expect(statistics.personalBest.value == nil)
     }
 
-    @Test func personalBestIgnoresTargetsOfAnotherType() throws {
+    @Test
+    func personalBestIgnoresTargetsOfAnotherType() throws {
         try store.session(7) { $0.completeAndAdvance() }
 
         #expect(statistics().personalBest.value?.bodyweightTarget == .init(sets: 3, reps: 10))
@@ -808,6 +877,7 @@ struct ExerciseStatisticsTests {
 @MainActor
 struct SessionSummaryTests {
     let store: TestStore
+
     let calendar = Calendar.berlin()
 
     init() throws {
@@ -825,7 +895,8 @@ struct SessionSummaryTests {
         }
     }
 
-    @Test func unfinishedSessionHasNoDurationOrEndTime() throws {
+    @Test
+    func unfinishedSessionHasNoDurationOrEndTime() throws {
         let unfinished = try summary(store.startSession())
 
         #expect(unfinished.duration.value == nil)
@@ -834,7 +905,8 @@ struct SessionSummaryTests {
         #expect(unfinished.skipRate.value == 0)
     }
 
-    @Test func durationIsTheTimeFromStartToFinish() throws {
+    @Test
+    func durationIsTheTimeFromStartToFinish() throws {
         #expect(try summary(store.session(7, minutes: 45)).duration.value == .seconds(45 * 60))
     }
 
@@ -846,7 +918,8 @@ struct SessionSummaryTests {
         }
     }
 
-    @Test func completedExercisesCountsOnlyTheCompletedOnes() throws {
+    @Test
+    func completedExercisesCountsOnlyTheCompletedOnes() throws {
         let session = try store.session(7) { session in
             session.completeAndAdvance()
             session.skipAndAdvance()
@@ -856,7 +929,8 @@ struct SessionSummaryTests {
         #expect(summary(session).completedExercises.value == 1)
     }
 
-    @Test func totalVolumeIsLoadTimesSetsTimesReps() throws {
+    @Test
+    func totalVolumeIsLoadTimesSetsTimesReps() throws {
         let session = try store.session(7)
         load(session, kilograms: [100, 50], sets: 3, reps: 10)
 
@@ -864,7 +938,8 @@ struct SessionSummaryTests {
         #expect(summary(session).totalVolume.value?.base == 4500)
     }
 
-    @Test func totalVolumeLeavesOutSkippedExercises() throws {
+    @Test
+    func totalVolumeLeavesOutSkippedExercises() throws {
         let session = try store.session(7)
         load(session, kilograms: [100, 50], sets: 1, reps: 1)
         let skipped = try #require(session.entries.sorted().last)
@@ -874,7 +949,8 @@ struct SessionSummaryTests {
         #expect(summary(session).totalVolume.value?.base == 150)
     }
 
-    @Test func sessionWithoutWeightedExercisesHasNoVolume() throws {
+    @Test
+    func sessionWithoutWeightedExercisesHasNoVolume() throws {
         let session = try store.session(7) { session in
             session.completeAndAdvance()
             session.completeAndAdvance()
@@ -887,7 +963,8 @@ struct SessionSummaryTests {
         #expect(summary(session).totalVolume.subtitle == nil)
     }
 
-    @Test func totalVolumeReadsInTheUnitTheLoadWasRecordedIn() throws {
+    @Test
+    func totalVolumeReadsInTheUnitTheLoadWasRecordedIn() throws {
         let session = try store.session(7)
         let entry = try #require(session.entries.sorted().first)
         entry.target = .weight(target: .init(weight: Quantity(100, in: .pounds), sets: 2, reps: 5))
@@ -900,7 +977,8 @@ struct SessionSummaryTests {
         #expect(summary(session).totalVolume.subtitle == Quantity(1000, in: .pounds).formatted)
     }
 
-    @Test func skipRateCountsEveryExerciseOfTheSession() throws {
+    @Test
+    func skipRateCountsEveryExerciseOfTheSession() throws {
         let session = try store.session(7) { session in
             session.skipAndAdvance()
             session.completeAndAdvance()
@@ -910,7 +988,8 @@ struct SessionSummaryTests {
         #expect(summary(session).skipRate.value == 1.0 / 3.0)
     }
 
-    @Test func exerciseDurationRunsFromTheResolutionBeforeIt() throws {
+    @Test
+    func exerciseDurationRunsFromTheResolutionBeforeIt() throws {
         let session = try store.session(7, minutes: 90)
         resolve(session, after: [10, 20, 60])
 
@@ -921,14 +1000,16 @@ struct SessionSummaryTests {
         #expect(durations == [600, 600, 2400])
     }
 
-    @Test func pendingExerciseHasNoDuration() throws {
+    @Test
+    func pendingExerciseHasNoDuration() throws {
         let session = try store.session(7, minutes: 90)
         resolve(session, after: [10])
 
         #expect(try #require(session.orderedEntries.last).duration == nil)
     }
 
-    @Test func exerciseDurationRunsFromTheLastResolutionAndNotTheEntryBeforeIt() throws {
+    @Test
+    func exerciseDurationRunsFromTheLastResolutionAndNotTheEntryBeforeIt() throws {
         let session = try store.session(7, minutes: 90)
         resolve(session, after: [60, 10, 20])
         let durations: [TimeInterval] = session.entries.sorted().compactMap(\.duration)
@@ -937,7 +1018,8 @@ struct SessionSummaryTests {
         #expect(durations == [2400, 600, 600])
     }
 
-    @Test func medianExerciseDurationIsTheMiddleOfTheExerciseDurations() throws {
+    @Test
+    func medianExerciseDurationIsTheMiddleOfTheExerciseDurations() throws {
         let session = try store.session(7, minutes: 90)
         resolve(session, after: [10, 20, 60])
 
@@ -945,7 +1027,8 @@ struct SessionSummaryTests {
         #expect(summary(session).medianExerciseDuration.value == .seconds(10 * 60))
     }
 
-    @Test func medianExerciseDurationIsNotSkewedByOneLongGap() throws {
+    @Test
+    func medianExerciseDurationIsNotSkewedByOneLongGap() throws {
         let early = try store.session(7, minutes: 90)
         let late = try store.session(8, minutes: 90)
         resolve(early, after: [0, 10, 20])
@@ -956,7 +1039,8 @@ struct SessionSummaryTests {
         #expect(summary(late).medianExerciseDuration.value == summary(early).medianExerciseDuration.value)
     }
 
-    @Test func medianExerciseDurationSplitsAnEvenCount() throws {
+    @Test
+    func medianExerciseDurationSplitsAnEvenCount() throws {
         let session = try store.session(7, minutes: 90)
         resolve(session, after: [10, 30])
 
@@ -964,7 +1048,8 @@ struct SessionSummaryTests {
         #expect(summary(session).medianExerciseDuration.value == .seconds(15 * 60))
     }
 
-    @Test func medianExerciseDurationNeedsAResolvedExercise() throws {
+    @Test
+    func medianExerciseDurationNeedsAResolvedExercise() throws {
         let session = try store.session(7, minutes: 90)
 
         #expect(summary(session).medianExerciseDuration.value == nil)
@@ -975,7 +1060,8 @@ struct SessionSummaryTests {
         #expect(summary(session).medianExerciseDuration.value == .seconds(15 * 60))
     }
 
-    @Test func shortExercisesAreReadInSecondsAndNotAsNoTimeAtAll() throws {
+    @Test
+    func shortExercisesAreReadInSecondsAndNotAsNoTimeAtAll() throws {
         let session = try store.session(7, minutes: 90)
         resolve(session, after: [0, 0, 0])
         let quick = try #require(session.entries.sorted().first)
@@ -987,7 +1073,8 @@ struct SessionSummaryTests {
         #expect(summary(session).medianExerciseDuration.subtitle == Duration.seconds(0).formatted(.exerciseDuration))
     }
 
-    @Test func endTimeIsTheClockTimeItWasRecordedAt() throws {
+    @Test
+    func endTimeIsTheClockTimeItWasRecordedAt() throws {
         // 08:00 in New York is 14:00 in Berlin, but the user saw the session end at 09:00.
         let session = try store.session(7, hour: 8, minutes: 60, zone: "America/New_York")
         var newYork = calendar
@@ -1007,6 +1094,7 @@ struct SessionSummaryTests {
 @MainActor
 struct SessionEntryComparisonTests {
     let store: TestStore
+
     let squat: Exercise
 
     init() throws {
@@ -1024,24 +1112,28 @@ struct SessionEntryComparisonTests {
         return entry
     }
 
-    @Test func firstTimeAnExerciseIsCompletedIsNotAPersonalBest() throws {
+    @Test
+    func firstTimeAnExerciseIsCompletedIsNotAPersonalBest() throws {
         // There is nothing on record to have beaten, and a first session of nothing but trophies marks nothing.
         #expect(try squatSession(7, reps: 10).isBest == false)
     }
 
-    @Test func beatingEveryEarlierTimeIsAPersonalBest() throws {
+    @Test
+    func beatingEveryEarlierTimeIsAPersonalBest() throws {
         try squatSession(7, reps: 10)
 
         #expect(try squatSession(8, reps: 12).isBest)
     }
 
-    @Test func matchingTheBestIsNotAPersonalBest() throws {
+    @Test
+    func matchingTheBestIsNotAPersonalBest() throws {
         try squatSession(7, reps: 12)
 
         #expect(try squatSession(8, reps: 12).isBest == false)
     }
 
-    @Test func personalBestStandsEvenAfterALaterBetterOne() throws {
+    @Test
+    func personalBestStandsEvenAfterALaterBetterOne() throws {
         try squatSession(7, reps: 8)
         let earlier = try squatSession(8, reps: 10)
         let later = try squatSession(9, reps: 12)
@@ -1051,7 +1143,8 @@ struct SessionEntryComparisonTests {
         #expect(later.isBest)
     }
 
-    @Test func skippedExerciseIsNeverAPersonalBest() throws {
+    @Test
+    func skippedExerciseIsNeverAPersonalBest() throws {
         let session = try store.session(7)
         let entry = try #require(session.entries.sorted().first)
         entry.target = .bodyweight(target: .init(sets: 3, reps: 20))
@@ -1060,7 +1153,8 @@ struct SessionEntryComparisonTests {
         #expect(entry.isBest == false)
     }
 
-    @Test func exerciseDroppedFromTheWorkoutIsNoLongerAPersonalBest() throws {
+    @Test
+    func exerciseDroppedFromTheWorkoutIsNoLongerAPersonalBest() throws {
         try squatSession(7, reps: 10)
         let entry = try squatSession(8, reps: 12)
         let slot = try #require(entry.workoutEntry)
@@ -1076,35 +1170,40 @@ struct SessionEntryComparisonTests {
         #expect(entry.isBest == false)
     }
 
-    @Test func runningSessionIsNeverAPersonalBest() throws {
+    @Test
+    func runningSessionIsNeverAPersonalBest() throws {
         let running = try store.startSession()
         running.completeAndAdvance()
 
         #expect(try #require(running.entries.sorted().first).isBest == false)
     }
 
-    @Test func previousIsTheLastComparableTime() throws {
+    @Test
+    func previousIsTheLastComparableTime() throws {
         try squatSession(7, reps: 12)
         try squatSession(8, reps: 10)
 
         #expect(try squatSession(9, reps: 11).previous?.rank == 10)
     }
 
-    @Test func previousBestIsTheHighestComparableTime() throws {
+    @Test
+    func previousBestIsTheHighestComparableTime() throws {
         try squatSession(7, reps: 12)
         try squatSession(8, reps: 10)
 
         #expect(try squatSession(9, reps: 11).previousBest?.rank == 12)
     }
 
-    @Test func firstTimeHasNothingToCompareWith() throws {
+    @Test
+    func firstTimeHasNothingToCompareWith() throws {
         let entry = try squatSession(7, reps: 10)
 
         #expect(entry.previous == nil)
         #expect(entry.previousBest == nil)
     }
 
-    @Test func skippedExerciseHasNothingToCompareWith() throws {
+    @Test
+    func skippedExerciseHasNothingToCompareWith() throws {
         try squatSession(7, reps: 10)
         let entry = try squatSession(8, reps: 12)
         entry.status = try .skipped(at: #require(entry.session).started)
@@ -1113,13 +1212,15 @@ struct SessionEntryComparisonTests {
         #expect(entry.previousBest == nil)
     }
 
-    @Test func differenceInRepsReadsAsACount() {
+    @Test
+    func differenceInRepsReadsAsACount() {
         let target = ExerciseTarget.bodyweight(target: .init(sets: 3, reps: 12))
 
         #expect(target.formattedRank(2) == String(localized: .exerciseTargetRepsTitle(2)))
     }
 
-    @Test func differenceReadsInTheUnitItWasRecordedIn() throws {
+    @Test
+    func differenceReadsInTheUnitItWasRecordedIn() throws {
         squat.type = .weight
         let earlier = try store.session(7)
         let later = try store.session(8)
@@ -1136,7 +1237,8 @@ struct SessionEntryComparisonTests {
         #expect(entry.target.formattedRank(entry.target.rank - previous.rank) == Quantity(2.5, in: .kilograms).formatted)
     }
 
-    @Test func targetsOfAnotherTypeAreNotComparable() throws {
+    @Test
+    func targetsOfAnotherTypeAreNotComparable() throws {
         try squatSession(7, reps: 10)
         let entry = try squatSession(8, reps: 12)
 
@@ -1153,6 +1255,7 @@ struct SessionEntryComparisonTests {
 @MainActor
 struct SessionEntryScopeTests {
     let store: TestStore
+
     let squat: Exercise
 
     init() throws {
@@ -1173,7 +1276,8 @@ struct SessionEntryScopeTests {
         return entry
     }
 
-    @Test func trendIgnoresTheSameExerciseInAnotherWorkout() throws {
+    @Test
+    func trendIgnoresTheSameExerciseInAnotherWorkout() throws {
         // A warmup at 40 kg in one workout, the real thing at 100 then 102.5 kg in another.
         let warmups = Workout(name: "Warmup", pictogram: .workout, schedule: .inactive, entries: [])
         store.context.insert(warmups)
@@ -1190,7 +1294,8 @@ struct SessionEntryScopeTests {
         #expect(try #require(main.previous).formattedRank == Quantity(100, in: .kilograms).formatted)
     }
 
-    @Test func trendKeepsTheTwoSlotsOfOneWorkoutApart() throws {
+    @Test
+    func trendKeepsTheTwoSlotsOfOneWorkoutApart() throws {
         // The same exercise twice in one workout: a light opener and a heavy set.
         store.workout.append(exercise: squat, target: .weight(target: .init(weight: Quantity(60, in: .kilograms), sets: 1, reps: 5)))
 
@@ -1207,7 +1312,8 @@ struct SessionEntryScopeTests {
         #expect(try #require(laterHeavy.previous).formattedRank == Quantity(100, in: .kilograms).formatted)
     }
 
-    @Test func personalBestIsScopedToTheSlotToo() throws {
+    @Test
+    func personalBestIsScopedToTheSlotToo() throws {
         let warmups = Workout(name: "Warmup", pictogram: .workout, schedule: .inactive, entries: [])
         store.context.insert(warmups)
         warmups.append(exercise: squat, target: .weight(target: .init(weight: Quantity(40, in: .kilograms), sets: 1, reps: 5)))
@@ -1241,6 +1347,7 @@ struct SessionEntryScopeTests {
 @MainActor
 struct ExerciseCurrentHighestTargetTests {
     let store: TestStore
+
     let squat: Exercise
 
     init() throws {
@@ -1257,14 +1364,16 @@ struct ExerciseCurrentHighestTargetTests {
         return workout
     }
 
-    @Test func anExerciseInNoWorkoutHasNothingToGoOn() {
+    @Test
+    func anExerciseInNoWorkoutHasNothingToGoOn() {
         let rows = Exercise(name: "Rows", type: .bodyweight, categories: [])
         store.context.insert(rows)
 
         #expect(rows.currentHighestTarget == nil)
     }
 
-    @Test func theHighestRankedSlotWinsAcrossWorkouts() throws {
+    @Test
+    func theHighestRankedSlotWinsAcrossWorkouts() throws {
         try workout("Heavy", reps: 15)
         try workout("Light", reps: 5)
 
@@ -1272,14 +1381,16 @@ struct ExerciseCurrentHighestTargetTests {
         #expect(squat.currentHighestTarget?.bodyweightTarget == .init(sets: 3, reps: 15))
     }
 
-    @Test func aSlotNeverPerformedStillCounts() throws {
+    @Test
+    func aSlotNeverPerformedStillCounts() throws {
         try workout("Planned", reps: 15)
 
         // No session has ever touched it, but it is what the exercise is programmed at.
         #expect(squat.currentHighestTarget?.bodyweightTarget == .init(sets: 3, reps: 15))
     }
 
-    @Test func finishingASessionPutsWhatWasDoneOnOffer() throws {
+    @Test
+    func finishingASessionPutsWhatWasDoneOnOffer() throws {
         let session = try store.startSession()
         let entry = try #require(session.entries.first { $0.exercise === squat })
         entry.target = .bodyweight(target: .init(sets: 3, reps: 20))
@@ -1290,7 +1401,8 @@ struct ExerciseCurrentHighestTargetTests {
         #expect(squat.currentHighestTarget?.bodyweightTarget == .init(sets: 3, reps: 20))
     }
 
-    @Test func deletingAWorkoutTakesItsNumbersWithIt() throws {
+    @Test
+    func deletingAWorkoutTakesItsNumbersWithIt() throws {
         let heavy = try workout("Heavy", reps: 15)
 
         #expect(squat.currentHighestTarget?.bodyweightTarget == .init(sets: 3, reps: 15))
@@ -1303,7 +1415,8 @@ struct ExerciseCurrentHighestTargetTests {
         #expect(squat.currentHighestTarget?.bodyweightTarget == .init(sets: 3, reps: 10))
     }
 
-    @Test func targetsOfAnotherTypeAreIgnored() throws {
+    @Test
+    func targetsOfAnotherTypeAreIgnored() throws {
         try workout("Heavy", reps: 15)
         squat.type = .weight
 
@@ -1317,7 +1430,9 @@ struct ExerciseCurrentHighestTargetTests {
 @MainActor
 struct ProgressionTests {
     let store: TestStore
+
     let squat: Exercise
+
     let calendar = Calendar.berlin()
 
     init() throws {
@@ -1339,11 +1454,13 @@ struct ProgressionTests {
         return session
     }
 
-    @Test func exerciseWithoutCompletionsHasNoPoints() {
+    @Test
+    func exerciseWithoutCompletionsHasNoPoints() {
         #expect(progression().points.isEmpty)
     }
 
-    @Test func everyDayItWasCompletedOnIsAPoint() throws {
+    @Test
+    func everyDayItWasCompletedOnIsAPoint() throws {
         try squatSession(7, reps: 10)
         try squatSession(9, reps: 12)
 
@@ -1353,14 +1470,16 @@ struct ProgressionTests {
         #expect(try points.map(\.date) == [calendar.date(7, hour: 0), calendar.date(9, hour: 0)])
     }
 
-    @Test func pointsAreOldestFirst() throws {
+    @Test
+    func pointsAreOldestFirst() throws {
         try squatSession(9, reps: 12)
         try squatSession(7, reps: 10)
 
         #expect(progression().points.map(\.rank) == [10, 12])
     }
 
-    @Test func aDayIsOnePointAtItsBest() throws {
+    @Test
+    func aDayIsOnePointAtItsBest() throws {
         // A warmup in the morning and the real thing in the evening: the day is worth what it got to.
         try squatSession(7, hour: 8, reps: 5)
         try squatSession(7, hour: 18, reps: 12)
@@ -1368,21 +1487,24 @@ struct ProgressionTests {
         #expect(progression().points.map(\.rank) == [12])
     }
 
-    @Test func skippedAndPendingExercisesAreNoPoints() throws {
+    @Test
+    func skippedAndPendingExercisesAreNoPoints() throws {
         try store.session(7) { $0.skipAndAdvance() }
         try store.session(8)
 
         #expect(progression().points.isEmpty)
     }
 
-    @Test func runningSessionsAreNoPoints() throws {
+    @Test
+    func runningSessionsAreNoPoints() throws {
         let running = try store.startSession()
         running.completeAndAdvance()
 
         #expect(progression().points.isEmpty)
     }
 
-    @Test func targetsOfAnotherTypeAreLeftOut() throws {
+    @Test
+    func targetsOfAnotherTypeAreLeftOut() throws {
         try squatSession(7, reps: 10)
 
         #expect(progression().points.count == 1)
@@ -1393,7 +1515,8 @@ struct ProgressionTests {
         #expect(progression().points.isEmpty)
     }
 
-    @Test func onlySessionsWithinTheIntervalCount() throws {
+    @Test
+    func onlySessionsWithinTheIntervalCount() throws {
         try squatSession(31, month: 8, reps: 10)
         try squatSession(7, reps: 12)
 
@@ -1402,7 +1525,8 @@ struct ProgressionTests {
         #expect(progression(in: september).points.map(\.rank) == [12])
     }
 
-    @Test func pointsAreDatedByTheClockTheyWereRecordedOn() throws {
+    @Test
+    func pointsAreDatedByTheClockTheyWereRecordedOn() throws {
         // Sunday 23:00 in New York is already Monday in Berlin, but the user trained on Sunday.
         let session = try store.session(13, hour: 23, zone: "America/New_York")
         let entry = try #require(session.entries.sorted().first)
@@ -1411,7 +1535,8 @@ struct ProgressionTests {
         #expect(try progression().points.map(\.date) == [calendar.date(13, hour: 0)])
     }
 
-    @Test func labelsReadInTheUnitTheTargetsWereRecordedIn() throws {
+    @Test
+    func labelsReadInTheUnitTheTargetsWereRecordedIn() throws {
         squat.type = .weight
         let session = try store.session(7)
         let entry = try #require(session.entries.sorted().first)
@@ -1446,7 +1571,8 @@ struct ProgressionTests {
         #expect(target.formattedRank == String(localized: .exerciseTargetRepsTitle(reps)))
     }
 
-    @Test func repsAreTheUnitToReadRepsBackIn() throws {
+    @Test
+    func repsAreTheUnitToReadRepsBackIn() throws {
         try squatSession(7, reps: 10)
 
         let expected = "\(10.0.formatted(.number.precision(.fractionLength(0)))) \(String(localized: .unitRepsSymbol))"
@@ -1460,6 +1586,7 @@ struct ProgressionTests {
 @MainActor
 struct HeatmapTests {
     let store: TestStore
+
     let calendar = Calendar.berlin()
 
     init() throws {
@@ -1484,7 +1611,8 @@ struct HeatmapTests {
         weeks.flatMap(\.days).count { $0.value != nil }
     }
 
-    @Test func gridIsAsManyWeeksOfSevenDaysAsAskedFor() throws {
+    @Test
+    func gridIsAsManyWeeksOfSevenDaysAsAskedFor() throws {
         let heatmap = try heatmap(at: calendar.date(16))
 
         #expect(heatmap.weeks(12).count == 12)
@@ -1498,7 +1626,8 @@ struct HeatmapTests {
         #expect(try heatmap(at: calendar.date(16)).weeks(count).isEmpty)
     }
 
-    @Test func gridEndsWithTheWeekItWasReadOn() throws {
+    @Test
+    func gridEndsWithTheWeekItWasReadOn() throws {
         let now = try calendar.date(16)
         let weeks = weeks(at: now)
 
@@ -1506,7 +1635,8 @@ struct HeatmapTests {
         #expect(day(now, in: weeks) != nil)
     }
 
-    @Test func pastIntervalEndsWithTheWeekItDid() throws {
+    @Test
+    func pastIntervalEndsWithTheWeekItDid() throws {
         try store.session(1, month: 10)
         let september = try #require(calendar.dateInterval(of: .month, for: calendar.date(10)))
         let weeks = try weeks(at: calendar.date(16, month: 10), in: september)
@@ -1517,7 +1647,8 @@ struct HeatmapTests {
         #expect(try #require(day(calendar.date(1, month: 10), in: weeks)).value == nil)
     }
 
-    @Test func intervalInTheFutureHasNoGrid() throws {
+    @Test
+    func intervalInTheFutureHasNoGrid() throws {
         let october = try #require(calendar.dateInterval(of: .month, for: calendar.date(10, month: 10)))
 
         // Read in September, October has no day to be read against yet, so there's nothing to lay out.
@@ -1536,7 +1667,8 @@ struct HeatmapTests {
         #expect(heatmap.weekdays.first == Schedule.Weekday(calendarNumber: firstWeekday))
     }
 
-    @Test func aDayCountsEverythingDoneOnIt() throws {
+    @Test
+    func aDayCountsEverythingDoneOnIt() throws {
         try store.session(7, hour: 8)
         try store.session(7, hour: 18)
         try store.session(8)
@@ -1551,7 +1683,8 @@ struct HeatmapTests {
         #expect(activeDays(in: weeks) == 2)
     }
 
-    @Test func daysAfterTheOneItWasReadOnAreStillAhead() throws {
+    @Test
+    func daysAfterTheOneItWasReadOnAreStillAhead() throws {
         // Wednesday, so the rest of its week is still to come and stands for nothing.
         let weeks = try weeks(at: calendar.date(16))
         let last = try #require(weeks.last)
@@ -1562,7 +1695,8 @@ struct HeatmapTests {
         #expect(weeks.dropLast().allSatisfy { $0.days.allSatisfy { !$0.isAhead } })
     }
 
-    @Test func daysAreShadedAgainstTheBusiestOneShown() throws {
+    @Test
+    func daysAreShadedAgainstTheBusiestOneShown() throws {
         // Three sessions in February, long off the grid, and one on the grid in September.
         for hour in [8, 12, 18] {
             try store.session(1, month: 2, hour: hour)
@@ -1574,7 +1708,8 @@ struct HeatmapTests {
         #expect(try day(calendar.date(7), in: weeks)?.intensity == 1)
     }
 
-    @Test func daysAreTheOnesTheyWereRecordedOn() throws {
+    @Test
+    func daysAreTheOnesTheyWereRecordedOn() throws {
         // Sunday 23:00 in New York is already Monday in Berlin, but the user trained on Sunday.
         try store.session(13, hour: 23, zone: "America/New_York")
 
@@ -1584,7 +1719,8 @@ struct HeatmapTests {
         #expect(try #require(day(calendar.date(14), in: weeks)).value == nil)
     }
 
-    @Test func historyOlderThanTheGridIsNotOnIt() throws {
+    @Test
+    func historyOlderThanTheGridIsNotOnIt() throws {
         // Twelve weeks up to the week of Sep 14 reach back to the week of Jun 29.
         try store.session(1, month: 2)
         try store.session(22, month: 6)
@@ -1597,14 +1733,16 @@ struct HeatmapTests {
         #expect(activeDays(in: weeks) == 1)
     }
 
-    @Test func runningSessionsAreNotOnTheGrid() throws {
+    @Test
+    func runningSessionsAreNotOnTheGrid() throws {
         let running = try store.startSession()
         running.started = try calendar.date(15)
 
         #expect(try activeDays(in: weeks(at: calendar.date(16))) == 0)
     }
 
-    @Test func workoutCountsTheDaysItWasDoneOn() throws {
+    @Test
+    func workoutCountsTheDaysItWasDoneOn() throws {
         try store.session(7, hour: 8)
         try store.session(7, hour: 18)
 
@@ -1614,7 +1752,8 @@ struct HeatmapTests {
         #expect(activeDays(in: weeks) == 1)
     }
 
-    @Test func exerciseCountsTheDaysItWasCompletedOn() throws {
+    @Test
+    func exerciseCountsTheDaysItWasCompletedOn() throws {
         // The squat is completed on the seventh and skipped on the eighth.
         try store.session(7) { session in
             session.completeAndAdvance()
@@ -1636,7 +1775,9 @@ struct HeatmapTests {
 @MainActor
 struct DistributionTests {
     let store: TestStore
+
     let exercises: [Exercise]
+
     let calendar = Calendar.berlin()
 
     init() throws {
@@ -1661,13 +1802,15 @@ struct DistributionTests {
         }
     }
 
-    @Test func withoutCategoriesThereIsNothingToShow() {
+    @Test
+    func withoutCategoriesThereIsNothingToShow() {
         categorize([[], [], []])
 
         #expect(planned().shares.isEmpty)
     }
 
-    @Test func anExerciseCountsInEachOfItsCategories() {
+    @Test
+    func anExerciseCountsInEachOfItsCategories() {
         categorize([[.legs, .back], [.chest], []])
 
         let distribution = planned()
@@ -1680,7 +1823,8 @@ struct DistributionTests {
         #expect(distribution.shares.map(\.fraction) == [third, third, third])
     }
 
-    @Test func theMostTrainedCategoryComesFirst() {
+    @Test
+    func theMostTrainedCategoryComesFirst() {
         categorize([[.legs], [.legs, .chest], [.legs]])
 
         let distribution = planned()
@@ -1690,7 +1834,8 @@ struct DistributionTests {
         #expect(distribution.shares.map(\.fraction) == [0.75, 0.25])
     }
 
-    @Test func workoutCountsWhatItPlansAndNotWhatWasDone() throws {
+    @Test
+    func workoutCountsWhatItPlansAndNotWhatWasDone() throws {
         categorize([[.legs], [.chest], [.back]])
         try store.session(7) { $0.completeAndAdvance() }
 
@@ -1699,7 +1844,8 @@ struct DistributionTests {
         #expect(planned().shares.allSatisfy { $0.count == 1 })
     }
 
-    @Test func droppingAnExerciseTakesItsCategoriesWithIt() throws {
+    @Test
+    func droppingAnExerciseTakesItsCategoriesWithIt() throws {
         categorize([[.legs], [.chest], [.back]])
         let bench = try #require(store.workout.entries.sorted().dropFirst().first)
 
@@ -1710,7 +1856,8 @@ struct DistributionTests {
         #expect(planned().shares.map(\.value) == [.legs, .back])
     }
 
-    @Test func completedCountsOnlyTheExercisesThatWereDone() throws {
+    @Test
+    func completedCountsOnlyTheExercisesThatWereDone() throws {
         categorize([[.legs], [.chest], [.back]])
         try store.session(7) { session in
             session.completeAndAdvance()
@@ -1722,7 +1869,8 @@ struct DistributionTests {
         #expect(completed().shares.map(\.fraction) == [1])
     }
 
-    @Test func completedCountsEachTimeAnExerciseWasDone() throws {
+    @Test
+    func completedCountsEachTimeAnExerciseWasDone() throws {
         categorize([[.legs], [.legs, .chest], []])
 
         for day in [7, 8] {
@@ -1737,7 +1885,8 @@ struct DistributionTests {
         #expect(completed().shares.map(\.count) == [4, 2])
     }
 
-    @Test func completedCountsOnlySessionsWithinTheInterval() throws {
+    @Test
+    func completedCountsOnlySessionsWithinTheInterval() throws {
         categorize([[.legs], [], []])
         try store.session(31, month: 8) { $0.completeAndAdvance() }
 
@@ -1747,7 +1896,8 @@ struct DistributionTests {
         #expect(completed().shares.map(\.value) == [.legs])
     }
 
-    @Test func runningSessionsAreNotCounted() throws {
+    @Test
+    func runningSessionsAreNotCounted() throws {
         categorize([[.legs], [], []])
         let running = try store.startSession()
         running.completeAndAdvance()

@@ -10,8 +10,11 @@ import SwiftData
 import SwiftUI
 
 struct WorkoutListScreen: View {
-    @Query(sort: \Workout.name) private var workouts: [Workout]
-    @State private var sheet: Sheet? = nil
+    @Query(sort: \Workout.name)
+    private var workouts: [Workout]
+
+    @State
+    private var sheet: Sheet? = nil
 
     var body: some View {
         content

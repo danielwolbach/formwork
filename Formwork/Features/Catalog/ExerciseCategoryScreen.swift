@@ -10,11 +10,16 @@ import SwiftData
 import SwiftUI
 
 struct ExerciseCategoryScreen: View {
-    @Query(sort: \Exercise.name) private var exercises: [Exercise]
-    @State private var sheet: Sheet? = nil
-    @State private var searchText = ""
-
     let category: ExerciseCategory
+
+    @Query(sort: \Exercise.name)
+    private var exercises: [Exercise]
+
+    @State
+    private var sheet: Sheet? = nil
+
+    @State
+    private var searchText = ""
 
     var body: some View {
         content
@@ -64,7 +69,9 @@ struct ExerciseCategoryScreen: View {
     }
 
     private var matchingExercises: [Exercise] {
-        guard !trimmedSearchText.isEmpty else { return categoryExercises }
+        guard !trimmedSearchText.isEmpty else {
+            return categoryExercises
+        }
         return categoryExercises.filter { $0.name.localizedCaseInsensitiveContains(trimmedSearchText) }
     }
 

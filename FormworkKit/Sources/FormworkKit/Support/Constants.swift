@@ -9,6 +9,7 @@ import Foundation
 
 public enum DeepLink {
     public static let scheme = "formwork"
+
     public static let session = URL(string: "\(scheme)://session")!
 }
 

@@ -9,14 +9,15 @@ import Foundation
 
 public struct Quantity: Codable, Hashable, Sendable {
     public enum Unit: String, Codable, CaseIterable, Sendable {
+        case kilograms, pounds, seconds, minutes, hours, meters, kilometers, miles
+
         public enum Dimension: Sendable {
             case weight, duration, distance
         }
-
-        case kilograms, pounds, seconds, minutes, hours, meters, kilometers, miles
     }
 
     public var base: Double
+
     public var unit: Unit
 
     public init(_ value: Double, in unit: Unit) {
@@ -25,8 +26,26 @@ public struct Quantity: Codable, Hashable, Sendable {
     }
 }
 
-public extension Quantity {
-    var value: Double {
+extension Quantity {
+    public static var defaultWeight: Self {
+        switch Locale.current.measurementSystem {
+        case .us: Quantity(25, in: .pounds)
+        default: Quantity(10, in: .kilograms)
+        }
+    }
+
+    public static var defaultDuration: Self {
+        Quantity(10, in: .minutes)
+    }
+
+    public static var defaultDistance: Self {
+        switch Locale.current.measurementSystem {
+        case .metric: Quantity(1, in: .kilometers)
+        default: Quantity(1, in: .miles)
+        }
+    }
+
+    public var value: Double {
         get {
             let scale = pow(10.0, Double(unit.fractionLength))
             return (base / unit.factor * scale).rounded() / scale
@@ -36,37 +55,13 @@ public extension Quantity {
         }
     }
 
-    var formatted: String {
+    public var formatted: String {
         "\(value.formatted(.number.precision(.fractionLength(unit.fractionLength)))) \(unit.symbol)"
     }
-
-    static var defaultWeight: Self {
-        switch Locale.current.measurementSystem {
-        case .us: Quantity(25, in: .pounds)
-        default: Quantity(10, in: .kilograms)
-        }
-    }
-
-    static var defaultDuration: Self {
-        Quantity(10, in: .minutes)
-    }
-
-    static var defaultDistance: Self {
-        switch Locale.current.measurementSystem {
-        case .metric: Quantity(1, in: .kilometers)
-        default: Quantity(1, in: .miles)
-        }
-    }
 }
 
-extension Quantity.Unit: Identifiable {
-    public var id: Self {
-        self
-    }
-}
-
-public extension Quantity.Unit {
-    var factor: Double {
+extension Quantity.Unit {
+    public var factor: Double {
         switch self {
         case .kilograms, .seconds, .meters: 1
         case .pounds: 0.45359237
@@ -77,7 +72,7 @@ public extension Quantity.Unit {
         }
     }
 
-    var symbol: String {
+    public var symbol: String {
         // FIXME: Does this need string catalog entries or are they the same worldwide?
         switch self {
         case .kilograms: "kg"
@@ -91,7 +86,7 @@ public extension Quantity.Unit {
         }
     }
 
-    var name: String {
+    public var name: String {
         switch self {
         case .kilograms: String(localized: .unitKilogramsTitle)
         case .pounds: String(localized: .unitPoundsTitle)
@@ -104,7 +99,7 @@ public extension Quantity.Unit {
         }
     }
 
-    var fractionLength: Int {
+    public var fractionLength: Int {
         switch self {
         case .kilograms, .pounds: 1
         case .seconds, .minutes, .meters: 0
@@ -112,7 +107,7 @@ public extension Quantity.Unit {
         }
     }
 
-    var dimension: Dimension {
+    public var dimension: Dimension {
         switch self {
         case .kilograms, .pounds: .weight
         case .seconds, .minutes, .hours: .duration
@@ -120,7 +115,13 @@ public extension Quantity.Unit {
         }
     }
 
-    var alternatives: [Self] {
+    public var alternatives: [Self] {
         Self.allCases.filter { $0.dimension == dimension }
+    }
+}
+
+extension Quantity.Unit: Identifiable {
+    public var id: Self {
+        self
     }
 }

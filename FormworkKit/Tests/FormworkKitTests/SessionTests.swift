@@ -18,7 +18,8 @@ struct SessionLifecycleTests {
         self.store = try TestStore()
     }
 
-    @Test func startCopiesWorkoutEntriesInOrder() throws {
+    @Test
+    func startCopiesWorkoutEntriesInOrder() throws {
         let session = try store.startSession()
         let active = try Session.active(in: store.context)
         let allPending = session.entries.allSatisfy(\.status.isPending)
@@ -30,7 +31,8 @@ struct SessionLifecycleTests {
         #expect(active === session)
     }
 
-    @Test func startReplacesRunningSessionButKeepsFinishedOnes() throws {
+    @Test
+    func startReplacesRunningSessionButKeepsFinishedOnes() throws {
         let finished = try store.startSession()
         finished.finish()
         _ = try store.startSession()
@@ -45,7 +47,8 @@ struct SessionLifecycleTests {
         #expect(active === running)
     }
 
-    @Test func finishWritesTargetsBackToWorkout() throws {
+    @Test
+    func finishWritesTargetsBackToWorkout() throws {
         let session = try store.startSession()
         session.currentEntry?.target = .bodyweight(target: .init(sets: 5, reps: 12))
         session.finish()
@@ -57,7 +60,8 @@ struct SessionLifecycleTests {
         #expect(try Session.active(in: store.context) == nil)
     }
 
-    @Test func finishTwiceKeepsFirstEndDate() throws {
+    @Test
+    func finishTwiceKeepsFirstEndDate() throws {
         let session = try store.startSession()
         session.finish()
         let ended = session.ended
@@ -67,7 +71,8 @@ struct SessionLifecycleTests {
         #expect(session.ended == ended)
     }
 
-    @Test func cancelDeletesSessionAndEntries() throws {
+    @Test
+    func cancelDeletesSessionAndEntries() throws {
         let session = try store.startSession()
         session.cancel()
         try store.context.save()
@@ -85,7 +90,8 @@ struct SessionNavigationTests {
         self.store = try TestStore()
     }
 
-    @Test func startsAtFirstEntry() throws {
+    @Test
+    func startsAtFirstEntry() throws {
         let session = try store.startSession()
 
         #expect(session.currentEntry?.title == "Squat")
@@ -95,7 +101,8 @@ struct SessionNavigationTests {
         #expect(!session.isComplete)
     }
 
-    @Test func movesWithinBounds() throws {
+    @Test
+    func movesWithinBounds() throws {
         let session = try store.startSession()
 
         session.moveToPrevious()
@@ -108,7 +115,8 @@ struct SessionNavigationTests {
         #expect(session.nextEntry == nil)
     }
 
-    @Test func completingAdvancesToNextPendingEntry() throws {
+    @Test
+    func completingAdvancesToNextPendingEntry() throws {
         let session = try store.startSession()
 
         session.completeAndAdvance()
@@ -118,7 +126,8 @@ struct SessionNavigationTests {
         #expect(session.resolvedCount == 1)
     }
 
-    @Test func skippingMarksEntryAsSkipped() throws {
+    @Test
+    func skippingMarksEntryAsSkipped() throws {
         let session = try store.startSession()
 
         session.skipAndAdvance()
@@ -127,7 +136,8 @@ struct SessionNavigationTests {
         #expect(session.currentEntry?.title == "Bench Press")
     }
 
-    @Test func completingOutOfOrderReturnsToFirstPendingEntry() throws {
+    @Test
+    func completingOutOfOrderReturnsToFirstPendingEntry() throws {
         let session = try store.startSession()
 
         session.moveToNext()
@@ -137,7 +147,8 @@ struct SessionNavigationTests {
         #expect(session.orderedEntries.map(\.title) == ["Bench Press", "Squat", "Deadlift"])
     }
 
-    @Test func completingLastPendingEntryStaysOnIt() throws {
+    @Test
+    func completingLastPendingEntryStaysOnIt() throws {
         let session = try store.startSession()
 
         session.completeAndAdvance()
@@ -158,7 +169,8 @@ struct SessionOrderTests {
         self.store = try TestStore()
     }
 
-    @Test func historyIsOrderedByResolutionDate() throws {
+    @Test
+    func historyIsOrderedByResolutionDate() throws {
         let session = try store.startSession()
         let entries = session.orderedEntries
 
@@ -169,7 +181,8 @@ struct SessionOrderTests {
         #expect(session.orderedEntries.map(\.title) == ["Deadlift", "Squat", "Bench Press"])
     }
 
-    @Test func historyWithSameDateKeepsWorkoutOrder() throws {
+    @Test
+    func historyWithSameDateKeepsWorkoutOrder() throws {
         let session = try store.startSession()
         let entries = session.orderedEntries
         let date = Date(timeIntervalSince1970: 1)
@@ -180,7 +193,8 @@ struct SessionOrderTests {
         #expect(session.history.map(\.title) == ["Squat", "Deadlift"])
     }
 
-    @Test func undoMakesEntryPendingAgain() throws {
+    @Test
+    func undoMakesEntryPendingAgain() throws {
         let session = try store.startSession()
         session.completeAndAdvance()
         session.completeAndAdvance()
@@ -195,7 +209,8 @@ struct SessionOrderTests {
         #expect(session.orderedEntries.map(\.title) == ["Bench Press", "Squat", "Deadlift"])
     }
 
-    @Test func undoneEntryComesBeforeOtherPendingEntries() throws {
+    @Test
+    func undoneEntryComesBeforeOtherPendingEntries() throws {
         let session = try store.startSession()
         session.moveToNext()
         session.moveToNext()
@@ -208,7 +223,8 @@ struct SessionOrderTests {
         #expect(session.orderedEntries.map(\.title) == ["Deadlift", "Squat", "Bench Press"])
     }
 
-    @Test func undoOnPendingEntryDoesNothing() throws {
+    @Test
+    func undoOnPendingEntryDoesNothing() throws {
         let session = try store.startSession()
 
         session.undoStatusChange()
@@ -219,7 +235,8 @@ struct SessionOrderTests {
 }
 
 struct SessionEntryStatusTests {
-    @Test func pending() {
+    @Test
+    func pending() {
         let status = SessionEntry.Status.pending
 
         #expect(status.isPending)
@@ -228,7 +245,8 @@ struct SessionEntryStatusTests {
         #expect(status.resolved == nil)
     }
 
-    @Test func completed() {
+    @Test
+    func completed() {
         let date = Date(timeIntervalSince1970: 1)
         let status = SessionEntry.Status.completed(at: date)
 
@@ -238,7 +256,8 @@ struct SessionEntryStatusTests {
         #expect(status.resolved == date)
     }
 
-    @Test func skipped() {
+    @Test
+    func skipped() {
         let date = Date(timeIntervalSince1970: 1)
         let status = SessionEntry.Status.skipped(at: date)
 
@@ -257,7 +276,8 @@ struct SessionActivityAttributesTests {
         self.store = try TestStore()
     }
 
-    @Test func mapsCurrentEntry() throws {
+    @Test
+    func mapsCurrentEntry() throws {
         let session = try store.startSession()
 
         let state = try #require(SessionActivityAttributes.ContentState(session: session))
@@ -273,7 +293,8 @@ struct SessionActivityAttributesTests {
         #expect(!state.canMoveBackward)
     }
 
-    @Test func showsStatusOfResolvedEntry() throws {
+    @Test
+    func showsStatusOfResolvedEntry() throws {
         let session = try store.startSession()
         session.completeAndAdvance()
         session.moveToPrevious()
@@ -285,7 +306,8 @@ struct SessionActivityAttributesTests {
         #expect(state.resolved == 1)
     }
 
-    @Test func differsBetweenSessionsOfSameWorkout() throws {
+    @Test
+    func differsBetweenSessionsOfSameWorkout() throws {
         let first = try #require(try SessionActivityAttributes.ContentState(session: store.startSession()))
         let second = try #require(try SessionActivityAttributes.ContentState(session: store.startSession()))
 

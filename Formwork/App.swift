@@ -13,10 +13,17 @@ struct App: SwiftUI.App {
 }
 
 private struct AppContent: View {
-    @Query(Session.activeDescriptor) private var activeSessions: [Session]
-    @Namespace private var sessionNamespace
-    @AppStorage(StorageKeys.onboardingPending) private var onboardingPending: Bool = true
-    @State private var presentedSession: Session? = nil
+    @Query(Session.activeDescriptor)
+    private var activeSessions: [Session]
+
+    @AppStorage(StorageKeys.onboardingPending)
+    private var onboardingPending: Bool = true
+
+    @State
+    private var presentedSession: Session? = nil
+
+    @Namespace
+    private var sessionNamespace
 
     var body: some View {
         MainTabView(activeSession: activeSession, sessionNamespace: sessionNamespace)
@@ -65,6 +72,7 @@ private struct AppContent: View {
 
 private struct MainTabView: View {
     let activeSession: Session?
+
     let sessionNamespace: Namespace.ID
 
     var body: some View {

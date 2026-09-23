@@ -11,6 +11,7 @@ public typealias CurrentSchema = SchemaV1
 
 public enum Migrations: SchemaMigrationPlan {
     public static let schemas: [any VersionedSchema.Type] = [SchemaV1.self]
+
     public static let stages: [MigrationStage] = []
 }
 

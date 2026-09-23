@@ -43,7 +43,8 @@ struct ScheduleTests {
         #expect(Schedule.Weekday(calendarNumber: number) == weekday)
     }
 
-    @Test func symbolMatchesCalendar() {
+    @Test
+    func symbolMatchesCalendar() {
         let calendar = Self.calendar()
 
         #expect(Schedule.Weekday.monday.symbol(in: calendar) == "M")

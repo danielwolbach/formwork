@@ -10,7 +10,8 @@ import SwiftData
 import SwiftUI
 
 struct StatisticsScreen: View {
-    @Query(Session.finishedDescriptor) private var sessions: [Session]
+    @Query(Session.finishedDescriptor)
+    private var sessions: [Session]
 
     var body: some View {
         content

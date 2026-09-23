@@ -67,9 +67,11 @@ final class SessionNavigator {
 struct SessionEntryPager<Page: View>: View {
     let navigator: SessionNavigator
 
-    @ViewBuilder let page: (SessionEntry) -> Page
+    @ViewBuilder
+    let page: (SessionEntry) -> Page
 
-    @State private var dragOffset: CGFloat = 0
+    @State
+    private var dragOffset: CGFloat = 0
 
     var body: some View {
         GeometryReader { proxy in
@@ -95,16 +97,6 @@ struct SessionEntryPager<Page: View>: View {
         .clipped()
     }
 
-    /// Neighbors appear directly at their offscreen position, since sliding them in from even further out delays
-    /// them when the user pages again quickly. Only a new current page, which replaces a different entry, slides in
-    /// from the navigation direction. Pages that leave keep sliding outwards instead of vanishing mid-slide.
-    private func transition(at position: Int, width: CGFloat) -> AnyTransition {
-        let insertion: AnyTransition = position == 0 ? .offset(x: CGFloat(navigator.direction) * width) : .identity
-        let removal: AnyTransition = position == 0 ? .identity : .offset(x: CGFloat(position.signum()) * width)
-
-        return .asymmetric(insertion: insertion, removal: removal)
-    }
-
     /// The current entry and two neighbors on each side. The outer neighbors keep pages that are still sliding out
     /// around when the user pages again quickly, so they are only removed once fully offscreen.
     private var slots: [Slot] {
@@ -120,6 +112,16 @@ struct SessionEntryPager<Page: View>: View {
                 ? Slot(key: navigator.index + offset, entry: ordered[center + offset])
                 : nil
         }
+    }
+
+    /// Neighbors appear directly at their offscreen position, since sliding them in from even further out delays
+    /// them when the user pages again quickly. Only a new current page, which replaces a different entry, slides in
+    /// from the navigation direction. Pages that leave keep sliding outwards instead of vanishing mid-slide.
+    private func transition(at position: Int, width: CGFloat) -> AnyTransition {
+        let insertion: AnyTransition = position == 0 ? .offset(x: CGFloat(navigator.direction) * width) : .identity
+        let removal: AnyTransition = position == 0 ? .identity : .offset(x: CGFloat(position.signum()) * width)
+
+        return .asymmetric(insertion: insertion, removal: removal)
     }
 
     private func dragChanged(_ translation: CGFloat) {
@@ -157,6 +159,17 @@ struct SessionEntryPager<Page: View>: View {
 /// A horizontal pan that fails right away when a drag starts vertically, so the touch stays available to other
 /// gestures such as swipe-to-dismiss. SwiftUI's `DragGesture` cannot decline a touch like this.
 private struct PagingPanGesture: UIGestureRecognizerRepresentable {
+    final class Coordinator: NSObject, UIGestureRecognizerDelegate {
+        func gestureRecognizerShouldBegin(_ recognizer: UIGestureRecognizer) -> Bool {
+            guard let pan = recognizer as? UIPanGestureRecognizer else {
+                return true
+            }
+
+            let velocity = pan.velocity(in: pan.view)
+            return abs(velocity.x) > abs(velocity.y) * 1.5
+        }
+    }
+
     let onChanged: (CGFloat) -> Void
 
     /// Called with the predicted end translation, extrapolated from the release velocity.
@@ -189,23 +202,13 @@ private struct PagingPanGesture: UIGestureRecognizerRepresentable {
     func makeCoordinator(converter _: CoordinateSpaceConverter) -> Coordinator {
         Coordinator()
     }
-
-    final class Coordinator: NSObject, UIGestureRecognizerDelegate {
-        func gestureRecognizerShouldBegin(_ recognizer: UIGestureRecognizer) -> Bool {
-            guard let pan = recognizer as? UIPanGestureRecognizer else {
-                return true
-            }
-
-            let velocity = pan.velocity(in: pan.view)
-            return abs(velocity.x) > abs(velocity.y) * 1.5
-        }
-    }
 }
 
 /// A page position together with the entry it shows. When a position switches to a different entry, the page is
 /// replaced instead of updated, so the new entry slides in rather than swapping its content mid-slide.
 private struct Slot {
     let key: Int
+
     let entry: SessionEntry
 }
 

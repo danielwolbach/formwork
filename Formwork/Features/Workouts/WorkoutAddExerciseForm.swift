@@ -10,15 +10,28 @@ import SwiftData
 import SwiftUI
 
 struct WorkoutAddExerciseForm: View {
-    @Environment(\.dismiss) private var dismiss: DismissAction
-    @Environment(\.modelContext) private var modelContext: ModelContext
-    @Query(sort: \Exercise.name) private var exercises: [Exercise]
-    @State private var selection: [(exercise: Exercise, target: ExerciseTarget)] = []
-    @State private var selectedCategories: Set<ExerciseCategory> = []
-    @State private var searchText = ""
-    @State private var sheet: Sheet? = nil
-
     let workout: Workout
+
+    @Environment(\.dismiss)
+    private var dismiss: DismissAction
+
+    @Environment(\.modelContext)
+    private var modelContext: ModelContext
+
+    @Query(sort: \Exercise.name)
+    private var exercises: [Exercise]
+
+    @State
+    private var selection: [(exercise: Exercise, target: ExerciseTarget)] = []
+
+    @State
+    private var selectedCategories: Set<ExerciseCategory> = []
+
+    @State
+    private var searchText = ""
+
+    @State
+    private var sheet: Sheet? = nil
 
     var body: some View {
         content
@@ -194,7 +207,8 @@ struct WorkoutAddExerciseForm: View {
 }
 
 private struct ExerciseCategoryFilterBar: View {
-    @Binding var selection: Set<ExerciseCategory>
+    @Binding
+    var selection: Set<ExerciseCategory>
 
     var body: some View {
         ScrollView(.horizontal) {

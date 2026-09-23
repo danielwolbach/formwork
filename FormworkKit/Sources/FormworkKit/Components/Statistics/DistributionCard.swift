@@ -49,15 +49,6 @@ public struct DistributionCard<Value: Displayable & CaseIterable & Hashable>: Vi
         .clipShape(.rect(cornerRadius: 16, style: .continuous))
     }
 
-    /// Every share, including the ones the rows have no room for: the layout only puts those out of sight,
-    /// so reading the whole legend as one label is what keeps a chip nobody can see from being announced
-    /// on its own.
-    private var legend: String {
-        distribution.shares
-            .map { "\($0.value.title) \($0.fraction.formatted(.percent.precision(.fractionLength(0))))" }
-            .joined(separator: ", ")
-    }
-
     @ViewBuilder
     private var bar: some View {
         if distribution.shares.isEmpty {
@@ -79,6 +70,15 @@ public struct DistributionCard<Value: Displayable & CaseIterable & Hashable>: Vi
                 .clipShape(.capsule)
             }
         }
+    }
+
+    /// Every share, including the ones the rows have no room for: the layout only puts those out of sight,
+    /// so reading the whole legend as one label is what keeps a chip nobody can see from being announced
+    /// on its own.
+    private var legend: String {
+        distribution.shares
+            .map { "\($0.value.title) \($0.fraction.formatted(.percent.precision(.fractionLength(0))))" }
+            .joined(separator: ", ")
     }
 }
 

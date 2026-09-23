@@ -19,9 +19,9 @@ public final class Session {
     @Relationship(deleteRule: .cascade, inverse: \SessionEntry.session)
     public var entries: [SessionEntry] = []
 
-    private var currentIdentifier: UUID?
-
     var timeZoneIdentifier: String = TimeZone.current.identifier
+
+    private var currentIdentifier: UUID?
 
     private init(workout: Workout, entries: [SessionEntry]) {
         self.started = .now
@@ -34,8 +34,8 @@ public final class Session {
 }
 
 /// Fetching sessions out of a context.
-public extension Session {
-    static var activeDescriptor: FetchDescriptor<Session> {
+extension Session {
+    public static var activeDescriptor: FetchDescriptor<Session> {
         var descriptor = FetchDescriptor<Session>(
             predicate: #Predicate<Session> { $0.ended == nil },
             sortBy: [SortDescriptor(\.started, order: .reverse)]
@@ -44,22 +44,41 @@ public extension Session {
         return descriptor
     }
 
-    static var finishedDescriptor: FetchDescriptor<Session> {
+    public static var finishedDescriptor: FetchDescriptor<Session> {
         FetchDescriptor<Session>(
             predicate: #Predicate<Session> { $0.ended != nil },
             sortBy: [SortDescriptor(\.started, order: .reverse)]
         )
     }
 
-    static func active(in context: ModelContext) throws -> Session? {
+    public static func active(in context: ModelContext) throws -> Session? {
         try context.fetch(activeDescriptor).first
     }
 }
 
 /// Starting, finishing and abandoning a session.
-public extension Session {
+extension Session {
+    public var isActive: Bool {
+        ended == nil
+    }
+
+    public var endedRecently: Bool {
+        guard let ended else {
+            return false
+        }
+        return Date.now.timeIntervalSince(ended) < 12 * 60 * 60 // 12h
+    }
+
+    public var duration: TimeInterval? {
+        guard let ended else {
+            return nil
+        }
+
+        return ended.timeIntervalSince(started)
+    }
+
     @discardableResult
-    static func start(_ workout: Workout, in context: ModelContext) throws -> Session {
+    public static func start(_ workout: Workout, in context: ModelContext) throws -> Session {
         let entries = workout.entries.map { workoutEntry in SessionEntry(workoutEntry: workoutEntry) }
         let runningDescriptor = FetchDescriptor<Session>(predicate: #Predicate<Session> { $0.ended == nil })
 
@@ -73,7 +92,7 @@ public extension Session {
         return session
     }
 
-    func finish() {
+    public func finish() {
         guard isActive else {
             return
         }
@@ -85,41 +104,24 @@ public extension Session {
         ended = .now
     }
 
-    func cancel() {
+    public func cancel() {
         guard let modelContext else {
             return
         }
 
         modelContext.delete(self)
     }
-
-    var isActive: Bool {
-        ended == nil
-    }
-
-    var endedRecently: Bool {
-        guard let ended else { return false }
-        return Date.now.timeIntervalSince(ended) < 12 * 60 * 60 // 12h
-    }
-
-    var duration: TimeInterval? {
-        guard let ended else {
-            return nil
-        }
-
-        return ended.timeIntervalSince(started)
-    }
 }
 
 /// The order entries are worked through in, and how much of it is left.
-public extension Session {
-    var pending: [SessionEntry] {
+extension Session {
+    public var pending: [SessionEntry] {
         entries
             .filter(\.status.isPending)
             .sorted()
     }
 
-    var history: [SessionEntry] {
+    public var history: [SessionEntry] {
         entries
             .filter { !$0.status.isPending }
             .sorted { lhs, rhs in
@@ -129,15 +131,15 @@ public extension Session {
             }
     }
 
-    var orderedEntries: [SessionEntry] {
+    public var orderedEntries: [SessionEntry] {
         history + pending
     }
 
-    var isComplete: Bool {
+    public var isComplete: Bool {
         pending.isEmpty
     }
 
-    var resolvedCount: Int {
+    public var resolvedCount: Int {
         entries.count { !$0.status.isPending }
     }
 
@@ -149,8 +151,8 @@ public extension Session {
 }
 
 /// Which entry the player is on, and every way of leaving it.
-public extension Session {
-    var currentEntry: SessionEntry? {
+extension Session {
+    public var currentEntry: SessionEntry? {
         get {
             entries.first { $0.identifier == currentIdentifier }
                 ?? pending.first
@@ -161,15 +163,15 @@ public extension Session {
         }
     }
 
-    var previousEntry: SessionEntry? {
+    public var previousEntry: SessionEntry? {
         neighbor(by: -1)
     }
 
-    var nextEntry: SessionEntry? {
+    public var nextEntry: SessionEntry? {
         neighbor(by: 1)
     }
 
-    func moveToPrevious() {
+    public func moveToPrevious() {
         guard let previousEntry else {
             return
         }
@@ -177,7 +179,7 @@ public extension Session {
         currentEntry = previousEntry
     }
 
-    func moveToNext() {
+    public func moveToNext() {
         guard let nextEntry else {
             return
         }
@@ -185,15 +187,15 @@ public extension Session {
         currentEntry = nextEntry
     }
 
-    func completeAndAdvance() {
+    public func completeAndAdvance() {
         advance(as: .completed(at: .now))
     }
 
-    func skipAndAdvance() {
+    public func skipAndAdvance() {
         advance(as: .skipped(at: .now))
     }
 
-    func undoStatusChange() {
+    public func undoStatusChange() {
         guard let entry = currentEntry, !entry.status.isPending else {
             return
         }
@@ -225,6 +227,10 @@ public extension Session {
 
 /// Wall-clock time: where a session falls in the calendar, by the clock where it started.
 extension Session {
+    private var timeZone: TimeZone {
+        TimeZone(identifier: timeZoneIdentifier) ?? .current
+    }
+
     public func wallClockTime() -> Date.FormatStyle {
         localCalendar(from: .current).formatStyle(time: .shortened)
     }
@@ -250,24 +256,24 @@ extension Session {
 
     func startMinute(in calendar: Calendar) -> Int? {
         let time = localCalendar(from: calendar).dateComponents([.hour, .minute], from: started)
-        guard let hour = time.hour, let minute = time.minute else { return nil }
+        guard let hour = time.hour, let minute = time.minute else {
+            return nil
+        }
         return hour * 60 + minute
     }
 
-    private var timeZone: TimeZone {
-        TimeZone(identifier: timeZoneIdentifier) ?? .current
-    }
-
     private func localStarted(in calendar: Calendar) -> Date {
-        guard timeZone != calendar.timeZone else { return started }
+        guard timeZone != calendar.timeZone else {
+            return started
+        }
 
         let components = localCalendar(from: calendar).dateComponents([.year, .month, .day, .hour, .minute, .second], from: started)
         return calendar.date(from: components) ?? started
     }
 }
 
-public extension Session {
-    static func countTitle(_ count: Int) -> LocalizedStringResource {
+extension Session {
+    public static func countTitle(_ count: Int) -> LocalizedStringResource {
         .sessionCountTitle(count)
     }
 }
@@ -287,8 +293,8 @@ extension Session: Displayable {
     }
 }
 
-private extension Calendar {
-    func isDayBoundary(_ date: Date) -> Bool {
+extension Calendar {
+    fileprivate func isDayBoundary(_ date: Date) -> Bool {
         date == .distantPast || date == .distantFuture || startOfDay(for: date) == date
     }
 }

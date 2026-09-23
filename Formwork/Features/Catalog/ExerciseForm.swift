@@ -10,13 +10,22 @@ import SwiftData
 import SwiftUI
 
 struct ExerciseForm: View {
-    @Environment(\.dismiss) private var dismiss: DismissAction
-    @Environment(\.modelContext) private var modelContext: ModelContext
-    @State private var name: String
-    @State private var type: ExerciseType
-    @State private var categories: Set<ExerciseCategory>
-
     let exercise: Exercise?
+
+    @Environment(\.dismiss)
+    private var dismiss: DismissAction
+
+    @Environment(\.modelContext)
+    private var modelContext: ModelContext
+
+    @State
+    private var name: String
+
+    @State
+    private var type: ExerciseType
+
+    @State
+    private var categories: Set<ExerciseCategory>
 
     init(exercise: Exercise? = nil) {
         self._name = State(initialValue: exercise?.name ?? "")
@@ -87,7 +96,8 @@ struct ExerciseForm: View {
 }
 
 private struct ExerciseTypePicker: View {
-    @Binding var type: ExerciseType
+    @Binding
+    var type: ExerciseType
 
     var body: some View {
         LazyVGrid(columns: GridItem.ntile(n: 2)) {
@@ -123,7 +133,8 @@ private struct ExerciseTypePicker: View {
 }
 
 private struct ExerciseCategoryPicker: View {
-    @Binding var categories: Set<ExerciseCategory>
+    @Binding
+    var categories: Set<ExerciseCategory>
 
     var body: some View {
         FlowLayout(spacing: 8) {

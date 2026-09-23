@@ -29,8 +29,8 @@ extension Pictogram.Tint: Identifiable {
     }
 }
 
-public extension Pictogram.Tint {
-    var color: Color {
+extension Pictogram.Tint {
+    public var color: Color {
         switch self {
         case .blue: .blue
         case .indigo: .indigo
@@ -48,38 +48,60 @@ public extension Pictogram.Tint {
     }
 }
 
-public extension Pictogram {
-    var color: Color {
+extension Pictogram {
+    public var color: Color {
         tint.color
     }
 }
 
-public extension Pictogram {
-    static let unknown: Pictogram = .init(image: "questionmark", tint: .gray)
-    static let workout = Pictogram(image: "figure.strengthtraining.traditional", tint: .blue)
-    static let duration = Pictogram(image: "stopwatch", tint: .cyan)
-    static let date = Pictogram(image: "calendar", tint: .indigo)
-    static let time = Pictogram(image: "clock", tint: .blue)
-    static let tally = Pictogram(image: "repeat", tint: .orange)
-    static let record = Pictogram(image: "trophy", tint: .yellow)
-    static let streak = Pictogram(image: "flame", tint: .orange)
-    static let frequency = Pictogram(image: "chart.bar", tint: .purple)
-    static let completed = Pictogram(image: "checkmark.circle", tint: .green)
-    static let skipped = Pictogram(image: "forward.end", tint: .pink)
-    static let pace = Pictogram(image: "hourglass", tint: .mint)
-    static let increase = Pictogram(image: "arrow.up.right", tint: .green)
-    static let decrease = Pictogram(image: "arrow.down.right", tint: .red)
-    static let volume = Pictogram(image: "scalemass", tint: .indigo)
-    static let progression = Pictogram(image: "chart.line.uptrend.xyaxis", tint: .blue)
-    static let activity = Pictogram(image: "square.grid.3x3", tint: .orange)
-    static let categories = Pictogram(image: "chart.pie", tint: .gray)
-    static let pendingBadge = Pictogram(image: "ellipsis.circle.fill", tint: .gray)
-    static let completedBadge = Pictogram(image: "checkmark.circle.fill", tint: .green)
-    static let skippedBadge = Pictogram(image: "arrowtriangle.forward.circle.fill", tint: .orange)
-    static let recordBadge = Pictogram(image: "trophy.circle.fill", tint: .yellow)
-    static let editBadge = Pictogram(image: "pencil.circle.fill", tint: .gray)
+extension Pictogram {
+    public static let unknown: Pictogram = .init(image: "questionmark", tint: .gray)
 
-    static let workoutImageOptions: [String] = [
+    public static let workout = Pictogram(image: "figure.strengthtraining.traditional", tint: .blue)
+
+    public static let duration = Pictogram(image: "stopwatch", tint: .cyan)
+
+    public static let date = Pictogram(image: "calendar", tint: .indigo)
+
+    public static let time = Pictogram(image: "clock", tint: .blue)
+
+    public static let tally = Pictogram(image: "repeat", tint: .orange)
+
+    public static let record = Pictogram(image: "trophy", tint: .yellow)
+
+    public static let streak = Pictogram(image: "flame", tint: .orange)
+
+    public static let frequency = Pictogram(image: "chart.bar", tint: .purple)
+
+    public static let completed = Pictogram(image: "checkmark.circle", tint: .green)
+
+    public static let skipped = Pictogram(image: "forward.end", tint: .pink)
+
+    public static let pace = Pictogram(image: "hourglass", tint: .mint)
+
+    public static let increase = Pictogram(image: "arrow.up.right", tint: .green)
+
+    public static let decrease = Pictogram(image: "arrow.down.right", tint: .red)
+
+    public static let volume = Pictogram(image: "scalemass", tint: .indigo)
+
+    public static let progression = Pictogram(image: "chart.line.uptrend.xyaxis", tint: .blue)
+
+    public static let activity = Pictogram(image: "square.grid.3x3", tint: .orange)
+
+    public static let categories = Pictogram(image: "chart.pie", tint: .gray)
+
+    public static let pendingBadge = Pictogram(image: "ellipsis.circle.fill", tint: .gray)
+
+    public static let completedBadge = Pictogram(image: "checkmark.circle.fill", tint: .green)
+
+    public static let skippedBadge = Pictogram(image: "arrowtriangle.forward.circle.fill", tint: .orange)
+
+    public static let recordBadge = Pictogram(image: "trophy.circle.fill", tint: .yellow)
+
+    public static let editBadge = Pictogram(image: "pencil.circle.fill", tint: .gray)
+
+    public static let workoutImageOptions: [String] = [
         Pictogram.workout.image,
         "figure",
         "figure.walk",

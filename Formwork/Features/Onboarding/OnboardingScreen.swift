@@ -10,10 +10,17 @@ import SwiftData
 import SwiftUI
 
 struct OnboardingScreen: View {
-    @Environment(\.modelContext) private var modelContext: ModelContext
-    @Environment(\.dismiss) private var dismiss: DismissAction
-    @AppStorage(StorageKeys.onboardingPending) private var onboardingPending: Bool = true
-    @State private var page: Int? = Page.welcome.rawValue
+    @Environment(\.modelContext)
+    private var modelContext: ModelContext
+
+    @Environment(\.dismiss)
+    private var dismiss: DismissAction
+
+    @AppStorage(StorageKeys.onboardingPending)
+    private var onboardingPending: Bool = true
+
+    @State
+    private var page: Int? = Page.welcome.rawValue
 
     var body: some View {
         ScrollView(.horizontal) {
@@ -57,10 +64,6 @@ struct OnboardingScreen: View {
         }
     }
 
-    private var current: Page {
-        page.flatMap(Page.init(rawValue:)) ?? .welcome
-    }
-
     private var indicator: some View {
         HStack(spacing: 6) {
             ForEach(Page.allCases, id: \.rawValue) { page in
@@ -69,6 +72,10 @@ struct OnboardingScreen: View {
         }
         .animation(.snappy, value: current)
         .accessibilityHidden(true)
+    }
+
+    private var current: Page {
+        page.flatMap(Page.init(rawValue:)) ?? .welcome
     }
 
     private func navigate(to rawValue: Int) {
@@ -212,6 +219,7 @@ private struct WorkoutPreview: View {
 
 private struct SessionPreview: View {
     private let exercise = StarterCatalog.detachedExerciseSample(of: .weight)
+
     private let target = Samples.weightTarget
 
     var body: some View {

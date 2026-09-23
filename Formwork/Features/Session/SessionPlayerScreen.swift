@@ -9,11 +9,16 @@ import FormworkKit
 import SwiftUI
 
 struct SessionPlayerScreen: View {
-    @Environment(\.dismiss) private var dismiss: DismissAction
-    @State private var finishAlert = false
-    @State private var cancelAlert = false
-
     let session: Session
+
+    @Environment(\.dismiss)
+    private var dismiss: DismissAction
+
+    @State
+    private var finishAlert = false
+
+    @State
+    private var cancelAlert = false
 
     var body: some View {
         ZStack {

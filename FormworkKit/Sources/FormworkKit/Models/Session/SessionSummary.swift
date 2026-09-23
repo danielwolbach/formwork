@@ -47,8 +47,8 @@ public struct SessionSummary {
     }
 }
 
-public extension Session {
-    func summary() -> SessionSummary {
+extension Session {
+    public func summary() -> SessionSummary {
         SessionSummary(session: self)
     }
 }

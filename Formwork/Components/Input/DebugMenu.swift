@@ -10,8 +10,11 @@ import SwiftData
 import SwiftUI
 
 struct DebugMenu: View {
-    @Environment(\.modelContext) private var modelContext: ModelContext
-    @AppStorage(StorageKeys.onboardingPending) private var onboardingPending: Bool = true
+    @Environment(\.modelContext)
+    private var modelContext: ModelContext
+
+    @AppStorage(StorageKeys.onboardingPending)
+    private var onboardingPending: Bool = true
 
     var body: some View {
         #if DEBUG
@@ -36,6 +39,7 @@ struct DebugMenu: View {
 
 private struct VerbatimLabel: View {
     let verbatim: String
+
     let systemImage: String
 
     var body: some View {

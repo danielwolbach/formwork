@@ -25,10 +25,13 @@ public struct Heatmap {
     }
 
     public let pictogram: Pictogram
+
     public let title: String
 
     private let values: [Date: Int]
+
     private let end: Date?
+
     private let calendar: Calendar
 
     init(_ values: [Date: Int], endingOn end: Date?, calendar: Calendar, title: String, pictogram: Pictogram) {

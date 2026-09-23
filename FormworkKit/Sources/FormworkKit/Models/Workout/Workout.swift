@@ -20,7 +20,7 @@ public final class Workout {
     public var entries: [WorkoutEntry] = []
 
     @Relationship(deleteRule: .nullify, inverse: \Session.workout)
-    var sessions: [Session] = []
+    public var sessions: [Session] = []
 
     public init(name: String, pictogram: Pictogram, schedule: Schedule, entries: [WorkoutEntry]) {
         self.name = name
@@ -30,8 +30,8 @@ public final class Workout {
     }
 }
 
-public extension Workout {
-    func append(exercise: Exercise, target: ExerciseTarget) {
+extension Workout {
+    public func append(exercise: Exercise, target: ExerciseTarget) {
         let order = (entries.map(\.order).max() ?? -1) + 1
         entries.append(WorkoutEntry(order: order, exercise: exercise, target: target))
     }
@@ -47,9 +47,11 @@ extension Workout: Displayable {
     }
 }
 
-public extension [Workout] {
-    func pending(on date: Date = .now, calendar: Calendar = .current) -> [Workout] {
-        guard let day = calendar.dateInterval(of: .day, for: date) else { return [] }
+extension [Workout] {
+    public func pending(on date: Date = .now, calendar: Calendar = .current) -> [Workout] {
+        guard let day = calendar.dateInterval(of: .day, for: date) else {
+            return []
+        }
 
         return filter { $0.schedule.isScheduled(on: date, in: calendar) }
             .filter { workout in !workout.sessions.contains { !$0.isActive && $0.falls(into: day, in: calendar) } }

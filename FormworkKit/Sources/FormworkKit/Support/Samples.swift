@@ -72,46 +72,6 @@ public enum Samples {
         ),
     ]
 
-    public static var weekStreak: Metric<Int> {
-        .weekStreak(6)
-    }
-
-    public static var sessionsPerWeek: Metric<Double> {
-        .sessionsPerWeek(2.8)
-    }
-
-    public static var personalBest: Metric<ExerciseTarget> {
-        .personalBest(.weight(target: .init(weight: best, sets: 3, reps: 10)))
-    }
-
-    public static var totalVolume: Metric<Quantity> {
-        .totalVolume(volume)
-    }
-
-    /// Read in whatever the reader measures in, so a sample card doesn't show kilograms to a pounds user.
-    private static var best: Quantity {
-        switch Locale.current.measurementSystem {
-        case .us: Quantity(200, in: .pounds)
-        default: Quantity(90, in: .kilograms)
-        }
-    }
-
-    private static var volume: Quantity {
-        switch Locale.current.measurementSystem {
-        case .us: Quantity(27500, in: .pounds)
-        default: Quantity(12480, in: .kilograms)
-        }
-    }
-
-    public static var weightTarget: ExerciseTarget {
-        switch Locale.current.measurementSystem {
-        case .us:
-            ExerciseTarget.weight(target: .init(weight: Quantity(185, in: .pounds), sets: 3, reps: 10))
-        default:
-            ExerciseTarget.weight(target: .init(weight: Quantity(85, in: .kilograms), sets: 3, reps: 10))
-        }
-    }
-
     public static let sessions: [Session] = [
         // swiftlint:disable:next force_try
         try! Session.active(in: container.mainContext)!,
@@ -134,10 +94,50 @@ public enum Samples {
 
         return container
     }()
+
+    public static var weekStreak: Metric<Int> {
+        .weekStreak(6)
+    }
+
+    public static var sessionsPerWeek: Metric<Double> {
+        .sessionsPerWeek(2.8)
+    }
+
+    public static var personalBest: Metric<ExerciseTarget> {
+        .personalBest(.weight(target: .init(weight: best, sets: 3, reps: 10)))
+    }
+
+    public static var totalVolume: Metric<Quantity> {
+        .totalVolume(volume)
+    }
+
+    public static var weightTarget: ExerciseTarget {
+        switch Locale.current.measurementSystem {
+        case .us:
+            ExerciseTarget.weight(target: .init(weight: Quantity(185, in: .pounds), sets: 3, reps: 10))
+        default:
+            ExerciseTarget.weight(target: .init(weight: Quantity(85, in: .kilograms), sets: 3, reps: 10))
+        }
+    }
+
+    /// Read in whatever the reader measures in, so a sample card doesn't show kilograms to a pounds user.
+    private static var best: Quantity {
+        switch Locale.current.measurementSystem {
+        case .us: Quantity(200, in: .pounds)
+        default: Quantity(90, in: .kilograms)
+        }
+    }
+
+    private static var volume: Quantity {
+        switch Locale.current.measurementSystem {
+        case .us: Quantity(27500, in: .pounds)
+        default: Quantity(12480, in: .kilograms)
+        }
+    }
 }
 
-public extension View {
-    func sampleData() -> some View {
+extension View {
+    public func sampleData() -> some View {
         modifier(SampleDataModifier())
     }
 }
@@ -148,8 +148,8 @@ private struct SampleDataModifier: ViewModifier {
     }
 }
 
-private extension Samples {
-    static func seedHistory(in context: ModelContext, days: Int = 84, calendar: Calendar = .current) throws {
+extension Samples {
+    fileprivate static func seedHistory(in context: ModelContext, days: Int = 84, calendar: Calendar = .current) throws {
         var random = SeededGenerator(seed: 42)
         let today = calendar.startOfDay(for: .now)
 
@@ -200,8 +200,8 @@ private struct SeededGenerator: RandomNumberGenerator {
     }
 }
 
-private extension ExerciseTarget {
-    func scaled(by factor: Double) -> Self {
+extension ExerciseTarget {
+    fileprivate func scaled(by factor: Double) -> Self {
         switch self {
         case var .weight(target):
             target.weight = target.weight.scaled(by: factor, to: target.stepSize)
@@ -218,8 +218,8 @@ private extension ExerciseTarget {
     }
 }
 
-private extension Quantity {
-    func scaled(by factor: Double, to step: Double) -> Self {
+extension Quantity {
+    fileprivate func scaled(by factor: Double, to step: Double) -> Self {
         var quantity = self
         quantity.value = (value * factor / step).rounded() * step
         return quantity

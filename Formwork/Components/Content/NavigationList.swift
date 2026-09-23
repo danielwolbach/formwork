@@ -10,6 +10,7 @@ import SwiftUI
 
 struct NavigationList<Items: RandomAccessCollection, Row: View>: View where Items.Element: Identifiable & Hashable {
     private let items: Items
+
     private let row: (Items.Element) -> Row
 
     init(_ items: Items, @ViewBuilder row: @escaping (Items.Element) -> Row) {

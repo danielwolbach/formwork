@@ -12,3 +12,21 @@
 --wrapconditions before-first
 --wraptypealiases before-first
 --allowpartialwrapping false
+
+--exclude FormworkKit/.build
+
+# Declarations and ordering, see CONTRIBUTING.md
+--enable organizeDeclarations,wrapGuardStatementBodies
+--extensionacl on-declarations
+--organizationmode type
+--organizetypes class,actor,struct,enum,extension
+--markcategories false
+--sortswiftuiproperties none
+--typeorder beforeMarks,nestedType,staticProperty,instanceProperty,swiftUIPropertyWrapper,instanceLifecycle,staticPropertyWithBody,classPropertyWithBody,swiftUIProperty,overriddenProperty,computedProperty,staticMethod,classMethod,swiftUIMethod,overriddenMethod,instanceMethod
+
+# Attributes on their own line
+--funcattributes prev-line
+--typeattributes prev-line
+--storedvarattributes prev-line
+--computedvarattributes prev-line
+--complexattributes prev-line

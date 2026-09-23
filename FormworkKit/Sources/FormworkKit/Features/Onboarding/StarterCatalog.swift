@@ -11,7 +11,9 @@ import SwiftData
 public enum StarterCatalog {
     public struct ExerciseEntry: Sendable {
         public let name: LocalizedStringResource
+
         public let type: ExerciseType
+
         public let categories: Set<ExerciseCategory>
 
         public var detatchedExercise: Exercise {
@@ -22,12 +24,16 @@ public enum StarterCatalog {
     public struct WorkoutEntry: Sendable {
         public struct Entry: Sendable {
             public let exercise: LocalizedStringResource
+
             public let target: ExerciseTarget
         }
 
         public let name: LocalizedStringResource
+
         public let pictogram: Pictogram
+
         public let schedule: Schedule
+
         public let entries: [Entry]
 
         public var detatchedWorkout: Workout {

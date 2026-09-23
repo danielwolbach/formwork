@@ -139,8 +139,8 @@ struct SessionActivityWidget: Widget {
     }
 }
 
-private extension SessionActivityAttributes.ContentState {
-    static var preview: Self {
+extension SessionActivityAttributes.ContentState {
+    fileprivate static var preview: Self {
         .init(
             title: "Barbell Squat",
             subtitle: "3 × 8",
@@ -155,28 +155,28 @@ private extension SessionActivityAttributes.ContentState {
         )
     }
 
-    static var completed: Self {
+    fileprivate static var completed: Self {
         var state = Self.preview
         state.status = Pictogram(image: "checkmark.circle.fill", tint: .green)
         state.resolved = 3
         return state
     }
 
-    static var atStart: Self {
+    fileprivate static var atStart: Self {
         var state = Self.preview
         state.canMoveBackward = false
         state.resolved = 0
         return state
     }
 
-    static var atEnd: Self {
+    fileprivate static var atEnd: Self {
         var state = Self.preview
         state.canMoveForward = false
         state.resolved = 4
         return state
     }
 
-    static var finished: Self {
+    fileprivate static var finished: Self {
         var state = Self.preview
         state.subtitle = "Session complete"
         state.status = Pictogram(image: "checkmark.circle.fill", tint: .green)

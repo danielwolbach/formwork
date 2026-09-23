@@ -15,7 +15,9 @@ public struct Progression<Value: Rankable> {
     }
 
     public let pictogram: Pictogram
+
     public let title: String
+
     public let points: [Point]
 
     init(_ points: [Point], title: String, pictogram: Pictogram) {
@@ -35,8 +37,8 @@ extension Progression.Point: Identifiable {
     }
 }
 
-public extension Progression.Point {
-    var rank: Double {
+extension Progression.Point {
+    public var rank: Double {
         value.rank
     }
 }

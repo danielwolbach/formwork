@@ -8,12 +8,22 @@
 import SwiftUI
 
 public struct FlowLayout: Layout {
+    private struct Row {
+        var elements: [(subview: LayoutSubview, size: CGSize)]
+
+        var width: CGFloat
+
+        var height: CGFloat
+    }
+
     /// Far enough out of the way that whatever clips the layout, as a card does, keeps the rows it has no
     /// room for out of sight.
     private static let hiddenOffset: CGFloat = 10000
 
     private let alignment: HorizontalAlignment
+
     private let spacing: CGFloat
+
     private let rowLimit: Int?
 
     /// `rowLimit` caps how many rows the layout takes, so that it can't grow past the room it was given.
@@ -98,12 +108,6 @@ public struct FlowLayout: Layout {
         }
 
         return Array(rows.prefix(max(rowLimit, 0)))
-    }
-
-    private struct Row {
-        var elements: [(subview: LayoutSubview, size: CGSize)]
-        var width: CGFloat
-        var height: CGFloat
     }
 }
 

@@ -10,15 +10,28 @@ import SwiftData
 import SwiftUI
 
 struct WorkoutScreen: View {
-    @Environment(\.modelContext) private var modelContext: ModelContext
-    @Environment(\.dismiss) private var dismiss: DismissAction
-    @Environment(\.presentSession) private var presentSession: PresentSessionAction
-    @Query(Session.activeDescriptor) private var activeSessions: [Session]
-    @State private var sheet: Sheet? = nil
-    @State private var deleteAlert: Bool = false
-    @State private var sessionActiveAlert: Bool = false
-
     let workout: Workout
+
+    @Environment(\.modelContext)
+    private var modelContext: ModelContext
+
+    @Environment(\.dismiss)
+    private var dismiss: DismissAction
+
+    @Environment(\.presentSession)
+    private var presentSession: PresentSessionAction
+
+    @Query(Session.activeDescriptor)
+    private var activeSessions: [Session]
+
+    @State
+    private var sheet: Sheet? = nil
+
+    @State
+    private var deleteAlert: Bool = false
+
+    @State
+    private var sessionActiveAlert: Bool = false
 
     var body: some View {
         ScrollView {

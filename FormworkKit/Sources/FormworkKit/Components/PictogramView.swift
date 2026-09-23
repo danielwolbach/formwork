@@ -10,6 +10,7 @@ import SwiftUI
 @MainActor
 public struct PictogramView: View {
     let pictogram: Pictogram
+
     let badge: Pictogram?
 
     public init(pictogram: Pictogram, badge: Pictogram? = nil) {

@@ -10,11 +10,16 @@ import SwiftData
 import SwiftUI
 
 struct SessionScreen: View {
-    @Environment(\.modelContext) private var modelContext: ModelContext
-    @Environment(\.dismiss) private var dismiss: DismissAction
-    @State private var deleteAlert = false
-
     let session: Session
+
+    @Environment(\.modelContext)
+    private var modelContext: ModelContext
+
+    @Environment(\.dismiss)
+    private var dismiss: DismissAction
+
+    @State
+    private var deleteAlert = false
 
     var body: some View {
         ScrollView {

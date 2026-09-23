@@ -9,14 +9,21 @@ import FormworkKit
 import SwiftUI
 
 struct NumberStepper: View {
-    @State private var showKeypad = false
-    @Binding var value: Double
-
     let title: String
+
     let suffix: String?
+
     let stepSize: Double?
+
     let fractionLength: Int
+
     let range: ClosedRange<Double>
+
+    @Binding
+    var value: Double
+
+    @State
+    private var showKeypad = false
 
     init(
         value: Binding<Double>,
@@ -69,11 +76,11 @@ struct NumberStepper: View {
         }
         .sheet(isPresented: $showKeypad) {
             NumberEntrySheet(
-                value: $value,
                 title: title,
                 suffix: suffix,
                 fractionLength: fractionLength,
-                range: range
+                range: range,
+                value: $value
             )
         }
         .sensoryFeedback(trigger: value) { oldValue, newValue in
@@ -86,17 +93,6 @@ struct NumberStepper: View {
             .font(.subheadline)
             .lineLimit(1)
             .foregroundStyle(.secondary)
-    }
-
-    private func stepButton(_ descriptor: ActionDescriptor, by delta: Double) -> some View {
-        Button(descriptor) {
-            withAnimation {
-                value = clamped(value + delta)
-            }
-        }
-        .labelStyle(.fixedIconOnly)
-        .buttonStyle(.glass)
-        .buttonBorderShape(.circle)
     }
 
     private var valueButton: some View {
@@ -112,20 +108,39 @@ struct NumberStepper: View {
         value.formatted(.number.precision(.fractionLength(fractionLength)))
     }
 
+    private func stepButton(_ descriptor: ActionDescriptor, by delta: Double) -> some View {
+        Button(descriptor) {
+            withAnimation {
+                value = clamped(value + delta)
+            }
+        }
+        .labelStyle(.fixedIconOnly)
+        .buttonStyle(.glass)
+        .buttonBorderShape(.circle)
+    }
+
     private func clamped(_ raw: Double) -> Double {
         min(max(raw, range.lowerBound), range.upperBound)
     }
 }
 
 private struct NumberEntrySheet: View {
-    @Environment(\.dismiss) private var dismiss: DismissAction
-    @State private var draft = ""
-    @Binding var value: Double
-
     let title: String
+
     let suffix: String?
+
     let fractionLength: Int
+
     let range: ClosedRange<Double>
+
+    @Binding
+    var value: Double
+
+    @Environment(\.dismiss)
+    private var dismiss: DismissAction
+
+    @State
+    private var draft = ""
 
     var body: some View {
         NavigationStack {
@@ -137,7 +152,7 @@ private struct NumberEntrySheet: View {
                     isPlaceholder: draft.isEmpty
                 )
 
-                DecimalKeypad(text: $draft, fractionLength: fractionLength, upperBound: range.upperBound)
+                DecimalKeypad(fractionLength: fractionLength, upperBound: range.upperBound, text: $draft)
                     .padding(.horizontal)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -179,8 +194,11 @@ private struct NumberEntrySheet: View {
 
 private struct ValueLabel: View {
     let text: String
+
     let suffix: String?
+
     let value: Double
+
     var isPlaceholder: Bool = false
 
     var body: some View {
@@ -206,11 +224,15 @@ private struct ValueLabel: View {
 }
 
 #Preview("Decimal") {
-    @Previewable @State var value: Double = 0
+    @Previewable
+    @State
+    var value: Double = 0
     NumberStepper(value: $value, title: "Weight", suffix: "kg", stepSize: 5)
 }
 
 #Preview("Integer") {
-    @Previewable @State var value = 0
+    @Previewable
+    @State
+    var value = 0
     NumberStepper(value: $value, title: "Reps")
 }

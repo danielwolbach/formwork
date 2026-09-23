@@ -45,8 +45,8 @@ extension SessionEntry: Comparable {
     }
 }
 
-public extension SessionEntry {
-    var duration: TimeInterval? {
+extension SessionEntry {
+    public var duration: TimeInterval? {
         guard let session, let resolved = status.resolved else {
             return nil
         }
@@ -62,15 +62,15 @@ public extension SessionEntry {
         return resolved.timeIntervalSince(previous)
     }
 
-    var isBest: Bool {
+    public var isBest: Bool {
         previousBest.map { target.rank > $0.rank } ?? false
     }
 
-    var previous: ExerciseTarget? {
+    public var previous: ExerciseTarget? {
         earlier.max { ($0.session?.started ?? .distantPast) < ($1.session?.started ?? .distantPast) }?.target
     }
 
-    var previousBest: ExerciseTarget? {
+    public var previousBest: ExerciseTarget? {
         earlier.map(\.target).max { $0.rank < $1.rank }
     }
 
@@ -105,8 +105,8 @@ extension SessionEntry: Displayable {
     }
 }
 
-public extension SessionEntry.Status {
-    var isPending: Bool {
+extension SessionEntry.Status {
+    public var isPending: Bool {
         if case .pending = self {
             true
         } else {
@@ -114,7 +114,7 @@ public extension SessionEntry.Status {
         }
     }
 
-    var isCompleted: Bool {
+    public var isCompleted: Bool {
         if case .completed = self {
             true
         } else {
@@ -122,7 +122,7 @@ public extension SessionEntry.Status {
         }
     }
 
-    var isSkipped: Bool {
+    public var isSkipped: Bool {
         if case .skipped = self {
             true
         } else {
@@ -130,7 +130,7 @@ public extension SessionEntry.Status {
         }
     }
 
-    var resolved: Date? {
+    public var resolved: Date? {
         switch self {
         case .pending: nil
         case let .completed(date), let .skipped(date): date

@@ -1,0 +1,20 @@
+#!/bin/sh
+
+export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
+
+for tool in swiftformat swiftlint; do
+    if ! command -v "$tool" >/dev/null 2>&1; then
+        echo "pre-commit: $tool is not installed (brew install $tool)." >&2
+        exit 1
+    fi
+done
+
+swiftformat . --lint || {
+    echo "pre-commit: SwiftFormat found issues. Run 'swiftformat .' and stage the changes." >&2
+    exit 1
+}
+
+swiftlint lint --strict --quiet || {
+    echo "pre-commit: SwiftLint found issues. Fix them and stage the changes." >&2
+    exit 1
+}

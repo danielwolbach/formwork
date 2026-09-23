@@ -22,7 +22,8 @@ struct DisplayableTests {
         #expect(target.pictogram == type.pictogram)
     }
 
-    @Test func exerciseListsCategoriesInCatalogOrder() {
+    @Test
+    func exerciseListsCategoriesInCatalogOrder() {
         let exercise = Exercise(name: "Deadlift", type: .weight, categories: [.back, .legs])
 
         #expect(exercise.subtitle == [ExerciseCategory.legs.title, ExerciseCategory.back.title].joined(separator: ", "))
@@ -37,7 +38,8 @@ struct DisplayableTests {
     }
 
     @MainActor
-    @Test func sessionIsDatedByTheClockItWasRecordedOn() throws {
+    @Test
+    func sessionIsDatedByTheClockItWasRecordedOn() throws {
         let store = try TestStore()
         let session = try store.session(7, hour: 8, zone: "America/New_York")
         var local = Calendar.current
@@ -49,7 +51,8 @@ struct DisplayableTests {
     }
 
     @MainActor
-    @Test func wallClockTimeIsTheClockItWasRecordedOn() throws {
+    @Test
+    func wallClockTimeIsTheClockItWasRecordedOn() throws {
         let store = try TestStore()
         let session = try store.session(7, hour: 8, zone: "America/New_York")
         var local = Calendar.current
@@ -59,7 +62,8 @@ struct DisplayableTests {
     }
 
     @MainActor
-    @Test func entryWithoutExerciseHasFallbackTitle() throws {
+    @Test
+    func entryWithoutExerciseHasFallbackTitle() throws {
         let store = try TestStore()
         let entry = try #require(store.workout.entries.first)
 

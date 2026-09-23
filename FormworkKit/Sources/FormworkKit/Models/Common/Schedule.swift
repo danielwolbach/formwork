@@ -19,14 +19,14 @@ public struct Schedule: Codable, Sendable {
     }
 }
 
-public extension Schedule {
-    static let inactive = Schedule(weekdays: [])
+extension Schedule {
+    public static let inactive = Schedule(weekdays: [])
 
-    static func today(in calendar: Calendar = .current) -> Schedule {
+    public static func today(in calendar: Calendar = .current) -> Schedule {
         Schedule(weekdays: [Weekday(calendarNumber: calendar.component(.weekday, from: .now))])
     }
 
-    func isScheduled(on date: Date, in calendar: Calendar = .current) -> Bool {
+    public func isScheduled(on date: Date, in calendar: Calendar = .current) -> Bool {
         weekdays.contains(Schedule.Weekday(calendarNumber: calendar.component(.weekday, from: date)))
     }
 }
@@ -37,25 +37,25 @@ extension Schedule.Weekday: Identifiable {
     }
 }
 
-public extension Schedule.Weekday {
-    internal init(calendarNumber: Int) {
+extension Schedule.Weekday {
+    init(calendarNumber: Int) {
         self = Self.allCases[(calendarNumber + 5) % 7]
     }
 
-    static func ordered(in calendar: Calendar = .autoupdatingCurrent) -> [Self] {
+    var calendarNumber: Int {
+        (rawValue + 1) % 7 + 1
+    }
+
+    public static func ordered(in calendar: Calendar = .autoupdatingCurrent) -> [Self] {
         let offset = Self(calendarNumber: calendar.firstWeekday).rawValue
         return Array(allCases[offset...] + allCases[..<offset])
     }
 
-    func name(in calendar: Calendar = .autoupdatingCurrent) -> String {
+    public func name(in calendar: Calendar = .autoupdatingCurrent) -> String {
         calendar.weekdaySymbols[calendarNumber - 1]
     }
 
-    func symbol(in calendar: Calendar = .autoupdatingCurrent) -> String {
+    public func symbol(in calendar: Calendar = .autoupdatingCurrent) -> String {
         calendar.veryShortWeekdaySymbols[calendarNumber - 1]
-    }
-
-    internal var calendarNumber: Int {
-        (rawValue + 1) % 7 + 1
     }
 }

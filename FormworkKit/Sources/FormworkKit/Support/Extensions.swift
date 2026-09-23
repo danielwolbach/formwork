@@ -7,36 +7,36 @@
 
 import Foundation
 
-public extension FormatStyle where Self == Duration.UnitsFormatStyle {
+extension FormatStyle where Self == Duration.UnitsFormatStyle {
     /// Whole minutes, dropping to seconds below one, so a set that took forty seconds doesn't read as no time.
-    static var exerciseDuration: Self {
+    public static var exerciseDuration: Self {
         .units(allowed: [.minutes, .seconds], width: .abbreviated, maximumUnitCount: 1)
     }
 
     /// Hours and minutes: how long a session ran.
-    static var sessionDuration: Self {
+    public static var sessionDuration: Self {
         .units(allowed: [.hours, .minutes], width: .abbreviated)
     }
 }
 
-public extension Calendar {
+extension Calendar {
     /// Reads a date back on this calendar's own clock rather than the reader's, so a session recorded at 08:00
     /// still shows 08:00 in another time zone. A session reads its own dates back with `wallClockTime()`.
-    func formatStyle(date: Date.FormatStyle.DateStyle = .omitted, time: Date.FormatStyle.TimeStyle = .omitted) -> Date.FormatStyle {
+    public func formatStyle(date: Date.FormatStyle.DateStyle = .omitted, time: Date.FormatStyle.TimeStyle = .omitted) -> Date.FormatStyle {
         Date.FormatStyle(date: date, time: time, calendar: self, timeZone: timeZone)
     }
 }
 
 /// The periods statistics are read over. Whole days in their calendar, as `Session.falls(into:in:)` needs.
-public extension DateInterval {
-    static let allTime = DateInterval(start: .distantPast, end: .distantFuture)
+extension DateInterval {
+    public static let allTime = DateInterval(start: .distantPast, end: .distantFuture)
 
-    static func month(_ month: Int, year: Int? = nil, calendar: Calendar = .current) -> Self {
+    public static func month(_ month: Int, year: Int? = nil, calendar: Calendar = .current) -> Self {
         precondition((1 ... 12).contains(month), "Month must be between 1 and 12.")
         return period(.month, of: DateComponents(year: year ?? calendar.component(.year, from: .now), month: month), calendar: calendar)
     }
 
-    static func year(_ year: Int? = nil, calendar: Calendar = .current) -> Self {
+    public static func year(_ year: Int? = nil, calendar: Calendar = .current) -> Self {
         period(.year, of: DateComponents(year: year ?? calendar.component(.year, from: .now)), calendar: calendar)
     }
 

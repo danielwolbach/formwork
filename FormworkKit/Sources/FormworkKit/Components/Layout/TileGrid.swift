@@ -11,6 +11,7 @@ public struct TileGrid: Layout {
     /// How many cells a tile covers, counted as rows by columns.
     struct Span: Equatable {
         let rows: Int
+
         let columns: Int
 
         init(rows: Int, columns: Int) {
@@ -27,7 +28,9 @@ public struct TileGrid: Layout {
     /// A tile's span together with the slot it was packed into.
     struct Slot {
         let row: Int
+
         let column: Int
+
         let span: Span
     }
 
@@ -36,7 +39,9 @@ public struct TileGrid: Layout {
     }
 
     private let columns: Int
+
     private let spacing: CGFloat
+
     private let aspectRatio: CGFloat
 
     public init(columns: Int = 2, spacing: CGFloat = 8, aspectRatio: CGFloat = 1.7) {
@@ -148,15 +153,16 @@ public struct TileGrid: Layout {
     }
 }
 
-public extension View {
+extension View {
     /// The number of cells this tile covers inside a `TileGrid`. Has no effect anywhere else.
-    func tileSpan(rows: Int = 1, columns: Int = 1) -> some View {
+    public func tileSpan(rows: Int = 1, columns: Int = 1) -> some View {
         layoutValue(key: TileGrid.SpanKey.self, value: TileGrid.Span(rows: rows, columns: columns))
     }
 }
 
 private struct PreviewTile: View {
     let label: String
+
     let pictogram: Pictogram
 
     var body: some View {

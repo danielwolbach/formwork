@@ -16,7 +16,8 @@ struct WorkoutTests {
         self.store = try TestStore()
     }
 
-    @Test func appendPlacesExerciseLast() {
+    @Test
+    func appendPlacesExerciseLast() {
         let exercise = Exercise(name: "Plank", type: .duration, categories: [.core])
         store.context.insert(exercise)
 
@@ -26,7 +27,8 @@ struct WorkoutTests {
         #expect(store.workout.entries.sorted().last?.order == 3)
     }
 
-    @Test func appendContinuesAfterHighestOrder() {
+    @Test
+    func appendContinuesAfterHighestOrder() {
         let exercise = Exercise(name: "Plank", type: .duration, categories: [.core])
         store.context.insert(exercise)
         store.workout.entries.sorted().last?.order = 7

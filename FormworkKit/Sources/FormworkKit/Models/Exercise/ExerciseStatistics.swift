@@ -44,8 +44,8 @@ public struct ExerciseStatistics {
     }
 }
 
-public extension Exercise {
-    func statistics(in interval: DateInterval = .allTime) -> ExerciseStatistics {
+extension Exercise {
+    public func statistics(in interval: DateInterval = .allTime) -> ExerciseStatistics {
         ExerciseStatistics(exercise: self, interval: interval)
     }
 }

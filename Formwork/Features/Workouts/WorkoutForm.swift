@@ -10,14 +10,25 @@ import SwiftData
 import SwiftUI
 
 struct WorkoutForm: View {
-    @Environment(\.dismiss) private var dismiss: DismissAction
-    @Environment(\.modelContext) private var modelContext: ModelContext
-    @State private var name: String
-    @State private var pictogram: Pictogram
-    @State private var schedule: Schedule
-    @State private var entries: [WorkoutEntry]
-
     let workout: Workout?
+
+    @Environment(\.dismiss)
+    private var dismiss: DismissAction
+
+    @Environment(\.modelContext)
+    private var modelContext: ModelContext
+
+    @State
+    private var name: String
+
+    @State
+    private var pictogram: Pictogram
+
+    @State
+    private var schedule: Schedule
+
+    @State
+    private var entries: [WorkoutEntry]
 
     init(workout: Workout? = nil) {
         self._name = State(initialValue: workout?.name ?? "")
@@ -33,7 +44,7 @@ struct WorkoutForm: View {
                 HStack {
                     Spacer()
 
-                    PictogramEditor(pictogram: $pictogram, imageOptions: Pictogram.workoutImageOptions)
+                    PictogramEditor(imageOptions: Pictogram.workoutImageOptions, pictogram: $pictogram)
 
                     Spacer()
                 }
@@ -103,7 +114,8 @@ struct WorkoutForm: View {
 }
 
 private struct ScheduleEditor: View {
-    @Binding var schedule: Schedule
+    @Binding
+    var schedule: Schedule
 
     var body: some View {
         LazyVGrid(columns: GridItem.ntile(n: 7, spacing: 0), spacing: 0) {

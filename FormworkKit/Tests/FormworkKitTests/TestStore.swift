@@ -12,11 +12,8 @@ import SwiftData
 @MainActor
 struct TestStore {
     let container: ModelContainer
-    let workout: Workout
 
-    var context: ModelContext {
-        container.mainContext
-    }
+    let workout: Workout
 
     init() throws {
         let configuration = ModelConfiguration(schema: Storage.schema, isStoredInMemoryOnly: true)
@@ -30,6 +27,10 @@ struct TestStore {
             container.mainContext.insert(exercise)
             workout.append(exercise: exercise, target: .bodyweight(target: .init(sets: 3, reps: 10)))
         }
+    }
+
+    var context: ModelContext {
+        container.mainContext
     }
 
     func startSession() throws -> Session {

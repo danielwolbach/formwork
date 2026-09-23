@@ -8,10 +8,12 @@
 import SwiftUI
 
 struct DecimalKeypad: View {
-    @Binding var text: String
-
     let fractionLength: Int
+
     let upperBound: Double
+
+    @Binding
+    var text: String
 
     var body: some View {
         LazyVGrid(columns: GridItem.ntile(n: 3, spacing: 12), spacing: 12) {
@@ -42,6 +44,22 @@ struct DecimalKeypad: View {
                     .font(.title3)
             }
         }
+    }
+
+    private func digitLabel(_ label: String) -> some View {
+        Text(label)
+            .font(.title2)
+            .fontWeight(.medium)
+    }
+
+    private func key(action: @escaping () -> Void, @ViewBuilder label: () -> some View) -> some View {
+        Button(action: action) {
+            label()
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .aspectRatio(2, contentMode: .fill)
+                .contentShape(.rect)
+        }
+        .buttonStyle(.glass)
     }
 
     private func appendDigit(_ digit: String) {
@@ -77,30 +95,14 @@ struct DecimalKeypad: View {
 
         return value <= upperBound
     }
-
-    private func digitLabel(_ label: String) -> some View {
-        Text(label)
-            .font(.title2)
-            .fontWeight(.medium)
-    }
-
-    private func key(action: @escaping () -> Void, @ViewBuilder label: () -> some View) -> some View {
-        Button(action: action) {
-            label()
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .aspectRatio(2, contentMode: .fill)
-                .contentShape(.rect)
-        }
-        .buttonStyle(.glass)
-    }
 }
 
 #Preview("Decimal") {
-    DecimalKeypad(text: .constant(""), fractionLength: 1, upperBound: 100)
+    DecimalKeypad(fractionLength: 1, upperBound: 100, text: .constant(""))
         .padding()
 }
 
 #Preview("Integer") {
-    DecimalKeypad(text: .constant(""), fractionLength: 0, upperBound: 100)
+    DecimalKeypad(fractionLength: 0, upperBound: 100, text: .constant(""))
         .padding()
 }

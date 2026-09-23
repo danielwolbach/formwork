@@ -2,10 +2,13 @@ import FormworkKit
 import SwiftUI
 
 struct PictogramEditor: View {
-    @State private var showEditor: Bool = false
-    @Binding var pictogram: Pictogram
-
     let imageOptions: [String]
+
+    @Binding
+    var pictogram: Pictogram
+
+    @State
+    private var showEditor: Bool = false
 
     var body: some View {
         PictogramView(pictogram: pictogram, badge: .editBadge)
@@ -22,13 +25,18 @@ struct PictogramEditor: View {
 }
 
 private struct PictogramSheet: View {
-    @Environment(\.dismiss) private var dismiss: DismissAction
-    @Binding var pictogram: Pictogram
-    @State private var draft: Pictogram
-
     private static let columns: Int = 6
 
     let imageOptions: [String]
+
+    @Binding
+    var pictogram: Pictogram
+
+    @Environment(\.dismiss)
+    private var dismiss: DismissAction
+
+    @State
+    private var draft: Pictogram
 
     init(pictogram: Binding<Pictogram>, imageOptions: [String]) {
         self._pictogram = pictogram
@@ -101,10 +109,9 @@ private struct PictogramSheet: View {
                         fill: AnyShapeStyle(Color.gray.quinary),
                         ring: AnyShapeStyle(Color.gray.secondary),
                         selected: option == draft.image,
+                        action: { draft.image = option },
                         image: option
-                    ) {
-                        draft.image = option
-                    }
+                    )
                 }
             }
         }
@@ -113,10 +120,14 @@ private struct PictogramSheet: View {
 
 private struct PictogramSwatch: View {
     let fill: AnyShapeStyle
+
     let ring: AnyShapeStyle
+
     let selected: Bool
-    var image: String?
+
     let action: () -> Void
+
+    var image: String?
 
     var body: some View {
         Button(action: action) {
@@ -146,9 +157,11 @@ private struct PictogramSwatch: View {
 }
 
 #Preview {
-    @Previewable @State var pictogram: Pictogram = .unknown
+    @Previewable
+    @State
+    var pictogram: Pictogram = .unknown
 
     NavigationStack {
-        PictogramEditor(pictogram: $pictogram, imageOptions: Pictogram.workoutImageOptions)
+        PictogramEditor(imageOptions: Pictogram.workoutImageOptions, pictogram: $pictogram)
     }
 }

@@ -6,9 +6,16 @@
 //
 
 public enum ExerciseTarget: Codable, Sendable {
+    case weight(target: WeightTarget)
+    case bodyweight(target: BodyweightTarget)
+    case duration(target: DurationTarget)
+    case distance(target: DistanceTarget)
+
     public struct WeightTarget: Codable, Hashable, Sendable {
         public var weight: Quantity
+
         public var sets: Int
+
         public var reps: Int
 
         public init(weight: Quantity, sets: Int, reps: Int) {
@@ -20,6 +27,7 @@ public enum ExerciseTarget: Codable, Sendable {
 
     public struct BodyweightTarget: Codable, Hashable, Sendable {
         public var sets: Int
+
         public var reps: Int
 
         public init(sets: Int, reps: Int) {
@@ -43,15 +51,10 @@ public enum ExerciseTarget: Codable, Sendable {
             self.distance = distance
         }
     }
-
-    case weight(target: WeightTarget)
-    case bodyweight(target: BodyweightTarget)
-    case duration(target: DurationTarget)
-    case distance(target: DistanceTarget)
 }
 
-public extension ExerciseTarget {
-    var volume: Quantity? {
+extension ExerciseTarget {
+    public var volume: Quantity? {
         guard case let .weight(target) = self else {
             return nil
         }
@@ -62,23 +65,23 @@ public extension ExerciseTarget {
     }
 }
 
-public extension ExerciseTarget.WeightTarget {
-    var symbol: String {
+extension ExerciseTarget.WeightTarget {
+    public var symbol: String {
         weight.unit.symbol
     }
 
-    var stepSize: Double {
+    public var stepSize: Double {
         switch weight.unit {
         case .pounds: 2.5
         default: 5
         }
     }
 
-    var fractionLength: Int {
+    public var fractionLength: Int {
         weight.unit.fractionLength
     }
 
-    var range: ClosedRange<Double> {
+    public var range: ClosedRange<Double> {
         switch weight.unit {
         case .pounds: 1 ... 2000
         default: 1 ... 1000
@@ -86,26 +89,26 @@ public extension ExerciseTarget.WeightTarget {
     }
 }
 
-public extension ExerciseTarget.BodyweightTarget {
-    var symbol: String {
+extension ExerciseTarget.BodyweightTarget {
+    public var symbol: String {
         String(localized: .unitRepsSymbol)
     }
 
-    var stepSize: Int {
+    public var stepSize: Int {
         2
     }
 
-    var range: ClosedRange<Int> {
+    public var range: ClosedRange<Int> {
         1 ... 1000
     }
 }
 
-public extension ExerciseTarget.DurationTarget {
-    var symbol: String {
+extension ExerciseTarget.DurationTarget {
+    public var symbol: String {
         duration.unit.symbol
     }
 
-    var stepSize: Double {
+    public var stepSize: Double {
         switch duration.unit {
         case .hours: 0.25
         case .minutes: 5
@@ -113,11 +116,11 @@ public extension ExerciseTarget.DurationTarget {
         }
     }
 
-    var fractionLength: Int {
+    public var fractionLength: Int {
         duration.unit.fractionLength
     }
 
-    var range: ClosedRange<Double> {
+    public var range: ClosedRange<Double> {
         switch duration.unit {
         case .hours: 1 ... 100
         case .minutes: 1 ... 10000
@@ -126,23 +129,23 @@ public extension ExerciseTarget.DurationTarget {
     }
 }
 
-public extension ExerciseTarget.DistanceTarget {
-    var symbol: String {
+extension ExerciseTarget.DistanceTarget {
+    public var symbol: String {
         distance.unit.symbol
     }
 
-    var stepSize: Double {
+    public var stepSize: Double {
         switch distance.unit {
         case .meters: 100
         default: 0.25
         }
     }
 
-    var fractionLength: Int {
+    public var fractionLength: Int {
         distance.unit.fractionLength
     }
 
-    var range: ClosedRange<Double> {
+    public var range: ClosedRange<Double> {
         switch distance.unit {
         case .meters: 1 ... 100_000
         default: 1 ... 1000
@@ -197,6 +200,19 @@ extension ExerciseTarget: Rankable {
         }
     }
 
+    public var formattedRank: String {
+        formattedRank(rank)
+    }
+
+    private var quantity: Quantity? {
+        switch self {
+        case let .weight(target): target.weight
+        case let .duration(target): target.duration
+        case let .distance(target): target.distance
+        case .bodyweight: nil
+        }
+    }
+
     public func label(for rank: Double) -> String {
         guard let quantity else {
             return "\(rank.rounded().formatted(.number.precision(.fractionLength(0)))) \(symbol)"
@@ -207,24 +223,11 @@ extension ExerciseTarget: Rankable {
         return measured.formatted
     }
 
-    public var formattedRank: String {
-        formattedRank(rank)
-    }
-
     public func formattedRank(_ rank: Double) -> String {
         guard case .bodyweight = self else {
             return label(for: rank)
         }
 
         return String(localized: .exerciseTargetRepsTitle(Int(rank.rounded())))
-    }
-
-    private var quantity: Quantity? {
-        switch self {
-        case let .weight(target): target.weight
-        case let .duration(target): target.duration
-        case let .distance(target): target.distance
-        case .bodyweight: nil
-        }
     }
 }

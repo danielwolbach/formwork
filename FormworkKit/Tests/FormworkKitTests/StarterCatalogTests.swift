@@ -12,7 +12,8 @@ import Testing
 
 @MainActor
 struct StarterCatalogTests {
-    @Test func everyEntryIsNamedAndFiled() {
+    @Test
+    func everyEntryIsNamedAndFiled() {
         for entry in StarterCatalog.exercises {
             let name = String(localized: entry.name)
 
@@ -23,13 +24,15 @@ struct StarterCatalogTests {
         }
     }
 
-    @Test func namesAreDistinct() {
+    @Test
+    func namesAreDistinct() {
         let names = StarterCatalog.exercises.map { String(localized: $0.name) }
 
         #expect(Set(names).count == names.count)
     }
 
-    @Test func everyCategoryButOtherIsCovered() {
+    @Test
+    func everyCategoryButOtherIsCovered() {
         let covered = Set(StarterCatalog.exercises.flatMap(\.categories))
 
         for category in ExerciseCategory.allCases where category != .other {
@@ -37,14 +40,16 @@ struct StarterCatalogTests {
         }
     }
 
-    @Test func everyTypeHasASample() {
+    @Test
+    func everyTypeHasASample() {
         // `sample(of:)` traps on a type the catalog dropped, and the onboarding tour calls it.
         for type in ExerciseType.allCases {
             #expect(StarterCatalog.detachedExerciseSample(of: type).type == type)
         }
     }
 
-    @Test func seedingFillsAnEmptyCatalog() throws {
+    @Test
+    func seedingFillsAnEmptyCatalog() throws {
         let configuration = ModelConfiguration(schema: Storage.schema, isStoredInMemoryOnly: true)
         let container = try ModelContainer(for: Storage.schema, configurations: [configuration])
         let context = container.mainContext
@@ -54,7 +59,8 @@ struct StarterCatalogTests {
         #expect(try context.fetchCount(FetchDescriptor<Exercise>()) == StarterCatalog.exercises.count)
     }
 
-    @Test func everyWorkoutTrainsCatalogExercises() {
+    @Test
+    func everyWorkoutTrainsCatalogExercises() {
         let keys = Set(StarterCatalog.exercises.map(\.name.key))
 
         for workout in StarterCatalog.workouts {
@@ -66,7 +72,8 @@ struct StarterCatalogTests {
         }
     }
 
-    @Test func seedingLinksWorkoutsToTheSeededExercises() throws {
+    @Test
+    func seedingLinksWorkoutsToTheSeededExercises() throws {
         let configuration = ModelConfiguration(schema: Storage.schema, isStoredInMemoryOnly: true)
         let container = try ModelContainer(for: Storage.schema, configurations: [configuration])
         let context = container.mainContext
@@ -88,7 +95,8 @@ struct StarterCatalogTests {
         }
     }
 
-    @Test func theStarterWorkoutIsDueTheDayItIsSeeded() throws {
+    @Test
+    func theStarterWorkoutIsDueTheDayItIsSeeded() throws {
         let configuration = ModelConfiguration(schema: Storage.schema, isStoredInMemoryOnly: true)
         let container = try ModelContainer(for: Storage.schema, configurations: [configuration])
         let context = container.mainContext
@@ -101,7 +109,8 @@ struct StarterCatalogTests {
         #expect(workouts.pending().count == workouts.count)
     }
 
-    @Test func seedingLeavesAnExistingCatalogAlone() throws {
+    @Test
+    func seedingLeavesAnExistingCatalogAlone() throws {
         let store = try TestStore()
 
         try StarterCatalog.seed(into: store.context)

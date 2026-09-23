@@ -10,8 +10,11 @@ import SwiftUI
 
 struct SectionView<Content: View, Accessory: View>: View {
     private let title: LocalizedStringResource
+
     private let subtitle: String?
+
     private let content: Content
+
     private let accessory: Accessory
 
     init(_ title: LocalizedStringResource, subtitle: String? = nil, @ViewBuilder content: () -> Content, @ViewBuilder accessory: () -> Accessory) {

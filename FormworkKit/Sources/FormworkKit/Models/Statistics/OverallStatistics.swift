@@ -53,7 +53,9 @@ public struct OverallStatistics {
         self.lastSession = .lastCompleted(last?.ended, in: last, calendar: calendar)
         let workouts = context.sessions
             .reduce(into: [Workout: (count: Int, latest: Date)]()) { tally, session in
-                guard let workout = session.workout else { return }
+                guard let workout = session.workout else {
+                    return
+                }
                 let current = tally[workout] ?? (0, .distantPast)
                 tally[workout] = (current.count + 1, max(current.latest, session.ended ?? .distantPast))
             }
@@ -67,8 +69,8 @@ public struct OverallStatistics {
     }
 }
 
-public extension [Session] {
-    func statistics(in interval: DateInterval = .allTime) -> OverallStatistics {
+extension [Session] {
+    public func statistics(in interval: DateInterval = .allTime) -> OverallStatistics {
         OverallStatistics(sessions: self, interval: interval)
     }
 }

@@ -9,7 +9,8 @@ import FormworkKit
 import SwiftUI
 
 struct ExerciseTargetUnitPicker: View {
-    @Binding var target: ExerciseTarget
+    @Binding
+    var target: ExerciseTarget
 
     var body: some View {
         switch target {
@@ -32,7 +33,8 @@ struct ExerciseTargetUnitPicker: View {
 }
 
 private struct UnitPicker: View {
-    @Binding var quantity: Quantity
+    @Binding
+    var quantity: Quantity
 
     var body: some View {
         Picker(ActionDescriptor.unit.title, selection: $quantity.unit) {
@@ -44,16 +46,22 @@ private struct UnitPicker: View {
 }
 
 #Preview("Weight") {
-    @Previewable @State var target = ExerciseTarget.weight(target: .init(weight: .defaultWeight, sets: 3, reps: 10))
+    @Previewable
+    @State
+    var target = ExerciseTarget.weight(target: .init(weight: .defaultWeight, sets: 3, reps: 10))
     ExerciseTargetUnitPicker(target: $target)
 }
 
 #Preview("Duration") {
-    @Previewable @State var target = ExerciseTarget.duration(target: .init(duration: .defaultDuration))
+    @Previewable
+    @State
+    var target = ExerciseTarget.duration(target: .init(duration: .defaultDuration))
     ExerciseTargetUnitPicker(target: $target)
 }
 
 #Preview("Distance") {
-    @Previewable @State var target = ExerciseTarget.distance(target: .init(distance: .defaultDistance))
+    @Previewable
+    @State
+    var target = ExerciseTarget.distance(target: .init(distance: .defaultDistance))
     ExerciseTargetUnitPicker(target: $target)
 }

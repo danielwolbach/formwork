@@ -10,12 +10,23 @@ import SwiftData
 import SwiftUI
 
 struct OverviewScreen: View {
-    @Environment(\.modelContext) private var modelContext: ModelContext
-    @Environment(\.presentSession) private var presentSession: PresentSessionAction
-    @Query(Session.activeDescriptor) private var activeSessions: [Session]
-    @Query private var sessions: [Session]
-    @Query private var workouts: [Workout]
-    @State private var sessionActiveAlert: Bool = false
+    @Environment(\.modelContext)
+    private var modelContext: ModelContext
+
+    @Environment(\.presentSession)
+    private var presentSession: PresentSessionAction
+
+    @Query(Session.activeDescriptor)
+    private var activeSessions: [Session]
+
+    @Query
+    private var sessions: [Session]
+
+    @Query
+    private var workouts: [Workout]
+
+    @State
+    private var sessionActiveAlert: Bool = false
 
     var body: some View {
         ScrollView {
@@ -130,8 +141,11 @@ struct OverviewScreen: View {
 
 private struct StateCard: View {
     let title: LocalizedStringResource
+
     let description: LocalizedStringResource
+
     let image: String
+
     let tint: Color
 
     var body: some View {

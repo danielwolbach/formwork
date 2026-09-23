@@ -1,5 +1,9 @@
 # SwiftLint only reports code that can be wrong. How code looks, including redundant syntax, is up to
 # SwiftFormat (see .swiftformat), so formatting, naming, length and redundancy rules stay off.
+
+excluded:
+  - FormworkKit/.build
+
 only_rules:
   # Likely bugs and crashes
   - block_based_kvo

@@ -10,9 +10,14 @@ import SwiftData
 import SwiftUI
 
 struct CatalogScreen: View {
-    @Query(sort: \Exercise.name) private var exercises: [Exercise]
-    @State private var sheet: Sheet? = nil
-    @State private var searchText = ""
+    @Query(sort: \Exercise.name)
+    private var exercises: [Exercise]
+
+    @State
+    private var sheet: Sheet? = nil
+
+    @State
+    private var searchText = ""
 
     var body: some View {
         content
@@ -97,6 +102,7 @@ private struct ExerciseCategoryGrid: View {
 
 private struct ExerciseCategoryTile: View {
     let category: ExerciseCategory
+
     let exerciseCount: Int
 
     var body: some View {

@@ -9,7 +9,9 @@ import Foundation
 
 public struct Metric<Value> {
     public let pictogram: Pictogram
+
     public let title: String
+
     public let subtitle: String?
 
     let value: Value?

@@ -47,46 +47,6 @@ struct StatisticsContext {
 }
 
 extension StatisticsContext {
-    /// Consecutive weeks with a session as seen on the last day of `interval`, or `now` while it's ongoing.
-    func currentWeekStreak(at now: Date) -> Int {
-        let weeks = weekStarts(of: history)
-        guard let day = day(at: now), let current = calendar.dateInterval(of: .weekOfYear, for: day)?.start else { return 0 }
-
-        var week = weeks.contains(current) ? current : adding(weeks: -1, to: current)
-        var streak = 0
-        while let start = week, weeks.contains(start) {
-            streak += 1
-            week = adding(weeks: -1, to: start)
-        }
-        return streak
-    }
-
-    /// The longest run of consecutive weeks with a session up to the end of `interval`, or up to `now` while it's ongoing.
-    func longestWeekStreak(at now: Date) -> Int {
-        guard day(at: now) != nil else { return 0 }
-
-        var longest = 0, streak = 0, previous: Date?
-        for week in weekStarts(of: history).sorted() {
-            streak = previous.flatMap { adding(weeks: 1, to: $0) } == week ? streak + 1 : 1
-            longest = max(longest, streak)
-            previous = week
-        }
-        return longest
-    }
-
-    /// Sessions within `interval` per week, over the days from its start, or the first session if later,
-    /// to its last day, or `now` while it's ongoing. At least a week, so a first session doesn't count as seven.
-    func sessionsPerWeek(at now: Date) -> Double? {
-        guard
-            let day = day(at: now),
-            let first = history.compactMap({ $0.period(of: .day, in: calendar)?.start }).min(),
-            let end = calendar.date(byAdding: .day, value: 1, to: calendar.startOfDay(for: day)),
-            let days = calendar.dateComponents([.day], from: max(interval.start, first), to: end).day
-        else { return nil }
-
-        return Double(sessions.count) / (Double(max(days, 7)) / 7)
-    }
-
     /// The session within `interval` that ended last.
     var lastSession: Session? {
         sessions.max { ($0.ended ?? .distantPast) < ($1.ended ?? .distantPast) }
@@ -106,6 +66,52 @@ extension StatisticsContext {
             .map { DateComponents(hour: $0 / 60, minute: $0 % 60) }
     }
 
+    /// Consecutive weeks with a session as seen on the last day of `interval`, or `now` while it's ongoing.
+    func currentWeekStreak(at now: Date) -> Int {
+        let weeks = weekStarts(of: history)
+        guard let day = day(at: now), let current = calendar.dateInterval(of: .weekOfYear, for: day)?.start else {
+            return 0
+        }
+
+        var week = weeks.contains(current) ? current : adding(weeks: -1, to: current)
+        var streak = 0
+        while let start = week, weeks.contains(start) {
+            streak += 1
+            week = adding(weeks: -1, to: start)
+        }
+        return streak
+    }
+
+    /// The longest run of consecutive weeks with a session up to the end of `interval`, or up to `now` while it's ongoing.
+    func longestWeekStreak(at now: Date) -> Int {
+        guard day(at: now) != nil else {
+            return 0
+        }
+
+        var longest = 0, streak = 0, previous: Date?
+        for week in weekStarts(of: history).sorted() {
+            streak = previous.flatMap { adding(weeks: 1, to: $0) } == week ? streak + 1 : 1
+            longest = max(longest, streak)
+            previous = week
+        }
+        return longest
+    }
+
+    /// Sessions within `interval` per week, over the days from its start, or the first session if later,
+    /// to its last day, or `now` while it's ongoing. At least a week, so a first session doesn't count as seven.
+    func sessionsPerWeek(at now: Date) -> Double? {
+        guard
+            let day = day(at: now),
+            let first = history.compactMap({ $0.period(of: .day, in: calendar)?.start }).min(),
+            let end = calendar.date(byAdding: .day, value: 1, to: calendar.startOfDay(for: day)),
+            let days = calendar.dateComponents([.day], from: max(interval.start, first), to: end).day
+        else {
+            return nil
+        }
+
+        return Double(sessions.count) / (Double(max(days, 7)) / 7)
+    }
+
     /// The given sessions laid out as weeks, ending with the week of the last day of `interval`, or `now`
     /// while it's ongoing. Each session counts on the day it was recorded on, as everything else does, and
     /// a session passed twice counts twice. There's no grid at all before the interval starts, since there's
@@ -120,7 +126,9 @@ extension StatisticsContext {
 
     /// The last day of `interval`, or `now` while it's ongoing. There's no such day before it starts.
     private func day(at now: Date) -> Date? {
-        guard now > interval.start else { return nil }
+        guard now > interval.start else {
+            return nil
+        }
         return now < interval.end ? now : calendar.date(byAdding: .day, value: -1, to: interval.end)
     }
 
@@ -133,8 +141,8 @@ extension StatisticsContext {
     }
 }
 
-private extension Int {
-    static let minutesPerDay = 24 * 60
+extension Int {
+    fileprivate static let minutesPerDay = 24 * 60
 }
 
 extension [Int] {
@@ -152,7 +160,9 @@ extension [Int] {
 
 extension [Double] {
     var median: Double? {
-        guard !isEmpty else { return nil }
+        guard !isEmpty else {
+            return nil
+        }
         let sorted = sorted(), middle = count / 2
         return count.isMultiple(of: 2) ? (sorted[middle - 1] + sorted[middle]) / 2 : sorted[middle]
     }

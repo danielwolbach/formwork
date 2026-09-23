@@ -29,15 +29,15 @@ public final class Exercise {
     }
 }
 
-public extension Exercise {
-    var currentHighestTarget: ExerciseTarget? {
+extension Exercise {
+    public var currentHighestTarget: ExerciseTarget? {
         workoutEntries
             .filter { $0.target.type == type }
             .max { $0.target.rank < $1.target.rank }?
             .target
     }
 
-    static func countTitle(_ count: Int) -> LocalizedStringResource {
+    public static func countTitle(_ count: Int) -> LocalizedStringResource {
         .exerciseCountTitle(count)
     }
 }

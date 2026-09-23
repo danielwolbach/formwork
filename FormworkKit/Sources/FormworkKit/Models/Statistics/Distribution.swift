@@ -17,7 +17,9 @@ public struct Distribution<Value: Displayable & CaseIterable & Hashable> {
     }
 
     public let pictogram: Pictogram
+
     public let title: String
+
     public let shares: [Share]
 
     init(_ counts: [Value: Int], title: String, pictogram: Pictogram) {

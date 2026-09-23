@@ -9,9 +9,9 @@ import FormworkKit
 import SwiftData
 import SwiftUI
 
-/// Every finished session.
 struct SessionListScreen: View {
-    @Query(Session.finishedDescriptor) private var sessions: [Session]
+    @Query(Session.finishedDescriptor)
+    private var sessions: [Session]
 
     var body: some View {
         ScrollView {
@@ -26,7 +26,6 @@ struct SessionListScreen: View {
 #Preview {
     NavigationStack {
         SessionListScreen()
-            // Whichever screen pushes this one declares the destination, so the preview stands in for it.
             .navigationDestination(for: Session.self) { session in
                 SessionScreen(session: session)
             }

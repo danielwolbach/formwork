@@ -41,7 +41,9 @@ public struct WorkoutStatistics {
         let skips = entries
             .filter(\.status.isSkipped)
             .reduce(into: [Exercise: (count: Int, latest: Date)]()) { tally, entry in
-                guard let exercise = entry.exercise, let skipped = entry.status.resolved else { return }
+                guard let exercise = entry.exercise, let skipped = entry.status.resolved else {
+                    return
+                }
                 let current = tally[exercise] ?? (0, .distantPast)
                 tally[exercise] = (current.count + 1, max(current.latest, skipped))
             }
@@ -56,8 +58,8 @@ public struct WorkoutStatistics {
     }
 }
 
-public extension Workout {
-    func statistics(in interval: DateInterval = .allTime) -> WorkoutStatistics {
+extension Workout {
+    public func statistics(in interval: DateInterval = .allTime) -> WorkoutStatistics {
         WorkoutStatistics(workout: self, interval: interval)
     }
 }

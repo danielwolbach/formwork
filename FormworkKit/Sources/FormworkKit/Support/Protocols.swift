@@ -21,8 +21,8 @@ public protocol Displayable {
     }
 }
 
-public extension Displayable {
-    var subtitle: String? {
+extension Displayable {
+    public var subtitle: String? {
         nil
     }
 }

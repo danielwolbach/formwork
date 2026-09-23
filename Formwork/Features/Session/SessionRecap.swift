@@ -65,11 +65,14 @@ struct SessionRecap: View {
 }
 
 private struct SessionEntryRow: View {
-    @State private var isExpanded = false
-
     let entry: SessionEntry
+
     let badge: Pictogram
+
     let details: [(pictogram: Pictogram, text: String)]
+
+    @State
+    private var isExpanded = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {

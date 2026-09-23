@@ -10,12 +10,19 @@ import SwiftData
 import SwiftUI
 
 struct ExerciseScreen: View {
-    @Environment(\.modelContext) private var modelContext: ModelContext
-    @Environment(\.dismiss) private var dismiss: DismissAction
-    @State private var sheet: Sheet? = nil
-    @State private var deleteAlert: Bool = false
-
     let exercise: Exercise
+
+    @Environment(\.modelContext)
+    private var modelContext: ModelContext
+
+    @Environment(\.dismiss)
+    private var dismiss: DismissAction
+
+    @State
+    private var sheet: Sheet? = nil
+
+    @State
+    private var deleteAlert: Bool = false
 
     var body: some View {
         let statistics = exercise.statistics()
