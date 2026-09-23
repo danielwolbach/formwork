@@ -10,8 +10,6 @@ import SwiftUI
 public struct DistributionCard<Value: Displayable & CaseIterable & Hashable>: View {
     private let distribution: Distribution<Value>
 
-    private let rows = [GridItem(.flexible(), spacing: 8), GridItem(.flexible(), spacing: 8)]
-
     public init(_ distribution: Distribution<Value>) {
         self.distribution = distribution
     }

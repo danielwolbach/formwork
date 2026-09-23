@@ -15,9 +15,6 @@ struct WorkoutAddExerciseForm: View {
     @Environment(\.dismiss)
     private var dismiss: DismissAction
 
-    @Environment(\.modelContext)
-    private var modelContext: ModelContext
-
     @Query(sort: \Exercise.name)
     private var exercises: [Exercise]
 
