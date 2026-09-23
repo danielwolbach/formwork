@@ -37,7 +37,7 @@ public struct PictogramView: View {
                     Image(systemName: badge.image)
                         .font(.system(size: side * (1.0 / 3.0)))
                         .symbolRenderingMode(.palette)
-                        .foregroundStyle(.background, badge.color)
+                        .foregroundStyle(.white, badge.color)
                         .offset(x: side * (1.0 / 3.0) * 0.25, y: side * (1.0 / 3.0) * 0.25)
                 }
             }
@@ -48,6 +48,6 @@ public struct PictogramView: View {
 }
 
 #Preview {
-    PictogramView(pictogram: .unknown)
-        .padding()
+    PictogramView(pictogram: .record, badge: .completedBadge)
+        .padding().padding()
 }
