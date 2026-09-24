@@ -65,11 +65,12 @@ struct OverviewScreen: View {
 
     @ViewBuilder
     private var statisticsSection: some View {
-        let statistics = sessions.statistics()
+        let history = History(.all(sessions))
 
         TileGrid {
-            MetricCard(statistics.weekStreak)
-            MetricCard(statistics.lastSession)
+            StatisticCard(.weekStreak, of: history)
+
+            StatisticCard(.lastCompleted, of: history)
         }
         .padding(.horizontal)
     }

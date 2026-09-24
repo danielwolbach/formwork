@@ -37,32 +37,30 @@ struct StatisticsScreen: View {
 
     @ViewBuilder
     private var statisticsContent: some View {
-        let statistics = sessions.statistics()
+        let history = History(.all(sessions))
 
         ScrollView {
             VStack(spacing: 32) {
                 TileGrid {
-                    MetricCard(statistics.weekStreak)
+                    StatisticCard(.weekStreak, of: history)
 
-                    MetricCard(statistics.lastSession)
+                    StatisticCard(.lastCompleted, of: history)
 
-                    HeatmapCard(statistics.activity)
-                        .tileSpan(rows: 2, columns: 2)
+                    StatisticCard(.activeDays, of: history)
 
-                    MetricCard(statistics.sessionsPerWeek)
+                    StatisticCard(.weeklySessions, of: history)
 
-                    MetricCard(statistics.typicalDuration)
+                    StatisticCard(.completions, of: history)
 
-                    MetricCard(statistics.typicalStartTime)
+                    StatisticCard(.typicalDuration, of: history)
 
-                    MetricCard(statistics.favoriteWorkout)
+                    StatisticCard(.typicalStartTime, of: history)
 
-                    DistributionCard(statistics.categories)
-                        .tileSpan(columns: 2)
+                    StatisticCard(.categories, of: history)
 
-                    MetricCard(statistics.completions)
+                    StatisticCard(.favoriteWorkout, of: history)
 
-                    MetricCard(statistics.longestWeekStreak)
+                    StatisticCard(.favoriteExercise, of: history)
                 }
                 .padding(.horizontal)
 

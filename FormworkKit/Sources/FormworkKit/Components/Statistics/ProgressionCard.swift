@@ -2,57 +2,77 @@
 //  ProgressionCard.swift
 //  FormworkKit
 //
-//  Created by Daniel Wolbach on 22.09.26.
+//  Created by Daniel Wolbach on 24.09.26.
 //
 
 import Charts
 import SwiftUI
 
-public struct ProgressionCard<Value: Rankable>: View {
-    private let progression: Progression<Value>
+/// How an exercise went: each day's best, and the typical best through them.
+struct ProgressionCard: View {
+    private let progression: Progression
 
-    public init(_ progression: Progression<Value>) {
+    init(_ progression: Progression) {
         self.progression = progression
     }
 
-    public var body: some View {
-        VStack {
-            Text(progression.title)
-                .font(.subheadline)
-                .lineLimit(1)
-                .foregroundStyle(.secondary)
-                .frame(maxWidth: .infinity, alignment: .leading)
-
+    var body: some View {
+        ChartCard(title: progression.title) {
             if progression.points.isEmpty {
                 Image(systemName: "chart.xyaxis.line")
                     .font(.largeTitle)
                     .foregroundStyle(.tertiary)
-                    .frame(maxHeight: .infinity)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
-                chart
+                ProgressionChart(progression: progression)
+                    .padding(.top)
             }
         }
-        .padding()
-        .background(.ultraThinMaterial)
-        .clipShape(.rect(cornerRadius: 16, style: .continuous))
     }
+}
 
-    private var chart: some View {
-        Chart(progression.points) { point in
-            AreaMark(x: .value(dateTitle, point.date), y: .value(progression.title, point.rank))
-                .interpolationMethod(.monotone)
-                .foregroundStyle(gradient)
+/// Each day's best as a faded point and the typical best through them as a curve with an area under it, over
+/// the progression's period. A year is labelled by month, a shorter stretch by a few dates.
+struct ProgressionChart: View {
+    let progression: Progression
 
-            LineMark(x: .value(dateTitle, point.date), y: .value(progression.title, point.rank))
-                .interpolationMethod(.monotone)
-                .foregroundStyle(progression.pictogram.color)
-                .lineStyle(StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round))
-        }
-        .chartXAxis {
-            AxisMarks(values: .automatic(desiredCount: 3)) {
-                AxisValueLabel(format: .dateTime.month(.abbreviated).day())
+    var isYear = false
+
+    var body: some View {
+        let color = progression.pictogram.color
+        let date = String(localized: .chartDateTitle)
+
+        Chart {
+            ForEach(progression.curve) { point in
+                AreaMark(x: .value(date, point.date, unit: .day), y: .value(progression.title, point.target.rank))
+                    .interpolationMethod(.monotone)
+                    .foregroundStyle(LinearGradient(colors: [color.opacity(0.35), color.opacity(0)], startPoint: .top, endPoint: .bottom))
+
+                LineMark(x: .value(date, point.date, unit: .day), y: .value(progression.title, point.target.rank))
+                    .interpolationMethod(.monotone)
+                    .lineStyle(StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round))
+                    .foregroundStyle(color)
+            }
+
+            ForEach(progression.points) { point in
+                PointMark(x: .value(date, point.date, unit: .day), y: .value(progression.title, point.target.rank))
+                    .symbolSize(16)
+                    .foregroundStyle(color.opacity(0.35))
             }
         }
+        .chartXScale(domain: progression.period.start ... progression.period.end)
+        .chartXAxis {
+            if isYear {
+                AxisMarks(values: .stride(by: .month)) {
+                    AxisValueLabel(format: .dateTime.month(.narrow), centered: true)
+                }
+            } else {
+                AxisMarks(values: .automatic(desiredCount: 3)) {
+                    AxisValueLabel(format: .dateTime.month(.abbreviated).day())
+                }
+            }
+        }
+        .chartYScale(domain: .automatic(includesZero: false))
         .chartYAxis {
             AxisMarks(position: .leading, values: .automatic(desiredCount: 3)) { mark in
                 AxisGridLine()
@@ -64,22 +84,8 @@ public struct ProgressionCard<Value: Rankable>: View {
                 }
             }
         }
-        .chartYScale(domain: .automatic(includesZero: false))
         .font(.caption2)
         .foregroundStyle(.tertiary)
-        .padding(.top)
-    }
-
-    private var gradient: LinearGradient {
-        LinearGradient(
-            colors: [progression.pictogram.color.opacity(0.35), progression.pictogram.color.opacity(0)],
-            startPoint: .top,
-            endPoint: .bottom
-        )
-    }
-
-    private var dateTitle: String {
-        String(localized: .chartDateTitle)
     }
 }
 
@@ -88,7 +94,7 @@ private struct ProgressionPreview: View {
 
     var body: some View {
         TileGrid {
-            ProgressionCard(exercise.statistics().progression)
+            ProgressionCard(Progression(History(.exercise(exercise)).weeks(16)))
                 .tileSpan(rows: 2, columns: 2)
         }
     }

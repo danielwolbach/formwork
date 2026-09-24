@@ -181,7 +181,7 @@ extension ExerciseTarget: Displayable {
     }
 }
 
-extension ExerciseTarget: Rankable {
+extension ExerciseTarget {
     public var rank: Double {
         switch self {
         case let .weight(target): target.weight.base

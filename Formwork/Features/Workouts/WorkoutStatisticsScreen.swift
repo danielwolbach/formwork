@@ -12,27 +12,25 @@ struct WorkoutStatisticsScreen: View {
     let workout: Workout
 
     var body: some View {
-        let statistics = workout.statistics()
+        let history = History(.workout(workout))
 
         ScrollView {
             TileGrid {
-                MetricCard(statistics.lastCompleted)
+                StatisticCard(.lastCompleted, of: history)
 
-                MetricCard(statistics.typicalDuration)
+                StatisticCard(.typicalDuration, of: history)
 
-                MetricCard(statistics.completionRate)
+                StatisticCard(.completionRate, of: history)
 
-                MetricCard(statistics.mostSkippedExercise)
+                StatisticCard(.mostSkippedExercise, of: history)
 
-                HeatmapCard(statistics.activity)
-                    .tileSpan(rows: 2, columns: 2)
+                StatisticCard(.activeDays, of: history)
 
-                MetricCard(statistics.typicalStartTime)
+                StatisticCard(.typicalStartTime, of: history)
 
-                MetricCard(statistics.completions)
+                StatisticCard(.completions, of: history)
 
-                DistributionCard(statistics.categories)
-                    .tileSpan(columns: 2)
+                StatisticCard(.categories, of: history)
             }
             .padding(.horizontal, 16)
         }

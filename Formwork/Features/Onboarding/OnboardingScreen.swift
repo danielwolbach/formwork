@@ -261,10 +261,10 @@ private struct SessionPreview: View {
 private struct StatisticsPreview: View {
     var body: some View {
         TileGrid {
-            MetricCard(Samples.weekStreak)
-            MetricCard(Samples.sessionsPerWeek)
-            MetricCard(Samples.personalBest)
-            MetricCard(Samples.totalVolume)
+            ValueCard(Samples.weekStreak)
+            ValueCard(Samples.weeklySessions)
+            ValueCard(Samples.personalBest)
+            ValueCard(Samples.totalVolume)
         }
     }
 }

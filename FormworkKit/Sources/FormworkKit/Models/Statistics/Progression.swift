@@ -2,55 +2,68 @@
 //  Progression.swift
 //  FormworkKit
 //
-//  Created by Daniel Wolbach on 22.09.26.
+//  Created by Daniel Wolbach on 24.09.26.
 //
 
 import Foundation
 
-public struct Progression<Value: Rankable> {
-    public struct Point {
-        public let date: Date
+/// How an exercise went, day by day and as a curve through the days. Only means something for an exercise.
+struct Progression {
+    struct Point {
+        let date: Date
 
-        public let value: Value
+        let target: ExerciseTarget
     }
 
-    public let pictogram: Pictogram
+    /// The days the window asked for, for a chart to span.
+    let period: DateInterval
 
-    public let title: String
+    /// The best completed target on each day within the window, oldest first.
+    let points: [Point]
 
-    public let points: [Point]
-
-    init(_ points: [Point], title: String, pictogram: Pictogram) {
-        self.points = points
-        self.title = title
-        self.pictogram = pictogram
-    }
-
-    func label(for rank: Double) -> String {
-        points.last?.value.label(for: rank) ?? rank.formatted(.number.precision(.fractionLength(0)))
-    }
+    /// The typical best as it stood once a week, up to the window's last day on record. Each looks back the
+    /// `recentDays` up to it, before the window's start too, so the curve ends on the recent typical best. A week
+    /// with no day to look back on has none, so a line through the others bridges the gap.
+    let curve: [Point]
 }
 
-extension Progression.Point: Identifiable {
-    public var id: Date {
-        date
-    }
-}
+extension Progression: Statistic {
+    init(_ window: History.Window) {
+        let history = window.history
+        let last = history.calendar.date(byAdding: .day, value: -1, to: window.interval.end) ?? window.interval.end
+        let weekly = sequence(first: last) { history.calendar.date(byAdding: .weekOfYear, value: -1, to: $0) }
+            .prefix { $0 >= window.interval.start }
 
-extension Progression.Point {
-    public var rank: Double {
-        value.rank
+        self.period = window.period
+        self.points = Self.bests(in: window)
+        self.curve = weekly.reversed().compactMap { day in
+            TypicalBest(history.days(History.recentDays, endingOn: day)).target.map { Point(date: day, target: $0) }
+        }
     }
-}
 
-extension Progression where Value == ExerciseTarget {
-    /// The best of the given entries on each day they fall on. They are the ones that were completed: what
-    /// an exercise got to says nothing about the days it was skipped on.
-    static func targets(_ completed: [SessionEntry], of type: ExerciseType, calendar: Calendar) -> Self {
-        let best = completed
-            .filter { $0.target.type == type }
+    static var explanation: String {
+        String(localized: ._Placeholder)
+    }
+
+    var pictogram: Pictogram {
+        .progression
+    }
+
+    var title: String {
+        String(localized: .statisticProgressionTitle)
+    }
+
+    /// The best completed target of the exercise's current type on each day within the window, oldest first. The
+    /// exercise's other types are left out: their ranks don't compare. There are none for any other subject.
+    static func bests(in window: History.Window) -> [Point] {
+        guard case let .exercise(exercise) = window.history.subject else {
+            return []
+        }
+
+        let best = window.entries
+            .filter { $0.status.isCompleted && $0.target.type == exercise.type }
             .reduce(into: [Date: ExerciseTarget]()) { best, entry in
-                guard let day = entry.session?.period(of: .day, in: calendar)?.start else {
+                guard let day = entry.session?.period(of: .day, in: window.history.calendar)?.start else {
                     return
                 }
 
@@ -59,10 +72,19 @@ extension Progression where Value == ExerciseTarget {
                 }
             }
 
-        let points = best
+        return best
             .sorted { $0.key < $1.key }
-            .map { Point(date: $0.key, value: $0.value) }
+            .map { Point(date: $0.key, target: $0.value) }
+    }
 
-        return Progression(points, title: String(localized: .statisticProgressionTitle), pictogram: .progression)
+    /// A rank written out in the unit the latest day was recorded in, e.g. for axis labels.
+    func label(for rank: Double) -> String {
+        points.last?.target.label(for: rank) ?? rank.formatted(.number.precision(.fractionLength(0)))
+    }
+}
+
+extension Progression.Point: Identifiable {
+    var id: Date {
+        date
     }
 }

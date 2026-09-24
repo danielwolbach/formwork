@@ -59,6 +59,8 @@ extension Pictogram {
 
     public static let workout = Pictogram(image: "figure.strengthtraining.traditional", tint: .blue)
 
+    public static let exercise = Pictogram(image: "figure.strengthtraining.functional", tint: .green)
+
     public static let duration = Pictogram(image: "stopwatch", tint: .cyan)
 
     public static let date = Pictogram(image: "calendar", tint: .indigo)

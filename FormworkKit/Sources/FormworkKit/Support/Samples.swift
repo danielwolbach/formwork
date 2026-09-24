@@ -95,19 +95,19 @@ public enum Samples {
         return container
     }()
 
-    public static var weekStreak: Metric<Int> {
-        .weekStreak(6)
+    public static var weekStreak: some Displayable {
+        WeekStreak(weeks: 6)
     }
 
-    public static var sessionsPerWeek: Metric<Double> {
-        .sessionsPerWeek(2.8)
+    public static var weeklySessions: some Displayable {
+        WeeklySessions(value: 2.8)
     }
 
-    public static var personalBest: Metric<ExerciseTarget> {
-        .personalBest(.weight(target: .init(weight: best, sets: 3, reps: 10)))
+    public static var personalBest: some Displayable {
+        PersonalBest(target: .weight(target: .init(weight: best, sets: 3, reps: 10)))
     }
 
-    public static var totalVolume: Metric<Quantity> {
+    public static var totalVolume: SessionSummary.Figure<Quantity> {
         .totalVolume(volume)
     }
 
@@ -149,7 +149,7 @@ private struct SampleDataModifier: ViewModifier {
 }
 
 extension Samples {
-    fileprivate static func seedHistory(in context: ModelContext, days: Int = 84, calendar: Calendar = .current) throws {
+    fileprivate static func seedHistory(in context: ModelContext, days: Int = 400, calendar: Calendar = .current) throws {
         var random = SeededGenerator(seed: 42)
         let today = calendar.startOfDay(for: .now)
 

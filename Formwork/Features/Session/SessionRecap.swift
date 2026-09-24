@@ -19,12 +19,12 @@ struct SessionRecap: View {
             PictogramHeader(session)
 
             TileGrid(columns: 2) {
-                MetricCard(summary.duration)
-                MetricCard(summary.endTime)
-                MetricCard(summary.skipRate)
-                MetricCard(summary.medianExerciseDuration)
-                MetricCard(summary.completedExercises)
-                MetricCard(summary.totalVolume)
+                ValueCard(summary.duration)
+                ValueCard(summary.endTime)
+                ValueCard(summary.skipRate)
+                ValueCard(summary.medianExerciseDuration)
+                ValueCard(summary.completedExercises)
+                ValueCard(summary.totalVolume)
             }
             .padding(.horizontal)
 

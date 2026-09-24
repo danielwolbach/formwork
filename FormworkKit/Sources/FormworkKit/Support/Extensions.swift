@@ -27,23 +27,31 @@ extension Calendar {
     }
 }
 
-/// The periods statistics are read over. Whole days in their calendar, as `Session.falls(into:in:)` needs.
-extension DateInterval {
-    public static let allTime = DateInterval(start: .distantPast, end: .distantFuture)
+extension Int {
+    fileprivate static let minutesPerDay = 24 * 60
+}
 
-    public static func month(_ month: Int, year: Int? = nil, calendar: Calendar = .current) -> Self {
-        precondition((1 ... 12).contains(month), "Month must be between 1 and 12.")
-        return period(.month, of: DateComponents(year: year ?? calendar.component(.year, from: .now), month: month), calendar: calendar)
+extension [Int] {
+    /// Of minutes since midnight, the one closest to all the others on a 24-hour clock, so it's always one of
+    /// them and 23:30 and 00:30 are an hour apart rather than a day.
+    var clockMedoid: Element? {
+        sorted().min { distance(to: $0) < distance(to: $1) }
     }
 
-    public static func year(_ year: Int? = nil, calendar: Calendar = .current) -> Self {
-        period(.year, of: DateComponents(year: year ?? calendar.component(.year, from: .now)), calendar: calendar)
-    }
-
-    private static func period(_ component: Calendar.Component, of components: DateComponents, calendar: Calendar) -> Self {
-        guard let date = calendar.date(from: components), let interval = calendar.dateInterval(of: component, for: date) else {
-            preconditionFailure("No \(component) for \(components).")
+    private func distance(to minute: Element) -> Element {
+        reduce(0) { total, other in
+            let delta = abs(other - minute)
+            return total + Swift.min(delta, .minutesPerDay - delta)
         }
-        return interval
+    }
+}
+
+extension [Double] {
+    var median: Double? {
+        guard !isEmpty else {
+            return nil
+        }
+        let sorted = sorted(), middle = count / 2
+        return count.isMultiple(of: 2) ? (sorted[middle - 1] + sorted[middle]) / 2 : sorted[middle]
     }
 }

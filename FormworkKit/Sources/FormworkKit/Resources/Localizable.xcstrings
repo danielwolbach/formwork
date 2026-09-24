@@ -642,6 +642,17 @@
         }
       }
     },
+    "statistic.about.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "About"
+          }
+        }
+      }
+    },
     "statistic.activity.title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -649,6 +660,61 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Activity"
+          }
+        }
+      }
+    },
+    "statistic.allTime.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All Time"
+          }
+        }
+      }
+    },
+    "statistic.baseline.subtitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Previous %lld Days"
+          }
+        }
+      }
+    },
+    "statistic.baseline.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Before"
+          }
+        }
+      }
+    },
+    "statistic.byMonth.subtitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "By Month"
+          }
+        }
+      }
+    },
+    "statistic.categories.byMonth.subtitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Completed Exercises by Month"
           }
         }
       }
@@ -692,7 +758,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Times Completed"
+            "value" : "Completions"
           }
         }
       }
@@ -715,6 +781,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "End Time"
+          }
+        }
+      }
+    },
+    "statistic.favoriteExercise.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Favorite Exercise"
           }
         }
       }
@@ -785,6 +862,17 @@
         }
       }
     },
+    "statistic.progression.byDay.subtitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Best per Day"
+          }
+        }
+      }
+    },
     "statistic.progression.title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -796,13 +884,24 @@
         }
       }
     },
-    "statistic.sessionsPerWeek.title" : {
+    "statistic.recent.subtitle" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sessions per Week"
+            "value" : "Last %lld Days"
+          }
+        }
+      }
+    },
+    "statistic.recent.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recent"
           }
         }
       }
@@ -818,6 +917,17 @@
         }
       }
     },
+    "statistic.subject.all.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All Sessions"
+          }
+        }
+      }
+    },
     "statistic.totalVolume.title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -825,6 +935,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Total Volume"
+          }
+        }
+      }
+    },
+    "statistic.typicalBest.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Typical Best"
           }
         }
       }
@@ -858,6 +979,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Week Streak"
+          }
+        }
+      }
+    },
+    "statistic.weeklyActiveDays.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weekly Active Days"
+          }
+        }
+      }
+    },
+    "statistic.weeklySessions.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weekly Sessions"
           }
         }
       }

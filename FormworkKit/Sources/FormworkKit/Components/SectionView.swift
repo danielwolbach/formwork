@@ -1,15 +1,16 @@
 //
 //  SectionView.swift
-//  Formwork
+//  FormworkKit
 //
 //  Created by Daniel Wolbach on 20.09.26.
 //
 
-import FormworkKit
 import SwiftUI
 
-struct SectionView<Content: View, Accessory: View>: View {
-    private let title: LocalizedStringResource
+/// A heading with an optional subtitle and accessory over its content. The heading is inset like a screen's
+/// content, so the content brings its own horizontal padding.
+public struct SectionView<Content: View, Accessory: View>: View {
+    private let title: String
 
     private let subtitle: String?
 
@@ -17,14 +18,14 @@ struct SectionView<Content: View, Accessory: View>: View {
 
     private let accessory: Accessory
 
-    init(_ title: LocalizedStringResource, subtitle: String? = nil, @ViewBuilder content: () -> Content, @ViewBuilder accessory: () -> Accessory) {
+    public init(_ title: String, subtitle: String? = nil, @ViewBuilder content: () -> Content, @ViewBuilder accessory: () -> Accessory) {
         self.title = title
         self.subtitle = subtitle
         self.content = content()
         self.accessory = accessory()
     }
 
-    var body: some View {
+    public var body: some View {
         VStack(spacing: 8) {
             header
             content
@@ -56,19 +57,29 @@ struct SectionView<Content: View, Accessory: View>: View {
     }
 }
 
+extension SectionView {
+    public init(_ title: LocalizedStringResource, subtitle: String? = nil, @ViewBuilder content: () -> Content, @ViewBuilder accessory: () -> Accessory) {
+        self.init(String(localized: title), subtitle: subtitle, content: content, accessory: accessory)
+    }
+}
+
 extension SectionView where Accessory == EmptyView {
-    init(_ title: LocalizedStringResource, subtitle: String? = nil, @ViewBuilder content: () -> Content) {
+    public init(_ title: String, subtitle: String? = nil, @ViewBuilder content: () -> Content) {
         self.init(title, subtitle: subtitle, content: content) {
             EmptyView()
         }
+    }
+
+    public init(_ title: LocalizedStringResource, subtitle: String? = nil, @ViewBuilder content: () -> Content) {
+        self.init(String(localized: title), subtitle: subtitle, content: content)
     }
 }
 
 #Preview {
     ScrollView {
         VStack(spacing: 32) {
-            SectionView(.screenSessionsTitle, subtitle: String(localized: Session.countTitle(34))) {
-                MetricCard(Samples.weekStreak)
+            SectionView(.statisticRecentTitle, subtitle: String(localized: Session.countTitle(34))) {
+                ValueCard(Samples.weekStreak)
                     .padding(.horizontal)
             } accessory: {
                 Button(.viewAll) {}
@@ -76,8 +87,8 @@ extension SectionView where Accessory == EmptyView {
                     .buttonStyle(.glass)
             }
 
-            SectionView(.screenStatisticsTitle) {
-                MetricCard(Samples.sessionsPerWeek)
+            SectionView(String(2026)) {
+                ValueCard(Samples.weeklySessions)
                     .padding(.horizontal)
             }
         }

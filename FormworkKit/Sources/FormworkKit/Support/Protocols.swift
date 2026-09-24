@@ -26,15 +26,3 @@ extension Displayable {
         nil
     }
 }
-
-public protocol Rankable {
-    var rank: Double {
-        get
-    }
-
-    var symbol: String {
-        get
-    }
-
-    func label(for rank: Double) -> String
-}

@@ -25,23 +25,24 @@ struct ExerciseScreen: View {
     private var deleteAlert: Bool = false
 
     var body: some View {
-        let statistics = exercise.statistics()
+        let history = History(.exercise(exercise))
 
         ScrollView {
             VStack(spacing: 32) {
                 PictogramHeader(exercise)
 
                 TileGrid {
-                    MetricCard(statistics.lastCompleted)
-                    MetricCard(statistics.completionRate)
-                    MetricCard(statistics.personalBest)
-                    MetricCard(statistics.completions)
+                    StatisticCard(.lastCompleted, of: history)
 
-                    ProgressionCard(statistics.progression)
-                        .tileSpan(rows: 2, columns: 2)
+                    StatisticCard(.completionRate, of: history)
 
-                    HeatmapCard(statistics.activity)
-                        .tileSpan(rows: 2, columns: 2)
+                    StatisticCard(.personalBest, of: history)
+
+                    StatisticCard(.completions, of: history)
+
+                    StatisticCard(.progression, of: history)
+
+                    StatisticCard(.activeDays, of: history)
                 }
                 .padding(.horizontal, 16)
             }
@@ -80,6 +81,8 @@ struct ExerciseScreen: View {
 }
 
 #Preview {
+    let _ = Samples.sessions
+
     NavigationStack {
         ExerciseScreen(exercise: Samples.exercises.first!)
     }
