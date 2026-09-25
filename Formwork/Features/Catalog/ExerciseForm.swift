@@ -42,7 +42,7 @@ struct ExerciseForm: View {
         self._name = State(initialValue: exercise?.name ?? "")
         self._type = State(initialValue: exercise?.type ?? .weight)
         self._categories = State(initialValue: exercise?.categories ?? [])
-        self._url = State(initialValue: exercise?.url?.absoluteString ?? "")
+        self._url = State(initialValue: exercise?.link?.absoluteString ?? "")
         self._notes = State(initialValue: exercise?.notes ?? "")
         self.exercise = exercise
     }
@@ -155,10 +155,10 @@ struct ExerciseForm: View {
             exercise.name = name
             exercise.type = type
             exercise.categories = categories
-            exercise.url = link
+            exercise.link = link
             exercise.notes = notes
         } else {
-            let exercise = Exercise(name: name, type: type, categories: categories, url: link, notes: notes)
+            let exercise = Exercise(name: name, type: type, categories: categories, link: link, notes: notes)
             modelContext.insert(exercise)
         }
 

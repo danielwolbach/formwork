@@ -45,7 +45,7 @@ struct SessionRecap: View {
     private func details(for entry: SessionEntry) -> [(pictogram: Pictogram, text: String)] {
         var details: [(pictogram: Pictogram, text: String)] = []
 
-        if let resolved = entry.status.resolved {
+        if let resolved = entry.status.resolvedDate {
             details.append((.time, resolved.formatted(session.wallClockTime())))
         }
 

@@ -20,7 +20,7 @@ extension FavoriteWorkout: Statistic {
             }
 
             let current = tally[workout] ?? (0, .distantPast)
-            tally[workout] = (current.count + 1, max(current.latest, session.ended ?? .distantPast))
+            tally[workout] = (current.count + 1, max(current.latest, session.endDate ?? .distantPast))
         }
 
         self.workout = tally.max { ($0.value.count, $0.value.latest) < ($1.value.count, $1.value.latest) }?.key

@@ -84,7 +84,7 @@ struct SessionActivityWidget: Widget {
 
     private func progress(for context: ActivityViewContext<SessionActivityAttributes>) -> some View {
         HStack {
-            Text(context.state.started, style: .timer)
+            Text(context.state.startDate, style: .timer)
                 .monospacedDigit()
                 .font(.footnote)
                 .fontWeight(.semibold)
@@ -147,7 +147,7 @@ extension SessionActivityAttributes.ContentState {
             pictogram: Pictogram(image: "dumbbell", tint: .indigo),
             workout: .workout,
             status: nil,
-            started: .now.addingTimeInterval(-1245),
+            startDate: .now.addingTimeInterval(-1245),
             resolved: 2,
             total: 5,
             canMoveForward: true,

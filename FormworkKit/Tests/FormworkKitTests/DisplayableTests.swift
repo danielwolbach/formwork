@@ -11,10 +11,10 @@ import Testing
 
 struct DisplayableTests {
     @Test(arguments: [
-        (ExerciseTarget.weight(target: .init(weight: Quantity(10, in: .kilograms), sets: 3, reps: 10)), ExerciseType.weight),
-        (ExerciseTarget.bodyweight(target: .init(sets: 3, reps: 10)), ExerciseType.bodyweight),
-        (ExerciseTarget.duration(target: .init(duration: Quantity(10, in: .minutes))), ExerciseType.duration),
-        (ExerciseTarget.distance(target: .init(distance: Quantity(1, in: .kilometers))), ExerciseType.distance),
+        (ExerciseTarget.weight(.init(weight: Quantity(10, in: .kilograms), sets: 3, reps: 10)), ExerciseType.weight),
+        (ExerciseTarget.bodyweight(.init(sets: 3, reps: 10)), ExerciseType.bodyweight),
+        (ExerciseTarget.duration(.init(duration: Quantity(10, in: .minutes))), ExerciseType.duration),
+        (ExerciseTarget.distance(.init(distance: Quantity(1, in: .kilometers))), ExerciseType.distance),
     ])
     func targetDisplaysItsType(target: ExerciseTarget, type: ExerciseType) {
         #expect(target.type == type)
@@ -47,7 +47,7 @@ struct DisplayableTests {
         let inNewYork = Date.FormatStyle(date: .numeric, time: .shortened, calendar: local, timeZone: local.timeZone)
 
         // 08:00 in New York is 14:00 in Berlin, but the user remembers starting at 08:00.
-        #expect(session.subtitle == session.started.formatted(inNewYork))
+        #expect(session.subtitle == session.startDate.formatted(inNewYork))
     }
 
     @MainActor
@@ -58,7 +58,7 @@ struct DisplayableTests {
         var local = Calendar.current
         local.timeZone = try #require(TimeZone(identifier: "America/New_York"))
 
-        #expect(session.started.formatted(session.wallClockTime()) == session.started.formatted(local.formatStyle(time: .shortened)))
+        #expect(session.startDate.formatted(session.wallClockTime()) == session.startDate.formatted(local.formatStyle(time: .shortened)))
     }
 
     @MainActor

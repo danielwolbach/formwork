@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 public struct Pictogram: Hashable, Codable, Sendable {
-    public enum Tint: Codable, CaseIterable, Sendable {
+    public enum Tint: String, Codable, CaseIterable, Sendable {
         case blue, indigo, purple, pink, red, orange, yellow, green, mint, cyan, brown, gray
     }
 

@@ -10,9 +10,9 @@ import SwiftData
 
 @Model
 public final class Session {
-    public var started: Date = Date.distantPast
+    public var startDate: Date = Date.distantPast
 
-    public var ended: Date?
+    public var endDate: Date?
 
     public var workout: Workout?
 
@@ -21,14 +21,14 @@ public final class Session {
 
     var timeZoneIdentifier: String = TimeZone.current.identifier
 
-    private var currentIdentifier: UUID?
+    private var currentEntryIdentifier: UUID?
 
     private init(workout: Workout, entries: [SessionEntry]) {
-        self.started = .now
-        self.ended = nil
+        self.startDate = .now
+        self.endDate = nil
         self.workout = workout
         self.entries = entries
-        self.currentIdentifier = entries.sorted().first?.identifier
+        self.currentEntryIdentifier = entries.sorted().first?.identifier
         self.timeZoneIdentifier = TimeZone.current.identifier
     }
 }
@@ -37,8 +37,8 @@ public final class Session {
 extension Session {
     public static var activeDescriptor: FetchDescriptor<Session> {
         var descriptor = FetchDescriptor<Session>(
-            predicate: #Predicate<Session> { $0.ended == nil },
-            sortBy: [SortDescriptor(\.started, order: .reverse)]
+            predicate: #Predicate<Session> { $0.endDate == nil },
+            sortBy: [SortDescriptor(\.startDate, order: .reverse)]
         )
         descriptor.fetchLimit = 1
         return descriptor
@@ -46,8 +46,8 @@ extension Session {
 
     public static var finishedDescriptor: FetchDescriptor<Session> {
         FetchDescriptor<Session>(
-            predicate: #Predicate<Session> { $0.ended != nil },
-            sortBy: [SortDescriptor(\.started, order: .reverse)]
+            predicate: #Predicate<Session> { $0.endDate != nil },
+            sortBy: [SortDescriptor(\.startDate, order: .reverse)]
         )
     }
 
@@ -59,28 +59,28 @@ extension Session {
 /// Starting, finishing and abandoning a session.
 extension Session {
     public var isActive: Bool {
-        ended == nil
+        endDate == nil
     }
 
     public var endedRecently: Bool {
-        guard let ended else {
+        guard let endDate else {
             return false
         }
-        return Date.now.timeIntervalSince(ended) < 12 * 60 * 60 // 12h
+        return Date.now.timeIntervalSince(endDate) < 12 * 60 * 60 // 12h
     }
 
     public var duration: TimeInterval? {
-        guard let ended else {
+        guard let endDate else {
             return nil
         }
 
-        return ended.timeIntervalSince(started)
+        return endDate.timeIntervalSince(startDate)
     }
 
     @discardableResult
     public static func start(_ workout: Workout, in context: ModelContext) throws -> Session {
         let entries = workout.entries.map { workoutEntry in SessionEntry(workoutEntry: workoutEntry) }
-        let runningDescriptor = FetchDescriptor<Session>(predicate: #Predicate<Session> { $0.ended == nil })
+        let runningDescriptor = FetchDescriptor<Session>(predicate: #Predicate<Session> { $0.endDate == nil })
 
         for running in try context.fetch(runningDescriptor) {
             context.delete(running)
@@ -101,7 +101,7 @@ extension Session {
             entry.workoutEntry?.target = entry.target
         }
 
-        ended = .now
+        endDate = .now
     }
 
     public func cancel() {
@@ -125,8 +125,8 @@ extension Session {
         entries
             .filter { !$0.status.isPending }
             .sorted { lhs, rhs in
-                let left = lhs.status.resolved ?? .distantPast
-                let right = rhs.status.resolved ?? .distantPast
+                let left = lhs.status.resolvedDate ?? .distantPast
+                let right = rhs.status.resolvedDate ?? .distantPast
                 return left == right ? lhs.order < rhs.order : left < right
             }
     }
@@ -154,12 +154,12 @@ extension Session {
 extension Session {
     public var currentEntry: SessionEntry? {
         get {
-            entries.first { $0.identifier == currentIdentifier }
+            entries.first { $0.identifier == currentEntryIdentifier }
                 ?? pending.first
                 ?? orderedEntries.first
         }
         set {
-            currentIdentifier = newValue?.identifier
+            currentEntryIdentifier = newValue?.identifier
         }
     }
 
@@ -246,29 +246,29 @@ extension Session {
             calendar.isDayBoundary(interval.start) && calendar.isDayBoundary(interval.end),
             "\(interval) isn't made of whole days, so it can't be compared with wall-clock time."
         )
-        let started = localStarted(in: calendar)
-        return interval.start <= started && started < interval.end
+        let start = localStartDate(in: calendar)
+        return interval.start <= start && start < interval.end
     }
 
     func period(of component: Calendar.Component, in calendar: Calendar) -> DateInterval? {
-        calendar.dateInterval(of: component, for: localStarted(in: calendar))
+        calendar.dateInterval(of: component, for: localStartDate(in: calendar))
     }
 
     func startMinute(in calendar: Calendar) -> Int? {
-        let time = localCalendar(from: calendar).dateComponents([.hour, .minute], from: started)
+        let time = localCalendar(from: calendar).dateComponents([.hour, .minute], from: startDate)
         guard let hour = time.hour, let minute = time.minute else {
             return nil
         }
         return hour * 60 + minute
     }
 
-    private func localStarted(in calendar: Calendar) -> Date {
+    private func localStartDate(in calendar: Calendar) -> Date {
         guard timeZone != calendar.timeZone else {
-            return started
+            return startDate
         }
 
-        let components = localCalendar(from: calendar).dateComponents([.year, .month, .day, .hour, .minute, .second], from: started)
-        return calendar.date(from: components) ?? started
+        let components = localCalendar(from: calendar).dateComponents([.year, .month, .day, .hour, .minute, .second], from: startDate)
+        return calendar.date(from: components) ?? startDate
     }
 }
 
@@ -285,7 +285,7 @@ extension Session: Displayable {
 
     public var subtitle: String? {
         let local = localCalendar(from: .current)
-        return started.formatted(local.formatStyle(date: .numeric, time: .shortened))
+        return startDate.formatted(local.formatStyle(date: .numeric, time: .shortened))
     }
 
     public var pictogram: Pictogram {

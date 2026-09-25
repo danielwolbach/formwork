@@ -15,13 +15,13 @@ struct ExerciseTargetEditor: View {
     var body: some View {
         switch target {
         case let .weight(weight):
-            WeightTargetEditor(target: Binding(get: { weight }, set: { target = .weight(target: $0) }))
+            WeightTargetEditor(target: Binding(get: { weight }, set: { target = .weight($0) }))
         case let .bodyweight(bodyweight):
-            BodyweightTargetEditor(target: Binding(get: { bodyweight }, set: { target = .bodyweight(target: $0) }))
+            BodyweightTargetEditor(target: Binding(get: { bodyweight }, set: { target = .bodyweight($0) }))
         case let .duration(duration):
-            DurationTargetEditor(target: Binding(get: { duration }, set: { target = .duration(target: $0) }))
+            DurationTargetEditor(target: Binding(get: { duration }, set: { target = .duration($0) }))
         case let .distance(distance):
-            DistanceTargetEditor(target: Binding(get: { distance }, set: { target = .distance(target: $0) }))
+            DistanceTargetEditor(target: Binding(get: { distance }, set: { target = .distance($0) }))
         }
     }
 }
@@ -119,27 +119,27 @@ private struct DistanceTargetEditor: View {
 #Preview("Weight") {
     @Previewable
     @State
-    var target = ExerciseTarget.weight(target: .init(weight: Quantity(50, in: .kilograms), sets: 3, reps: 10))
+    var target = ExerciseTarget.weight(.init(weight: Quantity(50, in: .kilograms), sets: 3, reps: 10))
     ExerciseTargetEditor(target: $target)
 }
 
 #Preview("Bodyweight") {
     @Previewable
     @State
-    var target = ExerciseTarget.bodyweight(target: .init(sets: 1, reps: 20))
+    var target = ExerciseTarget.bodyweight(.init(sets: 1, reps: 20))
     ExerciseTargetEditor(target: $target)
 }
 
 #Preview("Duration") {
     @Previewable
     @State
-    var target = ExerciseTarget.duration(target: .init(duration: Quantity(10, in: .minutes)))
+    var target = ExerciseTarget.duration(.init(duration: Quantity(10, in: .minutes)))
     ExerciseTargetEditor(target: $target)
 }
 
 #Preview("Distance") {
     @Previewable
     @State
-    var target = ExerciseTarget.distance(target: .init(distance: Quantity(500, in: .meters)))
+    var target = ExerciseTarget.distance(.init(distance: Quantity(500, in: .meters)))
     ExerciseTargetEditor(target: $target)
 }

@@ -17,7 +17,7 @@ extension FavoriteExercise: Statistic {
         let tally = window.entries
             .filter(\.status.isCompleted)
             .reduce(into: [Exercise: (count: Int, latest: Date)]()) { tally, entry in
-                guard let exercise = entry.exercise, let completed = entry.status.resolved else {
+                guard let exercise = entry.exercise, let completed = entry.status.resolvedDate else {
                     return
                 }
 

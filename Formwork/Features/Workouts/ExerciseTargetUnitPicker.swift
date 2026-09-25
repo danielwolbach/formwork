@@ -16,15 +16,15 @@ struct ExerciseTargetUnitPicker: View {
         switch target {
         case var .weight(weight):
             UnitPicker(quantity: Binding(get: { weight.weight }, set: { weight.weight = $0
-                target = .weight(target: weight)
+                target = .weight(weight)
             }))
         case var .duration(duration):
             UnitPicker(quantity: Binding(get: { duration.duration }, set: { duration.duration = $0
-                target = .duration(target: duration)
+                target = .duration(duration)
             }))
         case var .distance(distance):
             UnitPicker(quantity: Binding(get: { distance.distance }, set: { distance.distance = $0
-                target = .distance(target: distance)
+                target = .distance(distance)
             }))
         case .bodyweight:
             EmptyView()
@@ -48,20 +48,20 @@ private struct UnitPicker: View {
 #Preview("Weight") {
     @Previewable
     @State
-    var target = ExerciseTarget.weight(target: .init(weight: .defaultWeight, sets: 3, reps: 10))
+    var target = ExerciseTarget.weight(.init(weight: .defaultWeight, sets: 3, reps: 10))
     ExerciseTargetUnitPicker(target: $target)
 }
 
 #Preview("Duration") {
     @Previewable
     @State
-    var target = ExerciseTarget.duration(target: .init(duration: .defaultDuration))
+    var target = ExerciseTarget.duration(.init(duration: .defaultDuration))
     ExerciseTargetUnitPicker(target: $target)
 }
 
 #Preview("Distance") {
     @Previewable
     @State
-    var target = ExerciseTarget.distance(target: .init(distance: .defaultDistance))
+    var target = ExerciseTarget.distance(.init(distance: .defaultDistance))
     ExerciseTargetUnitPicker(target: $target)
 }

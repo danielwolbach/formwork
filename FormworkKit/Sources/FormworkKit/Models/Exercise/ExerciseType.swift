@@ -5,7 +5,7 @@
 //  Created by Daniel Wolbach on 04.09.26.
 //
 
-public enum ExerciseType: Codable, CaseIterable, Sendable {
+public enum ExerciseType: String, Codable, CaseIterable, Sendable {
     case weight, bodyweight, duration, distance
 }
 

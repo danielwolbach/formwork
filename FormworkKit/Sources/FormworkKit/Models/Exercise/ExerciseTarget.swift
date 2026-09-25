@@ -6,10 +6,10 @@
 //
 
 public enum ExerciseTarget: Codable, Sendable {
-    case weight(target: WeightTarget)
-    case bodyweight(target: BodyweightTarget)
-    case duration(target: DurationTarget)
-    case distance(target: DistanceTarget)
+    case weight(_ target: WeightTarget)
+    case bodyweight(_ target: BodyweightTarget)
+    case duration(_ target: DurationTarget)
+    case distance(_ target: DistanceTarget)
 
     public struct WeightTarget: Codable, Hashable, Sendable {
         public var weight: Quantity

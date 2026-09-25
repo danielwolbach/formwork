@@ -16,6 +16,8 @@ public final class Workout {
 
     public var schedule: Schedule = Schedule.inactive
 
+    public var creationDate: Date = Date.now
+
     @Relationship(deleteRule: .cascade, inverse: \WorkoutEntry.workout)
     public var entries: [WorkoutEntry] = []
 
@@ -26,6 +28,7 @@ public final class Workout {
         self.name = name
         self.pictogram = pictogram
         self.schedule = schedule
+        self.creationDate = .now
         self.entries = entries
     }
 }

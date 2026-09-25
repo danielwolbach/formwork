@@ -50,7 +50,7 @@ struct SessionLifecycleTests {
     @Test
     func finishWritesTargetsBackToWorkout() throws {
         let session = try store.startSession()
-        session.currentEntry?.target = .bodyweight(target: .init(sets: 5, reps: 12))
+        session.currentEntry?.target = .bodyweight(.init(sets: 5, reps: 12))
         session.finish()
         try store.context.save()
 
@@ -64,11 +64,11 @@ struct SessionLifecycleTests {
     func finishTwiceKeepsFirstEndDate() throws {
         let session = try store.startSession()
         session.finish()
-        let ended = session.ended
+        let ended = session.endDate
 
         session.finish()
 
-        #expect(session.ended == ended)
+        #expect(session.endDate == ended)
     }
 
     @Test
@@ -242,7 +242,7 @@ struct SessionEntryStatusTests {
         #expect(status.isPending)
         #expect(!status.isCompleted)
         #expect(!status.isSkipped)
-        #expect(status.resolved == nil)
+        #expect(status.resolvedDate == nil)
     }
 
     @Test
@@ -253,7 +253,7 @@ struct SessionEntryStatusTests {
         #expect(!status.isPending)
         #expect(status.isCompleted)
         #expect(!status.isSkipped)
-        #expect(status.resolved == date)
+        #expect(status.resolvedDate == date)
     }
 
     @Test
@@ -264,7 +264,7 @@ struct SessionEntryStatusTests {
         #expect(!status.isPending)
         #expect(!status.isCompleted)
         #expect(status.isSkipped)
-        #expect(status.resolved == date)
+        #expect(status.resolvedDate == date)
     }
 }
 
@@ -286,7 +286,7 @@ struct SessionActivityAttributesTests {
         #expect(state.pictogram == ExerciseType.bodyweight.pictogram)
         #expect(state.workout == store.workout.pictogram)
         #expect(state.status == nil)
-        #expect(state.started == session.started)
+        #expect(state.startDate == session.startDate)
         #expect(state.resolved == 0)
         #expect(state.total == 3)
         #expect(state.canMoveForward)

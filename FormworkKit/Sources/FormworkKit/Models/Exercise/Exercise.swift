@@ -16,9 +16,11 @@ public final class Exercise {
 
     public var categories: Set<ExerciseCategory> = [ExerciseCategory.other]
     
-    public var url: URL? = nil
+    public var link: URL? = nil
     
     public var notes: String = ""
+
+    public var creationDate: Date = Date.now
 
     @Relationship(deleteRule: .cascade, inverse: \WorkoutEntry.exercise)
     public var workoutEntries: [WorkoutEntry] = []
@@ -26,12 +28,13 @@ public final class Exercise {
     @Relationship(deleteRule: .nullify, inverse: \SessionEntry.exercise)
     public var sessionEntries: [SessionEntry] = []
 
-    public init(name: String, type: ExerciseType, categories: Set<ExerciseCategory>, url: URL? = nil, notes: String = "") {
+    public init(name: String, type: ExerciseType, categories: Set<ExerciseCategory>, link: URL? = nil, notes: String = "") {
         self.name = name
         self.type = type
         self.categories = categories
-        self.url = url
+        self.link = link
         self.notes = notes
+        self.creationDate = .now
     }
 }
 

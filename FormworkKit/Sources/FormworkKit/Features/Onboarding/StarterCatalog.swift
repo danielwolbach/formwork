@@ -83,10 +83,10 @@ public enum StarterCatalog {
                 pictogram: .workout,
                 schedule: .today(),
                 entries: [
-                    WorkoutEntry.Entry(exercise: .StarterCatalog.exerciseTreadmillName, target: .distance(target: .init(distance: .defaultDistance))),
-                    WorkoutEntry.Entry(exercise: .StarterCatalog.exercisePushUpName, target: .bodyweight(target: .init(sets: 3, reps: 12))),
-                    WorkoutEntry.Entry(exercise: .StarterCatalog.exerciseSquatName, target: .weight(target: .init(weight: .defaultWeight, sets: 3, reps: 10))),
-                    WorkoutEntry.Entry(exercise: .StarterCatalog.exercisePlankName, target: .duration(target: .init(duration: Quantity(45, in: .seconds)))),
+                    WorkoutEntry.Entry(exercise: .StarterCatalog.exerciseTreadmillName, target: .distance(.init(distance: .defaultDistance))),
+                    WorkoutEntry.Entry(exercise: .StarterCatalog.exercisePushUpName, target: .bodyweight(.init(sets: 3, reps: 12))),
+                    WorkoutEntry.Entry(exercise: .StarterCatalog.exerciseSquatName, target: .weight(.init(weight: .defaultWeight, sets: 3, reps: 10))),
+                    WorkoutEntry.Entry(exercise: .StarterCatalog.exercisePlankName, target: .duration(.init(duration: Quantity(45, in: .seconds)))),
                 ]
             ),
         ]

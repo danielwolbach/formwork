@@ -20,7 +20,7 @@ struct ExerciseGuide: View {
     
     var body: some View {
         VStack(spacing: 8) {
-            if let url = exercise.url {
+            if let url = exercise.link {
                 Button {
                     if ["http", "https"].contains(url.scheme?.lowercased()) {
                         browserURL = url

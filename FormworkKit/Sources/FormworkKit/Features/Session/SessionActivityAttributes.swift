@@ -22,7 +22,7 @@ public struct SessionActivityAttributes: ActivityAttributes {
 
         public var status: Pictogram?
 
-        public var started: Date
+        public var startDate: Date
 
         public var resolved: Int
 
@@ -38,7 +38,7 @@ public struct SessionActivityAttributes: ActivityAttributes {
             pictogram: Pictogram,
             workout: Pictogram,
             status: Pictogram?,
-            started: Date,
+            startDate: Date,
             resolved: Int,
             total: Int,
             canMoveForward: Bool,
@@ -49,7 +49,7 @@ public struct SessionActivityAttributes: ActivityAttributes {
             self.pictogram = pictogram
             self.workout = workout
             self.status = status
-            self.started = started
+            self.startDate = startDate
             self.resolved = resolved
             self.total = total
             self.canMoveForward = canMoveForward
@@ -72,7 +72,7 @@ extension SessionActivityAttributes.ContentState {
             pictogram: current.pictogram,
             workout: session.workout?.pictogram ?? .workout,
             status: current.status.isPending ? nil : current.status.pictogram,
-            started: session.started,
+            startDate: session.startDate,
             resolved: session.resolvedCount,
             total: session.entries.count,
             canMoveForward: session.nextEntry != nil,

@@ -57,7 +57,7 @@ public struct SessionSummary {
         volume?.base = volumes.reduce(0) { $0 + $1.base }
 
         self.duration = .duration(session.duration.map { .seconds($0) })
-        self.endTime = .endTime(session.ended, in: session, calendar: calendar)
+        self.endTime = .endTime(session.endDate, in: session, calendar: calendar)
         self.skipRate = .skipRate(entries.isEmpty ? nil : Double(entries.count(where: \.status.isSkipped)) / Double(entries.count))
         self.medianExerciseDuration = .medianExerciseDuration(durations.median.map { .seconds($0) })
         self.completedExercises = .completedExercises(completed.count)

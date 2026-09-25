@@ -21,7 +21,7 @@ struct WorkoutTests {
         let exercise = Exercise(name: "Plank", type: .duration, categories: [.core])
         store.context.insert(exercise)
 
-        store.workout.append(exercise: exercise, target: .duration(target: .init(duration: Quantity(1, in: .minutes))))
+        store.workout.append(exercise: exercise, target: .duration(.init(duration: Quantity(1, in: .minutes))))
 
         #expect(store.workout.entries.sorted().map(\.title) == ["Squat", "Bench Press", "Deadlift", "Plank"])
         #expect(store.workout.entries.sorted().last?.order == 3)
@@ -33,7 +33,7 @@ struct WorkoutTests {
         store.context.insert(exercise)
         store.workout.entries.sorted().last?.order = 7
 
-        store.workout.append(exercise: exercise, target: .duration(target: .init(duration: Quantity(1, in: .minutes))))
+        store.workout.append(exercise: exercise, target: .duration(.init(duration: Quantity(1, in: .minutes))))
 
         #expect(store.workout.entries.sorted().last?.order == 8)
     }

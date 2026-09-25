@@ -11,7 +11,7 @@ import SwiftUI
 @MainActor
 public enum Samples {
     public static let exercises: [Exercise] = [
-        Exercise(name: "Cross Trainer", type: .duration, categories: [.cardio, .legs], url: URL(string: "https://gym80.de/produkt/3032/"), notes: "Don't break your bones."),
+        Exercise(name: "Cross Trainer", type: .duration, categories: [.cardio, .legs], link: URL(string: "https://gym80.de/produkt/3032/"), notes: "Don't break your bones."),
         Exercise(name: "Leg Press", type: .weight, categories: [.legs]),
         Exercise(name: "Chest Press", type: .weight, categories: [.chest, .arms]),
         Exercise(name: "Lat Pulldown", type: .weight, categories: [.back, .arms]),
@@ -46,15 +46,15 @@ public enum Samples {
             pictogram: Pictogram(image: "figure.strengthtraining.traditional", tint: .blue),
             schedule: Schedule(weekdays: [.monday, .thursday]),
             entries: [
-                WorkoutEntry(order: 0, exercise: exercises[0], target: .duration(target: .init(duration: Quantity(10, in: .minutes)))),
-                WorkoutEntry(order: 1, exercise: exercises[1], target: .weight(target: .init(weight: Quantity(85, in: .kilograms), sets: 3, reps: 10))),
-                WorkoutEntry(order: 2, exercise: exercises[2], target: .weight(target: .init(weight: Quantity(40, in: .kilograms), sets: 3, reps: 10))),
-                WorkoutEntry(order: 3, exercise: exercises[3], target: .weight(target: .init(weight: Quantity(40, in: .kilograms), sets: 3, reps: 10))),
-                WorkoutEntry(order: 4, exercise: exercises[4], target: .weight(target: .init(weight: Quantity(40, in: .kilograms), sets: 3, reps: 12))),
-                WorkoutEntry(order: 5, exercise: exercises[5], target: .weight(target: .init(weight: Quantity(25, in: .kilograms), sets: 3, reps: 12))),
-                WorkoutEntry(order: 6, exercise: exercises[6], target: .weight(target: .init(weight: Quantity(45, in: .kilograms), sets: 3, reps: 12))),
-                WorkoutEntry(order: 7, exercise: exercises[7], target: .weight(target: .init(weight: Quantity(40, in: .kilograms), sets: 3, reps: 14))),
-                WorkoutEntry(order: 8, exercise: exercises[8], target: .bodyweight(target: .init(sets: 3, reps: 12))),
+                WorkoutEntry(order: 0, exercise: exercises[0], target: .duration(.init(duration: Quantity(10, in: .minutes)))),
+                WorkoutEntry(order: 1, exercise: exercises[1], target: .weight(.init(weight: Quantity(85, in: .kilograms), sets: 3, reps: 10))),
+                WorkoutEntry(order: 2, exercise: exercises[2], target: .weight(.init(weight: Quantity(40, in: .kilograms), sets: 3, reps: 10))),
+                WorkoutEntry(order: 3, exercise: exercises[3], target: .weight(.init(weight: Quantity(40, in: .kilograms), sets: 3, reps: 10))),
+                WorkoutEntry(order: 4, exercise: exercises[4], target: .weight(.init(weight: Quantity(40, in: .kilograms), sets: 3, reps: 12))),
+                WorkoutEntry(order: 5, exercise: exercises[5], target: .weight(.init(weight: Quantity(25, in: .kilograms), sets: 3, reps: 12))),
+                WorkoutEntry(order: 6, exercise: exercises[6], target: .weight(.init(weight: Quantity(45, in: .kilograms), sets: 3, reps: 12))),
+                WorkoutEntry(order: 7, exercise: exercises[7], target: .weight(.init(weight: Quantity(40, in: .kilograms), sets: 3, reps: 14))),
+                WorkoutEntry(order: 8, exercise: exercises[8], target: .bodyweight(.init(sets: 3, reps: 12))),
             ]
         ),
         Workout(
@@ -62,12 +62,12 @@ public enum Samples {
             pictogram: Pictogram(image: "figure.strengthtraining.functional", tint: .purple),
             schedule: Schedule(weekdays: [.saturday]),
             entries: [
-                WorkoutEntry(order: 0, exercise: exercises[22], target: .duration(target: .init(duration: Quantity(5, in: .minutes)))),
-                WorkoutEntry(order: 1, exercise: exercises[11], target: .weight(target: .init(weight: Quantity(70, in: .kilograms), sets: 4, reps: 8))),
-                WorkoutEntry(order: 2, exercise: exercises[12], target: .weight(target: .init(weight: Quantity(80, in: .kilograms), sets: 3, reps: 6))),
-                WorkoutEntry(order: 3, exercise: exercises[1], target: .weight(target: .init(weight: Quantity(100, in: .kilograms), sets: 3, reps: 10))),
-                WorkoutEntry(order: 4, exercise: exercises[4], target: .weight(target: .init(weight: Quantity(35, in: .kilograms), sets: 3, reps: 12))),
-                WorkoutEntry(order: 5, exercise: exercises[24], target: .duration(target: .init(duration: Quantity(5, in: .minutes)))),
+                WorkoutEntry(order: 0, exercise: exercises[22], target: .duration(.init(duration: Quantity(5, in: .minutes)))),
+                WorkoutEntry(order: 1, exercise: exercises[11], target: .weight(.init(weight: Quantity(70, in: .kilograms), sets: 4, reps: 8))),
+                WorkoutEntry(order: 2, exercise: exercises[12], target: .weight(.init(weight: Quantity(80, in: .kilograms), sets: 3, reps: 6))),
+                WorkoutEntry(order: 3, exercise: exercises[1], target: .weight(.init(weight: Quantity(100, in: .kilograms), sets: 3, reps: 10))),
+                WorkoutEntry(order: 4, exercise: exercises[4], target: .weight(.init(weight: Quantity(35, in: .kilograms), sets: 3, reps: 12))),
+                WorkoutEntry(order: 5, exercise: exercises[24], target: .duration(.init(duration: Quantity(5, in: .minutes)))),
             ]
         ),
     ]
@@ -104,7 +104,7 @@ public enum Samples {
     }
 
     public static var personalBest: some Displayable {
-        PersonalBest(target: .weight(target: .init(weight: best, sets: 3, reps: 10)))
+        PersonalBest(target: .weight(.init(weight: best, sets: 3, reps: 10)))
     }
 
     public static var totalVolume: SessionSummary.Figure<Quantity> {
@@ -114,9 +114,9 @@ public enum Samples {
     public static var weightTarget: ExerciseTarget {
         switch Locale.current.measurementSystem {
         case .us:
-            ExerciseTarget.weight(target: .init(weight: Quantity(185, in: .pounds), sets: 3, reps: 10))
+            ExerciseTarget.weight(.init(weight: Quantity(185, in: .pounds), sets: 3, reps: 10))
         default:
-            ExerciseTarget.weight(target: .init(weight: Quantity(85, in: .kilograms), sets: 3, reps: 10))
+            ExerciseTarget.weight(.init(weight: Quantity(85, in: .kilograms), sets: 3, reps: 10))
         }
     }
 
@@ -169,7 +169,7 @@ extension Samples {
 
                 let session = try Session.start(workout, in: context)
                 var clock = day.addingTimeInterval(TimeInterval.random(in: 17 ... 19.5, using: &random) * 3600)
-                session.started = clock
+                session.startDate = clock
 
                 for entry in session.entries.sorted() {
                     clock += TimeInterval.random(in: 180 ... 480, using: &random)
@@ -178,7 +178,7 @@ extension Samples {
                 }
 
                 // Not `finish()`: that stamps `.now` and writes the targets back into the workout.
-                session.ended = clock
+                session.endDate = clock
             }
         }
     }
@@ -205,15 +205,15 @@ extension ExerciseTarget {
         switch self {
         case var .weight(target):
             target.weight = target.weight.scaled(by: factor, to: target.stepSize)
-            return .weight(target: target)
+            return .weight(target)
         case .bodyweight:
             return self
         case var .duration(target):
             target.duration = target.duration.scaled(by: factor, to: target.stepSize)
-            return .duration(target: target)
+            return .duration(target)
         case var .distance(target):
             target.distance = target.distance.scaled(by: factor, to: target.stepSize)
-            return .distance(target: target)
+            return .distance(target)
         }
     }
 }

@@ -17,7 +17,7 @@ extension MostSkippedExercise: Statistic {
         let tally = window.entries
             .filter(\.status.isSkipped)
             .reduce(into: [Exercise: (count: Int, latest: Date)]()) { tally, entry in
-                guard let exercise = entry.exercise, let skipped = entry.status.resolved else {
+                guard let exercise = entry.exercise, let skipped = entry.status.resolvedDate else {
                     return
                 }
 

@@ -40,11 +40,11 @@ struct SessionStatus: View {
 
     @ViewBuilder
     private var elapsed: some View {
-        if let ended = session.ended {
-            Text(formatted(ended.timeIntervalSince(session.started)))
+        if let ended = session.endDate {
+            Text(formatted(ended.timeIntervalSince(session.startDate)))
         } else {
-            TimelineView(.periodic(from: session.started, by: 1)) { context in
-                let text = formatted(context.date.timeIntervalSince(session.started))
+            TimelineView(.periodic(from: session.startDate, by: 1)) { context in
+                let text = formatted(context.date.timeIntervalSince(session.startDate))
 
                 Text(text)
                     .contentTransition(.numericText(countsDown: false))

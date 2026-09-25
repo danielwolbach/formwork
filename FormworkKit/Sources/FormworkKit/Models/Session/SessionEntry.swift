@@ -22,7 +22,7 @@ public final class SessionEntry {
 
     public var status: Status = Status.pending
 
-    public var target: ExerciseTarget = ExerciseTarget.bodyweight(target: .init(sets: 1, reps: 1))
+    public var target: ExerciseTarget = ExerciseTarget.bodyweight(.init(sets: 1, reps: 1))
 
     public var exercise: Exercise?
 
@@ -47,14 +47,14 @@ extension SessionEntry: Comparable {
 
 extension SessionEntry {
     public var duration: TimeInterval? {
-        guard let session, let resolved = status.resolved else {
+        guard let session, let resolved = status.resolvedDate else {
             return nil
         }
 
-        var previous = session.started
+        var previous = session.startDate
 
         for other in session.entries {
-            if let other = other.status.resolved, other < resolved, other > previous {
+            if let other = other.status.resolvedDate, other < resolved, other > previous {
                 previous = other
             }
         }
@@ -67,7 +67,7 @@ extension SessionEntry {
     }
 
     public var previous: ExerciseTarget? {
-        earlier.max { ($0.session?.started ?? .distantPast) < ($1.session?.started ?? .distantPast) }?.target
+        earlier.max { ($0.session?.startDate ?? .distantPast) < ($1.session?.startDate ?? .distantPast) }?.target
     }
 
     public var previousBest: ExerciseTarget? {
@@ -86,7 +86,7 @@ extension SessionEntry {
 
             return other.status.isCompleted
                 && other.target.type == exercise.type
-                && theirs.started < session.started
+                && theirs.startDate < session.startDate
         }
     }
 }
@@ -130,7 +130,7 @@ extension SessionEntry.Status {
         }
     }
 
-    public var resolved: Date? {
+    public var resolvedDate: Date? {
         switch self {
         case .pending: nil
         case let .completed(date), let .skipped(date): date

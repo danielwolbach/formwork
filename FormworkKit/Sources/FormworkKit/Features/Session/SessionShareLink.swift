@@ -189,7 +189,7 @@ private struct SessionShareImage: Transferable {
         }
 
         self.image = image
-        self.name = "\(session.title), \(session.started.formatted())"
+        self.name = "\(session.title), \(session.startDate.formatted())"
     }
 
     static var transferRepresentation: some TransferRepresentation {

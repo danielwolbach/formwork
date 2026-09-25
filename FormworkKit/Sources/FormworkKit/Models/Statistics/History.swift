@@ -12,7 +12,7 @@
 //   Weeks start on `calendar.firstWeekday`.
 // - Sessions are dated by the clock where they started: ask them which period they fall into
 //   (`falls(into:in:)`, `period(of:in:)`) and at which time of day they started (`startMinute(in:)`),
-//   and show their dates with `localCalendar(from:)`. `started` and `ended` are real instants, only for
+//   and show their dates with `localCalendar(from:)`. `startDate` and `endDate` are real instants, only for
 //   durations, ordering, comparisons with now and relative formatting.
 // - Only finished sessions count. A session belongs to the day it started on, and intervals are half-open
 //   (`start <= date < end`). `DateInterval.contains` includes the end, so don't use it.

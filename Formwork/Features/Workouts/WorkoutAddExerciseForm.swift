@@ -195,10 +195,10 @@ struct WorkoutAddExerciseForm: View {
         }
 
         return switch exercise.type {
-        case .weight: .weight(target: .init(weight: .defaultWeight, sets: 3, reps: 10))
-        case .bodyweight: .bodyweight(target: .init(sets: 3, reps: 10))
-        case .duration: .duration(target: .init(duration: .defaultDuration))
-        case .distance: .distance(target: .init(distance: .defaultDistance))
+        case .weight: .weight(.init(weight: .defaultWeight, sets: 3, reps: 10))
+        case .bodyweight: .bodyweight(.init(sets: 3, reps: 10))
+        case .duration: .duration(.init(duration: .defaultDuration))
+        case .distance: .distance(.init(distance: .defaultDistance))
         }
     }
 }

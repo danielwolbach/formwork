@@ -25,7 +25,7 @@ struct TestStore {
         for name in ["Squat", "Bench Press", "Deadlift"] {
             let exercise = Exercise(name: name, type: .bodyweight, categories: [])
             container.mainContext.insert(exercise)
-            workout.append(exercise: exercise, target: .bodyweight(target: .init(sets: 3, reps: 10)))
+            workout.append(exercise: exercise, target: .bodyweight(.init(sets: 3, reps: 10)))
         }
     }
 

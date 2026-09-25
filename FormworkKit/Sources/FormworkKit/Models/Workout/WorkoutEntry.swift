@@ -13,7 +13,7 @@ public final class WorkoutEntry {
 
     public var exercise: Exercise?
 
-    public var target: ExerciseTarget = ExerciseTarget.bodyweight(target: .init(sets: 3, reps: 10))
+    public var target: ExerciseTarget = ExerciseTarget.bodyweight(.init(sets: 3, reps: 10))
 
     public var workout: Workout?
 

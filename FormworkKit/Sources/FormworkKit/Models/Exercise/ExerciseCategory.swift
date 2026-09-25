@@ -5,7 +5,7 @@
 //  Created by Daniel Wolbach on 04.09.26.
 //
 
-public enum ExerciseCategory: Codable, CaseIterable, Sendable {
+public enum ExerciseCategory: String, Codable, CaseIterable, Sendable {
     case arms, legs, chest, shoulders, core, back, cardio, flexibility, mindfulness, other
 }
 

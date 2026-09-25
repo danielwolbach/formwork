@@ -26,11 +26,11 @@ extension LastCompleted: Statistic {
         case .exercise, .entry:
             let last = window.entries
                 .filter(\.status.isCompleted)
-                .max { ($0.status.resolved ?? .distantPast) < ($1.status.resolved ?? .distantPast) }
-            self.init(date: last?.status.resolved, session: last?.session, calendar: calendar)
+                .max { ($0.status.resolvedDate ?? .distantPast) < ($1.status.resolvedDate ?? .distantPast) }
+            self.init(date: last?.status.resolvedDate, session: last?.session, calendar: calendar)
         case .all, .workout:
-            let last = window.sessions.max { ($0.ended ?? .distantPast) < ($1.ended ?? .distantPast) }
-            self.init(date: last?.ended, session: last, calendar: calendar)
+            let last = window.sessions.max { ($0.endDate ?? .distantPast) < ($1.endDate ?? .distantPast) }
+            self.init(date: last?.endDate, session: last, calendar: calendar)
         }
     }
 
@@ -59,7 +59,7 @@ extension LastCompleted: Statistic {
         }
 
         let local = session?.localCalendar(from: calendar) ?? calendar
-        let day = session?.started ?? date
+        let day = session?.startDate ?? date
         let style = local.formatStyle().day().month()
         return local.isDate(day, equalTo: .now, toGranularity: .year) ? day.formatted(style) : day.formatted(style.year())
     }
