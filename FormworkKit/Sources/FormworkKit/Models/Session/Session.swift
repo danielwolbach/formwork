@@ -235,19 +235,19 @@ extension Session {
         localCalendar(from: .current).formatStyle(time: .shortened)
     }
 
-    func localCalendar(from calendar: Calendar) -> Calendar {
-        var local = calendar
-        local.timeZone = timeZone
-        return local
-    }
-
-    func falls(into interval: DateInterval, in calendar: Calendar) -> Bool {
+    public func falls(into interval: DateInterval, in calendar: Calendar) -> Bool {
         assert(
             calendar.isDayBoundary(interval.start) && calendar.isDayBoundary(interval.end),
             "\(interval) isn't made of whole days, so it can't be compared with wall-clock time."
         )
         let start = localStartDate(in: calendar)
         return interval.start <= start && start < interval.end
+    }
+
+    func localCalendar(from calendar: Calendar) -> Calendar {
+        var local = calendar
+        local.timeZone = timeZone
+        return local
     }
 
     func period(of component: Calendar.Component, in calendar: Calendar) -> DateInterval? {

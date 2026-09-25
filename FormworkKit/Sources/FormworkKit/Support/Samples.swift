@@ -44,7 +44,7 @@ public enum Samples {
         Workout(
             name: "Full Body",
             pictogram: Pictogram(image: "figure.strengthtraining.traditional", tint: .blue),
-            schedule: Schedule(weekdays: [.monday, .thursday]),
+            schedule: .weekly(weekdays: Schedule.Weekdays([.monday, .thursday]), interval: 1, anchor: historyStart),
             entries: [
                 WorkoutEntry(order: 0, exercise: exercises[0], target: .duration(.init(duration: Quantity(10, in: .minutes)))),
                 WorkoutEntry(order: 1, exercise: exercises[1], target: .weight(.init(weight: Quantity(85, in: .kilograms), sets: 3, reps: 10))),
@@ -60,7 +60,7 @@ public enum Samples {
         Workout(
             name: "Leg Day",
             pictogram: Pictogram(image: "figure.strengthtraining.functional", tint: .purple),
-            schedule: Schedule(weekdays: [.saturday]),
+            schedule: .weekly(weekdays: Schedule.Weekdays([.saturday]), interval: 1, anchor: historyStart),
             entries: [
                 WorkoutEntry(order: 0, exercise: exercises[22], target: .duration(.init(duration: Quantity(5, in: .minutes)))),
                 WorkoutEntry(order: 1, exercise: exercises[11], target: .weight(.init(weight: Quantity(70, in: .kilograms), sets: 4, reps: 8))),
@@ -94,6 +94,11 @@ public enum Samples {
 
         return container
     }()
+
+    private static let historyDays = 400
+
+    /// The day the seeded history begins, which the sample schedules start on.
+    private static let historyStart = Calendar.current.date(byAdding: .day, value: -historyDays, to: .now) ?? .now
 
     public static var weekStreak: some Displayable {
         WeekStreak(weeks: 6)
@@ -149,7 +154,7 @@ private struct SampleDataModifier: ViewModifier {
 }
 
 extension Samples {
-    fileprivate static func seedHistory(in context: ModelContext, days: Int = 400, calendar: Calendar = .current) throws {
+    fileprivate static func seedHistory(in context: ModelContext, days: Int = historyDays, calendar: Calendar = .current) throws {
         var random = SeededGenerator(seed: 42)
         let today = calendar.startOfDay(for: .now)
 
@@ -158,11 +163,9 @@ extension Samples {
                 continue
             }
 
-            let weekday = Schedule.Weekday(calendarNumber: calendar.component(.weekday, from: day))
-
             let progress = 1 - Double(offset) / Double(days)
 
-            for workout in workouts where workout.schedule.weekdays.contains(weekday) {
+            for workout in workouts where workout.schedule.isScheduled(on: day, in: calendar) {
                 guard Double.random(in: 0 ..< 1, using: &random) < 0.8 else {
                     continue
                 }

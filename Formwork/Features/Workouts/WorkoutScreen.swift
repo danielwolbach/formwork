@@ -81,6 +81,7 @@ struct WorkoutScreen: View {
                     }
                 }
             }
+            .padding(.bottom)
         }
         .navigationDestination(for: WorkoutEntry.self) { entry in
             WorkoutEntryScreen(entry: entry)

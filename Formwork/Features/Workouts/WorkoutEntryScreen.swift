@@ -38,11 +38,12 @@ struct WorkoutEntryScreen: View {
 
                 ExerciseTargetEditor(target: $entry.target)
                     .padding(.vertical)
-                
+
                 if let exercise = entry.exercise {
                     ExerciseGuide(exercise: exercise)
                 }
             }
+            .padding(.bottom)
         }
         .scrollDismissesKeyboard(.interactively)
         .toolbar {

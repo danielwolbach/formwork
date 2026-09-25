@@ -7,27 +7,63 @@
 
 import Foundation
 
-public struct Schedule: Codable, Sendable {
+public enum Schedule: Codable, Hashable, Sendable {
+    case weekly(weekdays: Weekdays, interval: Int, anchor: Date)
+    case daily(interval: Int, anchor: Date)
+
     public enum Weekday: Int, Codable, CaseIterable, Sendable {
         case monday, tuesday, wednesday, thursday, friday, saturday, sunday
     }
 
-    public var weekdays: Set<Weekday>
+    public struct Weekdays: OptionSet, Codable, Hashable, Sendable {
+        public let rawValue: Int
 
-    public init(weekdays: Set<Weekday>) {
-        self.weekdays = weekdays
+        public init(rawValue: Int) {
+            self.rawValue = rawValue
+        }
     }
 }
 
 extension Schedule {
-    public static let inactive = Schedule(weekdays: [])
+    public static var inactive: Schedule {
+        .weekly(weekdays: [], interval: 1, anchor: .now)
+    }
 
     public static func today(in calendar: Calendar = .current) -> Schedule {
-        Schedule(weekdays: [Weekday(calendarNumber: calendar.component(.weekday, from: .now))])
+        .weekly(weekdays: Weekdays([Weekday(calendarNumber: calendar.component(.weekday, from: .now))]), interval: 1, anchor: .now)
+    }
+
+    private static func isCycle(_ date: Date, every interval: Int, of component: Calendar.Component, from anchor: Date, in calendar: Calendar) -> Bool {
+        guard
+            calendar.startOfDay(for: date) >= calendar.startOfDay(for: anchor),
+            let start = calendar.dateInterval(of: component, for: anchor)?.start,
+            let end = calendar.dateInterval(of: component, for: date)?.start,
+            let distance = calendar.dateComponents([component], from: start, to: end).value(for: component)
+        else {
+            return false
+        }
+
+        return distance % max(interval, 1) == 0
     }
 
     public func isScheduled(on date: Date, in calendar: Calendar = .current) -> Bool {
-        weekdays.contains(Schedule.Weekday(calendarNumber: calendar.component(.weekday, from: date)))
+        switch self {
+        case let .weekly(weekdays, interval, anchor):
+            weekdays.contains(Weekday(calendarNumber: calendar.component(.weekday, from: date)))
+                && Self.isCycle(date, every: interval, of: .weekOfYear, from: anchor, in: calendar)
+        case let .daily(interval, anchor):
+            Self.isCycle(date, every: interval, of: .day, from: anchor, in: calendar)
+        }
+    }
+}
+
+extension Schedule.Weekdays {
+    public init(_ weekdays: some Sequence<Schedule.Weekday>) {
+        self.init(rawValue: weekdays.reduce(0) { $0 | 1 << $1.rawValue })
+    }
+
+    public func contains(_ weekday: Schedule.Weekday) -> Bool {
+        rawValue & 1 << weekday.rawValue != 0
     }
 }
 

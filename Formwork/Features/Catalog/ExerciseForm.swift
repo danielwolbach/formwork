@@ -8,8 +8,8 @@
 import FormworkKit
 import SwiftData
 import SwiftUI
-import VisionKit
 import Vision
+import VisionKit
 
 struct ExerciseForm: View {
     let exercise: Exercise?
@@ -28,13 +28,13 @@ struct ExerciseForm: View {
 
     @State
     private var categories: Set<ExerciseCategory>
-    
+
     @State
     private var url: String
-    
+
     @State
     private var notes: String
-    
+
     @State
     private var showScanner: Bool = false
 
@@ -69,7 +69,7 @@ struct ExerciseForm: View {
             Section(.sectionExerciseCategoriesTitle) {
                 ExerciseCategoryPicker(categories: $categories)
             }
-            
+
             Section(.sectionExerciseLinkTitle) {
                 HStack {
                     TextField(.fieldExerciseLinkPlaceholder, text: $url)
@@ -87,7 +87,7 @@ struct ExerciseForm: View {
                     }
                 }
             }
-            
+
             Section(.sectionExerciseNotesTitle) {
                 TextField(.fieldExerciseNotesPlaceholder, text: $notes, axis: .vertical)
                     .lineLimit(4...)
@@ -236,10 +236,48 @@ private struct ExerciseCategoryPicker: View {
 }
 
 private struct QRCodeScanner: UIViewControllerRepresentable {
+    @MainActor
+    final class Coordinator: NSObject, DataScannerViewControllerDelegate {
+        private let onScan: (URL) -> Void
+
+        private var scanned: Bool = false
+
+        init(onScan: @escaping (URL) -> Void) {
+            self.onScan = onScan
+        }
+
+        func dataScanner(_ dataScanner: DataScannerViewController, didAdd addedItems: [RecognizedItem], allItems _: [RecognizedItem]) {
+            guard !scanned else {
+                return
+            }
+
+            for item in addedItems {
+                guard
+                    case let .barcode(barcode) = item,
+                    let payload = barcode.payloadStringValue,
+                    let url = URL(string: payload),
+                    ["http", "https"].contains(url.scheme?.lowercased()),
+                    url.host() != nil
+                else {
+                    continue
+                }
+
+                scanned = true
+                dataScanner.stopScanning()
+                onScan(url)
+                return
+            }
+        }
+    }
+
     let onScan: (URL) -> Void
 
     static var isSupported: Bool {
         DataScannerViewController.isSupported
+    }
+
+    static func dismantleUIViewController(_ controller: DataScannerViewController, coordinator _: Coordinator) {
+        controller.stopScanning()
     }
 
     func makeUIViewController(context: Context) -> DataScannerViewController {
@@ -254,51 +292,16 @@ private struct QRCodeScanner: UIViewControllerRepresentable {
         return controller
     }
 
-    func updateUIViewController(_ controller: DataScannerViewController, context: Context) {
+    func updateUIViewController(_ controller: DataScannerViewController, context _: Context) {
         if !controller.isScanning {
             try? controller.startScanning()
         }
     }
 
-    static func dismantleUIViewController(_ controller: DataScannerViewController, coordinator: Coordinator) {
-        controller.stopScanning()
-    }
-
     func makeCoordinator() -> Coordinator {
         Coordinator(onScan: onScan)
     }
-
-    @MainActor
-    final class Coordinator: NSObject, DataScannerViewControllerDelegate {
-        private let onScan: (URL) -> Void
-
-        private var scanned: Bool = false
-
-        init(onScan: @escaping (URL) -> Void) {
-            self.onScan = onScan
-        }
-
-        func dataScanner(_ dataScanner: DataScannerViewController, didAdd addedItems: [RecognizedItem], allItems: [RecognizedItem]) {
-            guard !scanned else { return }
-
-            for item in addedItems {
-                guard
-                    case .barcode(let barcode) = item,
-                    let payload = barcode.payloadStringValue,
-                    let url = URL(string: payload),
-                    ["http", "https"].contains(url.scheme?.lowercased()),
-                    url.host() != nil
-                else { continue }
-
-                scanned = true
-                dataScanner.stopScanning()
-                onScan(url)
-                return
-            }
-        }
-    }
 }
-
 
 #Preview("Create") {
     NavigationStack {

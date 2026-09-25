@@ -235,6 +235,96 @@
         }
       }
     },
+    "field.schedule.days.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Every Day"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Every %lld Days"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "field.schedule.rhythm.daily.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Daily"
+          }
+        }
+      }
+    },
+    "field.schedule.rhythm.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rhythm"
+          }
+        }
+      }
+    },
+    "field.schedule.rhythm.weekly.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weekly"
+          }
+        }
+      }
+    },
+    "field.schedule.start.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Starting"
+          }
+        }
+      }
+    },
+    "field.schedule.weeks.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Every Week"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Every %lld Weeks"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "field.sets.title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -554,6 +644,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Type"
+          }
+        }
+      }
+    },
+    "section.overview.calendar" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calendar"
+          }
+        }
+      }
+    },
+    "section.overview.calendar.empty" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No Workouts"
           }
         }
       }

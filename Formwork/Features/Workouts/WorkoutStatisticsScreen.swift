@@ -33,6 +33,7 @@ struct WorkoutStatisticsScreen: View {
                 StatisticCard(.categories, of: history)
             }
             .padding(.horizontal, 16)
+            .padding(.bottom)
         }
         .navigationTitle(.screenStatisticsTitle)
         .navigationSubtitle(workout.title)

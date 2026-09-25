@@ -28,11 +28,12 @@ struct ExerciseScreen: View {
         ScrollView {
             VStack(spacing: 32) {
                 PictogramHeader(exercise)
-                
+
                 ExerciseStatistics(history: History(.exercise(exercise)))
-                
+
                 ExerciseGuide(exercise: exercise)
             }
+            .padding(.bottom)
         }
         .toolbar {
             Menu(.more) {

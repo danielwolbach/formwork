@@ -67,6 +67,8 @@ extension ActionDescriptor {
 
     public static let scan = ActionDescriptor(title: .actionScanTitle, systemImage: "qrcode.viewfinder")
 
+    public static let today = ActionDescriptor(title: .actionTodayTitle, systemImage: "calendar.day")
+
     // Workout
 
     public static let startSession = ActionDescriptor(title: .actionStartSessionTitle, systemImage: "play.fill")

@@ -309,6 +309,17 @@
         }
       }
     },
+    "action.today.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Today"
+          }
+        }
+      }
+    },
     "action.undo.title" : {
       "extractionState" : "manual",
       "localizations" : {

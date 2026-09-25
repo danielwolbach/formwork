@@ -54,6 +54,7 @@ struct WorkoutListScreen: View {
                     }
                 }
                 .padding(.horizontal, 16)
+                .padding(.bottom)
             }
         }
     }

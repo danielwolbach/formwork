@@ -15,9 +15,9 @@ public final class Exercise {
     public var type: ExerciseType = ExerciseType.weight
 
     public var categories: Set<ExerciseCategory> = [ExerciseCategory.other]
-    
-    public var link: URL? = nil
-    
+
+    public var link: URL?
+
     public var notes: String = ""
 
     public var creationDate: Date = Date.now
@@ -62,6 +62,6 @@ extension Exercise: Displayable {
 
     public var subtitle: String? {
         let titles = ExerciseCategory.allCases.filter { categories.contains($0) }.map(\.title)
-        return titles.isEmpty ? nil : titles.joined(separator: ", ")
+        return titles.isEmpty ? nil : titles.formatted(.list(type: .and, width: .narrow))
     }
 }

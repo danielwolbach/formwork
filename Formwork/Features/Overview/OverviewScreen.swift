@@ -33,11 +33,16 @@ struct OverviewScreen: View {
             VStack(spacing: 32) {
                 statisticsSection
                 todaySection
+                CalendarSection()
             }
+            .padding(.bottom)
         }
         .navigationTitle(.screenOverviewTitle)
         .navigationDestination(for: Workout.self) { workout in
             WorkoutScreen(workout: workout)
+        }
+        .navigationDestination(for: Session.self) { session in
+            SessionScreen(session: session)
         }
         .toolbar {
             Menu(.more) {
@@ -86,14 +91,14 @@ struct OverviewScreen: View {
                         StateCard(
                             title: .emptyOverviewAllDoneTitle,
                             description: .emptyOverviewAllDoneDescription,
-                            image: "checkmark.seal",
+                            image: "checkmark.seal.fill",
                             tint: .green
                         )
                     } else {
                         StateCard(
                             title: .emptyOverviewRestDayTitle,
                             description: .emptyOverviewRestDayDescription,
-                            image: "moon.zzz",
+                            image: "moon.zzz.fill",
                             tint: .purple
                         )
                     }
