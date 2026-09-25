@@ -7,7 +7,7 @@
 
 import Foundation
 
-/// How many sessions were finished, or how often the exercise was completed when that's the subject.
+/// How many sessions were finished, or how often the exercise was completed when the subject is one or a slot of one.
 struct Completions {
     let count: Int
 }
@@ -15,7 +15,7 @@ struct Completions {
 extension Completions: Metric {
     init(_ window: History.Window) {
         self.count = switch window.history.subject {
-        case .exercise: window.entries.count(where: \.status.isCompleted)
+        case .exercise, .entry: window.entries.count(where: \.status.isCompleted)
         case .all, .workout: window.sessions.count
         }
     }

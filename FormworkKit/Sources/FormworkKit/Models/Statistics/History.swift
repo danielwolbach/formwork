@@ -27,18 +27,21 @@ import Foundation
 
 /// A subject's finished sessions as of one moment. Every window is cut from it, so they all agree on what
 /// today is and on the day the record starts.
-public struct History {
+public struct History: Hashable {
     /// What a history is of.
-    public enum Subject {
+    public enum Subject: Hashable {
         /// Every session, e.g. from `@Query(Session.finishedDescriptor)`.
         case all([Session])
         case workout(Workout)
         case exercise(Exercise)
+        /// An exercise in one workout's slot, apart from the same exercise elsewhere, like the slot's personal
+        /// best in a session's recap.
+        case entry(WorkoutEntry)
     }
 
     /// A window of a history: the days asked for, and the sessions and entries of the ones on record. Only a
     /// history makes one, so every window goes through the same rules.
-    struct Window {
+    struct Window: Hashable {
         let history: History
 
         /// The days asked for, e.g. a month or the last 28 days, for a chart to lay out.
@@ -50,7 +53,7 @@ public struct History {
 
         let sessions: [Session]
 
-        /// The entries of `sessions`, only the exercise's when the subject is one.
+        /// The entries of `sessions`, only the exercise's or the slot's when the subject is one.
         let entries: [SessionEntry]
 
         fileprivate init(_ history: History, period: DateInterval) {
@@ -63,11 +66,11 @@ public struct History {
             self.interval = interval
             self.sessions = sessions
             self.entries = sessions.flatMap(\.entries).filter { entry in
-                guard case let .exercise(exercise) = history.subject else {
-                    return true
+                switch history.subject {
+                case .all, .workout: true
+                case let .exercise(exercise): entry.exercise == exercise
+                case let .entry(slot): entry.workoutEntry == slot
                 }
-
-                return entry.exercise == exercise
             }
         }
     }
@@ -89,6 +92,7 @@ public struct History {
         case let .all(sessions): sessions
         case let .workout(workout): workout.sessions
         case let .exercise(exercise): Array(Set(exercise.sessionEntries.compactMap(\.session)))
+        case let .entry(slot): Array(Set(slot.sessionEntries.compactMap(\.session)))
         }
 
         let today = calendar.startOfDay(for: now)

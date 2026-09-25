@@ -25,27 +25,10 @@ struct ExerciseScreen: View {
     private var deleteAlert: Bool = false
 
     var body: some View {
-        let history = History(.exercise(exercise))
-
         ScrollView {
-            VStack(spacing: 32) {
-                PictogramHeader(exercise)
+            PictogramHeader(exercise)
 
-                TileGrid {
-                    StatisticCard(.lastCompleted, of: history)
-
-                    StatisticCard(.completionRate, of: history)
-
-                    StatisticCard(.personalBest, of: history)
-
-                    StatisticCard(.completions, of: history)
-
-                    StatisticCard(.progression, of: history)
-
-                    StatisticCard(.activeDays, of: history)
-                }
-                .padding(.horizontal, 16)
-            }
+            ExerciseStatistics(history: History(.exercise(exercise)))
         }
         .toolbar {
             Menu(.more) {

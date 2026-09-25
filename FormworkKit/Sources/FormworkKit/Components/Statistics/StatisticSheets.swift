@@ -338,6 +338,7 @@ extension History.Subject {
         case .all: String(localized: .statisticSubjectAllTitle)
         case let .workout(workout): workout.title
         case let .exercise(exercise): exercise.title
+        case let .entry(slot): slot.title
         }
     }
 }

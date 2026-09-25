@@ -7,7 +7,7 @@
 
 import Foundation
 
-/// The median duration of a session, or of an exercise when that's the subject.
+/// The median duration of a session, or of an exercise when the subject is one or a slot of one.
 struct TypicalDuration {
     /// In seconds.
     let value: Double?
@@ -16,7 +16,7 @@ struct TypicalDuration {
 extension TypicalDuration: Metric {
     init(_ window: History.Window) {
         let durations = switch window.history.subject {
-        case .exercise: window.entries.filter(\.status.isCompleted).compactMap(\.duration)
+        case .exercise, .entry: window.entries.filter(\.status.isCompleted).compactMap(\.duration)
         case .all, .workout: window.sessions.compactMap(\.duration)
         }
 

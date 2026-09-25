@@ -34,7 +34,7 @@ struct WorkoutStatisticsScreen: View {
             }
             .padding(.horizontal, 16)
         }
-        .navigationTitle(.screenWorkoutStatisticsTitle)
+        .navigationTitle(.screenStatisticsTitle)
         .navigationSubtitle(workout.title)
         .navigationBarTitleDisplayMode(.inline)
     }

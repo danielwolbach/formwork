@@ -7,7 +7,7 @@
 
 import Foundation
 
-/// The best completed target of the exercise's current type. Only means something for an exercise.
+/// The best completed target of the exercise's current type. Only means something for an exercise or a slot of one.
 struct PersonalBest {
     let target: ExerciseTarget?
 }

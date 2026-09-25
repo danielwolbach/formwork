@@ -20,6 +20,9 @@ struct WorkoutEntryScreen: View {
     private var dismiss: DismissAction
 
     @State
+    private var sheet: Sheet? = nil
+
+    @State
     private var deleteAlert: Bool = false
 
     var body: some View {
@@ -39,8 +42,22 @@ struct WorkoutEntryScreen: View {
         .toolbar {
             Menu(.more) {
                 Section {
+                    if entry.exercise != nil {
+                        Button(.viewStatistics) {
+                            sheet = .viewStatistics(entry: entry)
+                        }
+                    }
+                }
+
+                Section {
                     Menu(.unit) {
                         ExerciseTargetUnitPicker(target: $entry.target)
+                    }
+
+                    if let exercise = entry.exercise {
+                        Button(.edit) {
+                            sheet = .editExercise(exercise: exercise)
+                        }
                     }
                 }
 
@@ -49,6 +66,11 @@ struct WorkoutEntryScreen: View {
                         deleteAlert = true
                     }
                 }
+            }
+        }
+        .sheet(item: $sheet) { sheet in
+            NavigationStack {
+                sheet
             }
         }
         .alert(.alertWorkoutEntryRemoveTitle, isPresented: $deleteAlert) {

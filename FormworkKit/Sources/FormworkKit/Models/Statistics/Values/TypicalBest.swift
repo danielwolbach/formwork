@@ -8,7 +8,7 @@
 import Foundation
 
 /// The typical day's best: of the best completed target on each day, the one in the middle by rank, a target
-/// actually done. Unlike the personal best, it can go down. Only means something for an exercise.
+/// actually done. Unlike the personal best, it can go down. Only means something for an exercise or a slot of one.
 struct TypicalBest {
     let target: ExerciseTarget?
 }

@@ -7,7 +7,7 @@
 
 import Foundation
 
-/// The days trained, day by day over the days a window asked for. For an exercise, the days it was completed on.
+/// The days trained, day by day over the days a window asked for. For an exercise or a slot of one, the days it was completed on.
 struct ActiveDays {
     struct Day {
         let date: Date
@@ -29,7 +29,7 @@ extension ActiveDays: Statistic {
     init(_ window: History.Window) {
         let calendar = window.history.calendar
         let trained = switch window.history.subject {
-        case .exercise: window.entries.filter(\.status.isCompleted).compactMap(\.session)
+        case .exercise, .entry: window.entries.filter(\.status.isCompleted).compactMap(\.session)
         case .all, .workout: window.sessions
         }
 

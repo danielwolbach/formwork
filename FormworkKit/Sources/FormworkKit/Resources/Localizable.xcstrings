@@ -309,6 +309,17 @@
         }
       }
     },
+    "action.viewExercise.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "View Exercise"
+          }
+        }
+      }
+    },
     "action.viewStats.title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -972,17 +983,6 @@
         }
       }
     },
-    "statistic.weekStreak.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Week Streak"
-          }
-        }
-      }
-    },
     "statistic.weeklyActiveDays.title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1001,6 +1001,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Weekly Sessions"
+          }
+        }
+      }
+    },
+    "statistic.weekStreak.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Week Streak"
           }
         }
       }

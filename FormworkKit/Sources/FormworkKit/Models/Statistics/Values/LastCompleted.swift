@@ -7,7 +7,7 @@
 
 import Foundation
 
-/// When the most recent session ended, or when the exercise was last completed when that's the subject. A date
+/// When the most recent session ended, or when the exercise was last completed when the subject is one or a slot of one. A date
 /// rather than a number, so there's nothing to compare or chart.
 struct LastCompleted {
     let date: Date?
@@ -23,7 +23,7 @@ extension LastCompleted: Statistic {
         let calendar = window.history.calendar
 
         switch window.history.subject {
-        case .exercise:
+        case .exercise, .entry:
             let last = window.entries
                 .filter(\.status.isCompleted)
                 .max { ($0.status.resolved ?? .distantPast) < ($1.status.resolved ?? .distantPast) }

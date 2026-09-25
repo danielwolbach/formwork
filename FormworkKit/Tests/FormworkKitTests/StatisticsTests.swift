@@ -2114,3 +2114,75 @@ struct CategoriesTests {
         #expect(try completed().shares.isEmpty)
     }
 }
+
+// MARK: - Workout entry
+
+@MainActor
+struct WorkoutEntryStatisticsTests {
+    let store: TestStore
+
+    let squat: Exercise
+
+    let calendar = Calendar.berlin()
+
+    init() throws {
+        self.store = try TestStore()
+        self.squat = try #require(store.workout.entries.sorted().first?.exercise)
+    }
+
+    func history(_ subject: History.Subject) throws -> History {
+        try History(subject, at: calendar.date(16, month: 10), calendar: calendar)
+    }
+
+    /// A finished session of `workout` on the given day, with the given slot completed at the given reps.
+    @discardableResult
+    func complete(_ slot: WorkoutEntry, of workout: Workout, day: Int, reps: Int) throws -> Session {
+        let session = try Session.start(workout, in: store.context)
+        let entry = try #require(session.entries.first { $0.workoutEntry === slot })
+        session.started = try calendar.date(day, hour: 8)
+        session.ended = session.started.addingTimeInterval(3600)
+        entry.target = .bodyweight(target: .init(sets: 3, reps: reps))
+        entry.status = .completed(at: session.started)
+        return session
+    }
+
+    @Test
+    func slotLeavesOutTheSameExerciseInAnotherWorkout() throws {
+        let warmups = Workout(name: "Warmup", pictogram: .workout, schedule: .inactive, entries: [])
+        store.context.insert(warmups)
+        warmups.append(exercise: squat, target: .bodyweight(target: .init(sets: 1, reps: 5)))
+        let warmupSlot = try #require(warmups.entries.sorted().first)
+        let mainSlot = try #require(store.workout.entries.sorted().first)
+
+        try complete(mainSlot, of: store.workout, day: 7, reps: 12)
+        try complete(warmupSlot, of: warmups, day: 8, reps: 20)
+
+        let main = try history(.entry(mainSlot)).allTime
+        let exercise = try history(.exercise(squat)).allTime
+
+        #expect(Completions(main).value == 1)
+        #expect(PersonalBest(main).target?.bodyweightTarget?.reps == 12)
+        // The exercise on its own counts both.
+        #expect(Completions(exercise).value == 2)
+        #expect(PersonalBest(exercise).target?.bodyweightTarget?.reps == 20)
+    }
+
+    @Test
+    func twoSlotsOfOneWorkoutStayApart() throws {
+        store.workout.append(exercise: squat, target: .bodyweight(target: .init(sets: 1, reps: 5)))
+        let slots = store.workout.entries.filter { $0.exercise === squat }.sorted()
+        let first = try #require(slots.first)
+        let second = try #require(slots.last)
+
+        // The first slot is completed, the second skipped in the same session.
+        let session = try complete(first, of: store.workout, day: 7, reps: 12)
+        let skipped = try #require(session.entries.first { $0.workoutEntry === second })
+        skipped.status = .skipped(at: session.started)
+
+        #expect(slots.count == 2)
+        #expect(try Completions(history(.entry(first)).allTime).value == 1)
+        #expect(try Completions(history(.entry(second)).allTime).value == 0)
+        #expect(try CompletionRate(history(.entry(second)).allTime).value == 0)
+        #expect(try LastCompleted(history(.entry(second)).allTime).date == nil)
+    }
+}

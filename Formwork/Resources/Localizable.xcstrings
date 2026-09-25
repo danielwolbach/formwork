@@ -224,6 +224,39 @@
         }
       }
     },
+    "field.statistics.allWorkouts.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All Workouts"
+          }
+        }
+      }
+    },
+    "field.statistics.thisWorkout.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This Workout"
+          }
+        }
+      }
+    },
+    "field.statistics.workouts.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Workouts"
+          }
+        }
+      }
+    },
     "onboarding.catalog.message" : {
       "extractionState" : "manual"
     },
@@ -404,13 +437,13 @@
         }
       }
     },
-    "screen.workout.statistics.title" : {
+    "screen.workoutEntry.statistics.subtitle" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Statistics"
+            "value" : "%1$@ in %2$@"
           }
         }
       }

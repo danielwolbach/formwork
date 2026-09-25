@@ -7,7 +7,7 @@
 
 import Foundation
 
-/// How an exercise went, day by day and as a curve through the days. Only means something for an exercise.
+/// How an exercise went, day by day and as a curve through the days. Only means something for an exercise or a slot of one.
 struct Progression {
     struct Point {
         let date: Date
@@ -54,9 +54,16 @@ extension Progression: Statistic {
     }
 
     /// The best completed target of the exercise's current type on each day within the window, oldest first. The
-    /// exercise's other types are left out: their ranks don't compare. There are none for any other subject.
+    /// exercise's other types are left out: their ranks don't compare. There are none for a subject that isn't an
+    /// exercise or a slot of one.
     static func bests(in window: History.Window) -> [Point] {
-        guard case let .exercise(exercise) = window.history.subject else {
+        let exercise: Exercise? = switch window.history.subject {
+        case .all, .workout: nil
+        case let .exercise(exercise): exercise
+        case let .entry(slot): slot.exercise
+        }
+
+        guard let exercise else {
             return []
         }
 

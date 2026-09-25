@@ -16,7 +16,7 @@ extension WeeklyActiveDays: Metric {
     init(_ window: History.Window) {
         let calendar = window.history.calendar
         let trained = switch window.history.subject {
-        case .exercise: window.entries.filter(\.status.isCompleted).compactMap(\.session)
+        case .exercise, .entry: window.entries.filter(\.status.isCompleted).compactMap(\.session)
         case .all, .workout: window.sessions
         }
 
