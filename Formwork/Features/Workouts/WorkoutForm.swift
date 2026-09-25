@@ -72,7 +72,7 @@ struct WorkoutForm: View {
         }
         .navigationTitle(workout == nil ? .screenWorkoutCreateTitle : .screenWorkoutEditTitle)
         .navigationBarTitleDisplayMode(.inline)
-        .scrollDismissesKeyboard(.immediately)
+        .scrollDismissesKeyboard(.interactively)
         .environment(\.editMode, .constant(.active))
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {

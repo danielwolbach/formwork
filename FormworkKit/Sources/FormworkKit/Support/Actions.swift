@@ -65,6 +65,8 @@ extension ActionDescriptor {
 
     public static let debug = ActionDescriptor(title: .actionDebugTitle, systemImage: "ladybug")
 
+    public static let scan = ActionDescriptor(title: .actionScanTitle, systemImage: "qrcode.viewfinder")
+
     // Workout
 
     public static let startSession = ActionDescriptor(title: .actionStartSessionTitle, systemImage: "play.fill")
@@ -82,6 +84,10 @@ extension ActionDescriptor {
     public static let discardSession = ActionDescriptor(title: .actionCancelSessionTitle, systemImage: "xmark", role: .destructive)
 
     public static let finishSession = ActionDescriptor(title: .actionFinishSessionTitle, systemImage: "flag.pattern.checkered")
+
+    public static let guide = ActionDescriptor(title: .actionGuideTitle, systemImage: "info.circle")
+
+    public static let queue = ActionDescriptor(title: .actionQueueTitle, systemImage: "line.3.horizontal.decrease")
 }
 
 extension Label where Title == Text, Icon == Image {

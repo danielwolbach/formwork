@@ -11,7 +11,7 @@ import SwiftUI
 @MainActor
 public enum Samples {
     public static let exercises: [Exercise] = [
-        Exercise(name: "Cross Trainer", type: .duration, categories: [.cardio, .legs]),
+        Exercise(name: "Cross Trainer", type: .duration, categories: [.cardio, .legs], url: URL(string: "https://gym80.de/produkt/3032/"), notes: "Don't break your bones."),
         Exercise(name: "Leg Press", type: .weight, categories: [.legs]),
         Exercise(name: "Chest Press", type: .weight, categories: [.chest, .arms]),
         Exercise(name: "Lat Pulldown", type: .weight, categories: [.back, .arms]),

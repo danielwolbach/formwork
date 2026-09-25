@@ -93,6 +93,10 @@ extension Pictogram {
 
     public static let categories = Pictogram(image: "chart.pie", tint: .gray)
 
+    public static let instructions = Pictogram(image: "link", tint: .blue)
+
+    public static let notes = Pictogram(image: "note.text", tint: .yellow)
+
     public static let pendingBadge = Pictogram(image: "ellipsis.circle.fill", tint: .gray)
 
     public static let completedBadge = Pictogram(image: "checkmark.circle.fill", tint: .green)

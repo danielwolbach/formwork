@@ -166,6 +166,17 @@
         }
       }
     },
+    "action.guide.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Guide"
+          }
+        }
+      }
+    },
     "action.increase.title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -199,6 +210,17 @@
         }
       }
     },
+    "action.queue.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Queue"
+          }
+        }
+      }
+    },
     "action.remove.title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -228,6 +250,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Resume Session"
+          }
+        }
+      }
+    },
+    "action.scan.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scan QR Code"
           }
         }
       }

@@ -202,6 +202,28 @@
         }
       }
     },
+    "field.exercise.link.placeholder" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paste or scan a link"
+          }
+        }
+      }
+    },
+    "field.exercise.notes.placeholder" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add a note…"
+          }
+        }
+      }
+    },
     "field.reps.title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -360,6 +382,17 @@
         }
       }
     },
+    "screen.exercise.guide.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Guide"
+          }
+        }
+      }
+    },
     "screen.overview.title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -378,6 +411,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Icon"
+          }
+        }
+      }
+    },
+    "screen.qrCodeScanner.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scan a QR Code"
           }
         }
       }
@@ -470,6 +514,17 @@
         }
       }
     },
+    "section.exercise.link.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Link"
+          }
+        }
+      }
+    },
     "section.exercise.name.title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -477,6 +532,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Name"
+          }
+        }
+      }
+    },
+    "section.exercise.notes.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notes"
           }
         }
       }

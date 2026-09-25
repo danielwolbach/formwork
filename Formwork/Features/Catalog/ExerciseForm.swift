@@ -8,6 +8,8 @@
 import FormworkKit
 import SwiftData
 import SwiftUI
+import VisionKit
+import Vision
 
 struct ExerciseForm: View {
     let exercise: Exercise?
@@ -26,11 +28,22 @@ struct ExerciseForm: View {
 
     @State
     private var categories: Set<ExerciseCategory>
+    
+    @State
+    private var url: String
+    
+    @State
+    private var notes: String
+    
+    @State
+    private var showScanner: Bool = false
 
     init(exercise: Exercise? = nil) {
         self._name = State(initialValue: exercise?.name ?? "")
         self._type = State(initialValue: exercise?.type ?? .weight)
         self._categories = State(initialValue: exercise?.categories ?? [])
+        self._url = State(initialValue: exercise?.url?.absoluteString ?? "")
+        self._notes = State(initialValue: exercise?.notes ?? "")
         self.exercise = exercise
     }
 
@@ -38,6 +51,8 @@ struct ExerciseForm: View {
         self._name = State(initialValue: "")
         self._type = State(initialValue: .weight)
         self._categories = State(initialValue: [category])
+        self._url = State(initialValue: "")
+        self._notes = State(initialValue: "")
         self.exercise = nil
     }
 
@@ -54,9 +69,33 @@ struct ExerciseForm: View {
             Section(.sectionExerciseCategoriesTitle) {
                 ExerciseCategoryPicker(categories: $categories)
             }
+            
+            Section(.sectionExerciseLinkTitle) {
+                HStack {
+                    TextField(.fieldExerciseLinkPlaceholder, text: $url)
+                        .keyboardType(.URL)
+                        .textContentType(.URL)
+                        .textInputAutocapitalization(.never)
+                        .autocorrectionDisabled()
+
+                    if QRCodeScanner.isSupported {
+                        Button(.scan) {
+                            showScanner = true
+                        }
+                        .labelStyle(.iconOnly)
+                        .buttonStyle(.borderless)
+                    }
+                }
+            }
+            
+            Section(.sectionExerciseNotesTitle) {
+                TextField(.fieldExerciseNotesPlaceholder, text: $notes, axis: .vertical)
+                    .lineLimit(4...)
+            }
         }
         .navigationTitle(exercise == nil ? .screenExerciseCreateTitle : .screenExerciseEditTitle)
         .navigationBarTitleDisplayMode(.inline)
+        .scrollDismissesKeyboard(.interactively)
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 Button(.confirm) {
@@ -71,23 +110,55 @@ struct ExerciseForm: View {
                 }
             }
         }
+        .sheet(isPresented: $showScanner) {
+            NavigationStack {
+                QRCodeScanner { scanned in
+                    Haptics.notification(.success)
+                    url = scanned.absoluteString
+                    showScanner = false
+                }
+                .aspectRatio(1, contentMode: .fit)
+                .clipShape(.rect(cornerRadius: 24))
+                .padding()
+                .navigationTitle(.screenQrCodeScannerTitle)
+                .navigationBarTitleDisplayMode(.inline)
+                .presentationDetents([.medium])
+                .toolbar {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button(.cancel) {
+                            showScanner = false
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private var valid: Bool {
         let name = name.trimmingCharacters(in: .whitespacesAndNewlines)
-        return !name.isEmpty
+        let url = url.trimmingCharacters(in: .whitespacesAndNewlines)
+        return !name.isEmpty && (url.isEmpty || link != nil)
+    }
+
+    private var link: URL? {
+        let url = url.trimmingCharacters(in: .whitespacesAndNewlines)
+        let link = URL(string: url.contains("://") ? url : "https://\(url)")
+        return link?.host() == nil ? nil : link
     }
 
     private func save() {
         let name = name.trimmingCharacters(in: .whitespacesAndNewlines)
         let categories = categories.isEmpty ? [.other] : categories
+        let notes = notes.trimmingCharacters(in: .whitespacesAndNewlines)
 
         if let exercise {
             exercise.name = name
             exercise.type = type
             exercise.categories = categories
+            exercise.url = link
+            exercise.notes = notes
         } else {
-            let exercise = Exercise(name: name, type: type, categories: categories)
+            let exercise = Exercise(name: name, type: type, categories: categories, url: link, notes: notes)
             modelContext.insert(exercise)
         }
 
@@ -163,6 +234,71 @@ private struct ExerciseCategoryPicker: View {
         )
     }
 }
+
+private struct QRCodeScanner: UIViewControllerRepresentable {
+    let onScan: (URL) -> Void
+
+    static var isSupported: Bool {
+        DataScannerViewController.isSupported
+    }
+
+    func makeUIViewController(context: Context) -> DataScannerViewController {
+        let controller = DataScannerViewController(
+            recognizedDataTypes: [.barcode(symbologies: [.qr])],
+            qualityLevel: .balanced,
+            recognizesMultipleItems: false,
+            isHighFrameRateTrackingEnabled: false,
+            isHighlightingEnabled: true
+        )
+        controller.delegate = context.coordinator
+        return controller
+    }
+
+    func updateUIViewController(_ controller: DataScannerViewController, context: Context) {
+        if !controller.isScanning {
+            try? controller.startScanning()
+        }
+    }
+
+    static func dismantleUIViewController(_ controller: DataScannerViewController, coordinator: Coordinator) {
+        controller.stopScanning()
+    }
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator(onScan: onScan)
+    }
+
+    @MainActor
+    final class Coordinator: NSObject, DataScannerViewControllerDelegate {
+        private let onScan: (URL) -> Void
+
+        private var scanned: Bool = false
+
+        init(onScan: @escaping (URL) -> Void) {
+            self.onScan = onScan
+        }
+
+        func dataScanner(_ dataScanner: DataScannerViewController, didAdd addedItems: [RecognizedItem], allItems: [RecognizedItem]) {
+            guard !scanned else { return }
+
+            for item in addedItems {
+                guard
+                    case .barcode(let barcode) = item,
+                    let payload = barcode.payloadStringValue,
+                    let url = URL(string: payload),
+                    ["http", "https"].contains(url.scheme?.lowercased()),
+                    url.host() != nil
+                else { continue }
+
+                scanned = true
+                dataScanner.stopScanning()
+                onScan(url)
+                return
+            }
+        }
+    }
+}
+
 
 #Preview("Create") {
     NavigationStack {

@@ -26,9 +26,13 @@ struct ExerciseScreen: View {
 
     var body: some View {
         ScrollView {
-            PictogramHeader(exercise)
-
-            ExerciseStatistics(history: History(.exercise(exercise)))
+            VStack(spacing: 32) {
+                PictogramHeader(exercise)
+                
+                ExerciseStatistics(history: History(.exercise(exercise)))
+                
+                ExerciseGuide(exercise: exercise)
+            }
         }
         .toolbar {
             Menu(.more) {

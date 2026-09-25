@@ -37,8 +37,14 @@ struct WorkoutEntryScreen: View {
                 )
 
                 ExerciseTargetEditor(target: $entry.target)
+                    .padding(.vertical)
+                
+                if let exercise = entry.exercise {
+                    ExerciseGuide(exercise: exercise)
+                }
             }
         }
+        .scrollDismissesKeyboard(.interactively)
         .toolbar {
             Menu(.more) {
                 Section {
@@ -68,11 +74,7 @@ struct WorkoutEntryScreen: View {
                 }
             }
         }
-        .sheet(item: $sheet) { sheet in
-            NavigationStack {
-                sheet
-            }
-        }
+        .sheet(item: $sheet) { $0 }
         .alert(.alertWorkoutEntryRemoveTitle, isPresented: $deleteAlert) {
             Button(.remove) {
                 delete()

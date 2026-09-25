@@ -16,6 +16,7 @@ enum Sheet: Hashable, View {
     case editWorkout(workout: Workout)
     case addWorkoutExercise(workout: Workout)
     case viewStatistics(entry: WorkoutEntry)
+    case viewGuide(exercise: Exercise)
 
     var body: some View {
         NavigationStack {
@@ -27,6 +28,7 @@ enum Sheet: Hashable, View {
             case let .editWorkout(workout): WorkoutForm(workout: workout)
             case let .addWorkoutExercise(workout): WorkoutAddExerciseForm(workout: workout)
             case let .viewStatistics(entry): WorkoutEntryStatisticsScreen(entry: entry)
+            case let .viewGuide(exercise): ExerciseGuideScreen(exercise: exercise)
             }
         }
     }

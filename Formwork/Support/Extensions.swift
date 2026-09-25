@@ -29,3 +29,9 @@ extension Locale {
         current.decimalSeparator ?? "."
     }
 }
+
+extension URL: @retroactive Identifiable {
+    public var id: Self {
+        self
+    }
+}
