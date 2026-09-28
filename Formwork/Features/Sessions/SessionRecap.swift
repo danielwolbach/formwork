@@ -85,7 +85,7 @@ private struct SessionEntryRow: View {
         }
 
         if let duration = entry.duration, entry.status.isCompleted {
-            details.append(Detail(pictogram: .pace, text: Duration.seconds(duration).formatted(.exerciseDuration)))
+            details.append(Detail(pictogram: .pace, text: duration.formatted(DurationFormat())))
         }
 
         if let previous = entry.previous, previous.rank != entry.target.rank {

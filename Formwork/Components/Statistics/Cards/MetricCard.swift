@@ -39,7 +39,7 @@ struct MetricCard: View {
             Text(title)
                 .font(.subheadline)
                 .fontWeight(.semibold)
-                .lineLimit(1)
+                .lineLimit(2)
                 .foregroundStyle(.secondary)
 
             HStack(spacing: 4) {

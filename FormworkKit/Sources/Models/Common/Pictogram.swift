@@ -58,7 +58,7 @@ extension Pictogram {
 
     public static let workout = Pictogram(image: "figure.strengthtraining.traditional", tint: .blue)
 
-    public static let exercise = Pictogram(image: "figure.strengthtraining.functional", tint: .green)
+    public static let exercise = Pictogram(image: "figure.strengthtraining.functional", tint: .yellow)
 
     public static let duration = Pictogram(image: "stopwatch", tint: .cyan)
 
@@ -85,6 +85,8 @@ extension Pictogram {
     public static let decrease = Pictogram(image: "arrow.down.right", tint: .red)
 
     public static let volume = Pictogram(image: "scalemass", tint: .indigo)
+
+    public static let strength = Pictogram(image: "chevron.up.2", tint: .brown)
 
     public static let progression = Pictogram(image: "chart.line.uptrend.xyaxis", tint: .blue)
 

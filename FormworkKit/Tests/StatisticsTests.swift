@@ -75,7 +75,9 @@ struct StatisticFormattingTests {
 
     @Test(arguments: [42.0, 2000, 3500])
     func typicalDurationUnderAnHourReadsLikeAnExercise(seconds: Double) {
-        #expect(TypicalDuration(value: seconds).subtitle == Duration.seconds(seconds).formatted(.exerciseDuration))
+        let exerciseStyle = Duration.UnitsFormatStyle.units(allowed: [.minutes, .seconds], width: .abbreviated, maximumUnitCount: 1)
+
+        #expect(TypicalDuration(value: seconds).subtitle == Duration.seconds(seconds).formatted(exerciseStyle))
     }
 
     @Test(arguments: [(6120.0, 6120.0), (3590, 3600)])
@@ -1174,7 +1176,7 @@ struct SessionSummaryTests {
         resolve(session, after: [10, 20, 60])
 
         // 10, 10 and 40 minutes, so the middle one is what a typical exercise took.
-        #expect(summary(session).medianExerciseDuration.value == .seconds(10 * 60))
+        #expect(summary(session).medianExerciseDuration.value == 10.0 * 60)
     }
 
     @Test
@@ -1185,7 +1187,7 @@ struct SessionSummaryTests {
         resolve(late, after: [40, 50, 60])
 
         // The late one spent 40 minutes before its first exercise, which a mean would have spread over all three.
-        #expect(summary(early).medianExerciseDuration.value == .seconds(10 * 60))
+        #expect(summary(early).medianExerciseDuration.value == 10.0 * 60)
         #expect(summary(late).medianExerciseDuration.value == summary(early).medianExerciseDuration.value)
     }
 
@@ -1195,7 +1197,7 @@ struct SessionSummaryTests {
         resolve(session, after: [10, 30])
 
         // 10 and 20 minutes, so it lands between them.
-        #expect(summary(session).medianExerciseDuration.value == .seconds(15 * 60))
+        #expect(summary(session).medianExerciseDuration.value == 15.0 * 60)
     }
 
     @Test
@@ -1207,7 +1209,7 @@ struct SessionSummaryTests {
         resolve(session, after: [15])
 
         // A single resolved exercise still counts, from the start of the session.
-        #expect(summary(session).medianExerciseDuration.value == .seconds(15 * 60))
+        #expect(summary(session).medianExerciseDuration.value == 15.0 * 60)
     }
 
     @Test
@@ -1218,9 +1220,8 @@ struct SessionSummaryTests {
         quick.status = .completed(date: session.startDate.addingTimeInterval(40))
 
         #expect(quick.duration == 40)
-        #expect(Duration.seconds(40).formatted(.exerciseDuration) == Duration.seconds(40).formatted(.units(allowed: [.seconds], width: .abbreviated)))
-        #expect(Duration.seconds(150).formatted(.exerciseDuration) == Duration.seconds(150).formatted(.units(allowed: [.minutes], width: .abbreviated)))
-        #expect(summary(session).medianExerciseDuration.subtitle == Duration.seconds(0).formatted(.exerciseDuration))
+        #expect(DurationFormat().format(40) == Duration.seconds(40).formatted(.units(allowed: [.seconds], width: .abbreviated)))
+        #expect(summary(session).medianExerciseDuration.subtitle == DurationFormat().format(0))
     }
 
     @Test

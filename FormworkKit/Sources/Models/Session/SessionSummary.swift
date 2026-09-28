@@ -31,7 +31,7 @@ public struct SessionSummary {
 
     public let skipRate: Figure<Double>
 
-    public let medianExerciseDuration: Figure<Duration>
+    public let medianExerciseDuration: Figure<Double>
 
     public let completedExercises: Figure<Int>
 
@@ -46,7 +46,7 @@ public struct SessionSummary {
         self.duration = .duration(session.duration.map { .seconds($0) })
         self.endTime = .endTime(session.endDate, in: session, calendar: calendar)
         self.skipRate = .skipRate(entries.isEmpty ? nil : Double(entries.count(where: \.status.isSkipped)) / Double(entries.count))
-        self.medianExerciseDuration = .medianExerciseDuration(durations.median.map { .seconds($0) })
+        self.medianExerciseDuration = .medianExerciseDuration(durations.median)
         self.completedExercises = .completedExercises(completed.count)
         self.totalVolume = .totalVolume(volumes.isEmpty ? nil : volumes.reduce(0, +))
     }
@@ -62,12 +62,6 @@ extension SessionSummary.Figure where Value == Duration {
     static func duration(_ duration: Duration?) -> Self {
         Self(duration, title: String(localized: .placeholder), pictogram: .duration) {
             $0.formatted(.sessionDuration)
-        }
-    }
-
-    static func medianExerciseDuration(_ duration: Duration?) -> Self {
-        Self(duration, title: String(localized: .placeholder), pictogram: .pace) {
-            $0.formatted(.exerciseDuration)
         }
     }
 }
@@ -92,6 +86,12 @@ extension SessionSummary.Figure where Value == Double {
     static func totalVolume(_ volume: Double?) -> Self {
         Self(volume, title: String(localized: .placeholder), pictogram: .volume) {
             $0.formatted(TargetFormat(kind: .weight, system: .current))
+        }
+    }
+
+    static func medianExerciseDuration(_ seconds: Double?) -> Self {
+        Self(seconds, title: String(localized: .placeholder), pictogram: .pace) {
+            $0.formatted(DurationFormat())
         }
     }
 }

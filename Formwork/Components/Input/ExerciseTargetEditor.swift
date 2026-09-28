@@ -127,7 +127,7 @@ struct ExerciseTargetEditor: View {
     }
 
     private var minuteStep: Double {
-        target.seconds < 3600 ? 5 : 15
+        target.seconds < 60 * 10 ? 1 : (target.seconds < 60 * 60 ? 5 : 15)
     }
 
     private var distance: Binding<Double> {

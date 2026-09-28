@@ -46,6 +46,10 @@ struct WorkoutStatisticsScreen: View {
 
                         StatisticCard(.completions, of: history)
 
+                        StatisticCard(.typicalInterval, of: history)
+
+                        StatisticCard(.totalVolume, of: history)
+
                         StatisticCard(.categories, of: history)
                             .tileSpan(rows: 2, columns: 2)
                     }

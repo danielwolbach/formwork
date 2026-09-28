@@ -62,6 +62,8 @@ struct StatisticsScreen: View {
                     StatisticCard(.favoriteWorkout, of: history)
 
                     StatisticCard(.favoriteExercise, of: history)
+
+                    StatisticCard(.totalVolume, of: history)
                 }
                 .padding(.horizontal)
 

@@ -8,10 +8,6 @@
 import SwiftUI
 
 extension FormatStyle where Self == Duration.UnitsFormatStyle {
-    public static var exerciseDuration: Self {
-        .units(allowed: [.minutes, .seconds], width: .abbreviated, maximumUnitCount: 1)
-    }
-
     public static var sessionDuration: Self {
         .units(allowed: [.hours, .minutes], width: .abbreviated)
     }

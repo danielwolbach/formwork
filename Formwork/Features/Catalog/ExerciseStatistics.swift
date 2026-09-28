@@ -16,6 +16,12 @@ struct ExerciseStatistics: View {
     }
 
     var body: some View {
+        let hasWeight: Bool = switch history.subject {
+        case let .exercise(exercise): exercise.kind == .weight
+        case let .entry(entry): entry.exercise?.kind == .weight
+        default: false
+        }
+
         TileGrid {
             StatisticCard(.lastCompleted, of: history)
 
@@ -26,6 +32,14 @@ struct ExerciseStatistics: View {
             StatisticCard(.completions, of: history)
 
             StatisticCard(.typicalDuration, of: history)
+
+            StatisticCard(.typicalInterval, of: history)
+
+            if hasWeight {
+                StatisticCard(.oneRepMax, of: history)
+
+                StatisticCard(.totalVolume, of: history)
+            }
 
             StatisticCard(.progression, of: history)
                 .tileSpan(rows: 2, columns: 2)
@@ -39,7 +53,7 @@ struct ExerciseStatistics: View {
 #Preview {
     NavigationStack {
         ScrollView {
-            ExerciseStatistics(history: History(.exercise(Samples.exercises.first!)))
+            ExerciseStatistics(history: History(.exercise(Samples.exercises[2])))
                 .padding(.horizontal)
         }
     }

@@ -1,5 +1,5 @@
 //
-//  TypicalDurationFormat.swift
+//  DurationFormat.swift
 //  FormworkKit
 //
 //  Created by Daniel Wolbach on 24.09.26.
@@ -7,7 +7,9 @@
 
 import Foundation
 
-public struct TypicalDurationFormat: FormatStyle {
+public struct DurationFormat: FormatStyle {
+    public init() {}
+
     public func format(_ seconds: Double) -> String {
         let minutes = Duration.seconds((seconds / 60).rounded() * 60)
 

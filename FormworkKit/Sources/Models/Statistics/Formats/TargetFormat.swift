@@ -26,7 +26,7 @@ public struct TargetFormat: FormatStyle {
         case .distance:
             distance(rank)
         case .duration:
-            Duration.seconds(rank).formatted(.units(allowed: [.hours, .minutes, .seconds], width: .abbreviated))
+            Duration.seconds(rank).formatted(.units(allowed: [.hours, .minutes], width: .abbreviated))
         case .bodyweight:
             String(localized: "\(Int(rank.rounded())) reps")
         case nil:

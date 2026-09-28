@@ -24,6 +24,9 @@ struct StatisticCard: View {
         case activeDays
         case categories
         case progression
+        case totalVolume
+        case oneRepMax
+        case typicalInterval
     }
 
     private let kind: Kind
@@ -70,6 +73,9 @@ struct StatisticCard: View {
         case .activeDays: ActiveDaysCard(ActiveDays(history.weeks(Self.activeDaysWeeks)))
         case .categories: CategoriesCard(Categories(history.recent))
         case .progression: ProgressionCard(Progression(history.weeks(54)))
+        case .totalVolume: MetricCard(Trend<TotalVolume>(history))
+        case .oneRepMax: MetricCard(OneRepMax(history.allTime))
+        case .typicalInterval: MetricCard(Trend<TypicalInterval>(history))
         }
     }
 
@@ -90,6 +96,9 @@ struct StatisticCard: View {
         case .activeDays: ActiveDaysSheet(history: history)
         case .categories: CategoriesSheet(history: history)
         case .progression: ProgressionSheet(history: history)
+        case .totalVolume: MetricSheet<TotalVolume>(history: history)
+        case .oneRepMax: MetricSheet<OneRepMax>(history: history)
+        case .typicalInterval: MetricSheet<TypicalInterval>(history: history)
         }
     }
 }

@@ -12,7 +12,7 @@ public struct TypicalDuration {
 }
 
 extension TypicalDuration: Metric {
-    public typealias Format = TypicalDurationFormat
+    public typealias Format = DurationFormat
 
     public init(_ window: History.Window) {
         let durations = switch window.history.subject {
@@ -44,6 +44,6 @@ extension TypicalDuration: Metric {
     }
 
     public var format: Format {
-        TypicalDurationFormat()
+        DurationFormat()
     }
 }
