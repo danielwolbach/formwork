@@ -10,79 +10,102 @@ import SwiftData
 import SwiftUI
 
 struct ExerciseCategoryScreen: View {
-    let category: ExerciseCategory
+    private let category: Exercise.Category
 
     @Query(sort: \Exercise.name)
     private var exercises: [Exercise]
 
     @State
-    private var sheet: Sheet? = nil
-
-    @State
     private var searchText = ""
 
+    @State
+    private var sortOrder = [SortDescriptor(\Exercise.name)]
+
+    @State
+    private var sheet: Sheet?
+
+    init(_ category: Exercise.Category) {
+        self.category = category
+    }
+
     var body: some View {
-        content
-            .navigationTitle(category.title)
-            .toolbar {
-                Button(.create) {
-                    sheet = .createExerciseInCategory(category: category)
-                }
-            }
-            .sheet(item: $sheet) { $0 }
-    }
+        let categoryExercises = categoryExercises
+        let matching = matchingExercises(in: categoryExercises)
 
-    @ViewBuilder
-    private var content: some View {
-        if categoryExercises.isEmpty {
-            ContentUnavailableView {
-                Label(.emptyExercisesTitle, systemImage: category.pictogram.image)
-            } description: {
-                Text(.emptyCategoryDescription)
-            } actions: {
-                Button(.create) {
-                    sheet = .createExerciseInCategory(category: category)
-                }
-                .buttonStyle(.glassProminent)
-            }
-        } else {
-            searchContent
-                .searchable(text: $searchText.animated())
-        }
-    }
-
-    @ViewBuilder
-    private var searchContent: some View {
-        if matchingExercises.isEmpty {
-            ContentUnavailableView.search(text: trimmedSearchText)
-        } else {
-            ScrollView {
-                NavigationList(matchingExercises) { exercise in
-                    PictogramRow(exercise)
-                }
+        ScrollView {
+            NavigationRows(for: matching) { exercise in
+                DisplayableRow(exercise)
             }
         }
+        .overlay {
+            if categoryExercises.isEmpty {
+                ContentUnavailableView {
+                    Label(.placeholder, systemImage: category.pictogram.image)
+                } description: {
+                    Text(.placeholder)
+                } actions: {
+                    Button(.createExercise) {
+                        sheet = .createExerciseInCategories([category])
+                    }
+                }
+            } else if !trimmedSearchText.isEmpty, matching.isEmpty {
+                ContentUnavailableView.search(text: trimmedSearchText)
+            }
+        }
+        .navigationTitle(category.title)
+        .navigationDestination(for: Exercise.self) { exercise in
+            ExerciseScreen(exercise)
+        }
+        .searchable(text: $searchText)
+        .toolbar {
+            Menu(.more) {
+                Section {
+                    Button(.createExercise) {
+                        sheet = .createExerciseInCategories([category])
+                    }
+                }
+
+                Section {
+                    Menu(.sort) {
+                        Picker(.fieldSortTitle, selection: $sortOrder) {
+                            Label(.fieldSortNameTitle, systemImage: "character")
+                                .tag([SortDescriptor(\Exercise.name)])
+
+                            Label(.fieldSortNewestTitle, systemImage: "clock")
+                                .tag([SortDescriptor(\Exercise.creationDate, order: .reverse)])
+                        }
+                    }
+                }
+            }
+        }
+        .sheet(item: $sheet) { sheet in
+            NavigationStack {
+                sheet
+            }
+        }
+        .animation(.snappy, value: searchText)
     }
 
     private var trimmedSearchText: String {
         searchText.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
-    private var matchingExercises: [Exercise] {
-        guard !trimmedSearchText.isEmpty else {
-            return categoryExercises
-        }
-        return categoryExercises.filter { $0.name.localizedCaseInsensitiveContains(trimmedSearchText) }
-    }
-
     private var categoryExercises: [Exercise] {
         exercises.filter { $0.categories.contains(category) }
+    }
+
+    private func matchingExercises(in exercises: [Exercise]) -> [Exercise] {
+        let searchText = trimmedSearchText
+
+        return searchText.isEmpty ? exercises : exercises
+            .filter { $0.name.localizedCaseInsensitiveContains(searchText) }
+            .sorted(using: sortOrder)
     }
 }
 
 #Preview {
     NavigationStack {
-        ExerciseCategoryScreen(category: .arms)
+        ExerciseCategoryScreen(.arms)
     }
     .sampleData()
 }

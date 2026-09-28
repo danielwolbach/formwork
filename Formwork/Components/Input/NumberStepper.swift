@@ -26,8 +26,8 @@ struct NumberStepper: View {
     private var showKeypad = false
 
     init(
+        _ title: String,
         value: Binding<Double>,
-        title: String,
         suffix: String? = nil,
         stepSize: Double? = nil,
         fractionLength: Int = 1,
@@ -42,15 +42,15 @@ struct NumberStepper: View {
     }
 
     init(
+        _ title: String,
         value: Binding<Int>,
-        title: String,
         suffix: String? = nil,
         stepSize: Int? = nil,
         range: ClosedRange<Int> = 0 ... 1000
     ) {
         self.init(
+            title,
             value: Binding(get: { Double(value.wrappedValue) }, set: { value.wrappedValue = Int($0.rounded()) }),
-            title: title,
             suffix: suffix,
             stepSize: stepSize.map(Double.init),
             fractionLength: 0,
@@ -102,17 +102,16 @@ struct NumberStepper: View {
             ValueLabel(text: text, suffix: suffix, value: value)
         }
         .buttonStyle(.plain)
+        .animation(.default, value: value)
     }
 
     private var text: String {
         value.formatted(.number.precision(.fractionLength(fractionLength)))
     }
 
-    private func stepButton(_ descriptor: ActionDescriptor, by delta: Double) -> some View {
+    private func stepButton(_ descriptor: Action, by delta: Double) -> some View {
         Button(descriptor) {
-            withAnimation {
-                value = clamped(value + delta)
-            }
+            value = clamped(value + delta)
         }
         .labelStyle(.fixedIconOnly)
         .buttonStyle(.glass)
@@ -227,12 +226,14 @@ private struct ValueLabel: View {
     @Previewable
     @State
     var value: Double = 0
-    NumberStepper(value: $value, title: "Weight", suffix: "kg", stepSize: 5)
+
+    NumberStepper("Weight", value: $value, suffix: "kg", stepSize: 5)
 }
 
 #Preview("Integer") {
     @Previewable
     @State
     var value = 0
-    NumberStepper(value: $value, title: "Reps")
+
+    NumberStepper("Reps", value: $value)
 }

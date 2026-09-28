@@ -10,10 +10,10 @@ import SwiftData
 import SwiftUI
 
 struct ExerciseScreen: View {
-    let exercise: Exercise
+    private let exercise: Exercise
 
     @Environment(\.modelContext)
-    private var modelContext: ModelContext
+    private var context: ModelContext
 
     @Environment(\.dismiss)
     private var dismiss: DismissAction
@@ -24,22 +24,27 @@ struct ExerciseScreen: View {
     @State
     private var deleteAlert: Bool = false
 
+    init(_ exercise: Exercise) {
+        self.exercise = exercise
+    }
+
     var body: some View {
         ScrollView {
             VStack(spacing: 32) {
-                PictogramHeader(exercise)
+                DisplayableHeader(exercise)
 
-                ExerciseStatistics(history: History(.exercise(exercise)))
+                ExerciseStatistics(history: .init(.exercise(exercise)))
+                    .padding(.horizontal)
 
-                ExerciseGuide(exercise: exercise)
+                ExerciseGuide(exercise)
+                    .padding(.horizontal)
             }
-            .padding(.bottom)
         }
         .toolbar {
             Menu(.more) {
                 Section {
                     Button(.edit) {
-                        sheet = .editExercise(exercise: exercise)
+                        sheet = .editExercise(exercise)
                     }
                 }
 
@@ -50,28 +55,32 @@ struct ExerciseScreen: View {
                 }
             }
         }
-        .sheet(item: $sheet) { $0 }
-        .alert(.alertExerciseDeleteTitle, isPresented: $deleteAlert) {
+        .alert(.placeholder, isPresented: $deleteAlert) {
+            Button(.cancel) {
+                // Works automatically.
+            }
+
             Button(.delete) {
                 delete()
             }
-
-            Button(.cancel) {}
         } message: {
-            Text(.alertExerciseDeleteMessage)
+            Text(.placeholder)
+        }
+        .sheet(item: $sheet) { sheet in
+            NavigationStack {
+                sheet
+            }
         }
     }
 
-    func delete() {
-        modelContext.delete(exercise)
+    private func delete() {
+        context.delete(exercise)
         dismiss()
     }
 }
 
 #Preview {
-    let _ = Samples.sessions
-
     NavigationStack {
-        ExerciseScreen(exercise: Samples.exercises.first!)
+        ExerciseScreen(Samples.exercises[1])
     }
 }

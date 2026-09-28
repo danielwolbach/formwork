@@ -1,0 +1,318 @@
+//
+//  SessionTests.swift
+//  FormworkKitTests
+//
+//  Created by Daniel Wolbach on 18.09.26.
+//
+
+@testable import FormworkKit
+import Foundation
+import SwiftData
+import Testing
+
+@MainActor
+struct SessionLifecycleTests {
+    let store: TestStore
+
+    init() throws {
+        self.store = try TestStore()
+    }
+
+    @Test
+    func startCopiesWorkoutEntriesInOrder() throws {
+        let session = try store.startSession()
+        let active = try Session.active(in: store.context)
+        let allPending = session.entries.allSatisfy(\.status.isPending)
+
+        #expect(session.isActive)
+        #expect(session.workout === store.workout)
+        #expect(session.orderedEntries.map(\.title) == ["Squat", "Bench Press", "Deadlift"])
+        #expect(allPending)
+        #expect(active === session)
+    }
+
+    @Test
+    func startReplacesRunningSessionButKeepsFinishedOnes() throws {
+        let finished = try store.startSession()
+        finished.finish()
+        _ = try store.startSession()
+        let running = try store.startSession()
+        try store.context.save()
+
+        let sessions = try store.context.fetch(FetchDescriptor<Session>())
+        let active = try Session.active(in: store.context)
+
+        #expect(sessions.count == 2)
+        #expect(sessions.contains { $0 === finished })
+        #expect(active === running)
+    }
+
+    @Test
+    func finishWritesTargetsBackToWorkout() throws {
+        let session = try store.startSession()
+        session.currentEntry?.target = .bodyweight(reps: 12, sets: 5)
+        session.finish()
+        try store.context.save()
+
+        #expect(!session.isActive)
+        #expect(session.duration != nil)
+        #expect(store.workout.entries.sorted().first?.target.bodyweightTarget == .init(sets: 5, reps: 12))
+        #expect(try Session.active(in: store.context) == nil)
+    }
+
+    @Test
+    func finishTwiceKeepsFirstEndDate() throws {
+        let session = try store.startSession()
+        session.finish()
+        let ended = session.endDate
+
+        session.finish()
+
+        #expect(session.endDate == ended)
+    }
+
+    @Test
+    func cancelDeletesSessionAndEntries() throws {
+        let session = try store.startSession()
+        session.discard()
+        try store.context.save()
+
+        #expect(try store.context.fetchCount(FetchDescriptor<Session>()) == 0)
+        #expect(try store.context.fetchCount(FetchDescriptor<SessionEntry>()) == 0)
+    }
+}
+
+@MainActor
+struct SessionNavigationTests {
+    let store: TestStore
+
+    init() throws {
+        self.store = try TestStore()
+    }
+
+    @Test
+    func startsAtFirstEntry() throws {
+        let session = try store.startSession()
+
+        #expect(session.currentEntry?.title == "Squat")
+        #expect(session.previousEntry == nil)
+        #expect(session.nextEntry?.title == "Bench Press")
+        #expect(session.resolvedCount == 0)
+        #expect(!session.isComplete)
+    }
+
+    @Test
+    func movesWithinBounds() throws {
+        let session = try store.startSession()
+
+        session.moveToPrevious()
+        #expect(session.currentEntry?.title == "Squat")
+
+        session.moveToNext()
+        session.moveToNext()
+        session.moveToNext()
+        #expect(session.currentEntry?.title == "Deadlift")
+        #expect(session.nextEntry == nil)
+    }
+
+    @Test
+    func completingAdvancesToNextPendingEntry() throws {
+        let session = try store.startSession()
+
+        session.completeAndAdvance()
+
+        #expect(session.orderedEntries.first?.status.isCompleted == true)
+        #expect(session.currentEntry?.title == "Bench Press")
+        #expect(session.resolvedCount == 1)
+    }
+
+    @Test
+    func skippingMarksEntryAsSkipped() throws {
+        let session = try store.startSession()
+
+        session.skipAndAdvance()
+
+        #expect(session.orderedEntries.first?.status.isSkipped == true)
+        #expect(session.currentEntry?.title == "Bench Press")
+    }
+
+    @Test
+    func completingOutOfOrderReturnsToFirstPendingEntry() throws {
+        let session = try store.startSession()
+
+        session.moveToNext()
+        session.completeAndAdvance()
+
+        #expect(session.currentEntry?.title == "Squat")
+        #expect(session.orderedEntries.map(\.title) == ["Bench Press", "Squat", "Deadlift"])
+    }
+
+    @Test
+    func completingLastPendingEntryStaysOnIt() throws {
+        let session = try store.startSession()
+
+        session.completeAndAdvance()
+        session.completeAndAdvance()
+        session.completeAndAdvance()
+
+        #expect(session.isComplete)
+        #expect(session.resolvedCount == 3)
+        #expect(session.currentEntry?.title == "Deadlift")
+    }
+}
+
+@MainActor
+struct SessionOrderTests {
+    let store: TestStore
+
+    init() throws {
+        self.store = try TestStore()
+    }
+
+    @Test
+    func historyIsOrderedByResolutionDate() throws {
+        let session = try store.startSession()
+        let entries = session.orderedEntries
+
+        entries[2].status = .completed(date: Date(timeIntervalSince1970: 1))
+        entries[0].status = .skipped(date: Date(timeIntervalSince1970: 2))
+
+        #expect(session.resolvedEntries.map(\.title) == ["Deadlift", "Squat"])
+        #expect(session.orderedEntries.map(\.title) == ["Deadlift", "Squat", "Bench Press"])
+    }
+
+    @Test
+    func historyWithSameDateKeepsWorkoutOrder() throws {
+        let session = try store.startSession()
+        let entries = session.orderedEntries
+        let date = Date(timeIntervalSince1970: 1)
+
+        entries[2].status = .completed(date: date)
+        entries[0].status = .completed(date: date)
+
+        #expect(session.resolvedEntries.map(\.title) == ["Squat", "Deadlift"])
+    }
+
+    @Test
+    func undoMakesEntryPendingAgain() throws {
+        let session = try store.startSession()
+        session.completeAndAdvance()
+        session.completeAndAdvance()
+        session.moveToPrevious()
+        session.moveToPrevious()
+
+        session.undoCurrentStatus()
+
+        #expect(session.currentEntry?.title == "Squat")
+        #expect(session.currentEntry?.status.isPending == true)
+        #expect(session.pendingEntries.map(\.title) == ["Squat", "Deadlift"])
+        #expect(session.orderedEntries.map(\.title) == ["Bench Press", "Squat", "Deadlift"])
+    }
+
+    @Test
+    func undoneEntryComesBeforeOtherPendingEntries() throws {
+        let session = try store.startSession()
+        session.moveToNext()
+        session.moveToNext()
+        session.completeAndAdvance()
+        session.moveToPrevious()
+
+        session.undoCurrentStatus()
+
+        #expect(session.currentEntry?.title == "Deadlift")
+        #expect(session.orderedEntries.map(\.title) == ["Deadlift", "Squat", "Bench Press"])
+    }
+
+    @Test
+    func undoOnPendingEntryDoesNothing() throws {
+        let session = try store.startSession()
+
+        session.undoCurrentStatus()
+
+        #expect(session.currentEntry?.title == "Squat")
+        #expect(session.orderedEntries.map(\.order) == [0, 1, 2])
+    }
+}
+
+struct SessionEntryStatusTests {
+    @Test
+    func pending() {
+        let status = SessionEntry.Status.pending
+
+        #expect(status.isPending)
+        #expect(!status.isCompleted)
+        #expect(!status.isSkipped)
+        #expect(status.resolvedDate == nil)
+    }
+
+    @Test
+    func completed() {
+        let date = Date(timeIntervalSince1970: 1)
+        let status = SessionEntry.Status.completed(date: date)
+
+        #expect(!status.isPending)
+        #expect(status.isCompleted)
+        #expect(!status.isSkipped)
+        #expect(status.resolvedDate == date)
+    }
+
+    @Test
+    func skipped() {
+        let date = Date(timeIntervalSince1970: 1)
+        let status = SessionEntry.Status.skipped(date: date)
+
+        #expect(!status.isPending)
+        #expect(!status.isCompleted)
+        #expect(status.isSkipped)
+        #expect(status.resolvedDate == date)
+    }
+}
+
+@MainActor
+struct SessionActivityAttributesTests {
+    let store: TestStore
+
+    init() throws {
+        self.store = try TestStore()
+    }
+
+    @Test
+    func mapsCurrentEntry() throws {
+        let session = try store.startSession()
+
+        let state = try #require(SessionActivityAttributes.ContentState(session: session))
+
+        #expect(state.title == "Squat")
+        #expect(state.pictogram == Exercise.Kind.bodyweight.pictogram)
+        #expect(state.workout == store.workout.pictogram)
+        #expect(state.status == nil)
+        #expect(state.startDate == session.startDate)
+        #expect(state.resolved == 0)
+        #expect(state.total == 3)
+        #expect(state.canMoveForward)
+        #expect(!state.canMoveBackward)
+    }
+
+    @Test
+    func showsStatusOfResolvedEntry() throws {
+        let session = try store.startSession()
+        session.completeAndAdvance()
+        session.moveToPrevious()
+
+        let state = try #require(SessionActivityAttributes.ContentState(session: session))
+
+        #expect(state.title == "Squat")
+        #expect(state.status == SessionEntry.Status.completed(date: .now).pictogram)
+        #expect(state.resolved == 1)
+    }
+
+    @Test
+    func differsBetweenSessionsOfSameWorkout() throws {
+        let first = try #require(try SessionActivityAttributes.ContentState(session: store.startSession()))
+        let second = try #require(try SessionActivityAttributes.ContentState(session: store.startSession()))
+
+        // The Live Activity is only updated when the state changes, so a replaced session must never produce the
+        // same state as the one it replaces.
+        #expect(first != second)
+    }
+}

@@ -15,11 +15,11 @@ struct SessionListScreen: View {
 
     var body: some View {
         ScrollView {
-            NavigationList(sessions) { session in
-                PictogramRow(session)
+            NavigationRows(for: sessions) { session in
+                DisplayableRow(session)
             }
         }
-        .navigationTitle(.screenSessionsTitle)
+        .navigationTitle(.placeholder)
     }
 }
 
@@ -27,7 +27,7 @@ struct SessionListScreen: View {
     NavigationStack {
         SessionListScreen()
             .navigationDestination(for: Session.self) { session in
-                SessionScreen(session: session)
+                SessionScreen(session)
             }
     }
     .sampleData()

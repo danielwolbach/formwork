@@ -1,225 +1,200 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "_placeholder" : {
+    "field.before.subtitle" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Placeholder"
+            "value" : "Previous %1$(days)lld days"
           }
         }
       }
     },
-    "alert.exercise.delete.message" : {
-      "extractionState" : "manual"
-    },
-    "alert.exercise.delete.title" : {
+    "field.before.title" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Delete Exercise?"
+            "value" : "Before"
           }
         }
       }
     },
-    "alert.session.active.message" : {
-      "extractionState" : "manual"
-    },
-    "alert.session.active.title" : {
+    "field.calendar.title" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Replace Session?"
+            "value" : "Calendar"
           }
         }
       }
     },
-    "alert.session.cancel.message" : {
-      "extractionState" : "manual"
-    },
-    "alert.session.cancel.title" : {
+    "field.category.title" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Discard Session?"
+            "value" : "Category"
           }
         }
       }
     },
-    "alert.session.delete.message" : {
-      "extractionState" : "manual"
-    },
-    "alert.session.delete.title" : {
+    "field.color.title" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Delete Session?"
+            "value" : "Color"
           }
         }
       }
     },
-    "alert.session.finish.message" : {
-      "extractionState" : "manual"
-    },
-    "alert.session.finish.title" : {
+    "field.exercises.title" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Finish Session?"
+            "value" : "Exercises"
           }
         }
       }
     },
-    "alert.workout.delete.message" : {
-      "extractionState" : "manual"
-    },
-    "alert.workout.delete.title" : {
+    "field.image.title" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Delete Workout?"
+            "value" : "Image"
           }
         }
       }
     },
-    "alert.workout.entry.remove.message" : {
-      "extractionState" : "manual"
-    },
-    "alert.workout.entry.remove.title" : {
+    "field.info.title" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Remove Exercise?"
+            "value" : "Info"
           }
         }
       }
     },
-    "empty.category.description" : {
-      "extractionState" : "manual"
-    },
-    "empty.exercises.description" : {
-      "extractionState" : "manual"
-    },
-    "empty.exercises.title" : {
+    "field.kind.title" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "No Exercises"
+            "value" : "Kind"
           }
         }
       }
     },
-    "empty.overview.allDone.description" : {
+    "field.link.placeholder" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Every workout scheduled for today is finished."
+            "value" : "https://example.com"
           }
         }
       }
     },
-    "empty.overview.allDone.title" : {
+    "field.link.title" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "All Done"
+            "value" : "Link"
           }
         }
       }
     },
-    "empty.overview.restDay.description" : {
+    "field.name.placeholder" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nothing is scheduled for today."
+            "value" : "Enter a name…"
           }
         }
       }
     },
-    "empty.overview.restDay.title" : {
+    "field.name.title" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Rest Day"
+            "value" : "Name"
           }
         }
       }
     },
-    "empty.statistics.description" : {
-      "extractionState" : "manual"
-    },
-    "empty.statistics.title" : {
+    "field.notes.placeholder" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "No Statistics"
+            "value" : "Write some notes…"
           }
         }
       }
     },
-    "empty.workout.exercises.description" : {
-      "extractionState" : "manual"
-    },
-    "empty.workouts.description" : {
-      "extractionState" : "manual"
-    },
-    "empty.workouts.title" : {
+    "field.notes.title" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "No Workouts"
+            "value" : "Notes"
           }
         }
       }
     },
-    "field.exercise.link.placeholder" : {
+    "field.overall.title" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Paste or scan a link"
+            "value" : "Overall"
           }
         }
       }
     },
-    "field.exercise.notes.placeholder" : {
+    "field.recent.subtitle" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Add a note…"
+            "value" : "Last %1$(days)lld days"
+          }
+        }
+      }
+    },
+    "field.recent.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recent"
           }
         }
       }
@@ -235,7 +210,7 @@
         }
       }
     },
-    "field.schedule.days.title" : {
+    "field.rhythm.daily.interval.title" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
@@ -250,7 +225,7 @@
               "other" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Every %lld Days"
+                  "value" : "Every %1$(count)lld Days"
                 }
               }
             }
@@ -258,7 +233,7 @@
         }
       }
     },
-    "field.schedule.rhythm.daily.title" : {
+    "field.rhythm.daily.title" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
@@ -269,7 +244,7 @@
         }
       }
     },
-    "field.schedule.rhythm.title" : {
+    "field.rhythm.title" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
@@ -280,29 +255,7 @@
         }
       }
     },
-    "field.schedule.rhythm.weekly.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Weekly"
-          }
-        }
-      }
-    },
-    "field.schedule.start.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Starting"
-          }
-        }
-      }
-    },
-    "field.schedule.weeks.title" : {
+    "field.rhythm.weekly.iterval.title" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
@@ -317,10 +270,32 @@
               "other" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Every %lld Weeks"
+                  "value" : "Every %1$(count)lld Weeks"
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "field.rhythm.weekly.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weekly"
+          }
+        }
+      }
+    },
+    "field.schedule.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schedule"
           }
         }
       }
@@ -336,105 +311,90 @@
         }
       }
     },
-    "field.statistics.allWorkouts.title" : {
+    "field.sort.category.title" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "All Workouts"
+            "value" : "Category"
           }
         }
       }
     },
-    "field.statistics.thisWorkout.title" : {
+    "field.sort.name.title" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "This Workout"
+            "value" : "Name"
           }
         }
       }
     },
-    "field.statistics.workouts.title" : {
+    "field.sort.newest.title" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Workouts"
+            "value" : "Newest"
           }
         }
       }
     },
-    "onboarding.catalog.message" : {
-      "extractionState" : "manual"
-    },
-    "onboarding.catalog.title" : {
+    "field.sort.title" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Build Your Catalog"
+            "value" : "Sort"
           }
         }
       }
     },
-    "onboarding.sessions.message" : {
-      "extractionState" : "manual"
-    },
-    "onboarding.sessions.title" : {
+    "field.startDate.title" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Accompany Your Sessions"
+            "value" : "Start Date"
           }
         }
       }
     },
-    "onboarding.statistics.message" : {
-      "extractionState" : "manual"
-    },
-    "onboarding.statistics.title" : {
+    "field.today.title" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "See Your Progress"
+            "value" : "Today"
           }
         }
       }
     },
-    "onboarding.welcome.message" : {
-      "extractionState" : "manual"
-    },
-    "onboarding.welcome.title" : {
+    "placeholder" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Welcome to Formwork"
+            "value" : "Placeholder"
           }
         }
       }
     },
-    "onboarding.workouts.message" : {
-      "extractionState" : "manual"
-    },
-    "onboarding.workouts.title" : {
+    "screen.addExercise.title" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Plan Your Workouts"
+            "value" : "Add Exercise"
           }
         }
       }
@@ -450,7 +410,7 @@
         }
       }
     },
-    "screen.exercise.create.title" : {
+    "screen.createExercise.title" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
@@ -461,7 +421,18 @@
         }
       }
     },
-    "screen.exercise.edit.title" : {
+    "screen.createWorkout.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Create Workout"
+          }
+        }
+      }
+    },
+    "screen.editExercise.tile" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
@@ -472,57 +443,24 @@
         }
       }
     },
-    "screen.exercise.guide.title" : {
+    "screen.editWorkout.title" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Guide"
+            "value" : "Edit Workout"
           }
         }
       }
     },
-    "screen.overview.title" : {
+    "screen.pictogram.title" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Overview"
-          }
-        }
-      }
-    },
-    "screen.pictogram.edit.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Icon"
-          }
-        }
-      }
-    },
-    "screen.qrCodeScanner.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Scan a QR Code"
-          }
-        }
-      }
-    },
-    "screen.sessions.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sessions"
+            "value" : "Pictogram"
           }
         }
       }
@@ -538,50 +476,6 @@
         }
       }
     },
-    "screen.workout.addExercise.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Add Exercise"
-          }
-        }
-      }
-    },
-    "screen.workout.create.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Create Workout"
-          }
-        }
-      }
-    },
-    "screen.workout.edit.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Edit Workout"
-          }
-        }
-      }
-    },
-    "screen.workoutEntry.statistics.subtitle" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$@ in %2$@"
-          }
-        }
-      }
-    },
     "screen.workouts.title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -589,171 +483,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Workouts"
-          }
-        }
-      }
-    },
-    "section.exercise.categories.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Categories"
-          }
-        }
-      }
-    },
-    "section.exercise.link.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Link"
-          }
-        }
-      }
-    },
-    "section.exercise.name.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Name"
-          }
-        }
-      }
-    },
-    "section.exercise.notes.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Notes"
-          }
-        }
-      }
-    },
-    "section.exercise.type.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Type"
-          }
-        }
-      }
-    },
-    "section.overview.calendar" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Calendar"
-          }
-        }
-      }
-    },
-    "section.overview.calendar.empty" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No Workouts"
-          }
-        }
-      }
-    },
-    "section.overview.today" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Today"
-          }
-        }
-      }
-    },
-    "section.pictogram.image.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Symbol"
-          }
-        }
-      }
-    },
-    "section.pictogram.tint.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Color"
-          }
-        }
-      }
-    },
-    "section.recentSessions.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Recent Sessions"
-          }
-        }
-      }
-    },
-    "section.workout.addExercise.exercises.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Exercises"
-          }
-        }
-      }
-    },
-    "section.workout.exercises.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Exercises"
-          }
-        }
-      }
-    },
-    "section.workout.name.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Name"
-          }
-        }
-      }
-    },
-    "section.workout.schedule.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Schedule"
           }
         }
       }

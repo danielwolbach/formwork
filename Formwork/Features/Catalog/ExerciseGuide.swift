@@ -6,71 +6,97 @@
 //
 
 import FormworkKit
+import Foundation
 import SafariServices
 import SwiftUI
 
 struct ExerciseGuide: View {
-    let exercise: Exercise
+    private struct BrowserPage: Identifiable {
+        let url: URL
+
+        var id: URL {
+            url
+        }
+    }
+
+    private let exercise: Exercise
 
     @Environment(\.openURL)
     private var openURL: OpenURLAction
 
     @State
-    private var browserURL: URL? = nil
+    private var browserPage: BrowserPage?
+
+    @State
+    private var sheet: Sheet?
+
+    init(_ exercise: Exercise) {
+        self.exercise = exercise
+    }
 
     var body: some View {
         VStack(spacing: 8) {
-            if let url = exercise.link {
+            if let link = exercise.link {
                 Button {
-                    if ["http", "https"].contains(url.scheme?.lowercased()) {
-                        browserURL = url
+                    if ["http", "https"].contains(link.scheme?.lowercased()) {
+                        browserPage = BrowserPage(url: link)
                     } else {
-                        openURL(url)
+                        openURL(link)
                     }
                 } label: {
                     HStack {
                         VStack(alignment: .leading, spacing: 8) {
-                            Label(.sectionExerciseLinkTitle, systemImage: Pictogram.instructions.image)
+                            Label(.fieldLinkTitle, systemImage: "link")
                                 .font(.subheadline)
                                 .foregroundStyle(.secondary)
+                                .lineLimit(1)
 
-                            if let host = url.host().map({ String($0.trimmingPrefix("www.")) }) {
+                            if let host = link.host().map({ String($0.trimmingPrefix("www.")) }) {
                                 Text(host)
+                                    .font(.headline)
                                     .lineLimit(1)
                             }
                         }
 
-                        Spacer()
+                        Spacer(minLength: 0)
 
-                        Image(systemName: "arrow.up.forward")
+                        Image(systemName: "arrow.up.right")
                             .foregroundStyle(.tertiary)
                     }
                     .padding()
-                    .background(.ultraThinMaterial)
-                    .clipShape(.rect(cornerRadius: 16, style: .continuous))
-                    .contentShape(.rect(cornerRadius: 16, style: .continuous))
+                    .card()
                 }
                 .buttonStyle(.plain)
             }
 
-            VStack(alignment: .leading, spacing: 8) {
-                Label(.sectionExerciseNotesTitle, systemImage: Pictogram.notes.image)
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
+            Button {
+                sheet = .editExercise(exercise)
+            } label: {
+                VStack(alignment: .leading, spacing: 8) {
+                    Label(.fieldNotesTitle, systemImage: "document")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(1)
 
-                ExerciseNotesField(exercise: exercise)
+                    TextField(.fieldNotesPlaceholder, text: .constant(exercise.notes), axis: .vertical)
+                        .lineLimit(4...)
+                        .disabled(true)
+                }
+                .padding()
+                .card()
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding()
-            .background(.ultraThinMaterial)
-            .clipShape(.rect(cornerRadius: 16, style: .continuous))
+            .buttonStyle(.plain)
         }
-        .padding(.horizontal, 16)
-        .fullScreenCover(item: $browserURL) { url in
-            SafariView(url: url) {
-                browserURL = nil
+        .fullScreenCover(item: $browserPage) { page in
+            SafariView(url: page.url) {
+                browserPage = nil
             }
             .ignoresSafeArea()
+        }
+        .sheet(item: $sheet) { sheet in
+            NavigationStack {
+                sheet
+            }
         }
     }
 }
@@ -105,50 +131,7 @@ private struct SafariView: UIViewControllerRepresentable {
     }
 }
 
-private struct ExerciseNotesField: View {
-    @Bindable
-    var exercise: Exercise
-
-    @FocusState
-    private var focused: Bool
-
-    @State
-    private var editing: Bool = false
-
-    var body: some View {
-        TextField(.fieldExerciseNotesPlaceholder, text: $exercise.notes, axis: .vertical)
-            .lineLimit(3...)
-            .focused($focused)
-            .toolbar {
-                if editing {
-                    ToolbarItem(placement: .confirmationAction) {
-                        Button(role: .confirm) {
-                            focused = false
-                        }
-                    }
-                }
-            }
-            .onChange(of: focused) { _, focused in
-                withAnimation {
-                    editing = focused
-                }
-
-                if !focused {
-                    exercise.notes = exercise.notes.trimmingCharacters(in: .whitespacesAndNewlines)
-                }
-            }
-    }
-}
-
-#Preview("Guide") {
-    NavigationStack {
-        ScrollView {
-            VStack(spacing: 32) {
-                PictogramHeader(Samples.exercises.first!)
-
-                ExerciseGuide(exercise: Samples.exercises.first!)
-            }
-        }
-    }
-    .sampleData()
+#Preview {
+    ExerciseGuide(Samples.exercises[1])
+        .padding()
 }

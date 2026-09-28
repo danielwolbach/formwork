@@ -119,21 +119,21 @@ private enum Page: Int, CaseIterable {
 
     var title: LocalizedStringResource {
         switch self {
-        case .welcome: .onboardingWelcomeTitle
-        case .catalog: .onboardingCatalogTitle
-        case .workouts: .onboardingWorkoutsTitle
-        case .sessions: .onboardingSessionsTitle
-        case .statistics: .onboardingStatisticsTitle
+        case .welcome: .placeholder
+        case .catalog: .placeholder
+        case .workouts: .placeholder
+        case .sessions: .placeholder
+        case .statistics: .placeholder
         }
     }
 
     var message: LocalizedStringResource {
         switch self {
-        case .welcome: .onboardingWelcomeMessage
-        case .catalog: .onboardingCatalogMessage
-        case .workouts: .onboardingWorkoutsMessage
-        case .sessions: .onboardingSessionsMessage
-        case .statistics: .onboardingStatisticsMessage
+        case .welcome: .placeholder
+        case .catalog: .placeholder
+        case .workouts: .placeholder
+        case .sessions: .placeholder
+        case .statistics: .placeholder
         }
     }
 }
@@ -146,8 +146,8 @@ private struct PageView: View {
             Spacer(minLength: 0)
 
             preview
-                .frame(height: 256)
                 .frame(maxWidth: .infinity)
+                .padding(.horizontal, 32)
 
             VStack(spacing: 16) {
                 Text(page.title)
@@ -158,12 +158,10 @@ private struct PageView: View {
                     .foregroundStyle(.secondary)
             }
             .multilineTextAlignment(.center)
-            .frame(height: 128)
-            .padding(.horizontal)
+            .padding(.horizontal, 16)
 
             Spacer(minLength: 0)
         }
-        .padding(.horizontal)
     }
 
     @ViewBuilder
@@ -180,16 +178,16 @@ private struct PageView: View {
 
 private struct WelcomePreview: View {
     var body: some View {
-        PictogramView(pictogram: .workout)
+        PictogramView(.workout)
             .frame(width: 192, height: 192)
     }
 }
 
 private struct CatalogPreview: View {
     private let exercises: [Exercise] = [
-        StarterCatalog.detachedExerciseSample(of: .weight),
-        StarterCatalog.detachedExerciseSample(of: .bodyweight),
-        StarterCatalog.detachedExerciseSample(of: .duration),
+        StarterCatalog.Samples.exercise(of: .weight),
+        StarterCatalog.Samples.exercise(of: .bodyweight),
+        StarterCatalog.Samples.exercise(of: .duration),
     ]
 
     var body: some View {
@@ -197,7 +195,7 @@ private struct CatalogPreview: View {
             ForEach(Array(exercises.enumerated()), id: \.offset) { position, exercise in
                 let depth = CGFloat(position)
 
-                PictogramRow(exercise)
+                DisplayableRow(exercise)
                     .scaleEffect(1 - depth * 0.05, anchor: .leading)
                     .offset(x: depth * 12)
             }
@@ -213,26 +211,26 @@ private struct CatalogPreview: View {
 
 private struct WorkoutPreview: View {
     var body: some View {
-        WorkoutCard(workout: StarterCatalog.detatchedWorkoutSample())
+        WorkoutCard(StarterCatalog.Samples.workout())
     }
 }
 
 private struct SessionPreview: View {
-    private let exercise = StarterCatalog.detachedExerciseSample(of: .weight)
+    private let exercise = StarterCatalog.Samples.exercise(of: .weight)
 
-    private let target = Samples.weightTarget
+    private let target = StarterCatalog.Samples.weightTarget
 
     var body: some View {
         HStack(alignment: .top, spacing: 16) {
-            neighbour(exercise: StarterCatalog.detachedExerciseSample(of: .duration), badge: .skippedBadge, angle: 16)
+            neighbour(exercise: StarterCatalog.Samples.exercise(of: .duration), badge: .skippedBadge, angle: 16)
             current
-            neighbour(exercise: StarterCatalog.detachedExerciseSample(of: .bodyweight), badge: .pendingBadge, angle: -16)
+            neighbour(exercise: StarterCatalog.Samples.exercise(of: .bodyweight), badge: .pendingBadge, angle: -16)
         }
     }
 
     private var current: some View {
         VStack(spacing: 16) {
-            PictogramView(pictogram: exercise.pictogram, badge: .completedBadge)
+            PictogramView(exercise.pictogram, badge: .completedBadge)
                 .frame(width: 144, height: 144)
 
             VStack {
@@ -251,7 +249,7 @@ private struct SessionPreview: View {
     }
 
     private func neighbour(exercise: Exercise, badge: Pictogram?, angle: Double) -> some View {
-        PictogramView(pictogram: exercise.pictogram, badge: badge)
+        PictogramView(exercise.pictogram, badge: badge)
             .frame(width: 92, height: 92)
             .rotation3DEffect(.degrees(angle), axis: (x: 0, y: 1, z: 0), perspective: 0.6)
             .padding(.top, 32)
@@ -261,10 +259,10 @@ private struct SessionPreview: View {
 private struct StatisticsPreview: View {
     var body: some View {
         TileGrid {
-            ValueCard(Samples.weekStreak)
-            ValueCard(Samples.weeklySessions)
-            ValueCard(Samples.personalBest)
-            ValueCard(Samples.totalVolume)
+            MetricCard(StarterCatalog.Samples.weekStreak)
+            MetricCard(StarterCatalog.Samples.weeklySessions)
+            MetricCard(StarterCatalog.Samples.personalBest)
+            MetricCard(StarterCatalog.Samples.totalVolume)
         }
     }
 }

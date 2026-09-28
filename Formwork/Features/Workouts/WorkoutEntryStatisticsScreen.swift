@@ -9,7 +9,7 @@ import FormworkKit
 import SwiftUI
 
 struct WorkoutEntryStatisticsScreen: View {
-    enum ViewMode: Hashable {
+    private enum ViewMode: Hashable {
         case entry, exercise
     }
 
@@ -21,17 +21,22 @@ struct WorkoutEntryStatisticsScreen: View {
     @State
     private var viewMode: ViewMode = .entry
 
+    init(_ entry: WorkoutEntry) {
+        self.entry = entry
+    }
+
     var body: some View {
         ScrollView {
-            // Overlaid, so the two blur into each other rather than one below the other.
             ZStack {
                 ExerciseStatistics(history: history)
+                    .padding(.horizontal)
                     .id(viewMode)
                     .transition(.blurReplace)
             }
+            .animation(.smooth, value: viewMode)
         }
         .navigationTitle(.screenStatisticsTitle)
-        .navigationSubtitle(subtitle)
+        .navigationSubtitle(entry.title)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
@@ -42,35 +47,23 @@ struct WorkoutEntryStatisticsScreen: View {
 
             if isDoneElsewhere {
                 ToolbarItem {
+                    // TODO: Add `Action` entry.
                     Menu {
-                        Picker(selection: viewModeBinding) {
-                            Text(.fieldStatisticsThisWorkoutTitle)
+                        Picker(selection: $viewMode) {
+                            Text(.placeholder)
                                 .tag(ViewMode.entry)
 
-                            Text(.fieldStatisticsAllWorkoutsTitle)
+                            Text(.placeholder)
                                 .tag(ViewMode.exercise)
                         } label: {
-                            Label(String(localized: .fieldStatisticsWorkoutsTitle), systemImage: "calendar.day.timeline.left")
+                            Label(String(localized: .placeholder), systemImage: "calendar.day.timeline.left")
                         }
                     } label: {
-                        Label(String(localized: .fieldStatisticsWorkoutsTitle), systemImage: "calendar.day.timeline.left")
+                        Label(String(localized: .placeholder), systemImage: "calendar.day.timeline.left")
                     }
                 }
             }
         }
-    }
-
-    var viewModeBinding: Binding<ViewMode> {
-        Binding(
-            get: {
-                viewMode
-            },
-            set: { new in
-                withAnimation(.smooth) {
-                    viewMode = new
-                }
-            }
-        )
     }
 
     private var history: History {
@@ -81,14 +74,6 @@ struct WorkoutEntryStatisticsScreen: View {
         }
     }
 
-    private var subtitle: String {
-        guard viewMode == .entry, let workout = entry.workout else {
-            return entry.title
-        }
-
-        return String(localized: .screenWorkoutEntryStatisticsSubtitle(entry.title, workout.title))
-    }
-
     private var isDoneElsewhere: Bool {
         entry.exercise?.sessionEntries.contains { $0.workoutEntry !== entry && $0.session.map { !$0.isActive } ?? false } ?? false
     }
@@ -96,7 +81,7 @@ struct WorkoutEntryStatisticsScreen: View {
 
 #Preview {
     NavigationStack {
-        WorkoutEntryStatisticsScreen(entry: Samples.workouts[0].entries.sorted()[1])
+        WorkoutEntryStatisticsScreen(Samples.workouts[0].entries.sorted()[1])
     }
     .sampleData()
 }

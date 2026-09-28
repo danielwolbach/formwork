@@ -8,9 +8,12 @@
 import FormworkKit
 import SwiftUI
 
-/// The statistics of an exercise, or of one workout's slot of it: whichever the history is of.
 struct ExerciseStatistics: View {
-    let history: History
+    private let history: History
+
+    init(history: History) {
+        self.history = history
+    }
 
     var body: some View {
         TileGrid {
@@ -23,10 +26,11 @@ struct ExerciseStatistics: View {
             StatisticCard(.completions, of: history)
 
             StatisticCard(.progression, of: history)
+                .tileSpan(rows: 2, columns: 2)
 
             StatisticCard(.activeDays, of: history)
+                .tileSpan(rows: 2, columns: 2)
         }
-        .padding(.horizontal, 16)
     }
 }
 
@@ -34,6 +38,7 @@ struct ExerciseStatistics: View {
     NavigationStack {
         ScrollView {
             ExerciseStatistics(history: History(.exercise(Samples.exercises.first!)))
+                .padding(.horizontal)
         }
     }
     .sampleData()

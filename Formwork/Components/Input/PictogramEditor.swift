@@ -1,24 +1,32 @@
+//
+//  PictogramEditor.swift
+//  Formwork
+//
+//  Created by Daniel Wolbach on 18.09.26.
+//
+
 import FormworkKit
 import SwiftUI
 
 struct PictogramEditor: View {
-    let imageOptions: [String]
-
     @Binding
-    var pictogram: Pictogram
+    private var pictogram: Pictogram
 
     @State
     private var showEditor: Bool = false
 
+    init(_ pictogram: Binding<Pictogram>) {
+        self._pictogram = pictogram
+    }
+
     var body: some View {
-        PictogramView(pictogram: pictogram, badge: .editBadge)
-            .frame(width: 192)
+        PictogramView(pictogram, badge: .editBadge)
             .onTapGesture {
                 showEditor = true
             }
             .sheet(isPresented: $showEditor) {
                 NavigationStack {
-                    PictogramSheet(pictogram: $pictogram, imageOptions: imageOptions)
+                    PictogramSheet(pictogram: $pictogram)
                 }
             }
     }
@@ -26,8 +34,6 @@ struct PictogramEditor: View {
 
 private struct PictogramSheet: View {
     private static let columns: Int = 6
-
-    let imageOptions: [String]
 
     @Binding
     var pictogram: Pictogram
@@ -38,19 +44,33 @@ private struct PictogramSheet: View {
     @State
     private var draft: Pictogram
 
-    init(pictogram: Binding<Pictogram>, imageOptions: [String]) {
+    init(pictogram: Binding<Pictogram>) {
         self._pictogram = pictogram
         self._draft = State(initialValue: pictogram.wrappedValue)
-        self.imageOptions = imageOptions
     }
 
     var body: some View {
-        Form {
-            previewSection
-            tintSection
-            imageSection
+        ScrollView {
+            VStack(spacing: 32) {
+                PictogramView(draft)
+                    .frame(width: 128)
+
+                SectionView(.init(localized: .fieldColorTitle)) {
+                    PictogramColorPicker(selection: $draft.tint)
+                        .padding()
+                        .card()
+                        .padding(.horizontal)
+                }
+
+                SectionView(.init(localized: .fieldImageTitle)) {
+                    PictogramImagePicker(selection: $draft.image)
+                        .padding()
+                        .card()
+                        .padding(.horizontal)
+                }
+            }
         }
-        .navigationTitle(.screenPictogramEditTitle)
+        .navigationTitle(.screenPictogramTitle)
         .navigationBarTitleDisplayMode(.inline)
         .sensoryFeedback(.selection, trigger: draft.tint)
         .sensoryFeedback(.selection, trigger: draft.image)
@@ -69,49 +89,41 @@ private struct PictogramSheet: View {
             }
         }
     }
+}
 
-    private var previewSection: some View {
-        Section {
-            HStack {
-                Spacer()
+private struct PictogramColorPicker: View {
+    @Binding
+    var selection: Pictogram.Tint
 
-                PictogramView(pictogram: draft)
-                    .frame(width: 192)
-
-                Spacer()
-            }
-            .listRowBackground(Color.clear)
-            .listRowInsets(EdgeInsets())
-        }
-    }
-
-    private var tintSection: some View {
-        Section(.sectionPictogramTintTitle) {
-            LazyVGrid(columns: GridItem.ntile(n: Self.columns)) {
-                ForEach(Pictogram.Tint.allCases) { tint in
-                    PictogramSwatch(
-                        fill: AnyShapeStyle(tint.color),
-                        ring: AnyShapeStyle(tint.color),
-                        selected: tint == draft.tint
-                    ) {
-                        draft.tint = tint
-                    }
+    var body: some View {
+        TileGrid(columns: 6, aspectRatio: 1) {
+            ForEach(Pictogram.Tint.allCases) { tint in
+                PictogramSwatch(
+                    fill: AnyShapeStyle(tint.color),
+                    ring: AnyShapeStyle(tint.color),
+                    selected: tint == selection
+                ) {
+                    selection = tint
                 }
             }
         }
     }
+}
 
-    private var imageSection: some View {
-        Section(.sectionPictogramImageTitle) {
-            LazyVGrid(columns: GridItem.ntile(n: Self.columns)) {
-                ForEach(imageOptions, id: \.self) { option in
-                    PictogramSwatch(
-                        fill: AnyShapeStyle(Color.gray.quinary),
-                        ring: AnyShapeStyle(Color.gray.secondary),
-                        selected: option == draft.image,
-                        action: { draft.image = option },
-                        image: option
-                    )
+private struct PictogramImagePicker: View {
+    @Binding
+    var selection: String
+
+    var body: some View {
+        TileGrid(columns: 6, aspectRatio: 1) {
+            ForEach(PictogramEditor.imageOptions, id: \.self) { option in
+                PictogramSwatch(
+                    fill: AnyShapeStyle(Color.gray.quinary),
+                    ring: AnyShapeStyle(Color.gray.secondary),
+                    selected: option == selection,
+                    image: option
+                ) {
+                    selection = option
                 }
             }
         }
@@ -125,9 +137,9 @@ private struct PictogramSwatch: View {
 
     let selected: Bool
 
-    let action: () -> Void
-
     var image: String?
+
+    let action: () -> Void
 
     var body: some View {
         Button(action: action) {
@@ -143,10 +155,7 @@ private struct PictogramSwatch: View {
                 }
                 .overlay {
                     Circle()
-                        .stroke(
-                            selected ? ring : AnyShapeStyle(Color.clear),
-                            lineWidth: 2
-                        )
+                        .stroke(selected ? ring : AnyShapeStyle(Color.clear), lineWidth: 2)
                 }
                 .frame(maxWidth: .infinity)
                 .aspectRatio(1, contentMode: .fit)
@@ -156,12 +165,42 @@ private struct PictogramSwatch: View {
     }
 }
 
+extension PictogramEditor {
+    fileprivate static let imageOptions: [String] = [
+        Pictogram.workout.image,
+        "figure",
+        "figure.walk",
+        "figure.run",
+        "figure.barre",
+        "figure.boxing",
+        "figure.cooldown",
+        "figure.dance",
+        "figure.flexibility",
+        "figure.gymnastics",
+        "figure.jumprope",
+        "figure.pilates",
+        "figure.play",
+        "figure.rolling",
+        "figure.yoga",
+        "figure.cross.training",
+        "figure.strengthtraining.functional",
+        "figure.highintensity.intervaltraining",
+        "figure.martial.arts",
+        "figure.indoor.rowing",
+        "figure.step.training",
+        "figure.run.treadmill",
+        "figure.indoor.cycle",
+        "figure.stair.stepper",
+    ]
+}
+
 #Preview {
     @Previewable
     @State
     var pictogram: Pictogram = .unknown
 
     NavigationStack {
-        PictogramEditor(imageOptions: Pictogram.workoutImageOptions, pictogram: $pictogram)
+        PictogramEditor($pictogram)
+            .frame(width: 192)
     }
 }

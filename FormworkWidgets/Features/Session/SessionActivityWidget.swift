@@ -63,7 +63,7 @@ struct SessionActivityWidget: Widget {
     }
 
     private func pictogram(for context: ActivityViewContext<SessionActivityAttributes>) -> some View {
-        PictogramView(pictogram: context.state.pictogram, badge: context.state.status)
+        PictogramView(context.state.pictogram, badge: context.state.status)
             .frame(width: 40)
     }
 

@@ -35,21 +35,20 @@ struct OverviewScreen: View {
                 todaySection
                 CalendarSection()
             }
-            .padding(.bottom)
         }
-        .navigationTitle(.screenOverviewTitle)
+        .navigationTitle(.placeholder)
         .navigationDestination(for: Workout.self) { workout in
-            WorkoutScreen(workout: workout)
+            WorkoutScreen(workout)
         }
         .navigationDestination(for: Session.self) { session in
-            SessionScreen(session: session)
+            SessionScreen(session)
         }
         .toolbar {
             Menu(.more) {
                 DebugMenu()
             }
         }
-        .alert(.alertSessionActiveTitle, isPresented: $sessionActiveAlert) {
+        .alert(.placeholder, isPresented: $sessionActiveAlert) {
             if let workout = workouts.pending().first {
                 Button(.replaceSession) {
                     replaceSession(workout: workout)
@@ -64,7 +63,7 @@ struct OverviewScreen: View {
 
             Button(.cancel) {}
         } message: {
-            Text(.alertSessionActiveMessage)
+            Text(.placeholder)
         }
     }
 
@@ -84,20 +83,20 @@ struct OverviewScreen: View {
     private var todaySection: some View {
         let pending = workouts.pending()
 
-        SectionView(.sectionOverviewToday, subtitle: Date.now.formatted(date: .abbreviated, time: .omitted)) {
+        SectionView(.init(localized: .fieldTodayTitle), subtitle: Date.now.formatted(date: .abbreviated, time: .omitted)) {
             Group {
                 if pending.isEmpty {
                     if workouts.contains(where: { $0.schedule.isScheduled(on: .now) }) {
                         StateCard(
-                            title: .emptyOverviewAllDoneTitle,
-                            description: .emptyOverviewAllDoneDescription,
+                            title: .placeholder,
+                            description: .placeholder,
                             image: "checkmark.seal.fill",
                             tint: .green
                         )
                     } else {
                         StateCard(
-                            title: .emptyOverviewRestDayTitle,
-                            description: .emptyOverviewRestDayDescription,
+                            title: .placeholder,
+                            description: .placeholder,
                             image: "moon.zzz.fill",
                             tint: .purple
                         )
@@ -106,7 +105,7 @@ struct OverviewScreen: View {
                     LazyVStack(spacing: 8) {
                         ForEach(pending) { workout in
                             NavigationLink(value: workout) {
-                                WorkoutCard(workout: workout)
+                                WorkoutCard(workout)
                             }
                             .buttonStyle(.plain)
                         }
@@ -136,11 +135,8 @@ struct OverviewScreen: View {
     }
 
     private func replaceSession(workout: Workout) {
-        do {
-            let session = try Session.start(workout, in: modelContext)
-            DispatchQueue.main.async { presentSession(session) }
-        } catch {
-            // TODO: Log error
+        if let session = workout.startSession() {
+            presentSession(session)
         }
     }
 }

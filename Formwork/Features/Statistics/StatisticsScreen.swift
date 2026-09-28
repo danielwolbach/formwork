@@ -17,7 +17,7 @@ struct StatisticsScreen: View {
         content
             .navigationTitle(.screenStatisticsTitle)
             .navigationDestination(for: Session.self) { session in
-                SessionScreen(session: session)
+                SessionScreen(session)
             }
             .navigationDestination(for: Route.self) { $0 }
     }
@@ -26,20 +26,19 @@ struct StatisticsScreen: View {
     private var content: some View {
         if sessions.isEmpty {
             ContentUnavailableView {
-                Label(.emptyStatisticsTitle, systemImage: "flame")
+                Label(.placeholder, systemImage: "flame")
             } description: {
-                Text(.emptyStatisticsDescription)
+                Text(.placeholder)
             }
         } else {
             statisticsContent
         }
     }
 
-    @ViewBuilder
     private var statisticsContent: some View {
         let history = History(.all(sessions))
 
-        ScrollView {
+        return ScrollView {
             VStack(spacing: 32) {
                 TileGrid {
                     StatisticCard(.weekStreak, of: history)
@@ -47,6 +46,7 @@ struct StatisticsScreen: View {
                     StatisticCard(.lastCompleted, of: history)
 
                     StatisticCard(.activeDays, of: history)
+                        .tileSpan(rows: 2, columns: 2)
 
                     StatisticCard(.weeklySessions, of: history)
 
@@ -57,6 +57,7 @@ struct StatisticsScreen: View {
                     StatisticCard(.typicalStartTime, of: history)
 
                     StatisticCard(.categories, of: history)
+                        .tileSpan(rows: 2, columns: 2)
 
                     StatisticCard(.favoriteWorkout, of: history)
 
@@ -64,9 +65,9 @@ struct StatisticsScreen: View {
                 }
                 .padding(.horizontal)
 
-                SectionView(.sectionRecentSessionsTitle) {
-                    NavigationList(sessions.prefix(5)) { session in
-                        PictogramRow(session)
+                SectionView(.init(localized: .placeholder)) {
+                    NavigationRows(for: sessions.prefix(5)) { session in
+                        DisplayableRow(session)
                     }
                 } accessory: {
                     NavigationLink(value: Route.sessions) {

@@ -1,0 +1,147 @@
+//
+//  StarterCatalog.swift
+//  FormworkKit
+//
+//  Created by Daniel Wolbach on 20.09.26.
+//
+
+import Foundation
+import SwiftData
+
+public enum StarterCatalog {
+    public enum Samples {}
+
+    public struct ExerciseEntry: Sendable {
+        public let name: LocalizedStringResource
+
+        public let kind: Exercise.Kind
+
+        public let categories: Set<Exercise.Category>
+
+        public var detachedExercise: Exercise {
+            Exercise(name: String(localized: name), kind: kind, categories: categories)
+        }
+    }
+
+    public struct WorkoutEntry: Sendable {
+        public struct Entry: Sendable {
+            public let exercise: LocalizedStringResource
+
+            public let target: ExerciseTarget
+        }
+
+        public let name: LocalizedStringResource
+
+        public let pictogram: Pictogram
+
+        public let schedule: Schedule
+
+        public let entries: [Entry]
+
+        public var detachedWorkout: Workout {
+            let workout = Workout(name: String(localized: name), pictogram: pictogram, schedule: schedule, entries: [])
+
+            for item in entries {
+                guard let exercise = StarterCatalog.exercises.first(where: { $0.name.key == item.exercise.key })?.detachedExercise else {
+                    preconditionFailure("The starter catalog has no \(item.exercise.key) exercise.")
+                }
+
+                workout.append(exercise: exercise, target: item.target)
+            }
+
+            return workout
+        }
+    }
+
+    public static let exercises: [ExerciseEntry] = [
+        ExerciseEntry(name: .StarterCatalog.exerciseBenchPressName, kind: .weight, categories: [.chest, .arms]),
+        ExerciseEntry(name: .StarterCatalog.exercisePushUpName, kind: .bodyweight, categories: [.chest, .arms]),
+        ExerciseEntry(name: .StarterCatalog.exercisePlankName, kind: .duration, categories: [.core]),
+        ExerciseEntry(name: .StarterCatalog.exerciseTreadmillName, kind: .distance, categories: [.cardio]),
+    ]
+
+    public static var workouts: [WorkoutEntry] {
+        [
+            WorkoutEntry(
+                name: .StarterCatalog.workoutStarterName,
+                pictogram: .workout,
+                schedule: .today(),
+                entries: [
+                    WorkoutEntry.Entry(exercise: .StarterCatalog.exerciseTreadmillName, target: .distance()),
+                    WorkoutEntry.Entry(exercise: .StarterCatalog.exercisePushUpName, target: .bodyweight(reps: 12, sets: 3)),
+                    WorkoutEntry.Entry(exercise: .StarterCatalog.exerciseBenchPressName, target: .weight()),
+                    WorkoutEntry.Entry(exercise: .StarterCatalog.exercisePlankName, target: .duration(seconds: 45)),
+                ]
+            ),
+        ]
+    }
+
+    public static func seed(into context: ModelContext) throws {
+        // Only seed when there are no exercises already in the catalog or we
+        // might fill a catalog that was already filled from another device.
+        guard try context.fetchCount(FetchDescriptor<Exercise>()) == 0 else {
+            return
+        }
+
+        // Every exercise is inserted once and kept under its catalog key, so a
+        // workout naming it links that exercise instead of seeding a second one.
+        var seeded: [String: Exercise] = [:]
+
+        for entry in exercises {
+            let exercise = entry.detachedExercise
+            context.insert(exercise)
+            seeded[entry.name.key] = exercise
+        }
+
+        for entry in workouts {
+            let workout = Workout(name: String(localized: entry.name), pictogram: entry.pictogram, schedule: entry.schedule, entries: [])
+            context.insert(workout)
+
+            for item in entry.entries {
+                guard let exercise = seeded[item.exercise.key] else {
+                    preconditionFailure("The starter catalog has no \(item.exercise.key) exercise.")
+                }
+
+                workout.append(exercise: exercise, target: item.target)
+            }
+        }
+    }
+}
+
+extension StarterCatalog.Samples {
+    public static var weekStreak: some Displayable {
+        WeekStreak(weeks: 6)
+    }
+
+    public static var weeklySessions: some Displayable {
+        WeeklySessions(value: 2.8)
+    }
+
+    public static var personalBest: some Displayable {
+        PersonalBest(target: .weight(kilograms: 90, reps: 10, sets: 3), unitSystem: .current)
+    }
+
+    public static var totalVolume: SessionSummary.Figure<Double> {
+        .totalVolume(12480)
+    }
+
+    public static var weightTarget: ExerciseTarget {
+        .weight(kilograms: 85, reps: 10, sets: 3)
+    }
+
+    public static func exercise(of kind: Exercise.Kind) -> Exercise {
+        guard let entry = StarterCatalog.exercises.first(where: { $0.kind == kind }) else {
+            preconditionFailure("The starter catalog has no \(kind) exercise.")
+        }
+
+        return entry.detachedExercise
+    }
+
+    public static func workout() -> Workout {
+        guard let entry = StarterCatalog.workouts.first else {
+            preconditionFailure("The starter catalog has no workout.")
+        }
+
+        return entry.detachedWorkout
+    }
+}

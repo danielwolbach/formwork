@@ -10,11 +10,10 @@ import SwiftData
 import SwiftUI
 
 struct WorkoutEntryScreen: View {
-    @Bindable
-    var entry: WorkoutEntry
+    private let entry: WorkoutEntry
 
     @Environment(\.modelContext)
-    private var modelContext: ModelContext
+    private var context: ModelContext
 
     @Environment(\.dismiss)
     private var dismiss: DismissAction
@@ -25,76 +24,72 @@ struct WorkoutEntryScreen: View {
     @State
     private var deleteAlert: Bool = false
 
+    init(_ entry: WorkoutEntry) {
+        self.entry = entry
+    }
+
     var body: some View {
         ScrollView {
             VStack(spacing: 32) {
-                // Show the exercise's categories, not the entry's target since
-                // the target editor below already shows it.
-                PictogramHeader(
-                    pictogram: entry.pictogram,
-                    title: entry.title,
-                    subtitle: entry.exercise?.subtitle
-                )
+                // The exercise's categories rather than the entry's target, which the editor below shows.
+                DisplayableHeader(pictogram: entry.pictogram, title: entry.title, subtitle: entry.exercise?.subtitle)
 
-                ExerciseTargetEditor(target: $entry.target)
-                    .padding(.vertical)
+                ExerciseTargetEditor(target: Bindable(entry).target)
+                    .padding(.horizontal)
 
                 if let exercise = entry.exercise {
-                    ExerciseGuide(exercise: exercise)
+                    ExerciseGuide(exercise)
+                        .padding(.horizontal)
                 }
             }
-            .padding(.bottom)
         }
-        .scrollDismissesKeyboard(.interactively)
         .toolbar {
             Menu(.more) {
-                Section {
-                    if entry.exercise != nil {
+                if let exercise = entry.exercise {
+                    Section {
                         Button(.viewStatistics) {
-                            sheet = .viewStatistics(entry: entry)
+                            sheet = .workoutEntryStatistics(entry)
                         }
-                    }
-                }
 
-                Section {
-                    Menu(.unit) {
-                        ExerciseTargetUnitPicker(target: $entry.target)
-                    }
-
-                    if let exercise = entry.exercise {
                         Button(.edit) {
-                            sheet = .editExercise(exercise: exercise)
+                            sheet = .editExercise(exercise)
                         }
                     }
                 }
 
                 Section {
-                    Button(.remove) {
+                    Button(.delete) {
                         deleteAlert = true
                     }
                 }
             }
         }
-        .sheet(item: $sheet) { $0 }
-        .alert(.alertWorkoutEntryRemoveTitle, isPresented: $deleteAlert) {
-            Button(.remove) {
-                delete()
+        .sheet(item: $sheet) { sheet in
+            NavigationStack {
+                sheet
+            }
+        }
+        .alert(.placeholder, isPresented: $deleteAlert) {
+            Button(.cancel) {
+                // Works automatically.
             }
 
-            Button(.cancel) {}
+            Button(.delete) {
+                delete()
+            }
         } message: {
-            Text(.alertWorkoutEntryRemoveMessage)
+            Text(.placeholder)
         }
     }
 
     private func delete() {
-        modelContext.delete(entry)
+        context.delete(entry)
         dismiss()
     }
 }
 
 #Preview {
     NavigationStack {
-        WorkoutEntryScreen(entry: Samples.workouts.first!.entries[1])
+        WorkoutEntryScreen(Samples.workouts.first!.entries.first!)
     }
 }

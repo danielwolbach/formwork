@@ -10,10 +10,10 @@ import SwiftData
 import SwiftUI
 
 struct WorkoutScreen: View {
-    let workout: Workout
+    private let workout: Workout
 
     @Environment(\.modelContext)
-    private var modelContext: ModelContext
+    private var context: ModelContext
 
     @Environment(\.dismiss)
     private var dismiss: DismissAction
@@ -31,16 +31,20 @@ struct WorkoutScreen: View {
     private var deleteAlert: Bool = false
 
     @State
-    private var sessionActiveAlert: Bool = false
+    private var replaceSessionAlert: Bool = false
+
+    init(_ workout: Workout) {
+        self.workout = workout
+    }
 
     var body: some View {
         ScrollView {
             VStack(spacing: 32) {
-                PictogramHeader(workout)
+                DisplayableHeader(workout)
 
                 HStack {
                     Button(.addExercise) {
-                        sheet = .addWorkoutExercise(workout: workout)
+                        sheet = .workoutAddEntries(workout)
                     }
                     .labelStyle(.fixedIconOnly)
                     .buttonStyle(.glass)
@@ -49,14 +53,14 @@ struct WorkoutScreen: View {
                     Button(.startSession) {
                         startSession()
                     }
-                    .fontWeight(.semibold)
                     .labelStyle(.fixedTitleAndIcon)
                     .buttonStyle(.glassProminent)
+                    .fontWeight(.medium)
                     .tint(.green)
                     .disabled(workout.entries.isEmpty)
 
-                    NavigationLink(value: Route.workoutStatistics(workout: workout)) {
-                        Label(.viewStatistics)
+                    Button(.viewStatistics) {
+                        sheet = .workoutStatistics(workout)
                     }
                     .labelStyle(.fixedIconOnly)
                     .buttonStyle(.glass)
@@ -66,42 +70,41 @@ struct WorkoutScreen: View {
 
                 if workout.entries.isEmpty {
                     ContentUnavailableView {
-                        Label(.emptyExercisesTitle, systemImage: "dumbbell")
+                        Label(.placeholder, systemImage: "dumbbell")
                     } description: {
-                        Text(.emptyWorkoutExercisesDescription)
+                        Text(.placeholder)
                     } actions: {
                         Button(.addExercise) {
-                            sheet = .addWorkoutExercise(workout: workout)
+                            sheet = .workoutAddEntries(workout)
                         }
-                        .buttonStyle(.glassProminent)
+                        .labelStyle(.fixedTitleAndIcon)
+                        .buttonStyle(.cardProminent())
                     }
                 } else {
-                    NavigationList(workout.entries.sorted()) { entry in
-                        PictogramRow(entry)
+                    NavigationRows(for: workout.entries.sorted()) { entry in
+                        DisplayableRow(entry)
                     }
                 }
             }
-            .padding(.bottom)
         }
         .navigationDestination(for: WorkoutEntry.self) { entry in
-            WorkoutEntryScreen(entry: entry)
+            WorkoutEntryScreen(entry)
         }
-        .navigationDestination(for: Route.self) { $0 }
         .toolbar {
             Menu(.more) {
                 Section {
                     Button(.addExercise) {
-                        sheet = .addWorkoutExercise(workout: workout)
+                        sheet = .workoutAddEntries(workout)
                     }
 
-                    NavigationLink(value: Route.workoutStatistics(workout: workout)) {
-                        Label(.viewStatistics)
+                    Button(.viewStatistics) {
+                        sheet = .workoutStatistics(workout)
                     }
                 }
 
                 Section {
                     Button(.edit) {
-                        sheet = .editWorkout(workout: workout)
+                        sheet = .editWorkout(workout)
                     }
                 }
 
@@ -112,41 +115,49 @@ struct WorkoutScreen: View {
                 }
             }
         }
-        .sheet(item: $sheet) { $0 }
-        .alert(.alertWorkoutDeleteTitle, isPresented: $deleteAlert) {
+        .alert(.placeholder, isPresented: $deleteAlert) {
+            Button(.cancel) {
+                // Works automatically.
+            }
+
             Button(.delete) {
                 delete()
             }
-
-            Button(.cancel) {}
         } message: {
-            Text(.alertWorkoutDeleteMessage)
+            Text(.placeholder)
         }
-        .alert(.alertSessionActiveTitle, isPresented: $sessionActiveAlert) {
+        .alert(.placeholder, isPresented: $replaceSessionAlert) {
+            Button(.cancel) {
+                // Works automatically.
+            }
+
             Button(.replaceSession) {
                 replaceSession()
             }
 
-            if let activeSession = activeSessions.first {
+            if let session = activeSessions.first {
                 Button(.resumeSession) {
-                    presentSession(activeSession)
+                    presentSession(session)
                 }
             }
-
-            Button(.cancel) {}
         } message: {
-            Text(.alertSessionActiveMessage)
+            Text(.placeholder)
+        }
+        .sheet(item: $sheet) { sheet in
+            NavigationStack {
+                sheet
+            }
         }
     }
 
     private func delete() {
-        modelContext.delete(workout)
+        context.delete(workout)
         dismiss()
     }
 
     private func startSession() {
         guard activeSessions.first == nil else {
-            sessionActiveAlert = true
+            replaceSessionAlert = true
             return
         }
 
@@ -154,18 +165,15 @@ struct WorkoutScreen: View {
     }
 
     private func replaceSession() {
-        do {
-            let session = try Session.start(workout, in: modelContext)
-            DispatchQueue.main.async { presentSession(session) }
-        } catch {
-            // TODO: Log error
+        if let session = workout.startSession() {
+            presentSession(session)
         }
     }
 }
 
 #Preview {
     NavigationStack {
-        WorkoutScreen(workout: Samples.workouts.first!)
+        WorkoutScreen(Samples.workouts[1])
     }
     .sampleData()
 }

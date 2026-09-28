@@ -9,7 +9,14 @@ import FormworkKit
 import SwiftUI
 
 struct WorkoutStatisticsScreen: View {
-    let workout: Workout
+    private let workout: Workout
+
+    @Environment(\.dismiss)
+    private var dismiss: DismissAction
+
+    init(_ workout: Workout) {
+        self.workout = workout
+    }
 
     var body: some View {
         let history = History(.workout(workout))
@@ -25,15 +32,24 @@ struct WorkoutStatisticsScreen: View {
                 StatisticCard(.mostSkippedExercise, of: history)
 
                 StatisticCard(.activeDays, of: history)
+                    .tileSpan(rows: 2, columns: 2)
 
                 StatisticCard(.typicalStartTime, of: history)
 
                 StatisticCard(.completions, of: history)
 
                 StatisticCard(.categories, of: history)
+                    .tileSpan(rows: 2, columns: 2)
             }
-            .padding(.horizontal, 16)
+            .padding(.horizontal)
             .padding(.bottom)
+        }
+        .toolbar {
+            ToolbarItem(placement: .cancellationAction) {
+                Button(.minimize) {
+                    dismiss()
+                }
+            }
         }
         .navigationTitle(.screenStatisticsTitle)
         .navigationSubtitle(workout.title)
@@ -43,7 +59,7 @@ struct WorkoutStatisticsScreen: View {
 
 #Preview {
     NavigationStack {
-        WorkoutStatisticsScreen(workout: Samples.workouts.first!)
+        WorkoutStatisticsScreen(Samples.workouts.first!)
     }
     .sampleData()
 }

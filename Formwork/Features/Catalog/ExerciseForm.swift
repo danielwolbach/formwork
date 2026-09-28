@@ -12,115 +12,132 @@ import Vision
 import VisionKit
 
 struct ExerciseForm: View {
-    let exercise: Exercise?
+    private let exercise: Exercise?
+
+    @Environment(\.modelContext)
+    private var context: ModelContext
 
     @Environment(\.dismiss)
     private var dismiss: DismissAction
 
-    @Environment(\.modelContext)
-    private var modelContext: ModelContext
+    @State
+    private var name: String = ""
 
     @State
-    private var name: String
+    private var kind: Exercise.Kind = .weight
 
     @State
-    private var type: ExerciseType
+    private var categories: Set<Exercise.Category> = []
 
     @State
-    private var categories: Set<ExerciseCategory>
+    private var link: String = ""
 
     @State
-    private var url: String
-
-    @State
-    private var notes: String
+    private var notes: String = ""
 
     @State
     private var showScanner: Bool = false
 
-    init(exercise: Exercise? = nil) {
-        self._name = State(initialValue: exercise?.name ?? "")
-        self._type = State(initialValue: exercise?.type ?? .weight)
-        self._categories = State(initialValue: exercise?.categories ?? [])
-        self._url = State(initialValue: exercise?.link?.absoluteString ?? "")
-        self._notes = State(initialValue: exercise?.notes ?? "")
+    init(_ exercise: Exercise? = nil) {
+        self._name = .init(initialValue: exercise?.name ?? "")
+        self._kind = .init(initialValue: exercise?.kind ?? .weight)
+        self._categories = .init(initialValue: exercise?.categories ?? [])
+        self._link = .init(initialValue: exercise?.link?.absoluteString ?? "")
+        self._notes = .init(initialValue: exercise?.notes ?? "")
         self.exercise = exercise
     }
 
-    init(category: ExerciseCategory) {
-        self._name = State(initialValue: "")
-        self._type = State(initialValue: .weight)
-        self._categories = State(initialValue: [category])
-        self._url = State(initialValue: "")
-        self._notes = State(initialValue: "")
+    init(categories: Set<Exercise.Category>) {
+        self._name = .init(initialValue: "")
+        self._kind = .init(initialValue: .weight)
+        self._categories = .init(initialValue: categories)
+        self._link = .init(initialValue: "")
+        self._notes = .init(initialValue: "")
         self.exercise = nil
     }
 
     var body: some View {
-        Form {
-            Section(.sectionExerciseNameTitle) {
-                TextField(exercise?.name ?? "", text: $name)
-            }
-
-            Section(.sectionExerciseTypeTitle) {
-                ExerciseTypePicker(type: $type)
-            }
-
-            Section(.sectionExerciseCategoriesTitle) {
-                ExerciseCategoryPicker(categories: $categories)
-            }
-
-            Section(.sectionExerciseLinkTitle) {
-                HStack {
-                    TextField(.fieldExerciseLinkPlaceholder, text: $url)
-                        .keyboardType(.URL)
-                        .textContentType(.URL)
-                        .textInputAutocapitalization(.never)
-                        .autocorrectionDisabled()
-
-                    if QRCodeScanner.isSupported {
-                        Button(.scan) {
-                            showScanner = true
-                        }
-                        .labelStyle(.iconOnly)
-                        .buttonStyle(.borderless)
-                    }
+        ScrollView {
+            VStack(spacing: 32) {
+                SectionView(.init(localized: .fieldNameTitle)) {
+                    TextField(.fieldNamePlaceholder, text: $name)
+                        .padding()
+                        .card()
+                        .padding(.horizontal)
                 }
-            }
 
-            Section(.sectionExerciseNotesTitle) {
-                TextField(.fieldExerciseNotesPlaceholder, text: $notes, axis: .vertical)
-                    .lineLimit(4...)
+                SectionView(.init(localized: .fieldKindTitle)) {
+                    ExerciseKindPicker(kind: $kind)
+                        .padding()
+                        .card()
+                        .padding(.horizontal)
+                }
+
+                SectionView(.init(localized: .fieldCategoryTitle)) {
+                    ExerciseCategoryPicker(categories: $categories)
+                        .padding()
+                        .card()
+                        .padding(.horizontal)
+                }
+
+                SectionView(.init(localized: .fieldLinkTitle)) {
+                    HStack {
+                        TextField(.fieldLinkPlaceholder, text: $link)
+                            .keyboardType(.URL)
+                            .textContentType(.URL)
+                            .textInputAutocapitalization(.never)
+                            .autocorrectionDisabled()
+
+                        if QRCodeScanner.isSupported {
+                            Button(.scan) {
+                                showScanner = true
+                            }
+                            .labelStyle(.fixedIconOnly)
+                            .buttonStyle(.card())
+                        }
+                    }
+                    .padding()
+                    .card()
+                    .padding(.horizontal)
+                }
+
+                SectionView(.init(localized: .fieldNotesTitle)) {
+                    TextField(.fieldNotesPlaceholder, text: $notes, axis: .vertical)
+                        .lineLimit(4...)
+                        .padding()
+                        .card()
+                        .padding(.horizontal)
+                }
             }
         }
-        .navigationTitle(exercise == nil ? .screenExerciseCreateTitle : .screenExerciseEditTitle)
+        .navigationTitle(exercise == nil ? .screenCreateExerciseTitle : .screenEditExerciseTile)
         .navigationBarTitleDisplayMode(.inline)
-        .scrollDismissesKeyboard(.interactively)
+        .scrollDismissesKeyboard(.immediately)
         .toolbar {
-            ToolbarItem(placement: .confirmationAction) {
-                Button(.confirm) {
-                    save()
-                }
-                .disabled(!valid)
-            }
-
             ToolbarItem(placement: .cancellationAction) {
                 Button(.cancel) {
                     dismiss()
                 }
+            }
+
+            ToolbarItem(placement: .confirmationAction) {
+                Button(.confirm) {
+                    commit()
+                }
+                .disabled(!valid)
             }
         }
         .sheet(isPresented: $showScanner) {
             NavigationStack {
                 QRCodeScanner { scanned in
                     Haptics.notification(.success)
-                    url = scanned.absoluteString
+                    link = scanned.absoluteString
                     showScanner = false
                 }
                 .aspectRatio(1, contentMode: .fit)
                 .clipShape(.rect(cornerRadius: 24))
                 .padding()
-                .navigationTitle(.screenQrCodeScannerTitle)
+                .navigationTitle(.placeholder)
                 .navigationBarTitleDisplayMode(.inline)
                 .presentationDetents([.medium])
                 .toolbar {
@@ -136,47 +153,52 @@ struct ExerciseForm: View {
 
     private var valid: Bool {
         let name = name.trimmingCharacters(in: .whitespacesAndNewlines)
-        let url = url.trimmingCharacters(in: .whitespacesAndNewlines)
-        return !name.isEmpty && (url.isEmpty || link != nil)
+        let link = link.trimmingCharacters(in: .whitespacesAndNewlines)
+        return !name.isEmpty && (link.isEmpty || url != nil)
     }
 
-    private var link: URL? {
-        let url = url.trimmingCharacters(in: .whitespacesAndNewlines)
-        let link = URL(string: url.contains("://") ? url : "https://\(url)")
-        return link?.host() == nil ? nil : link
+    private var url: URL? {
+        let link = link.trimmingCharacters(in: .whitespacesAndNewlines)
+        let url = URL(string: link.contains("://") ? link : "https://\(link)")
+        return url?.host() == nil ? nil : url
     }
 
-    private func save() {
+    private func commit() {
         let name = name.trimmingCharacters(in: .whitespacesAndNewlines)
         let categories = categories.isEmpty ? [.other] : categories
         let notes = notes.trimmingCharacters(in: .whitespacesAndNewlines)
 
         if let exercise {
             exercise.name = name
-            exercise.type = type
+            exercise.kind = kind
             exercise.categories = categories
-            exercise.link = link
+            exercise.link = url
             exercise.notes = notes
         } else {
-            let exercise = Exercise(name: name, type: type, categories: categories, link: link, notes: notes)
-            modelContext.insert(exercise)
+            let exercise = Exercise(name: name, kind: kind, categories: categories, link: url, notes: notes)
+            context.insert(exercise)
         }
 
         dismiss()
     }
 }
 
-private struct ExerciseTypePicker: View {
+private struct ExerciseKindPicker: View {
     @Binding
-    var type: ExerciseType
+    private var kind: Exercise.Kind
+
+    init(kind: Binding<Exercise.Kind>) {
+        self._kind = kind
+    }
 
     var body: some View {
-        LazyVGrid(columns: GridItem.ntile(n: 2)) {
-            ForEach(ExerciseType.allCases) { candidate in
+        TileGrid {
+            ForEach(Exercise.Kind.allCases) { candidate in
                 Toggle(isOn: binding(for: candidate)) {
                     VStack {
                         Image(systemName: candidate.pictogram.image)
                             .frame(width: 24, height: 24)
+                            .fontWeight(.medium)
 
                         Text(candidate.title)
                             .lineLimit(1)
@@ -187,16 +209,18 @@ private struct ExerciseTypePicker: View {
                 .toggleStyle(.card(tint: candidate.pictogram.color))
             }
         }
-        .buttonBorderShape(.roundedRectangle(radius: 12))
-        .sensoryFeedback(.selection, trigger: type)
+        .buttonBorderShape(.roundedRectangle(radius: 8))
+        .sensoryFeedback(.selection, trigger: kind)
     }
 
-    private func binding(for candidate: ExerciseType) -> Binding<Bool> {
+    private func binding(for candidate: Exercise.Kind) -> Binding<Bool> {
         Binding(
-            get: { type == candidate },
+            get: {
+                kind == candidate
+            },
             set: { selected in
                 if selected {
-                    type = candidate
+                    kind = candidate
                 }
             }
         )
@@ -205,11 +229,15 @@ private struct ExerciseTypePicker: View {
 
 private struct ExerciseCategoryPicker: View {
     @Binding
-    var categories: Set<ExerciseCategory>
+    private var categories: Set<Exercise.Category>
+
+    init(categories: Binding<Set<Exercise.Category>>) {
+        self._categories = categories
+    }
 
     var body: some View {
         FlowLayout(spacing: 8) {
-            ForEach(ExerciseCategory.allCases, id: \.self) { candidate in
+            ForEach(Exercise.Category.allCases) { candidate in
                 Toggle(candidate.title, systemImage: candidate.pictogram.image, isOn: binding(for: candidate))
                     .font(.subheadline)
                     .lineLimit(1)
@@ -221,9 +249,11 @@ private struct ExerciseCategoryPicker: View {
         .sensoryFeedback(.selection, trigger: categories)
     }
 
-    private func binding(for candidate: ExerciseCategory) -> Binding<Bool> {
+    private func binding(for candidate: Exercise.Category) -> Binding<Bool> {
         Binding(
-            get: { categories.contains(candidate) },
+            get: {
+                categories.contains(candidate)
+            },
             set: { selected in
                 if selected {
                     categories.insert(candidate)
@@ -311,6 +341,6 @@ private struct QRCodeScanner: UIViewControllerRepresentable {
 
 #Preview("Edit") {
     NavigationStack {
-        ExerciseForm(exercise: Samples.exercises.first!)
+        ExerciseForm(Samples.exercises.first!)
     }
 }

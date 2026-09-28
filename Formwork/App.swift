@@ -1,3 +1,10 @@
+//
+//  App.swift
+//  Formwork
+//
+//  Created by Daniel Wolbach on 04.09.26.
+//
+
 import FormworkKit
 import SwiftData
 import SwiftUI
@@ -23,61 +30,11 @@ private struct AppContent: View {
     private var presentedSession: Session? = nil
 
     @Namespace
-    private var sessionNamespace
-
-    var body: some View {
-        MainTabView(activeSession: activeSession, sessionNamespace: sessionNamespace)
-            .environment(\.presentSession, PresentSessionAction(action: presentSession))
-            .fullScreenCover(isPresented: onboardingPendingBinding) {
-                OnboardingScreen()
-            }
-            .fullScreenCover(item: presentedSessionBinding) { session in
-                NavigationStack {
-                    SessionPlayerScreen(session: session)
-                }
-                .navigationTransition(.zoom(sourceID: session.persistentModelID, in: sessionNamespace))
-            }
-            .task(id: activityState) {
-                await SessionActivity.sync(activityState)
-            }
-            .onOpenURL { url in
-                guard url == DeepLink.session, let activeSession else {
-                    return
-                }
-
-                presentedSession = activeSession
-            }
-    }
-
-    private var activeSession: Session? {
-        activeSessions.first
-    }
-
-    private var activityState: SessionActivityAttributes.ContentState? {
-        activeSession.flatMap(SessionActivityAttributes.ContentState.init(session:))
-    }
-
-    private var presentedSessionBinding: Binding<Session?> {
-        Binding(get: { presentedSession }, set: { presentedSession = $0 })
-    }
-
-    private var onboardingPendingBinding: Binding<Bool> {
-        Binding(get: { onboardingPending }, set: { onboardingPending = $0 })
-    }
-
-    private func presentSession(session: Session) {
-        presentedSession = session
-    }
-}
-
-private struct MainTabView: View {
-    let activeSession: Session?
-
-    let sessionNamespace: Namespace.ID
+    private var presentedSessionNamespace: Namespace.ID
 
     var body: some View {
         TabView {
-            Tab(.screenOverviewTitle, systemImage: "text.rectangle.page") {
+            Tab(.placeholder, systemImage: "text.rectangle.page") {
                 NavigationStack {
                     OverviewScreen()
                 }
@@ -85,7 +42,7 @@ private struct MainTabView: View {
 
             Tab(.screenWorkoutsTitle, systemImage: "clipboard") {
                 NavigationStack {
-                    WorkoutListScreen()
+                    WorkoutIndexScreen()
                 }
             }
 
@@ -101,12 +58,40 @@ private struct MainTabView: View {
                 }
             }
         }
-        .tabBarMinimizeBehavior(activeSession == nil ? .automatic : .onScrollDown)
-        .tabViewBottomAccessory(isEnabled: activeSession != nil) {
-            if let activeSession {
-                SessionMiniPlayer(session: activeSession, namespace: sessionNamespace)
+        .environment(\.presentSession, PresentSessionAction(action: presentSession))
+        .fullScreenCover(isPresented: $onboardingPending) {
+            OnboardingScreen()
+        }
+        .fullScreenCover(item: $presentedSession) { session in
+            NavigationStack {
+                SessionPlayerScreen(session)
+            }
+            .navigationTransition(.zoom(sourceID: session.persistentModelID, in: presentedSessionNamespace))
+        }
+        .tabBarMinimizeBehavior(activeSessions.isEmpty ? .automatic : .onScrollDown)
+        .tabViewBottomAccessory(isEnabled: !activeSessions.isEmpty) {
+            if let session = activeSessions.first {
+                SessionMiniPlayer(session, namespace: presentedSessionNamespace)
             }
         }
+        .task(id: activityState) {
+            await SessionActivity.sync(activityState)
+        }
+        .onOpenURL { url in
+            guard url == DeepLink.session, let session = activeSessions.first else {
+                return
+            }
+
+            presentedSession = session
+        }
+    }
+
+    private var activityState: SessionActivityAttributes.ContentState? {
+        activeSessions.first.flatMap(SessionActivityAttributes.ContentState.init(session:))
+    }
+
+    private func presentSession(session: Session) {
+        presentedSession = session
     }
 }
 

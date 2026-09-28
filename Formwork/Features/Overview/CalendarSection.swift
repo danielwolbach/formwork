@@ -25,7 +25,7 @@ struct CalendarSection: View {
     var body: some View {
         let sessionsInMonth = sessionsInMonth
 
-        SectionView(.sectionOverviewCalendar, subtitle: subtitle) {
+        SectionView(.init(localized: .fieldCalendarTitle), subtitle: subtitle) {
             VStack(spacing: 12) {
                 LazyVGrid(columns: GridItem.ntile(n: 7, spacing: 0)) {
                     ForEach(Schedule.Weekday.ordered()) { weekday in
@@ -41,9 +41,7 @@ struct CalendarSection: View {
                             let completed = completed(on: day, among: sessionsInMonth)
 
                             Button {
-                                withAnimation(.snappy) {
-                                    selectedDay = Calendar.current.component(.day, from: day)
-                                }
+                                selectedDay = Calendar.current.component(.day, from: day)
                             } label: {
                                 CalendarDay(
                                     day: day,
@@ -67,18 +65,15 @@ struct CalendarSection: View {
                 CalendarDayList(day: selection, sessions: finished, planned: planned(on: selection, besides: finished.compactMap(\.workout)))
             }
             .padding()
-            .background(.ultraThinMaterial)
-            .clipShape(.rect(cornerRadius: 16, style: .continuous))
+            .card()
             .padding(.horizontal)
         } accessory: {
-            // First, so appearing and disappearing doesn't move the arrows.
             if !isShowingToday {
                 Button(.today) {
                     showToday()
                 }
                 .labelStyle(.fixedTitleAndIcon)
                 .buttonStyle(.glass)
-                .transition(.blurReplace)
             }
 
             Button(.backward) {
@@ -155,8 +150,6 @@ struct CalendarSection: View {
         return Set(workouts).sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending }
     }
 
-    /// Only from today on: a workout keeps just its current schedule, so earlier days would show what it plans now,
-    /// not what it planned then.
     private func planned(on day: Date, besides completed: [Workout]) -> [Workout] {
         let calendar = Calendar.current
         guard calendar.startOfDay(for: day) >= calendar.startOfDay(for: .now) else {
@@ -169,10 +162,8 @@ struct CalendarSection: View {
     }
 
     private func showToday() {
-        withAnimation(.snappy) {
-            month = .now
-            selectedDay = Calendar.current.component(.day, from: .now)
-        }
+        month = .now
+        selectedDay = Calendar.current.component(.day, from: .now)
     }
 
     private func showMonth(by offset: Int) {
@@ -180,9 +171,7 @@ struct CalendarSection: View {
             return
         }
 
-        withAnimation(.snappy) {
-            self.month = month
-        }
+        self.month = month
     }
 }
 
@@ -256,18 +245,16 @@ private struct CalendarDayList: View {
                 .padding(.vertical, 8)
 
             if sessions.isEmpty, planned.isEmpty {
-                // As tall as a row's pictogram, with the same spacing around it.
-                Text(.sectionOverviewCalendarEmpty)
+                Text(.placeholder)
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                     .frame(maxWidth: .infinity, minHeight: 64)
                     .padding(.vertical, 8)
-                    .transition(.blurReplace)
             }
 
             ForEach(sessions) { session in
                 link(to: session) {
-                    PictogramRow(
+                    DisplayableRow(
                         pictogram: session.pictogram,
                         title: session.title,
                         subtitle: session.startDate.formatted(session.wallClockTime()),
@@ -278,7 +265,7 @@ private struct CalendarDayList: View {
 
             ForEach(planned) { workout in
                 link(to: workout) {
-                    PictogramRow(workout, badge: .pendingBadge)
+                    DisplayableRow(workout, badge: .pendingBadge)
                 }
             }
         }
@@ -293,7 +280,6 @@ private struct CalendarDayList: View {
         }
         .buttonStyle(.plain)
         .padding(.vertical, 8)
-        .transition(.blurReplace)
     }
 }
 
@@ -319,10 +305,10 @@ private struct CalendarMarker: View {
             CalendarSection()
         }
         .navigationDestination(for: Workout.self) { workout in
-            WorkoutScreen(workout: workout)
+            WorkoutScreen(workout)
         }
         .navigationDestination(for: Session.self) { session in
-            SessionScreen(session: session)
+            SessionScreen(session)
         }
     }
     .sampleData()

@@ -9,16 +9,22 @@ import FormworkKit
 import SwiftUI
 
 struct WorkoutCard: View {
-    let workout: Workout
+    private let workout: Workout
+
+    init(_ workout: Workout) {
+        self.workout = workout
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             Image(systemName: workout.pictogram.image)
-                .font(.system(size: 32, weight: .medium))
+                .font(.system(size: 48))
+                .fontWeight(.medium)
                 .foregroundStyle(workout.pictogram.color)
                 .frame(maxWidth: .infinity)
-                .frame(height: 96)
-                .background(workout.pictogram.color.quaternary)
+                .frame(height: 64)
+                .padding()
+                .background(workout.pictogram.color.quinary)
 
             VStack(alignment: .leading, spacing: 16) {
                 VStack(alignment: .leading) {
@@ -34,9 +40,9 @@ struct WorkoutCard: View {
                     }
                 }
 
-                if !categories.isEmpty {
+                if !workout.exerciseCategories.isEmpty {
                     FlowLayout(alignment: .leading, rowLimit: 2) {
-                        ForEach(categories) { category in
+                        ForEach(workout.exerciseCategories) { category in
                             Label(category.title, systemImage: category.pictogram.image)
                                 .labelStyle(.chip(tint: category.pictogram.color))
                         }
@@ -45,18 +51,11 @@ struct WorkoutCard: View {
             }
             .padding()
         }
-        .background(.ultraThinMaterial)
-        .clipShape(.rect(cornerRadius: 16, style: .continuous))
-        .contentShape(.rect)
-    }
-
-    private var categories: [ExerciseCategory] {
-        let present = Set(workout.entries.compactMap(\.exercise).flatMap(\.categories))
-        return ExerciseCategory.allCases.filter(present.contains)
+        .card()
     }
 }
 
 #Preview {
-    WorkoutCard(workout: Samples.workouts.first!)
+    WorkoutCard(Samples.workouts.first!)
         .padding()
 }

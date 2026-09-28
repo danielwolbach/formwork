@@ -8,22 +8,24 @@
 import FormworkKit
 import SwiftUI
 
-/// An exercise's guide on its own, for screens without room to show it inline. Only ever presented as a sheet, so it
-/// owns its close button.
 struct ExerciseGuideScreen: View {
-    let exercise: Exercise
+    private let exercise: Exercise
 
     @Environment(\.dismiss)
     private var dismiss: DismissAction
 
+    init(_ exercise: Exercise) {
+        self.exercise = exercise
+    }
+
     var body: some View {
         ScrollView {
-            ExerciseGuide(exercise: exercise)
+            ExerciseGuide(exercise)
+                .padding(.horizontal)
         }
-        .navigationTitle(.screenExerciseGuideTitle)
+        .navigationTitle(.placeholder)
         .navigationSubtitle(exercise.title)
         .navigationBarTitleDisplayMode(.inline)
-        .scrollDismissesKeyboard(.interactively)
         .presentationDetents([.medium, .large])
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
@@ -37,7 +39,7 @@ struct ExerciseGuideScreen: View {
 
 #Preview {
     NavigationStack {
-        ExerciseGuideScreen(exercise: Samples.exercises.first!)
+        ExerciseGuideScreen(Samples.exercises[1])
     }
     .sampleData()
 }

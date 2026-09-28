@@ -5,6 +5,7 @@
 //  Created by Daniel Wolbach on 09.09.26.
 //
 
+import FormworkKit
 import SwiftUI
 
 struct DecimalKeypad: View {
@@ -16,7 +17,7 @@ struct DecimalKeypad: View {
     var text: String
 
     var body: some View {
-        LazyVGrid(columns: GridItem.ntile(n: 3, spacing: 12), spacing: 12) {
+        TileGrid(columns: 3) {
             ForEach(1 ... 9, id: \.self) { digit in
                 key(action: { appendDigit(String(digit)) }) {
                     digitLabel(String(digit))
@@ -56,7 +57,6 @@ struct DecimalKeypad: View {
         Button(action: action) {
             label()
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .aspectRatio(2, contentMode: .fill)
                 .contentShape(.rect)
         }
         .buttonStyle(.glass)

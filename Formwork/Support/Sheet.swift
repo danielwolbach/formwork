@@ -8,33 +8,31 @@
 import FormworkKit
 import SwiftUI
 
-enum Sheet: Hashable, View {
+enum Sheet: Identifiable, Hashable, View {
     case createExercise
-    case createExerciseInCategory(category: ExerciseCategory)
-    case editExercise(exercise: Exercise)
+    case createExerciseInCategories(_ categories: Set<Exercise.Category>)
+    case editExercise(_ exercise: Exercise)
     case createWorkout
-    case editWorkout(workout: Workout)
-    case addWorkoutExercise(workout: Workout)
-    case viewStatistics(entry: WorkoutEntry)
-    case viewGuide(exercise: Exercise)
+    case editWorkout(_ workout: Workout)
+    case workoutAddEntries(_ workout: Workout)
+    case workoutStatistics(_ workout: Workout)
+    case workoutEntryStatistics(_ entry: WorkoutEntry)
+    case exerciseGuide(_ exercise: Exercise)
 
     var body: some View {
-        NavigationStack {
-            switch self {
-            case .createExercise: ExerciseForm()
-            case let .createExerciseInCategory(category): ExerciseForm(category: category)
-            case let .editExercise(exercise): ExerciseForm(exercise: exercise)
-            case .createWorkout: WorkoutForm()
-            case let .editWorkout(workout): WorkoutForm(workout: workout)
-            case let .addWorkoutExercise(workout): WorkoutAddExerciseForm(workout: workout)
-            case let .viewStatistics(entry): WorkoutEntryStatisticsScreen(entry: entry)
-            case let .viewGuide(exercise): ExerciseGuideScreen(exercise: exercise)
-            }
+        switch self {
+        case .createExercise: ExerciseForm()
+        case let .createExerciseInCategories(categories): ExerciseForm(categories: categories)
+        case let .editExercise(exercise): ExerciseForm(exercise)
+        case .createWorkout: WorkoutForm()
+        case let .editWorkout(workout): WorkoutForm(workout)
+        case let .workoutAddEntries(workout): WorkoutAddEntriesForm(workout: workout)
+        case let .workoutStatistics(workout): WorkoutStatisticsScreen(workout)
+        case let .workoutEntryStatistics(entry): WorkoutEntryStatisticsScreen(entry)
+        case let .exerciseGuide(exercise): ExerciseGuideScreen(exercise)
         }
     }
-}
 
-extension Sheet: Identifiable {
     var id: Self {
         self
     }
