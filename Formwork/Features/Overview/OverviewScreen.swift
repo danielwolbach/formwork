@@ -36,7 +36,7 @@ struct OverviewScreen: View {
                 CalendarSection()
             }
         }
-        .navigationTitle(.placeholder)
+        .navigationTitle(.screenOverviewTitle)
         .navigationDestination(for: Workout.self) { workout in
             WorkoutScreen(workout)
         }
@@ -48,7 +48,7 @@ struct OverviewScreen: View {
                 DebugMenu()
             }
         }
-        .alert(.placeholder, isPresented: $sessionActiveAlert) {
+        .alert(.alertReplaceSessionTitle, isPresented: $sessionActiveAlert) {
             if let workout = workouts.pending().first {
                 Button(.replaceSession) {
                     replaceSession(workout: workout)
@@ -61,9 +61,11 @@ struct OverviewScreen: View {
                 }
             }
 
-            Button(.cancel) {}
+            Button(.cancel) {
+                // Works automatically.
+            }
         } message: {
-            Text(.placeholder)
+            Text(.alertReplaceSessionMessage)
         }
     }
 
@@ -88,15 +90,15 @@ struct OverviewScreen: View {
                 if pending.isEmpty {
                     if workouts.contains(where: { $0.schedule.isScheduled(on: .now) }) {
                         StateCard(
-                            title: .placeholder,
-                            description: .placeholder,
+                            title: .emptyAllDoneTitle,
+                            description: .emptyAllDoneMessage,
                             image: "checkmark.seal.fill",
                             tint: .green
                         )
                     } else {
                         StateCard(
-                            title: .placeholder,
-                            description: .placeholder,
+                            title: .emptyRestDayTitle,
+                            description: .emptyRestDayMessage,
                             image: "moon.zzz.fill",
                             tint: .purple
                         )

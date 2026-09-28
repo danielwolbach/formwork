@@ -14,12 +14,22 @@ struct SessionListScreen: View {
     private var sessions: [Session]
 
     var body: some View {
-        ScrollView {
-            NavigationRows(for: sessions) { session in
-                DisplayableRow(session)
+        Group {
+            if sessions.isEmpty {
+                ContentUnavailableView {
+                    Label(.emptySessionsTitle, systemImage: "calendar")
+                } description: {
+                    Text(.emptySessionsMessage)
+                }
+            } else {
+                ScrollView {
+                    NavigationRows(for: sessions) { session in
+                        DisplayableRow(session)
+                    }
+                }
             }
         }
-        .navigationTitle(.placeholder)
+        .navigationTitle(.screenSessionsTitle)
     }
 }
 

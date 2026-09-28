@@ -58,7 +58,7 @@ struct WorkoutEntryScreen: View {
                 }
 
                 Section {
-                    Button(.delete) {
+                    Button(.remove) {
                         deleteAlert = true
                     }
                 }
@@ -69,20 +69,20 @@ struct WorkoutEntryScreen: View {
                 sheet
             }
         }
-        .alert(.placeholder, isPresented: $deleteAlert) {
+        .alert(.alertRemoveWorkoutEntryTitle, isPresented: $deleteAlert) {
             Button(.cancel) {
                 // Works automatically.
             }
 
-            Button(.delete) {
-                delete()
+            Button(.remove) {
+                remove()
             }
         } message: {
-            Text(.placeholder)
+            Text(.alertRemoveWorkoutEntryMessage)
         }
     }
 
-    private func delete() {
+    private func remove() {
         context.delete(entry)
         dismiss()
     }

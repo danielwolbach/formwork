@@ -7,7 +7,6 @@
 
 import Foundation
 
-/// Days with a session per week, counted like `WeeklySessions`: `ActiveDays` as a single number.
 public struct WeeklyActiveDays {
     public let value: Double?
 }

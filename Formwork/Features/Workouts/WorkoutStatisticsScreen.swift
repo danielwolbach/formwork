@@ -21,28 +21,38 @@ struct WorkoutStatisticsScreen: View {
     var body: some View {
         let history = History(.workout(workout))
 
-        ScrollView {
-            TileGrid {
-                StatisticCard(.lastCompleted, of: history)
+        Group {
+            if history.sessions.isEmpty {
+                ContentUnavailableView {
+                    Label(.emptyStatisticsTitle, systemImage: "flame")
+                } description: {
+                    Text(.emptyStatisticsMessage)
+                }
+            } else {
+                ScrollView {
+                    TileGrid {
+                        StatisticCard(.lastCompleted, of: history)
 
-                StatisticCard(.typicalDuration, of: history)
+                        StatisticCard(.typicalDuration, of: history)
 
-                StatisticCard(.completionRate, of: history)
+                        StatisticCard(.completionRate, of: history)
 
-                StatisticCard(.mostSkippedExercise, of: history)
+                        StatisticCard(.mostSkippedExercise, of: history)
 
-                StatisticCard(.activeDays, of: history)
-                    .tileSpan(rows: 2, columns: 2)
+                        StatisticCard(.activeDays, of: history)
+                            .tileSpan(rows: 2, columns: 2)
 
-                StatisticCard(.typicalStartTime, of: history)
+                        StatisticCard(.typicalStartTime, of: history)
 
-                StatisticCard(.completions, of: history)
+                        StatisticCard(.completions, of: history)
 
-                StatisticCard(.categories, of: history)
-                    .tileSpan(rows: 2, columns: 2)
+                        StatisticCard(.categories, of: history)
+                            .tileSpan(rows: 2, columns: 2)
+                    }
+                    .padding(.horizontal)
+                    .padding(.bottom)
+                }
             }
-            .padding(.horizontal)
-            .padding(.bottom)
         }
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {

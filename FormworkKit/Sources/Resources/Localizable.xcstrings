@@ -224,6 +224,17 @@
         }
       }
     },
+    "action.remove.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove"
+          }
+        }
+      }
+    },
     "action.replaceSession.title" : {
       "extractionState" : "manual",
       "localizations" : {

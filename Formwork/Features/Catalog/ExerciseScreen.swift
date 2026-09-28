@@ -29,12 +29,16 @@ struct ExerciseScreen: View {
     }
 
     var body: some View {
+        let history = History(.exercise(exercise))
+
         ScrollView {
             VStack(spacing: 32) {
                 DisplayableHeader(exercise)
 
-                ExerciseStatistics(history: .init(.exercise(exercise)))
-                    .padding(.horizontal)
+                if !history.sessions.isEmpty {
+                    ExerciseStatistics(history: .init(.exercise(exercise)))
+                        .padding(.horizontal)
+                }
 
                 ExerciseGuide(exercise)
                     .padding(.horizontal)
@@ -55,7 +59,7 @@ struct ExerciseScreen: View {
                 }
             }
         }
-        .alert(.placeholder, isPresented: $deleteAlert) {
+        .alert(.alertDeleteExerciseTitle, isPresented: $deleteAlert) {
             Button(.cancel) {
                 // Works automatically.
             }
@@ -64,7 +68,7 @@ struct ExerciseScreen: View {
                 delete()
             }
         } message: {
-            Text(.placeholder)
+            Text(.alertDeleteExerciseMessage)
         }
         .sheet(item: $sheet) { sheet in
             NavigationStack {

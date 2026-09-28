@@ -41,7 +41,7 @@ private struct AppContent: View {
 
     var body: some View {
         TabView {
-            Tab(.placeholder, systemImage: "text.rectangle.page") {
+            Tab(.screenOverviewTitle, systemImage: "text.rectangle.page") {
                 NavigationStack {
                     OverviewScreen()
                 }

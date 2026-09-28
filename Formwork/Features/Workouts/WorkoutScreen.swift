@@ -70,9 +70,9 @@ struct WorkoutScreen: View {
 
                 if workout.entries.isEmpty {
                     ContentUnavailableView {
-                        Label(.placeholder, systemImage: "dumbbell")
+                        Label(.emptyWorkoutEntriesTitle, systemImage: "dumbbell")
                     } description: {
-                        Text(.placeholder)
+                        Text(.emptyWorkoutEntriesMessage)
                     } actions: {
                         Button(.addExercise) {
                             sheet = .workoutAddEntries(workout)
@@ -115,7 +115,7 @@ struct WorkoutScreen: View {
                 }
             }
         }
-        .alert(.placeholder, isPresented: $deleteAlert) {
+        .alert(.alertDeleteWorkoutTitle, isPresented: $deleteAlert) {
             Button(.cancel) {
                 // Works automatically.
             }
@@ -124,9 +124,9 @@ struct WorkoutScreen: View {
                 delete()
             }
         } message: {
-            Text(.placeholder)
+            Text(.alertDeleteWorkoutMessage)
         }
-        .alert(.placeholder, isPresented: $replaceSessionAlert) {
+        .alert(.alertReplaceSessionTitle, isPresented: $replaceSessionAlert) {
             Button(.cancel) {
                 // Works automatically.
             }
@@ -141,7 +141,7 @@ struct WorkoutScreen: View {
                 }
             }
         } message: {
-            Text(.placeholder)
+            Text(.alertReplaceSessionMessage)
         }
         .sheet(item: $sheet) { sheet in
             NavigationStack {

@@ -48,15 +48,27 @@ struct WorkoutAddEntriesForm: View {
     var body: some View {
         let matching = matchingExercises
 
-        ScrollView {
-            LazyVStack(spacing: 0) {
-                ForEach(matching) { exercise in
-                    row(for: exercise)
+        Group {
+            if exercises.isEmpty {
+                emptyState
+            } else {
+                ScrollView {
+                    LazyVStack(spacing: 0) {
+                        ForEach(matching) { exercise in
+                            row(for: exercise)
+                        }
+                    }
+                }
+                .overlay {
+                    if matching.isEmpty {
+                        if trimmedSearchText.isEmpty {
+                            ContentUnavailableView.search
+                        } else {
+                            ContentUnavailableView.search(text: trimmedSearchText)
+                        }
+                    }
                 }
             }
-        }
-        .overlay {
-            emptyState(matching: matching)
         }
         .navigationTitle(.placeholder)
         .navigationBarTitleDisplayMode(.inline)
@@ -113,6 +125,20 @@ struct WorkoutAddEntriesForm: View {
         }
     }
 
+    private var emptyState: some View {
+        ContentUnavailableView {
+            Label(.emptyExercisesTitle, systemImage: "dumbbell")
+        } description: {
+            Text(.emptyExercisesMessage)
+        } actions: {
+            Button(.createExercise) {
+                sheet = .createExerciseInCategories(selectedCategories)
+            }
+            .labelStyle(.fixedTitleAndIcon)
+            .buttonStyle(.cardProminent())
+        }
+    }
+
     private var trimmedSearchText: String {
         searchText.trimmingCharacters(in: .whitespacesAndNewlines)
     }
@@ -154,29 +180,6 @@ struct WorkoutAddEntriesForm: View {
                 .frame(maxWidth: .infinity)
                 .card()
                 .padding(.horizontal)
-        }
-    }
-
-    @ViewBuilder
-    private func emptyState(matching: [Exercise]) -> some View {
-        if exercises.isEmpty {
-            ContentUnavailableView {
-                Label(.placeholder, systemImage: "dumbbell")
-            } description: {
-                Text(.placeholder)
-            } actions: {
-                Button(.createExercise) {
-                    sheet = .createExerciseInCategories(selectedCategories)
-                }
-                .labelStyle(.fixedTitleAndIcon)
-                .buttonStyle(.cardProminent())
-            }
-        } else if matching.isEmpty {
-            if trimmedSearchText.isEmpty {
-                ContentUnavailableView.search
-            } else {
-                ContentUnavailableView.search(text: trimmedSearchText)
-            }
         }
     }
 

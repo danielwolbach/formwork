@@ -32,6 +32,8 @@ extension Action {
 
     public static let delete = Action(title: .actionDeleteTitle, image: "trash", role: .destructive)
 
+    public static let remove = Action(title: .actionRemoveTitle, image: "minus.circle", role: .destructive)
+
     public static let more = Action(title: .actionMoreTitle, image: "ellipsis")
 
     public static let sort = Action(title: .actionSortTitle, image: "line.3.horizontal.decrease")

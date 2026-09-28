@@ -46,7 +46,7 @@ struct SessionScreen: View {
                 }
             }
         }
-        .alert(.placeholder, isPresented: $deleteAlert) {
+        .alert(.alertDeleteSessionTitle, isPresented: $deleteAlert) {
             Button(.cancel) {
                 // Works automatically.
             }
@@ -55,7 +55,7 @@ struct SessionScreen: View {
                 delete()
             }
         } message: {
-            Text(.placeholder)
+            Text(.alertDeleteSessionMessage)
         }
     }
 

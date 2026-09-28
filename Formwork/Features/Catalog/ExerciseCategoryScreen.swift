@@ -32,31 +32,27 @@ struct ExerciseCategoryScreen: View {
         let categoryExercises = categoryExercises
         let matching = matchingExercises(in: categoryExercises)
 
-        ScrollView {
-            NavigationRows(for: matching) { exercise in
-                DisplayableRow(exercise)
-            }
-        }
-        .overlay {
+        Group {
             if categoryExercises.isEmpty {
-                ContentUnavailableView {
-                    Label(.placeholder, systemImage: category.pictogram.image)
-                } description: {
-                    Text(.placeholder)
-                } actions: {
-                    Button(.createExercise) {
-                        sheet = .createExerciseInCategories([category])
+                emptyState
+            } else {
+                ScrollView {
+                    NavigationRows(for: matching) { exercise in
+                        DisplayableRow(exercise)
                     }
                 }
-            } else if !trimmedSearchText.isEmpty, matching.isEmpty {
-                ContentUnavailableView.search(text: trimmedSearchText)
+                .overlay {
+                    if !trimmedSearchText.isEmpty, matching.isEmpty {
+                        ContentUnavailableView.search(text: trimmedSearchText)
+                    }
+                }
+                .searchable(text: $searchText)
             }
         }
         .navigationTitle(category.title)
         .navigationDestination(for: Exercise.self) { exercise in
             ExerciseScreen(exercise)
         }
-        .searchable(text: $searchText)
         .toolbar {
             Menu(.more) {
                 Section {
@@ -86,6 +82,20 @@ struct ExerciseCategoryScreen: View {
         .animation(.snappy, value: searchText)
     }
 
+    private var emptyState: some View {
+        ContentUnavailableView {
+            Label(.emptyExercisesTitle, systemImage: category.pictogram.image)
+        } description: {
+            Text(.emptyExercisesMessage)
+        } actions: {
+            Button(.createExercise) {
+                sheet = .createExerciseInCategories([category])
+            }
+            .labelStyle(.fixedTitleAndIcon)
+            .buttonStyle(.cardProminent())
+        }
+    }
+
     private var trimmedSearchText: String {
         searchText.trimmingCharacters(in: .whitespacesAndNewlines)
     }
@@ -97,8 +107,8 @@ struct ExerciseCategoryScreen: View {
     private func matchingExercises(in exercises: [Exercise]) -> [Exercise] {
         let searchText = trimmedSearchText
 
-        return searchText.isEmpty ? exercises : exercises
-            .filter { $0.name.localizedCaseInsensitiveContains(searchText) }
+        return exercises
+            .filter { searchText.isEmpty || $0.name.localizedCaseInsensitiveContains(searchText) }
             .sorted(using: sortOrder)
     }
 }

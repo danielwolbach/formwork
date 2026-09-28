@@ -113,7 +113,7 @@ struct SessionPlayerScreen: View {
                 sheet
             }
         }
-        .alert(.placeholder, isPresented: $finishAlert) {
+        .alert(.alertFinishSessionTitle, isPresented: $finishAlert) {
             Button(.cancel) {
                 // Works automatically.
             }
@@ -122,9 +122,9 @@ struct SessionPlayerScreen: View {
                 finish()
             }
         } message: {
-            Text(.placeholder)
+            Text(.alertFinishSessionMessage)
         }
-        .alert(.placeholder, isPresented: $discardAlert) {
+        .alert(.alertDiscardSessionTitle, isPresented: $discardAlert) {
             Button(.cancel) {
                 // Works automatically.
             }
@@ -133,7 +133,7 @@ struct SessionPlayerScreen: View {
                 discard()
             }
         } message: {
-            Text(.placeholder)
+            Text(.alertDiscardSessionMessage)
         }
     }
 
@@ -243,16 +243,22 @@ private struct SessionEntryPage: View {
     }
 
     var body: some View {
-        VStack(spacing: 32) {
-            // The exercise's categories rather than the entry's target, which the editor below shows.
-            DisplayableHeader(
-                pictogram: entry.pictogram,
-                title: entry.title,
-                subtitle: entry.exercise?.subtitle,
-                badge: entry.status.isPending ? nil : entry.status.pictogram
-            )
+        VStack(spacing: 0) {
+            Spacer()
 
-            ExerciseTargetEditor(target: $entry.target)
+            VStack(spacing: 64) {
+                // The exercise's categories rather than the entry's target, which the editor below shows.
+                DisplayableHeader(
+                    pictogram: entry.pictogram,
+                    title: entry.title,
+                    subtitle: entry.exercise?.subtitle,
+                    badge: entry.status.isPending ? nil : entry.status.pictogram
+                )
+
+                ExerciseTargetEditor(target: $entry.target)
+            }
+
+            Spacer()
 
             Spacer()
         }

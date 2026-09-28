@@ -245,7 +245,7 @@ private struct CalendarDayList: View {
                 .padding(.vertical, 8)
 
             if sessions.isEmpty, planned.isEmpty {
-                Text(.placeholder)
+                Text(.emptyWorkoutsTitle)
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                     .frame(maxWidth: .infinity, minHeight: 64)

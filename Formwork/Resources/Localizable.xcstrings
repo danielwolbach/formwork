@@ -1,6 +1,90 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "alert.deleteExercise.message" : {
+      "extractionState" : "manual"
+    },
+    "alert.deleteExercise.title" : {
+      "extractionState" : "manual"
+    },
+    "alert.deleteSession.message" : {
+      "extractionState" : "manual"
+    },
+    "alert.deleteSession.title" : {
+      "extractionState" : "manual"
+    },
+    "alert.deleteWorkout.message" : {
+      "extractionState" : "manual"
+    },
+    "alert.deleteWorkout.title" : {
+      "extractionState" : "manual"
+    },
+    "alert.discardSession.message" : {
+      "extractionState" : "manual"
+    },
+    "alert.discardSession.title" : {
+      "extractionState" : "manual"
+    },
+    "alert.finishSession.message" : {
+      "extractionState" : "manual"
+    },
+    "alert.finishSession.title" : {
+      "extractionState" : "manual"
+    },
+    "alert.removeWorkoutEntry.message" : {
+      "extractionState" : "manual"
+    },
+    "alert.removeWorkoutEntry.title" : {
+      "extractionState" : "manual"
+    },
+    "alert.replaceSession.message" : {
+      "extractionState" : "manual"
+    },
+    "alert.replaceSession.title" : {
+      "extractionState" : "manual"
+    },
+    "empty.allDone.message" : {
+      "extractionState" : "manual"
+    },
+    "empty.allDone.title" : {
+      "extractionState" : "manual"
+    },
+    "empty.exercises.message" : {
+      "extractionState" : "manual"
+    },
+    "empty.exercises.title" : {
+      "extractionState" : "manual"
+    },
+    "empty.restDay.message" : {
+      "extractionState" : "manual"
+    },
+    "empty.restDay.title" : {
+      "extractionState" : "manual"
+    },
+    "empty.sessions.message" : {
+      "extractionState" : "manual"
+    },
+    "empty.sessions.title" : {
+      "extractionState" : "manual"
+    },
+    "empty.statistics.message" : {
+      "extractionState" : "manual"
+    },
+    "empty.statistics.title" : {
+      "extractionState" : "manual"
+    },
+    "empty.workoutEntries.message" : {
+      "extractionState" : "manual"
+    },
+    "empty.workoutEntries.title" : {
+      "extractionState" : "manual"
+    },
+    "empty.workouts.message" : {
+      "extractionState" : "manual"
+    },
+    "empty.workouts.title" : {
+      "extractionState" : "manual"
+    },
     "field.before.subtitle" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -55,6 +139,9 @@
           }
         }
       }
+    },
+    "field.date.title" : {
+      "extractionState" : "manual"
     },
     "field.exercises.title" : {
       "extractionState" : "manual",
@@ -454,6 +541,17 @@
         }
       }
     },
+    "screen.overview.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Overview"
+          }
+        }
+      }
+    },
     "screen.pictogram.title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -464,6 +562,20 @@
           }
         }
       }
+    },
+    "screen.scanQRCode.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scan QR Code"
+          }
+        }
+      }
+    },
+    "screen.sessions.title" : {
+      "extractionState" : "manual"
     },
     "screen.statistics.title" : {
       "extractionState" : "manual",

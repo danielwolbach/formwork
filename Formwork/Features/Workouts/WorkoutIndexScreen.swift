@@ -17,29 +17,20 @@ struct WorkoutIndexScreen: View {
     private var sheet: Sheet? = nil
 
     var body: some View {
-        ScrollView {
-            LazyVStack(spacing: 8) {
-                ForEach(workouts) { workout in
-                    NavigationLink(value: workout) {
-                        WorkoutCard(workout)
-                    }
-                    .buttonStyle(.plain)
-                }
-            }
-            .padding(.horizontal)
-        }
-        .overlay {
+        Group {
             if workouts.isEmpty {
-                ContentUnavailableView {
-                    Label(.placeholder, systemImage: "clipboard")
-                } description: {
-                    Text(.placeholder)
-                } actions: {
-                    Button(.createWorkout) {
-                        sheet = .createWorkout
+                emptyState
+            } else {
+                ScrollView {
+                    LazyVStack(spacing: 8) {
+                        ForEach(workouts) { workout in
+                            NavigationLink(value: workout) {
+                                WorkoutCard(workout)
+                            }
+                            .buttonStyle(.plain)
+                        }
                     }
-                    .labelStyle(.fixedTitleAndIcon)
-                    .buttonStyle(.cardProminent())
+                    .padding(.horizontal)
                 }
             }
         }
@@ -60,6 +51,20 @@ struct WorkoutIndexScreen: View {
             NavigationStack {
                 sheet
             }
+        }
+    }
+
+    private var emptyState: some View {
+        ContentUnavailableView {
+            Label(.emptyWorkoutsTitle, systemImage: "clipboard")
+        } description: {
+            Text(.emptyWorkoutsMessage)
+        } actions: {
+            Button(.createWorkout) {
+                sheet = .createWorkout
+            }
+            .labelStyle(.fixedTitleAndIcon)
+            .buttonStyle(.cardProminent())
         }
     }
 }

@@ -39,30 +39,36 @@ struct CatalogScreen: View {
     var body: some View {
         let matching = matchingExercises
 
-        ScrollView {
+        Group {
             if exercises.isEmpty {
-                EmptyView()
-            } else if sort == .category, !searchPresented {
-                categoryGrid
-                    .transition(.blurReplace)
+                emptyState
             } else {
-                exerciseList(matching)
-                    .transition(.blurReplace)
+                ScrollView {
+                    if sort == .category, !searchPresented {
+                        categoryGrid
+                            .transition(.blurReplace)
+                    } else {
+                        exerciseList(matching)
+                            .transition(.blurReplace)
+                    }
+                }
+                .overlay {
+                    if !trimmedSearchText.isEmpty, matching.isEmpty {
+                        ContentUnavailableView.search(text: trimmedSearchText)
+                    }
+                }
+                .searchable(text: $searchText, isPresented: $searchPresented)
             }
         }
         .animation(.snappy, value: sort)
         .animation(.snappy, value: searchText)
         .animation(.snappy, value: searchPresented)
-        .searchable(text: $searchText, isPresented: $searchPresented)
         .navigationTitle(.screenCatalogTitle)
         .navigationDestination(for: Exercise.Category.self) { category in
             ExerciseCategoryScreen(category)
         }
         .navigationDestination(for: Exercise.self) { exercise in
             ExerciseScreen(exercise)
-        }
-        .overlay {
-            emptyState(matching: matching)
         }
         .toolbar {
             Menu(.more) {
@@ -106,6 +112,20 @@ struct CatalogScreen: View {
         .padding(.horizontal)
     }
 
+    private var emptyState: some View {
+        ContentUnavailableView {
+            Label(.emptyExercisesTitle, systemImage: "dumbbell")
+        } description: {
+            Text(.emptyExercisesMessage)
+        } actions: {
+            Button(.createExercise) {
+                sheet = .createExercise
+            }
+            .labelStyle(.fixedTitleAndIcon)
+            .buttonStyle(.cardProminent())
+        }
+    }
+
     private var trimmedSearchText: String {
         searchText.trimmingCharacters(in: .whitespacesAndNewlines)
     }
@@ -121,23 +141,6 @@ struct CatalogScreen: View {
     private func exerciseList(_ exercises: [Exercise]) -> some View {
         NavigationRows(for: exercises) { exercise in
             DisplayableRow(exercise)
-        }
-    }
-
-    @ViewBuilder
-    private func emptyState(matching: [Exercise]) -> some View {
-        if exercises.isEmpty {
-            ContentUnavailableView {
-                Label(.placeholder, systemImage: "dumbbell")
-            } description: {
-                Text(.placeholder)
-            } actions: {
-                Button(.createExercise) {
-                    sheet = .createExercise
-                }
-            }
-        } else if !trimmedSearchText.isEmpty, matching.isEmpty {
-            ContentUnavailableView.search(text: trimmedSearchText)
         }
     }
 

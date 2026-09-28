@@ -103,9 +103,9 @@ struct WorkoutForm: View {
     private var entriesEditor: some View {
         if entries.isEmpty {
             ContentUnavailableView {
-                Label(.placeholder, systemImage: "dumbbell")
+                Label(.emptyWorkoutEntriesTitle, systemImage: "dumbbell")
             } description: {
-                Text(.placeholder)
+                Text(.emptyWorkoutEntriesMessage)
             } actions: {
                 Button(.addExercise) {
                     showEntriesPicker = true
@@ -128,7 +128,7 @@ struct WorkoutForm: View {
                     .padding(.horizontal)
                     .padding(.vertical, 8)
                     .swipeActions {
-                        Button(.delete) {
+                        Button(.remove) {
                             entries.removeAll { $0.id == entry.id }
                         }
                         .labelStyle(.fixedIconOnly)

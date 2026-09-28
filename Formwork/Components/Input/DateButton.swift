@@ -26,7 +26,7 @@ struct DateButton: View {
         .buttonStyle(.card())
         .labelStyle(.fixedTitleAndIcon)
         .popover(isPresented: $isPresented) {
-            DatePicker(.placeholder, selection: $date, displayedComponents: .date)
+            DatePicker(.fieldDateTitle, selection: $date, displayedComponents: .date)
                 .datePickerStyle(.graphical)
                 .labelsHidden()
                 .frame(minWidth: 320)

@@ -137,7 +137,7 @@ struct ExerciseForm: View {
                 .aspectRatio(1, contentMode: .fit)
                 .clipShape(.rect(cornerRadius: 24))
                 .padding()
-                .navigationTitle(.placeholder)
+                .navigationTitle(.screenScanQRCodeTitle)
                 .navigationBarTitleDisplayMode(.inline)
                 .presentationDetents([.medium])
                 .toolbar {

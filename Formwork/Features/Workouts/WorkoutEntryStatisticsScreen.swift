@@ -26,14 +26,24 @@ struct WorkoutEntryStatisticsScreen: View {
     }
 
     var body: some View {
-        ScrollView {
-            ZStack {
-                ExerciseStatistics(history: history)
-                    .padding(.horizontal)
-                    .id(viewMode)
-                    .transition(.blurReplace)
+        Group {
+            if history.sessions.isEmpty {
+                ContentUnavailableView {
+                    Label(.emptyStatisticsTitle, systemImage: "flame")
+                } description: {
+                    Text(.emptyStatisticsMessage)
+                }
+            } else {
+                ScrollView {
+                    ZStack {
+                        ExerciseStatistics(history: history)
+                            .padding(.horizontal)
+                            .id(viewMode)
+                            .transition(.blurReplace)
+                    }
+                    .animation(.smooth, value: viewMode)
+                }
             }
-            .animation(.smooth, value: viewMode)
         }
         .navigationTitle(.screenStatisticsTitle)
         .navigationSubtitle(entry.title)

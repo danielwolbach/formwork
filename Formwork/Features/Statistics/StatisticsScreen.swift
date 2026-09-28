@@ -24,21 +24,21 @@ struct StatisticsScreen: View {
 
     @ViewBuilder
     private var content: some View {
-        if sessions.isEmpty {
+        let history = History(.all(sessions))
+
+        if history.sessions.isEmpty {
             ContentUnavailableView {
-                Label(.placeholder, systemImage: "flame")
+                Label(.emptyStatisticsTitle, systemImage: "flame")
             } description: {
-                Text(.placeholder)
+                Text(.emptyStatisticsMessage)
             }
         } else {
-            statisticsContent
+            statisticsContent(history)
         }
     }
 
-    private var statisticsContent: some View {
-        let history = History(.all(sessions))
-
-        return ScrollView {
+    private func statisticsContent(_ history: History) -> some View {
+        ScrollView {
             VStack(spacing: 32) {
                 TileGrid {
                     StatisticCard(.weekStreak, of: history)
