@@ -73,11 +73,6 @@ public enum Samples {
     ]
 
     public static let sessions: [Session] = seedHistory()
-    
-    public static var activeSession: Session {
-        // swiftlint:disable:next force_try
-        try! Session.active(in: container.mainContext)!
-    }
 
     public static let container: ModelContainer = {
         let configuration = ModelConfiguration(schema: Storage.schema, isStoredInMemoryOnly: true)
@@ -97,6 +92,11 @@ public enum Samples {
     private static let historyDays = 400
 
     private static let historyStart = Calendar.current.date(byAdding: .day, value: -historyDays, to: .now) ?? .now
+
+    public static var activeSession: Session {
+        // swiftlint:disable:next force_try
+        try! Session.active(in: container.mainContext)!
+    }
 }
 
 extension Samples {

@@ -168,6 +168,7 @@ private struct ExerciseCategoryTile: View {
                     Text(.placeholder)
                         .lineLimit(1)
                         .font(.subheadline)
+                        .fontWeight(.semibold)
                         .foregroundStyle(.secondary)
                 }
 

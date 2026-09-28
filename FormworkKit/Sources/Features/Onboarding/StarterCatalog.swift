@@ -110,7 +110,7 @@ public enum StarterCatalog {
 
 extension StarterCatalog.Samples {
     public static var weekStreak: some Displayable {
-        WeekStreak(weeks: 6)
+        WeekStreak(weeks: 6, isCurrentWeekFulfilled: true)
     }
 
     public static var weeklySessions: some Displayable {
@@ -127,6 +127,19 @@ extension StarterCatalog.Samples {
 
     public static var weightTarget: ExerciseTarget {
         .weight(kilograms: 85, reps: 10, sets: 3)
+    }
+
+    public static func activeWeek(calendar: Calendar = .current) -> ActiveDays {
+        let start = calendar.dateInterval(of: .weekOfYear, for: .now)?.start ?? calendar.startOfDay(for: .now)
+        let trained: Set = [0, 2]
+
+        let days = (0 ..< 7).compactMap { offset in
+            calendar.date(byAdding: .day, value: offset, to: start).map { date in
+                ActiveDays.Day(date: date, sessionCount: trained.contains(offset) ? 1 : 0, isAhead: offset > 3)
+            }
+        }
+
+        return ActiveDays(calendar: calendar, days: days)
     }
 
     public static func exercise(of kind: Exercise.Kind) -> Exercise {

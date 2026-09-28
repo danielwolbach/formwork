@@ -38,6 +38,7 @@ struct MetricCard: View {
 
             Text(title)
                 .font(.subheadline)
+                .fontWeight(.semibold)
                 .lineLimit(1)
                 .foregroundStyle(.secondary)
 

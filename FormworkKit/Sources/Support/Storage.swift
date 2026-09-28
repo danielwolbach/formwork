@@ -16,7 +16,7 @@ public enum Storage {
         Samples.container
     } else {
         try unwrap(
-            ModelContainer(for: schema, migrationPlan: Migrations.self, configurations: [ModelConfiguration(schema: schema)]),
+            ModelContainer(for: schema, migrationPlan: Migrations.self, configurations: [ModelConfiguration(schema: schema, groupContainer: .identifier("group.de.danielwolbach.Formwork"))]),
             "Failed to initialize storage"
         )
     }

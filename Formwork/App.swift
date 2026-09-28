@@ -8,6 +8,7 @@
 import FormworkKit
 import SwiftData
 import SwiftUI
+import WidgetKit
 
 @main
 struct App: SwiftUI.App {
@@ -20,6 +21,12 @@ struct App: SwiftUI.App {
 }
 
 private struct AppContent: View {
+    @Environment(\.modelContext)
+    private var modelContext: ModelContext
+
+    @Environment(\.scenePhase)
+    private var scenePhase: ScenePhase
+
     @Query(Session.activeDescriptor)
     private var activeSessions: [Session]
 
@@ -83,6 +90,12 @@ private struct AppContent: View {
             }
 
             presentedSession = session
+        }
+        .onChange(of: scenePhase) { _, phase in
+            if phase == .background {
+                try? modelContext.save()
+                WidgetCenter.shared.reloadAllTimelines()
+            }
         }
     }
 

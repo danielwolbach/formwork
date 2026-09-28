@@ -9,17 +9,21 @@ import Foundation
 
 public struct WeekStreak {
     public let weeks: Int
+
+    public let isCurrentWeekFulfilled: Bool
 }
 
 extension WeekStreak: Statistic {
     public init(_ window: History.Window) {
         guard let streak = window.streakWeeks else {
             self.weeks = 0
+            self.isCurrentWeekFulfilled = false
             return
         }
 
         let calendar = window.history.calendar
-        var week = streak.weeks.contains(streak.current) ? streak.current : calendar.date(byAdding: .weekOfYear, value: -1, to: streak.current)
+        let fulfilled = streak.weeks.contains(streak.current)
+        var week = fulfilled ? streak.current : calendar.date(byAdding: .weekOfYear, value: -1, to: streak.current)
         var count = 0
         while let start = week, streak.weeks.contains(start) {
             count += 1
@@ -27,6 +31,7 @@ extension WeekStreak: Statistic {
         }
 
         self.weeks = count
+        self.isCurrentWeekFulfilled = fulfilled
     }
 
     public static var explanation: String {

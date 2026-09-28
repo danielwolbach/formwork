@@ -16,3 +16,9 @@ public enum DeepLink {
 public enum StorageKeys {
     public static let onboardingPending = "onboarding.pending"
 }
+
+public enum WidgetKind {
+    public static let overview = "OverviewWidget"
+
+    public static let weekStreak = "WeekStreakWidget"
+}

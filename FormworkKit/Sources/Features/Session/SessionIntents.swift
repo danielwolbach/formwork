@@ -6,6 +6,7 @@
 //
 
 import AppIntents
+import WidgetKit
 
 public struct SessionCompleteIntent: LiveActivityIntent {
     public static let title: LocalizedStringResource = "action.complete.title"
@@ -69,6 +70,10 @@ private func updateActiveSession(_ change: (Session) -> Void) async {
 
     change(session)
     try? context.save()
+
+    if !session.isActive {
+        WidgetCenter.shared.reloadAllTimelines()
+    }
 
     await SessionActivity.sync(.init(session: session))
 }
