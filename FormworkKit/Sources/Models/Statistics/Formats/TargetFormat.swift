@@ -34,7 +34,6 @@ public struct TargetFormat: FormatStyle {
         }
     }
 
-    /// Metric distances under a kilometer read in meters, so a short one doesn't come down to 0.25 km.
     private func distance(_ meters: Double) -> String {
         let measurement = Measurement(value: meters, unit: UnitLength.meters)
         let unit = system == .metric && meters < 1000 ? UnitLength.meters : system.distanceUnit

@@ -10,7 +10,7 @@ import SwiftUI
 
 struct WorkoutEntryStatisticsScreen: View {
     private enum ViewMode: Hashable {
-        case entry, exercise
+        case workout, overall
     }
 
     let entry: WorkoutEntry
@@ -19,10 +19,11 @@ struct WorkoutEntryStatisticsScreen: View {
     private var dismiss: DismissAction
 
     @State
-    private var viewMode: ViewMode = .entry
+    private var viewMode: ViewMode
 
     init(_ entry: WorkoutEntry) {
         self.entry = entry
+        self._viewMode = .init(initialValue: entry.workout == nil ? .overall : .workout)
     }
 
     var body: some View {
@@ -55,21 +56,16 @@ struct WorkoutEntryStatisticsScreen: View {
                 }
             }
 
-            if isDoneElsewhere {
+            if isDoneElsewhere, let workout = entry.workout {
                 ToolbarItem {
-                    // TODO: Add `Action` entry.
-                    Menu {
-                        Picker(selection: $viewMode) {
-                            Text(.placeholder)
-                                .tag(ViewMode.entry)
+                    Menu(.viewMode) {
+                        Picker(.fieldViewModeTitle, selection: $viewMode) {
+                            Text(workout.title)
+                                .tag(ViewMode.workout)
 
-                            Text(.placeholder)
-                                .tag(ViewMode.exercise)
-                        } label: {
-                            Label(String(localized: .placeholder), systemImage: "calendar.day.timeline.left")
+                            Text(.fieldOverallTitle)
+                                .tag(ViewMode.overall)
                         }
-                    } label: {
-                        Label(String(localized: .placeholder), systemImage: "calendar.day.timeline.left")
                     }
                 }
             }
@@ -77,7 +73,7 @@ struct WorkoutEntryStatisticsScreen: View {
     }
 
     private var history: History {
-        if viewMode == .exercise, let exercise = entry.exercise {
+        if viewMode == .overall, let exercise = entry.exercise {
             History(.exercise(exercise))
         } else {
             History(.entry(entry))

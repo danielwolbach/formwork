@@ -12,6 +12,7 @@ enum Sheet: Identifiable, Hashable, View {
     case createExercise
     case createExerciseInCategories(_ categories: Set<Exercise.Category>)
     case editExercise(_ exercise: Exercise)
+    case editExerciseNotes(_ exercise: Exercise)
     case createWorkout
     case editWorkout(_ workout: Workout)
     case workoutAddEntries(_ workout: Workout)
@@ -24,12 +25,13 @@ enum Sheet: Identifiable, Hashable, View {
         case .createExercise: ExerciseForm()
         case let .createExerciseInCategories(categories): ExerciseForm(categories: categories)
         case let .editExercise(exercise): ExerciseForm(exercise)
+        case let .editExerciseNotes(exercise): ExerciseNotesSheet(exercise)
         case .createWorkout: WorkoutForm()
         case let .editWorkout(workout): WorkoutForm(workout)
         case let .workoutAddEntries(workout): WorkoutAddEntriesForm(workout: workout)
         case let .workoutStatistics(workout): WorkoutStatisticsScreen(workout)
         case let .workoutEntryStatistics(entry): WorkoutEntryStatisticsScreen(entry)
-        case let .exerciseGuide(exercise): ExerciseGuideScreen(exercise)
+        case let .exerciseGuide(exercise): ExerciseGuideSheet(exercise)
         }
     }
 

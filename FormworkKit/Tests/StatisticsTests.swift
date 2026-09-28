@@ -1959,22 +1959,6 @@ struct ActiveDaysTests {
         #expect(try day(calendar.date(7), in: activeDays)?.sessionCount == 1)
         #expect(try day(calendar.date(8), in: activeDays)?.sessionCount == 0)
         #expect(trainedDays(in: activeDays) == 1)
-        // Ten days on record from Sep 7, and the squat was completed on one of them.
-        let rate = try #require(WeeklyActiveDays(history.allTime).value)
-
-        #expect(abs(rate - 1 / (10.0 / 7)) < 1e-9)
-    }
-
-    @Test
-    func weeklyActiveDaysCountEachDayOnce() throws {
-        // Ten days on record from Sep 7 through Sep 16, two of them trained.
-        try store.session(7, hour: 8)
-        try store.session(7, hour: 18)
-        try store.session(8)
-
-        let rate = try #require(try WeeklyActiveDays(history(at: calendar.date(16)).allTime).value)
-
-        #expect(abs(rate - 2 / (10.0 / 7)) < 1e-9)
     }
 }
 

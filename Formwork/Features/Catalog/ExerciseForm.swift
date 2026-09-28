@@ -89,11 +89,10 @@ struct ExerciseForm: View {
                             .autocorrectionDisabled()
 
                         if QRCodeScanner.isSupported {
-                            Button(.scan) {
+                            Button(.scanQRCode) {
                                 showScanner = true
                             }
                             .labelStyle(.fixedIconOnly)
-                            .buttonStyle(.card())
                         }
                     }
                     .padding()
@@ -102,11 +101,18 @@ struct ExerciseForm: View {
                 }
 
                 SectionView(.init(localized: .fieldNotesTitle)) {
-                    TextField(.fieldNotesPlaceholder, text: $notes, axis: .vertical)
-                        .lineLimit(4...)
-                        .padding()
-                        .card()
-                        .padding(.horizontal)
+                    NavigationLink {
+                        ExerciseNotesScreen(notes: $notes)
+                    } label: {
+                        TextField(.fieldNotesPlaceholder, text: .constant(notes), axis: .vertical)
+                            .lineLimit(4...)
+                            .disabled(true)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding()
+                            .card()
+                    }
+                    .buttonStyle(.plain)
+                    .padding(.horizontal)
                 }
             }
         }

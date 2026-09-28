@@ -40,8 +40,8 @@ extension Categories: Statistic {
             .map(\.share)
     }
 
-    public static var explanation: String {
-        String(localized: .placeholder)
+    public static var info: String {
+        String(localized: .statisticCategoriesInfo)
     }
 
     public var pictogram: Pictogram {

@@ -17,11 +17,10 @@ extension CompletionRate: Metric {
         self.value = entries.isEmpty ? nil : Double(entries.count(where: \.status.isCompleted)) / Double(entries.count)
     }
 
-    public static var explanation: String {
-        String(localized: .placeholder)
+    public static var info: String {
+        String(localized: .statisticCompletionRateInfo)
     }
 
-    /// A share doesn't grow with the days it's taken over.
     public static var tolerance: Double? {
         0.05
     }

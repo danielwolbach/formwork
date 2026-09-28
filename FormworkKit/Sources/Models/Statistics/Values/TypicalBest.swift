@@ -20,8 +20,8 @@ extension TypicalBest: Metric {
         self.unitSystem = .current
     }
 
-    public static var explanation: String {
-        String(localized: .placeholder)
+    public static var info: String {
+        String(localized: .statisticTypicalBestInfo)
     }
 
     public static var tolerance: Double? {

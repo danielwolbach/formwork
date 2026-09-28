@@ -29,8 +29,8 @@ extension LongestWeekStreak: Statistic {
         self.weeks = longest
     }
 
-    public static var explanation: String {
-        String(localized: .placeholder)
+    public static var info: String {
+        String(localized: .statisticLongestWeekStreakInfo)
     }
 
     public var pictogram: Pictogram {

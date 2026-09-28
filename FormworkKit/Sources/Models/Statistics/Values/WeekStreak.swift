@@ -34,8 +34,8 @@ extension WeekStreak: Statistic {
         self.isCurrentWeekFulfilled = fulfilled
     }
 
-    public static var explanation: String {
-        String(localized: .placeholder)
+    public static var info: String {
+        String(localized: .statisticWeekStreakInfo)
     }
 
     public var pictogram: Pictogram {

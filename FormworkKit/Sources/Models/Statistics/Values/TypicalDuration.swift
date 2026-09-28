@@ -23,15 +23,14 @@ extension TypicalDuration: Metric {
         self.value = durations.median
     }
 
-    public static var explanation: String {
-        String(localized: .placeholder)
+    public static var info: String {
+        String(localized: .statisticTypicalDurationInfo)
     }
 
     public static var tolerance: Double? {
         0.05
     }
 
-    /// Round durations, in seconds: from a quarter minute for a quick exercise up to two hours for a session.
     public static var axisSteps: [Double] {
         [15, 30, 60, 120, 300, 600, 900, 1800, 3600, 7200]
     }

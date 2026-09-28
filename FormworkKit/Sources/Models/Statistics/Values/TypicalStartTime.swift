@@ -21,8 +21,8 @@ extension TypicalStartTime: Statistic {
         self.init(time: minute.map { DateComponents(hour: $0 / 60, minute: $0 % 60) }, calendar: calendar)
     }
 
-    public static var explanation: String {
-        String(localized: .placeholder)
+    public static var info: String {
+        String(localized: .statisticTypicalStartTimeInfo)
     }
 
     public var pictogram: Pictogram {

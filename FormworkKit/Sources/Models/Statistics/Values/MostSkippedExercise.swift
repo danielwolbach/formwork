@@ -27,8 +27,8 @@ extension MostSkippedExercise: Statistic {
         self.exercise = tally.max { ($0.value.count, $0.value.latest) < ($1.value.count, $1.value.latest) }?.key
     }
 
-    public static var explanation: String {
-        String(localized: .placeholder)
+    public static var info: String {
+        String(localized: .statisticMostSkippedExerciseInfo)
     }
 
     public var pictogram: Pictogram {

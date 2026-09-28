@@ -15,7 +15,7 @@ struct StatisticSheet<S: Statistic, Content: View>: View {
 
     private let subtitle: String?
 
-    private let explanation: String
+    private let info: String
 
     @ViewBuilder
     private let content: Content
@@ -24,7 +24,7 @@ struct StatisticSheet<S: Statistic, Content: View>: View {
         self.pictogram = statistic.pictogram
         self.title = statistic.title
         self.subtitle = history.subject.title
-        self.explanation = S.explanation
+        self.info = S.info
         self.content = content()
     }
 
@@ -37,7 +37,7 @@ struct StatisticSheet<S: Statistic, Content: View>: View {
                 content
 
                 SectionView(.init(localized: .fieldInfoTitle)) {
-                    Text(explanation)
+                    Text(info)
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                         .frame(maxWidth: .infinity, alignment: .leading)

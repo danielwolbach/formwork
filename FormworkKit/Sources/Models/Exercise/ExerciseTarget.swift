@@ -49,7 +49,6 @@ extension ExerciseTarget: Displayable {
         exerciseKind.title
     }
 
-    /// The target written out in the reader's units, sets and reps included, e.g. "85 kg • 3 × 10".
     public var subtitle: String? {
         let rank = TargetFormat(kind: exerciseKind).format(rank)
 

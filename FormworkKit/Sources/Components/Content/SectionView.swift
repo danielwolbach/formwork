@@ -7,8 +7,6 @@
 
 import SwiftUI
 
-/// A heading with an optional subtitle and accessory over its content. The heading is inset like contained content,
-/// and the content brings its own inset, so it can be contained or reach the edges.
 public struct SectionView<Content: View, Accessory: View>: View {
     private let title: String?
 

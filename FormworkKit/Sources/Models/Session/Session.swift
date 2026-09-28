@@ -125,8 +125,6 @@ extension Session {
         try context.fetch(activeDescriptor).first
     }
 
-    /// Skips whatever is still pending, so a finished session has nothing left open, and writes the targets back
-    /// into the workout.
     public func finish() {
         guard isActive else {
             return
@@ -199,8 +197,6 @@ extension Session {
         return calendar.date(from: components) ?? startDate
     }
 
-    /// Whether the session started within `interval` by the clock where it started. Only whole days compare with
-    /// wall-clock time.
     public func falls(into interval: DateInterval, in calendar: Calendar) -> Bool {
         assert(
             calendar.isDayBoundary(interval.start) && calendar.isDayBoundary(interval.end),
@@ -210,7 +206,6 @@ extension Session {
         return interval.start <= start && start < interval.end
     }
 
-    /// Shows the session's times by the clock where it started.
     public func wallClockTime() -> Date.FormatStyle {
         localCalendar(from: .current).formatStyle(time: .shortened)
     }

@@ -19,11 +19,10 @@ extension PersonalBest: Metric {
         self.unitSystem = .current
     }
 
-    public static var explanation: String {
-        String(localized: .placeholder)
+    public static var info: String {
+        String(localized: .statisticPersonalBestInfo)
     }
 
-    /// A best only ever grows with the days it's taken over.
     public static var tolerance: Double? {
         nil
     }

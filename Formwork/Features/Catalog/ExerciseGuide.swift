@@ -70,7 +70,7 @@ struct ExerciseGuide: View {
             }
 
             Button {
-                sheet = .editExercise(exercise)
+                sheet = .editExerciseNotes(exercise)
             } label: {
                 VStack(alignment: .leading, spacing: 8) {
                     Label(.fieldNotesTitle, systemImage: "document")

@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-/// Rows linking to their elements. They reach the edges and inset their content, like a list.
 public struct NavigationRows<Data: RandomAccessCollection, Row: View>: View
     where Data.Element: Identifiable & Hashable
 {

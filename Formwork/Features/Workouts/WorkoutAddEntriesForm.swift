@@ -70,7 +70,7 @@ struct WorkoutAddEntriesForm: View {
                 }
             }
         }
-        .navigationTitle(.placeholder)
+        .navigationTitle(.screenAddExerciseTitle)
         .navigationBarTitleDisplayMode(.inline)
         .searchable(text: $searchText, isPresented: $searchPresented)
         .animation(.snappy, value: searchText)

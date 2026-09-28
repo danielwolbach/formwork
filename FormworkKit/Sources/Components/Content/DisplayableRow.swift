@@ -32,7 +32,7 @@ public struct DisplayableRow: View {
 
     public var body: some View {
         HStack {
-            PictogramView(pictogram)
+            PictogramView(pictogram, badge: badge)
                 .frame(width: 64, height: 64)
 
             VStack(alignment: .leading) {

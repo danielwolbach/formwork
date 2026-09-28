@@ -31,8 +31,8 @@ extension LastCompleted: Statistic {
         }
     }
 
-    public static var explanation: String {
-        String(localized: .placeholder)
+    public static var info: String {
+        String(localized: .statisticLastCompletedInfo)
     }
 
     public var pictogram: Pictogram {

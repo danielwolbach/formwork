@@ -19,11 +19,10 @@ extension Completions: Metric {
         }
     }
 
-    public static var explanation: String {
-        String(localized: .placeholder)
+    public static var info: String {
+        String(localized: .statisticCompletionsInfo)
     }
 
-    /// A count grows with the days it's taken over, so four weeks would always look worse than twelve.
     public static var tolerance: Double? {
         nil
     }

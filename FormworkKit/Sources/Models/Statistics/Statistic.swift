@@ -8,7 +8,7 @@
 import Foundation
 
 public protocol Statistic: Displayable {
-    static var explanation: String {
+    static var info: String {
         get
     }
 

@@ -60,11 +60,13 @@ extension Action {
 
     public static let debug = Action(title: .actionDebugTitle, image: "ladybug")
 
+    public static let viewMode = Action(title: .placeholder, image: "calendar.day.timeline.left")
+
     // Exercise
 
     public static let createExercise = Action(title: .actionCreateExerciseTitle, image: "plus")
 
-    public static let scan = Action(title: .actionScanTitle, image: "qrcode.viewfinder")
+    public static let scanQRCode = Action(title: .actionScanQRCodeTitle, image: "qrcode.viewfinder")
 
     public static let guide = Action(title: .actionGuideTitle, image: "info.circle")
 

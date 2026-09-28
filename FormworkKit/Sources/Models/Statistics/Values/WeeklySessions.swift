@@ -16,8 +16,8 @@ extension WeeklySessions: Metric {
         self.value = window.lengthInWeeks.map { Double(window.sessions.count) / $0 }
     }
 
-    public static var explanation: String {
-        String(localized: .placeholder)
+    public static var info: String {
+        String(localized: .statisticWeeklySessionsInfo)
     }
 
     public static var tolerance: Double? {

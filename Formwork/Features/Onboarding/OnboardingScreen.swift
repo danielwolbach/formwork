@@ -119,21 +119,21 @@ private enum Page: Int, CaseIterable {
 
     var title: LocalizedStringResource {
         switch self {
-        case .welcome: .placeholder
-        case .catalog: .placeholder
-        case .workouts: .placeholder
-        case .sessions: .placeholder
-        case .statistics: .placeholder
+        case .welcome: .onboardingWelcomeTitle
+        case .catalog: .onboardingCatalogTitle
+        case .workouts: .onboardingWorkoutsTitle
+        case .sessions: .onboardingSessionsTitle
+        case .statistics: .onboardingStatisticsTitle
         }
     }
 
     var message: LocalizedStringResource {
         switch self {
-        case .welcome: .placeholder
-        case .catalog: .placeholder
-        case .workouts: .placeholder
-        case .sessions: .placeholder
-        case .statistics: .placeholder
+        case .welcome: .onboardingWelcomeMessage
+        case .catalog: .onboardingCatalogMessage
+        case .workouts: .onboardingWorkoutsMessage
+        case .sessions: .onboardingSessionsMessage
+        case .statistics: .onboardingStatisticsMessage
         }
     }
 }

@@ -42,8 +42,8 @@ extension Progression: Statistic {
         self.unitSystem = .current
     }
 
-    public static var explanation: String {
-        String(localized: .placeholder)
+    public static var info: String {
+        String(localized: .statisticProgressionInfo)
     }
 
     public var pictogram: Pictogram {

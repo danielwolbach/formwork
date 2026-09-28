@@ -20,14 +20,14 @@ struct CategoriesSheet: View {
         let recent = Categories(history.recent)
 
         StatisticSheet(recent, history: history) {
-            SectionView(.init(localized: .placeholder)) {
+            SectionView(.init(localized: .fieldRecentTitle), subtitle: .init(localized: .fieldRecentSubtitle(days: History.recentDays))) {
                 CategoriesBreakdown(recent)
                     .padding()
                     .card()
                     .padding(.horizontal)
             }
 
-            SectionView(.init(localized: .placeholder)) {
+            SectionView(.init(localized: .fieldOverallTitle)) {
                 CategoriesBreakdown(Categories(history.allTime))
                     .padding()
                     .card()
@@ -60,6 +60,9 @@ struct CategoriesChart: View {
             AxisMarks(values: .stride(by: .month)) {
                 AxisValueLabel(format: .dateTime.month(.narrow), centered: true)
             }
+        }
+        .chartYAxis {
+            AxisMarks(position: .leading)
         }
         .frame(height: 200)
     }

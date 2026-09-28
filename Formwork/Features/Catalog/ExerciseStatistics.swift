@@ -25,6 +25,8 @@ struct ExerciseStatistics: View {
 
             StatisticCard(.completions, of: history)
 
+            StatisticCard(.typicalDuration, of: history)
+
             StatisticCard(.progression, of: history)
                 .tileSpan(rows: 2, columns: 2)
 

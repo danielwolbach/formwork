@@ -63,15 +63,13 @@ private struct MonthlyChart<M: Metric>: View {
             }
         }
         .chartYAxis {
-            AxisMarks(format: format, values: step.map { .stride(by: $0) } ?? .automatic)
+            AxisMarks(format: format, position: .leading, values: step.map { .stride(by: $0) } ?? .automatic)
         }
 
         scaled(chart, step: step, peak: peak)
             .frame(height: 192)
     }
 
-    /// With a step, the axis runs up to the first round mark above the peak, so the top one is labelled too.
-    /// Without, the chart picks its own range.
     @ViewBuilder
     private func scaled(_ chart: some View, step: Double?, peak: Double) -> some View {
         if let step {

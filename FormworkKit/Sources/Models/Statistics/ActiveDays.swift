@@ -45,8 +45,8 @@ extension ActiveDays: Statistic {
             }
     }
 
-    public static var explanation: String {
-        String(localized: .placeholder)
+    public static var info: String {
+        String(localized: .statisticActiveDaysInfo)
     }
 
     public var pictogram: Pictogram {
@@ -57,7 +57,6 @@ extension ActiveDays: Statistic {
         String(localized: .statisticActiveDaysTitle)
     }
 
-    /// The weekdays' symbols in the order the days of a week come in, to label them with.
     public var weekdaySymbols: [String] {
         let symbols = calendar.veryShortWeekdaySymbols
         return (0 ..< 7).map { symbols[(calendar.firstWeekday - 1 + $0) % 7] }

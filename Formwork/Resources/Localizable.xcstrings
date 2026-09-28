@@ -464,6 +464,47 @@
         }
       }
     },
+    "field.viewMode.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "View Mode"
+          }
+        }
+      }
+    },
+    "onboarding.catalog.message" : {
+      "extractionState" : "manual"
+    },
+    "onboarding.catalog.title" : {
+      "extractionState" : "manual"
+    },
+    "onboarding.sessions.message" : {
+      "extractionState" : "manual"
+    },
+    "onboarding.sessions.title" : {
+      "extractionState" : "manual"
+    },
+    "onboarding.statistics.message" : {
+      "extractionState" : "manual"
+    },
+    "onboarding.statistics.title" : {
+      "extractionState" : "manual"
+    },
+    "onboarding.welcome.message" : {
+      "extractionState" : "manual"
+    },
+    "onboarding.welcome.title" : {
+      "extractionState" : "manual"
+    },
+    "onboarding.workouts.message" : {
+      "extractionState" : "manual"
+    },
+    "onboarding.workouts.title" : {
+      "extractionState" : "manual"
+    },
     "placeholder" : {
       "extractionState" : "manual",
       "localizations" : {
