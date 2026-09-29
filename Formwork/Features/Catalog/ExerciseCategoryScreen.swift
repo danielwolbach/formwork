@@ -37,9 +37,12 @@ struct ExerciseCategoryScreen: View {
                 emptyState
             } else {
                 ScrollView {
-                    NavigationRows(for: matching) { exercise in
-                        DisplayableRow(exercise)
+                    LazyVStack(spacing: 0) {
+                        ForEach(matching) { exercise in
+                            ExerciseRow(exercise)
+                        }
                     }
+                    .animation(.snappy, value: matching.count)
                 }
                 .overlay {
                     if !trimmedSearchText.isEmpty, matching.isEmpty {
@@ -115,7 +118,7 @@ struct ExerciseCategoryScreen: View {
 
 #Preview {
     NavigationStack {
-        ExerciseCategoryScreen(.arms)
+        ExerciseCategoryScreen(.mindfulness)
     }
     .sampleData()
 }

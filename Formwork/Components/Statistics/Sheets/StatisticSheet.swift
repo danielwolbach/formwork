@@ -30,7 +30,7 @@ struct StatisticSheet<S: Statistic, Content: View>: View {
 
     var body: some View {
         ScrollView {
-            VStack(spacing: 32) {
+            VStack(spacing: 16) {
                 DisplayableRow(pictogram: pictogram, title: title, subtitle: subtitle)
                     .padding(.horizontal)
 

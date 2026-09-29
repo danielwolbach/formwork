@@ -50,9 +50,7 @@ struct ExerciseScreen: View {
                     Button(.edit) {
                         sheet = .editExercise(exercise)
                     }
-                }
 
-                Section {
                     Button(.delete) {
                         deleteAlert = true
                     }

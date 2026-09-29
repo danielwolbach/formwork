@@ -23,9 +23,12 @@ struct SessionListScreen: View {
                 }
             } else {
                 ScrollView {
-                    NavigationRows(for: sessions) { session in
-                        DisplayableRow(session)
+                    LazyVStack(spacing: 0) {
+                        ForEach(sessions) { session in
+                            SessionRow(session)
+                        }
                     }
+                    .animation(.snappy, value: sessions.count)
                 }
             }
         }

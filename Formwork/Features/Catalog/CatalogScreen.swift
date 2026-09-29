@@ -139,9 +139,12 @@ struct CatalogScreen: View {
     }
 
     private func exerciseList(_ exercises: [Exercise]) -> some View {
-        NavigationRows(for: exercises) { exercise in
-            DisplayableRow(exercise)
+        LazyVStack(spacing: 0) {
+            ForEach(exercises) { exercise in
+                ExerciseRow(exercise)
+            }
         }
+        .animation(.snappy, value: exercises.count)
     }
 
     private func countExercises(in category: Exercise.Category) -> Int {

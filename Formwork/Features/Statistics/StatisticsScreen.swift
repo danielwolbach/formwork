@@ -68,9 +68,12 @@ struct StatisticsScreen: View {
                 .padding(.horizontal)
 
                 SectionView(.init(localized: .placeholder)) {
-                    NavigationRows(for: sessions.prefix(5)) { session in
-                        DisplayableRow(session)
+                    LazyVStack(spacing: 0) {
+                        ForEach(sessions.prefix(5)) { session in
+                            SessionRow(session)
+                        }
                     }
+                    .animation(.snappy, value: sessions.count)
                 } accessory: {
                     NavigationLink(value: Route.sessions) {
                         Label(.viewAll)

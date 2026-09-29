@@ -212,6 +212,7 @@ private struct CatalogPreview: View {
 private struct WorkoutPreview: View {
     var body: some View {
         WorkoutCard(StarterCatalog.Samples.workout())
+            .allowsHitTesting(false)
     }
 }
 

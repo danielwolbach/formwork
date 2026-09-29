@@ -24,12 +24,10 @@ struct WorkoutIndexScreen: View {
                 ScrollView {
                     LazyVStack(spacing: 8) {
                         ForEach(workouts) { workout in
-                            NavigationLink(value: workout) {
-                                WorkoutCard(workout)
-                            }
-                            .buttonStyle(.plain)
+                            WorkoutCard(workout)
                         }
                     }
+                    .animation(.snappy, value: workouts.count)
                     .padding(.horizontal)
                 }
             }

@@ -81,9 +81,12 @@ struct WorkoutScreen: View {
                         .buttonStyle(.cardProminent())
                     }
                 } else {
-                    NavigationRows(for: workout.entries.sorted()) { entry in
-                        DisplayableRow(entry)
+                    LazyVStack(spacing: 0) {
+                        ForEach(workout.entries.sorted()) { entry in
+                            WorkoutEntryRow(entry)
+                        }
                     }
+                    .animation(.snappy, value: workout.entries.count)
                 }
             }
         }
@@ -92,6 +95,13 @@ struct WorkoutScreen: View {
         }
         .toolbar {
             Menu(.more) {
+                Section {
+                    Button(.startSession) {
+                        startSession()
+                    }
+                    .disabled(workout.entries.isEmpty)
+                }
+
                 Section {
                     Button(.addExercise) {
                         sheet = .workoutAddEntries(workout)
@@ -106,9 +116,7 @@ struct WorkoutScreen: View {
                     Button(.edit) {
                         sheet = .editWorkout(workout)
                     }
-                }
 
-                Section {
                     Button(.delete) {
                         deleteAlert = true
                     }

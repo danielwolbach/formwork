@@ -106,10 +106,7 @@ struct OverviewScreen: View {
                 } else {
                     LazyVStack(spacing: 8) {
                         ForEach(pending) { workout in
-                            NavigationLink(value: workout) {
-                                WorkoutCard(workout)
-                            }
-                            .buttonStyle(.plain)
+                            WorkoutCard(workout)
                         }
                     }
                 }

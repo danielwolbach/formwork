@@ -45,19 +45,19 @@ struct WorkoutEntryScreen: View {
         }
         .toolbar {
             Menu(.more) {
-                if let exercise = entry.exercise {
-                    Section {
-                        Button(.viewStatistics) {
-                            sheet = .workoutEntryStatistics(entry)
-                        }
-
-                        Button(.edit) {
-                            sheet = .editExercise(exercise)
-                        }
+                Section {
+                    Button(.viewStatistics) {
+                        sheet = .workoutEntryStatistics(entry)
                     }
                 }
 
                 Section {
+                    if let exercise = entry.exercise {
+                        Button(.edit) {
+                            sheet = .editExercise(exercise)
+                        }
+                    }
+
                     Button(.remove) {
                         deleteAlert = true
                     }
