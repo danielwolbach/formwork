@@ -39,7 +39,7 @@ extension MostSkippedExercise: Statistic {
         String(localized: .statisticMostSkippedExerciseTitle)
     }
 
-    public var subtitle: String? {
+    public var formattedValue: String? {
         exercise?.title
     }
 }

@@ -53,12 +53,10 @@ struct WorkoutCard: View {
                             .lineLimit(1)
                             .font(.headline)
 
-                        if let subtitle = workout.subtitle {
-                            Text(subtitle)
-                                .lineLimit(1)
-                                .font(.subheadline)
-                                .foregroundStyle(.secondary)
-                        }
+                        Text(workout.formatted(.workoutDetails))
+                            .lineLimit(1)
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
                     }
 
                     if !workout.exerciseCategories.isEmpty {
@@ -120,7 +118,7 @@ struct WorkoutCard: View {
             }
         } preview: {
             VStack(spacing: 16) {
-                DisplayableRow(workout)
+                PictogramRow(workout.pictogram, title: workout.title, subtitle: workout.formatted(.workoutDetails))
 
                 if !workout.exerciseCategories.isEmpty {
                     FlowLayout(alignment: .leading) {

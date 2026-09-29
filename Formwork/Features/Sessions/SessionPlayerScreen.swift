@@ -249,10 +249,10 @@ private struct SessionEntryPage: View {
 
             VStack(spacing: 64) {
                 // The exercise's categories rather than the entry's target, which the editor below shows.
-                DisplayableHeader(
-                    pictogram: entry.pictogram,
+                PictogramHeader(
+                    entry.pictogram,
                     title: entry.title,
-                    subtitle: entry.exercise?.subtitle,
+                    subtitle: entry.exercise?.categories.formatted(.exerciseCategories),
                     badge: entry.status.isPending ? nil : entry.status.pictogram
                 )
 

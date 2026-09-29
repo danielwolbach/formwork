@@ -18,11 +18,11 @@ struct StreakSheet: View {
 
         StatisticSheet(current, history: history) {
             VStack(spacing: 16) {
-                ValueRow(title: current.title, value: current.subtitle)
+                ValueRow(title: current.title, value: current.formattedValue)
 
                 Divider()
 
-                ValueRow(title: longest.title, value: longest.subtitle)
+                ValueRow(title: longest.title, value: longest.formattedValue)
             }
             .padding()
             .card()

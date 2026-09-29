@@ -23,9 +23,9 @@ struct ProgressionSheet: View {
 
         StatisticSheet(progression, history: history) {
             ValuesSection(
-                overall: best.subtitle,
-                recent: trend.recent.subtitle,
-                baseline: trend.baseline?.subtitle,
+                overall: best.formattedValue,
+                recent: trend.recent.formattedValue,
+                baseline: trend.baseline?.formattedValue,
                 direction: trend.direction
             )
 

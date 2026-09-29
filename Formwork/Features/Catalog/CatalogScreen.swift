@@ -173,7 +173,7 @@ private struct ExerciseCategoryTile: View {
                         .lineLimit(1)
                         .font(.headline)
 
-                    Text(.placeholder)
+                    Text(exerciseCount.formatted(.exerciseCount))
                         .lineLimit(1)
                         .font(.subheadline)
                         .fontWeight(.semibold)

@@ -13,6 +13,14 @@ public enum ExerciseTarget: Codable, Sendable {
 }
 
 extension ExerciseTarget {
+    public var pictogram: Pictogram {
+        exerciseKind.pictogram
+    }
+
+    public var title: String {
+        exerciseKind.title
+    }
+
     public var rank: Double {
         switch self {
         case let .weight(kilograms, _, _): kilograms
@@ -36,27 +44,6 @@ extension ExerciseTarget {
         case .bodyweight: Exercise.Kind.bodyweight
         case .duration: Exercise.Kind.duration
         case .distance: Exercise.Kind.distance
-        }
-    }
-}
-
-extension ExerciseTarget: Displayable {
-    public var pictogram: Pictogram {
-        exerciseKind.pictogram
-    }
-
-    public var title: String {
-        exerciseKind.title
-    }
-
-    public var subtitle: String? {
-        let rank = TargetFormat(kind: exerciseKind).format(rank)
-
-        return switch self {
-        case let .weight(_, reps, sets): String(localized: .exerciseTargetWeightSubtitle(rank, sets, reps))
-        case let .bodyweight(reps, sets): String(localized: .exerciseTargetBodyweightSubtitle(sets, reps))
-        case let .duration(_, sets): sets == 1 ? rank : String(localized: .exerciseTargetDurationSubtitle(sets, rank))
-        case let .distance(_, sets): sets == 1 ? rank : String(localized: .exerciseTargetDistanceSubtitle(sets, rank))
         }
     }
 }

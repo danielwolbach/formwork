@@ -66,7 +66,7 @@ extension SessionActivityAttributes.ContentState {
 
         self.init(
             title: current.title,
-            subtitle: current.target.subtitle,
+            subtitle: current.target.formatted(.exerciseTarget(system: .current)),
             pictogram: current.pictogram,
             workout: session.workout?.pictogram ?? .workout,
             status: current.status.isPending ? nil : current.status.pictogram,

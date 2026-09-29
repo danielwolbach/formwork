@@ -1,5 +1,5 @@
 //
-//  DisplayableHeader.swift
+//  PictogramHeader.swift
 //  FormworkUI
 //
 //  Created by Daniel Wolbach on 04.09.26.
@@ -8,7 +8,7 @@
 import FormworkKit
 import SwiftUI
 
-public struct DisplayableHeader: View {
+public struct PictogramHeader: View {
     private let pictogram: Pictogram
 
     private let title: String
@@ -17,14 +17,7 @@ public struct DisplayableHeader: View {
 
     private let badge: Pictogram?
 
-    public init(_ displayable: some Displayable) {
-        self.pictogram = displayable.pictogram
-        self.title = displayable.title
-        self.subtitle = displayable.subtitle
-        self.badge = nil
-    }
-
-    public init(pictogram: Pictogram, title: String, subtitle: String? = nil, badge: Pictogram? = nil) {
+    public init(_ pictogram: Pictogram, title: String, subtitle: String? = nil, badge: Pictogram? = nil) {
         self.pictogram = pictogram
         self.title = title
         self.subtitle = subtitle
@@ -41,7 +34,7 @@ public struct DisplayableHeader: View {
                     .lineLimit(1)
                     .font(.headline)
 
-                if let subtitle {
+                if let subtitle, !subtitle.isEmpty {
                     Text(subtitle)
                         .lineLimit(1)
                         .font(.subheadline)
@@ -53,5 +46,7 @@ public struct DisplayableHeader: View {
 }
 
 #Preview {
-    DisplayableHeader(Samples.exercises.first!)
+    let exercise = Samples.exercises.first!
+
+    PictogramHeader(exercise.pictogram, title: exercise.title, subtitle: exercise.categories.formatted(.exerciseCategories))
 }

@@ -16,7 +16,7 @@ struct ValuesSheet<S: Statistic>: View {
         let overall = S(history.allTime)
 
         StatisticSheet(overall, history: history) {
-            ValuesSection(overall: overall.subtitle, recent: S(history.recent).subtitle)
+            ValuesSection(overall: overall.formattedValue, recent: S(history.recent).formattedValue)
         }
         .tint(overall.pictogram.color)
     }

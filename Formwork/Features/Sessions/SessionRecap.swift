@@ -20,7 +20,7 @@ struct SessionRecap: View {
         let summary = session.summary()
 
         VStack(spacing: 32) {
-            DisplayableHeader(session)
+            PictogramHeader(session.pictogram, title: session.title, subtitle: session.startDate.formatted(session.wallClockTime(date: .numeric)))
 
             TileGrid {
                 MetricCard(summary.duration)
@@ -64,7 +64,7 @@ private struct SessionEntryRow: View {
         let details = details
 
         VStack(alignment: .leading, spacing: 8) {
-            DisplayableRow(entry, badge: badge)
+            PictogramRow(entry.pictogram, title: entry.title, subtitle: entry.target.formatted(.exerciseTarget(system: .current)), badge: badge)
 
             if !details.isEmpty {
                 FlowLayout(alignment: .leading) {
@@ -96,7 +96,7 @@ private struct SessionEntryRow: View {
 
         if let previous = entry.previous, previous.rank != entry.target.rank {
             let change = entry.target.rank - previous.rank
-            details.append(Detail(pictogram: change > 0 ? .increase : .decrease, text: TargetFormat(kind: entry.target.exerciseKind).format(abs(change))))
+            details.append(Detail(pictogram: change > 0 ? .increase : .decrease, text: RankFormat(kind: entry.target.exerciseKind, system: .current).format(abs(change))))
         }
 
         return details

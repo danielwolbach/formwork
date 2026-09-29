@@ -37,7 +37,7 @@ extension FavoriteWorkout: Statistic {
         String(localized: .statisticFavoriteWorkoutTitle)
     }
 
-    public var subtitle: String? {
+    public var formattedValue: String? {
         workout?.title
     }
 }

@@ -36,7 +36,7 @@ extension Metric {
         []
     }
 
-    public var subtitle: String? {
+    public var formattedValue: String? {
         value.map(format.format)
     }
 

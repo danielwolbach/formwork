@@ -46,7 +46,7 @@ extension WeekStreak: Statistic {
         String(localized: .statisticWeekStreakTitle)
     }
 
-    public var subtitle: String? {
+    public var formattedValue: String? {
         weeks.formatted()
     }
 }

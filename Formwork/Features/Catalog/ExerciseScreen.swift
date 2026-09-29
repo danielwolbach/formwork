@@ -34,7 +34,7 @@ struct ExerciseScreen: View {
 
         ScrollView {
             VStack(spacing: 32) {
-                DisplayableHeader(exercise)
+                PictogramHeader(exercise.pictogram, title: exercise.title, subtitle: exercise.categories.formatted(.exerciseCategories))
 
                 if !history.sessions.isEmpty {
                     ExerciseStatistics(history: .init(.exercise(exercise)))

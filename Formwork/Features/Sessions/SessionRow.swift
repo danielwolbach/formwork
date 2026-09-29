@@ -26,7 +26,7 @@ struct SessionRow: View {
     var body: some View {
         NavigationLink(value: session) {
             HStack {
-                DisplayableRow(session)
+                PictogramRow(session.pictogram, title: session.title, subtitle: session.startDate.formatted(session.wallClockTime(date: .numeric)))
 
                 Image(systemName: "chevron.forward")
                     .foregroundStyle(.tertiary)
@@ -53,7 +53,7 @@ struct SessionRow: View {
             let summary = session.summary()
 
             VStack(spacing: 16) {
-                DisplayableRow(session)
+                PictogramRow(session.pictogram, title: session.title, subtitle: session.startDate.formatted(session.wallClockTime(date: .numeric)))
 
                 TileGrid {
                     MetricCard(summary.duration)

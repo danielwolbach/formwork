@@ -1,5 +1,5 @@
 //
-//  TargetFormat.swift
+//  RankFormat.swift
 //  FormworkKit
 //
 //  Created by Daniel Wolbach on 27.09.26.
@@ -7,12 +7,12 @@
 
 import Foundation
 
-public struct TargetFormat: FormatStyle {
+public struct RankFormat: FormatStyle {
     let kind: Exercise.Kind?
 
     let system: UnitSystem
 
-    public init(kind: Exercise.Kind?, system: UnitSystem = .current) {
+    public init(kind: Exercise.Kind?, system: UnitSystem) {
         self.kind = kind
         self.system = system
     }
@@ -26,9 +26,9 @@ public struct TargetFormat: FormatStyle {
         case .distance:
             distance(rank)
         case .duration:
-            Duration.seconds(rank).formatted(.units(allowed: [.hours, .minutes], width: .abbreviated))
+            DurationFormat().format(rank)
         case .bodyweight:
-            String(localized: "\(Int(rank.rounded())) reps")
+            String(localized: .exerciseTargetBodyweightRank(count: Int(rank.rounded())))
         case nil:
             rank.formatted(.number.precision(.fractionLength(0)))
         }

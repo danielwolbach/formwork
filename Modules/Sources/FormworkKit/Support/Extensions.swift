@@ -7,12 +7,6 @@
 
 import Foundation
 
-extension FormatStyle where Self == Duration.UnitsFormatStyle {
-    public static var sessionDuration: Self {
-        .units(allowed: [.hours, .minutes], width: .abbreviated)
-    }
-}
-
 extension Calendar {
     public func formatStyle(date: Date.FormatStyle.DateStyle? = nil, time: Date.FormatStyle.TimeStyle? = nil) -> Date.FormatStyle {
         Date.FormatStyle(date: date, time: time, calendar: self, timeZone: timeZone)

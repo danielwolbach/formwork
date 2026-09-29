@@ -43,7 +43,7 @@ extension LastCompleted: Statistic {
         String(localized: .statisticLastCompletedTitle)
     }
 
-    public var subtitle: String? {
+    public var formattedValue: String? {
         guard let date else {
             return nil
         }

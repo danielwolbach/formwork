@@ -109,15 +109,15 @@ public enum StarterCatalog {
 }
 
 extension StarterCatalog.Samples {
-    public static var weekStreak: some Displayable {
+    public static var weekStreak: some Statistic {
         WeekStreak(weeks: 6, isCurrentWeekFulfilled: true)
     }
 
-    public static var weeklySessions: some Displayable {
+    public static var weeklySessions: some Statistic {
         WeeklySessions(value: 2.8)
     }
 
-    public static var personalBest: some Displayable {
+    public static var personalBest: some Statistic {
         PersonalBest(target: .weight(kilograms: 90, reps: 10, sets: 3), unitSystem: .current)
     }
 

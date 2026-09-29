@@ -121,7 +121,7 @@ struct WorkoutForm: View {
             LazyVStack(spacing: 0) {
                 ForEach(entries) { entry in
                     HStack {
-                        DisplayableRow(entry)
+                        PictogramRow(entry.pictogram, title: entry.title, subtitle: entry.target.formatted(.exerciseTarget(system: .current)))
 
                         Image(systemName: "line.3.horizontal")
                             .foregroundStyle(.tertiary)

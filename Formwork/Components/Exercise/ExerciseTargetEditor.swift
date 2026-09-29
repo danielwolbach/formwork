@@ -53,7 +53,7 @@ struct ExerciseTargetEditor: View {
 
     private var bodyweightTargetEditor: some View {
         VStack(spacing: 24) {
-            NumberStepper(target.title, value: $target.reps, suffix: "reps", stepSize: 1)
+            NumberStepper(target.title, value: $target.reps, suffix: String(localized: .fieldRepsUnit), stepSize: 1)
 
             NumberStepper(.init(localized: .fieldSetsTitle), value: $target.sets, range: 1 ... 100)
         }
@@ -64,7 +64,7 @@ struct ExerciseTargetEditor: View {
             NumberStepper(
                 target.title,
                 value: minutes,
-                suffix: "min",
+                suffix: UnitDuration.minutes.symbol,
                 stepSize: minuteStep,
                 fractionLength: 0,
                 range: 0 ... 1440

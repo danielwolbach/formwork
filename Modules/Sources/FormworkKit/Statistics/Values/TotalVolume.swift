@@ -14,7 +14,7 @@ public struct TotalVolume {
 }
 
 extension TotalVolume: Metric {
-    public typealias Format = VolumeFormat
+    public typealias Format = RankFormat
 
     public init(_ window: History.Window) {
         let volume = window.entries
@@ -47,6 +47,6 @@ extension TotalVolume: Metric {
     }
 
     public var format: Format {
-        VolumeFormat(system: unitSystem)
+        RankFormat(kind: .weight, system: unitSystem)
     }
 }

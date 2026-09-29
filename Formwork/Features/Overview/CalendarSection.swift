@@ -255,8 +255,8 @@ private struct CalendarDayList: View {
 
             ForEach(sessions) { session in
                 link(to: session) {
-                    DisplayableRow(
-                        pictogram: session.pictogram,
+                    PictogramRow(
+                        session.pictogram,
                         title: session.title,
                         subtitle: session.startDate.formatted(session.wallClockTime()),
                         badge: .completedBadge
@@ -266,7 +266,7 @@ private struct CalendarDayList: View {
 
             ForEach(planned) { workout in
                 link(to: workout) {
-                    DisplayableRow(workout, badge: .pendingBadge)
+                    PictogramRow(workout.pictogram, title: workout.title, subtitle: workout.formatted(.workoutDetails), badge: .pendingBadge)
                 }
             }
         }

@@ -1,9 +1,6 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "%lld reps" : {
-
-    },
     "exercise.category.arms.title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -114,6 +111,29 @@
         }
       }
     },
+    "exercise.count" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%1$(count)lld Exercise"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%1$(count)lld Exercises"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "exercise.kind.bodyweight.title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -158,46 +178,69 @@
         }
       }
     },
-    "exercise.target.bodyweight.subtitle" : {
+    "exercise.target.bodyweight.rank" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld × %2$lld"
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%1$(count)lld rep"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%1$(count)lld reps"
+                }
+              }
+            }
           }
         }
       }
     },
-    "exercise.target.distance.subtitle" : {
+    "exercise.target.bodyweight.scheme" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$lld × %2$@"
+            "value" : "%1$(sets)lld × %2$(reps)lld"
           }
         }
       }
     },
-    "exercise.target.duration.subtitle" : {
+    "exercise.target.distance.scheme" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$lld × %2$@"
+            "value" : "%1$(sets)lld × %2$(distance)@"
           }
         }
       }
     },
-    "exercise.target.weight.subtitle" : {
+    "exercise.target.duration.scheme" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$@ • %2$lld × %3$lld"
+            "value" : "%1$(sets)lld × %2$(duration)@"
+          }
+        }
+      }
+    },
+    "exercise.target.weight.scheme" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$(sets)lld × %2$(reps)lld"
           }
         }
       }

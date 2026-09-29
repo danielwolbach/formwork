@@ -36,16 +36,12 @@ extension WorkoutEntry: Comparable {
     }
 }
 
-extension WorkoutEntry: Displayable {
+extension WorkoutEntry {
     public var pictogram: Pictogram {
         exercise?.pictogram ?? .unknown
     }
 
     public var title: String {
         exercise?.title ?? .init(localized: .placeholder)
-    }
-
-    public var subtitle: String? {
-        target.subtitle
     }
 }

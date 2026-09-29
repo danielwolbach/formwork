@@ -162,7 +162,7 @@ struct WorkoutAddEntriesForm: View {
             toggle(exercise)
         } label: {
             HStack {
-                DisplayableRow(exercise)
+                PictogramRow(exercise.pictogram, title: exercise.title, subtitle: exercise.categories.formatted(.exerciseCategories))
 
                 if selected {
                     Image(systemName: "checkmark")

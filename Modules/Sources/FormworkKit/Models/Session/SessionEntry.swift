@@ -44,6 +44,14 @@ public class SessionEntry {
 }
 
 extension SessionEntry {
+    public var pictogram: Pictogram {
+        exercise?.pictogram ?? .unknown
+    }
+
+    public var title: String {
+        exercise?.title ?? .init(localized: .placeholder)
+    }
+
     public var duration: TimeInterval? {
         guard let session, let resolved = status.resolvedDate else {
             return nil
@@ -97,20 +105,6 @@ extension SessionEntry: Comparable {
     }
 }
 
-extension SessionEntry: Displayable {
-    public var pictogram: Pictogram {
-        exercise?.pictogram ?? .unknown
-    }
-
-    public var title: String {
-        exercise?.title ?? .init(localized: .placeholder)
-    }
-
-    public var subtitle: String? {
-        target.subtitle
-    }
-}
-
 extension SessionEntry.Status {
     public var isPending: Bool {
         if case .pending = self {
@@ -144,7 +138,7 @@ extension SessionEntry.Status {
     }
 }
 
-extension SessionEntry.Status: Displayable {
+extension SessionEntry.Status {
     public var pictogram: Pictogram {
         switch self {
         case .pending: Pictogram(image: "ellipsis.circle.fill", tint: .gray)

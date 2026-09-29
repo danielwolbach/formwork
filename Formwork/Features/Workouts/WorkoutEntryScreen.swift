@@ -33,7 +33,7 @@ struct WorkoutEntryScreen: View {
         ScrollView {
             VStack(spacing: 32) {
                 // The exercise's categories rather than the entry's target, which the editor below shows.
-                DisplayableHeader(pictogram: entry.pictogram, title: entry.title, subtitle: entry.exercise?.subtitle)
+                PictogramHeader(entry.pictogram, title: entry.title, subtitle: entry.exercise?.categories.formatted(.exerciseCategories))
 
                 ExerciseTargetEditor(target: Bindable(entry).target)
                     .padding(.horizontal)

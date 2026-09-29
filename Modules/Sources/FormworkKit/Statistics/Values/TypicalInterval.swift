@@ -12,7 +12,7 @@ public struct TypicalInterval {
 }
 
 extension TypicalInterval: Metric {
-    public typealias Format = TypicalIntervalFormat
+    public typealias Format = IntervalFormat
 
     public init(_ window: History.Window) {
         let calendar = window.history.calendar
@@ -47,6 +47,6 @@ extension TypicalInterval: Metric {
     }
 
     public var format: Format {
-        TypicalIntervalFormat()
+        IntervalFormat()
     }
 }

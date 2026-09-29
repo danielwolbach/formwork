@@ -196,7 +196,7 @@ private struct CatalogPreview: View {
             ForEach(Array(exercises.enumerated()), id: \.offset) { position, exercise in
                 let depth = CGFloat(position)
 
-                DisplayableRow(exercise)
+                PictogramRow(exercise.pictogram, title: exercise.title, subtitle: exercise.categories.formatted(.exerciseCategories))
                     .scaleEffect(1 - depth * 0.05, anchor: .leading)
                     .offset(x: depth * 12)
             }
@@ -240,12 +240,10 @@ private struct SessionPreview: View {
                     .lineLimit(1)
                     .font(.headline)
 
-                if let subtitle = target.subtitle {
-                    Text(subtitle)
-                        .lineLimit(1)
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                }
+                Text(target.formatted(.exerciseTarget(system: .current)))
+                    .lineLimit(1)
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
             }
         }
     }

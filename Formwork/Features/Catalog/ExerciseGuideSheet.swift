@@ -22,7 +22,7 @@ struct ExerciseGuideSheet: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 32) {
-                DisplayableRow(exercise)
+                PictogramRow(exercise.pictogram, title: exercise.title, subtitle: exercise.categories.formatted(.exerciseCategories))
                     .padding(.horizontal)
 
                 ExerciseGuide(exercise)

@@ -51,6 +51,10 @@ extension Categories: Statistic {
     public var title: String {
         String(localized: .statisticCategoriesTitle)
     }
+
+    public var formattedValue: String? {
+        nil
+    }
 }
 
 extension Categories.Share: Identifiable {

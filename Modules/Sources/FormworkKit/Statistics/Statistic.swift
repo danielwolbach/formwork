@@ -7,8 +7,21 @@
 
 import Foundation
 
-public protocol Statistic: Displayable {
+public protocol Statistic {
     static var info: String {
+        get
+    }
+
+    var pictogram: Pictogram {
+        get
+    }
+
+    var title: String {
+        get
+    }
+
+    /// The value as text, the same wherever the statistic is shown. Chart statistics have none.
+    var formattedValue: String? {
         get
     }
 

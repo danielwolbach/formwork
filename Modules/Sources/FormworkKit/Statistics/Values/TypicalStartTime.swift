@@ -33,7 +33,7 @@ extension TypicalStartTime: Statistic {
         String(localized: .statisticTypicalStartTimeTitle)
     }
 
-    public var subtitle: String? {
+    public var formattedValue: String? {
         time.flatMap { calendar.date(from: $0) }?.formatted(calendar.formatStyle(time: .shortened))
     }
 }

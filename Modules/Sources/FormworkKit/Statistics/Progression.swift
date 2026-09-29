@@ -54,8 +54,12 @@ extension Progression: Statistic {
         String(localized: .statisticProgressionTitle)
     }
 
-    public var format: TargetFormat {
-        TargetFormat(kind: points.last?.target.exerciseKind, system: unitSystem)
+    public var formattedValue: String? {
+        nil
+    }
+
+    public var format: RankFormat {
+        RankFormat(kind: points.last?.target.exerciseKind, system: unitSystem)
     }
 
     static func bests(in window: History.Window) -> [Point] {

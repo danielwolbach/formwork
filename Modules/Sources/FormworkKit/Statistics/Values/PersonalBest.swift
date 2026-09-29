@@ -12,7 +12,7 @@ public struct PersonalBest {
 }
 
 extension PersonalBest: Metric {
-    public typealias Format = TargetFormat
+    public typealias Format = RankFormat
 
     public init(_ window: History.Window) {
         self.target = Progression.bests(in: window).map(\.target).max { $0.rank < $1.rank }
@@ -40,6 +40,6 @@ extension PersonalBest: Metric {
     }
 
     public var format: Format {
-        TargetFormat(kind: target?.exerciseKind, system: unitSystem)
+        RankFormat(kind: target?.exerciseKind, system: unitSystem)
     }
 }

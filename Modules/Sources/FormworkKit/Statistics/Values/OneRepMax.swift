@@ -14,7 +14,7 @@ public struct OneRepMax {
 }
 
 extension OneRepMax: Metric {
-    public typealias Format = TargetFormat
+    public typealias Format = RankFormat
 
     public init(_ window: History.Window) {
         self.kilograms = window.entries
@@ -51,6 +51,6 @@ extension OneRepMax: Metric {
     }
 
     public var format: Format {
-        TargetFormat(kind: .weight, system: unitSystem)
+        RankFormat(kind: .weight, system: unitSystem)
     }
 }

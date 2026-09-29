@@ -41,7 +41,7 @@ struct WorkoutScreen: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 32) {
-                DisplayableHeader(workout)
+                PictogramHeader(workout.pictogram, title: workout.title, subtitle: workout.formatted(.workoutDetails))
 
                 HStack {
                     Button(.addExercise) {

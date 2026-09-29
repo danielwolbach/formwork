@@ -49,6 +49,14 @@ extension Session {
         )
     }
 
+    public var pictogram: Pictogram {
+        workout?.pictogram ?? .unknown
+    }
+
+    public var title: String {
+        workout?.title ?? .init(localized: .placeholder)
+    }
+
     public var endedRecently: Bool {
         guard let endDate else {
             return false
@@ -206,8 +214,8 @@ extension Session {
         return interval.start <= start && start < interval.end
     }
 
-    public func wallClockTime() -> Date.FormatStyle {
-        localCalendar(from: .current).formatStyle(time: .shortened)
+    public func wallClockTime(date: Date.FormatStyle.DateStyle? = nil) -> Date.FormatStyle {
+        localCalendar(from: .current).formatStyle(date: date, time: .shortened)
     }
 
     public func period(of component: Calendar.Component, in calendar: Calendar) -> DateInterval? {
@@ -246,21 +254,6 @@ extension Session {
         }
 
         return ordered.indices.contains(index + offset) ? ordered[index + offset] : nil
-    }
-}
-
-extension Session: Displayable {
-    public var pictogram: Pictogram {
-        workout?.pictogram ?? .unknown
-    }
-
-    public var title: String {
-        workout?.title ?? .init(localized: .placeholder)
-    }
-
-    public var subtitle: String? {
-        let local = localCalendar(from: .current)
-        return startDate.formatted(local.formatStyle(date: .numeric, time: .shortened))
     }
 }
 

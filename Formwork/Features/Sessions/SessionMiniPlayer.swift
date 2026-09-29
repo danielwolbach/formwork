@@ -123,11 +123,9 @@ struct SessionMiniPlayer: View {
                 Text(entry.title)
                     .font(.caption)
 
-                if let subtitle = entry.subtitle {
-                    Text(subtitle)
-                        .font(.caption2)
-                        .foregroundStyle(.secondary)
-                }
+                Text(entry.target.formatted(.exerciseTarget(system: .current)))
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
             }
 
             Spacer()

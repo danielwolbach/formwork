@@ -16,7 +16,7 @@ struct LastCompletedSheet: View {
         let lastCompleted = LastCompleted(history.allTime)
 
         StatisticSheet(lastCompleted, history: history) {
-            ValueRow(title: lastCompleted.title, value: lastCompleted.subtitle)
+            ValueRow(title: lastCompleted.title, value: lastCompleted.formattedValue)
                 .padding()
                 .card()
                 .padding(.horizontal)

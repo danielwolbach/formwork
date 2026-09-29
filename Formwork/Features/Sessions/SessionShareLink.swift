@@ -89,7 +89,7 @@ private struct SessionShareCard: View {
                     .padding(.leading, 4)
                     .lineLimit(3)
 
-                DisplayableRow(session)
+                PictogramRow(session.pictogram, title: session.title, subtitle: session.startDate.formatted(session.wallClockTime(date: .numeric)))
             }
 
             Image(systemName: "checkmark.seal.fill")
@@ -155,7 +155,7 @@ private struct SessionShareCard: View {
                 VStack(alignment: .trailing) {
                     HStack(spacing: 2) {
                         if let previous = personalBest.previousBest {
-                            Text(verbatim: TargetFormat(kind: previous.exerciseKind).format(previous.rank))
+                            Text(verbatim: RankFormat(kind: previous.exerciseKind, system: .current).format(previous.rank))
                                 .font(.footnote)
                         }
 
@@ -165,7 +165,7 @@ private struct SessionShareCard: View {
                     .foregroundStyle(.secondary)
                     .baselineOffset(2)
 
-                    Text(verbatim: TargetFormat(kind: personalBest.target.exerciseKind).format(personalBest.target.rank))
+                    Text(verbatim: RankFormat(kind: personalBest.target.exerciseKind, system: .current).format(personalBest.target.rank))
                         .font(.system(.title3, design: .rounded, weight: .semibold))
                         .lineLimit(1)
                         .minimumScaleFactor(0.5)
@@ -190,7 +190,7 @@ private struct SessionShareImage: Transferable {
         }
 
         self.image = image
-        self.name = "\(session.title), \(session.startDate.formatted())"
+        self.name = "\(session.title), \(session.startDate.formatted(session.wallClockTime(date: .numeric)))"
     }
 
     static var transferRepresentation: some TransferRepresentation {

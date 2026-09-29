@@ -39,7 +39,7 @@ extension FavoriteExercise: Statistic {
         String(localized: .statisticFavoriteExerciseTitle)
     }
 
-    public var subtitle: String? {
+    public var formattedValue: String? {
         exercise?.title
     }
 }

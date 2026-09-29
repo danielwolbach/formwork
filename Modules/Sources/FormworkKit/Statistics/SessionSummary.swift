@@ -8,12 +8,12 @@
 import Foundation
 
 public struct SessionSummary {
-    public struct Figure<Value>: Displayable {
+    public struct Figure<Value> {
         public let pictogram: Pictogram
 
         public let title: String
 
-        public let subtitle: String?
+        public let formattedValue: String?
 
         let value: Value?
 
@@ -21,7 +21,7 @@ public struct SessionSummary {
             self.value = value
             self.title = title
             self.pictogram = pictogram
-            self.subtitle = value.flatMap(format)
+            self.formattedValue = value.flatMap(format)
         }
     }
 
@@ -61,7 +61,7 @@ extension Session {
 extension SessionSummary.Figure where Value == Duration {
     static func duration(_ duration: Duration?) -> Self {
         Self(duration, title: String(localized: .placeholder), pictogram: .duration) {
-            $0.formatted(.sessionDuration)
+            DurationFormat().format($0 / .seconds(1))
         }
     }
 }
@@ -85,7 +85,7 @@ extension SessionSummary.Figure where Value == Double {
 
     static func totalVolume(_ volume: Double?) -> Self {
         Self(volume, title: String(localized: .placeholder), pictogram: .volume) {
-            $0.formatted(TargetFormat(kind: .weight, system: .current))
+            $0.formatted(RankFormat(kind: .weight, system: .current))
         }
     }
 

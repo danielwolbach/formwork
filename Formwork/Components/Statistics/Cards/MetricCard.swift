@@ -14,23 +14,27 @@ struct MetricCard: View {
 
     private let title: String
 
-    private let subtitle: String?
+    private let value: String?
 
     private let direction: Direction?
 
-    init(_ item: some Displayable) {
-        self.init(item, direction: nil)
+    init(pictogram: Pictogram, title: String, value: String?, direction: Direction? = nil) {
+        self.pictogram = pictogram
+        self.title = title
+        self.value = value
+        self.direction = direction
     }
 
-    init(_ displayable: some Displayable, direction: Direction? = nil) {
-        self.pictogram = displayable.pictogram
-        self.title = displayable.title
-        self.subtitle = displayable.subtitle
-        self.direction = direction
+    init(_ statistic: some Statistic, direction: Direction? = nil) {
+        self.init(pictogram: statistic.pictogram, title: statistic.title, value: statistic.formattedValue, direction: direction)
     }
 
     init(_ trend: Trend<some Metric>) {
         self.init(trend.recent, direction: trend.direction)
+    }
+
+    init(_ figure: SessionSummary.Figure<some Any>) {
+        self.init(pictogram: figure.pictogram, title: figure.title, value: figure.formattedValue)
     }
 
     var body: some View {
@@ -44,7 +48,7 @@ struct MetricCard: View {
                 .foregroundStyle(.secondary)
 
             HStack(spacing: 4) {
-                Text(verbatim: subtitle ?? "—")
+                Text(verbatim: value ?? "—")
                     .font(.system(.title3, design: .rounded, weight: .semibold))
                     .lineLimit(1)
                     .minimumScaleFactor(0.5)
@@ -75,6 +79,6 @@ struct MetricCard: View {
 }
 
 #Preview {
-    MetricCard(Samples.exercises.first!)
+    MetricCard(StarterCatalog.Samples.weekStreak)
         .padding()
 }

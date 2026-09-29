@@ -26,9 +26,9 @@ struct MetricSheet<M: Metric>: View {
     var body: some View {
         StatisticSheet(overall, history: history) {
             ValuesSection(
-                overall: overall.subtitle,
-                recent: trend.recent.subtitle,
-                baseline: trend.baseline?.subtitle,
+                overall: overall.formattedValue,
+                recent: trend.recent.formattedValue,
+                baseline: trend.baseline?.formattedValue,
                 direction: trend.direction
             )
 

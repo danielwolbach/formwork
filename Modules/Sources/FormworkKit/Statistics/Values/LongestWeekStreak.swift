@@ -41,7 +41,7 @@ extension LongestWeekStreak: Statistic {
         String(localized: .statisticLongestWeekStreakTitle)
     }
 
-    public var subtitle: String? {
+    public var formattedValue: String? {
         weeks.formatted()
     }
 }

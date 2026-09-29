@@ -38,6 +38,10 @@ public class Workout {
 }
 
 extension Workout {
+    public var title: String {
+        name
+    }
+
     public var exerciseCategories: [Exercise.Category] {
         let counts = entries
             .compactMap(\.exercise)
@@ -83,17 +87,6 @@ extension Workout {
         }
 
         return session
-    }
-}
-
-extension Workout: Displayable {
-    public var title: String {
-        name
-    }
-
-    public var subtitle: String? {
-        // TODO: Show entry count.
-        String(localized: .placeholder)
     }
 }
 

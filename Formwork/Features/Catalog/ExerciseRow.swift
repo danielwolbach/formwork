@@ -29,7 +29,7 @@ struct ExerciseRow: View {
     var body: some View {
         NavigationLink(value: exercise) {
             HStack {
-                DisplayableRow(exercise)
+                PictogramRow(exercise.pictogram, title: exercise.title, subtitle: exercise.categories.formatted(.exerciseCategories))
 
                 Image(systemName: "chevron.forward")
                     .foregroundStyle(.tertiary)
@@ -60,7 +60,7 @@ struct ExerciseRow: View {
             let history = History(.exercise(exercise))
 
             VStack(spacing: 16) {
-                DisplayableRow(exercise)
+                PictogramRow(exercise.pictogram, title: exercise.title, subtitle: exercise.categories.formatted(.exerciseCategories))
 
                 if !history.sessions.isEmpty {
                     TileGrid {

@@ -12,7 +12,7 @@ public struct TypicalBest {
 }
 
 extension TypicalBest: Metric {
-    public typealias Format = TargetFormat
+    public typealias Format = RankFormat
 
     public init(_ window: History.Window) {
         let ranked = Progression.bests(in: window).map(\.target).sorted { $0.rank < $1.rank }
@@ -41,6 +41,6 @@ extension TypicalBest: Metric {
     }
 
     public var format: Format {
-        TargetFormat(kind: target?.exerciseKind, system: unitSystem)
+        RankFormat(kind: target?.exerciseKind, system: unitSystem)
     }
 }

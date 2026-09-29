@@ -294,6 +294,17 @@
         }
       }
     },
+    "field.reps.unit" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "reps"
+          }
+        }
+      }
+    },
     "field.rhythm.daily.interval.title" : {
       "extractionState" : "manual",
       "localizations" : {

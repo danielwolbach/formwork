@@ -47,6 +47,14 @@ public class Exercise {
 }
 
 extension Exercise {
+    public var pictogram: Pictogram {
+        kind.pictogram
+    }
+
+    public var title: String {
+        name
+    }
+
     public var currentHighestTarget: ExerciseTarget? {
         workoutEntries
             .filter { $0.target.exerciseKind == kind }
@@ -60,28 +68,13 @@ extension Exercise: Hashable {
     // synthesized Hashable conformances (e.g. History.Subject) see it without the macro expansion.
 }
 
-extension Exercise: Displayable {
-    public var pictogram: Pictogram {
-        kind.pictogram
-    }
-
-    public var title: String {
-        name
-    }
-
-    public var subtitle: String? {
-        let titles = Category.allCases.filter { categories.contains($0) }.map(\.title)
-        return titles.isEmpty ? nil : titles.formatted(.list(type: .and, width: .narrow))
-    }
-}
-
 extension Exercise.Kind: Identifiable {
     public var id: Self {
         self
     }
 }
 
-extension Exercise.Kind: Displayable {
+extension Exercise.Kind {
     public var pictogram: Pictogram {
         switch self {
         case .weight: .init(image: "dumbbell", tint: .indigo)
@@ -107,7 +100,7 @@ extension Exercise.Category: Identifiable {
     }
 }
 
-extension Exercise.Category: Displayable {
+extension Exercise.Category {
     public var pictogram: Pictogram {
         switch self {
         case .arms: .init(image: "figure.dance", tint: .blue)
