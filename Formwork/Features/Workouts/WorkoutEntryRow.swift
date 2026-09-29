@@ -16,6 +16,9 @@ struct WorkoutEntryRow: View {
     @Environment(\.modelContext)
     private var context: ModelContext
 
+    @Environment(\.units)
+    private var units: Units
+
     @State
     private var removeAlert: Bool = false
 
@@ -29,7 +32,7 @@ struct WorkoutEntryRow: View {
     var body: some View {
         NavigationLink(value: entry) {
             HStack {
-                PictogramRow(entry.pictogram, title: entry.title, subtitle: entry.target.formatted(.exerciseTarget(system: .current)))
+                PictogramRow(entry.pictogram, title: entry.title, subtitle: entry.target.formatted(.exerciseTarget(units: units)))
 
                 Image(systemName: "chevron.forward")
                     .foregroundStyle(.tertiary)
@@ -74,7 +77,7 @@ struct WorkoutEntryRow: View {
             let history = History(.entry(entry))
 
             VStack(spacing: 16) {
-                PictogramRow(entry.pictogram, title: entry.title, subtitle: entry.target.formatted(.exerciseTarget(system: .current)))
+                PictogramRow(entry.pictogram, title: entry.title, subtitle: entry.target.formatted(.exerciseTarget(units: units)))
 
                 if !history.sessions.isEmpty {
                     TileGrid {

@@ -11,7 +11,7 @@ public struct LongestWeekStreak {
     let weeks: Int
 }
 
-extension LongestWeekStreak: Statistic {
+extension LongestWeekStreak: Indicator {
     public init(_ window: History.Window) {
         guard let streak = window.streakWeeks else {
             self.weeks = 0
@@ -41,7 +41,7 @@ extension LongestWeekStreak: Statistic {
         String(localized: .statisticLongestWeekStreakTitle)
     }
 
-    public var formattedValue: String? {
-        weeks.formatted()
+    public var reading: Reading? {
+        .count(weeks)
     }
 }

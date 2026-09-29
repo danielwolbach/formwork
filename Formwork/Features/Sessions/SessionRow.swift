@@ -56,17 +56,17 @@ struct SessionRow: View {
                 PictogramRow(session.pictogram, title: session.title, subtitle: session.startDate.formatted(session.wallClockTime(date: .numeric)))
 
                 TileGrid {
-                    MetricCard(summary.duration)
+                    IndicatorCard(summary.duration)
 
-                    MetricCard(summary.endTime)
+                    IndicatorCard(summary.endTime)
 
-                    MetricCard(summary.skipRate)
+                    IndicatorCard(summary.skipRate)
 
-                    MetricCard(summary.medianExerciseDuration)
+                    IndicatorCard(summary.medianExerciseDuration)
 
-                    MetricCard(summary.completedExercises)
+                    IndicatorCard(summary.completedExercises)
 
-                    MetricCard(summary.totalVolume)
+                    IndicatorCard(summary.totalVolume)
                 }
             }
             .frame(width: 360)

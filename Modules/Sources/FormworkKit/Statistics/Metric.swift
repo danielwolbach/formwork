@@ -7,9 +7,7 @@
 
 import Foundation
 
-public protocol Metric: Statistic {
-    associatedtype Format: FormatStyle where Format.FormatInput == Double, Format.FormatOutput == String
-
+public protocol Metric: Indicator {
     static var tolerance: Double? {
         get
     }
@@ -22,9 +20,7 @@ public protocol Metric: Statistic {
         get
     }
 
-    var format: Format {
-        get
-    }
+    func reading(of value: Double) -> Reading
 }
 
 extension Metric {
@@ -36,8 +32,8 @@ extension Metric {
         []
     }
 
-    public var formattedValue: String? {
-        value.map(format.format)
+    public var reading: Reading? {
+        value.map(reading(of:))
     }
 
     public static func axisStep(upTo peak: Double, count: Int = 4) -> Double? {

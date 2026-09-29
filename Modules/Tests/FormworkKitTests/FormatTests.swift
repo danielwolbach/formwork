@@ -10,12 +10,48 @@ import Foundation
 import Testing
 
 struct FormatTests {
+    @Test(arguments: [
+        (80.0, Exercise.Kind?.some(.weight), Reading.weight(kilograms: 80)),
+        (12, .bodyweight, .reps(12)),
+        (600, .duration, .duration(seconds: 600)),
+        (5000, .distance, .distance(meters: 5000)),
+        (3, nil, .count(3)),
+    ])
+    func rankReadsByTheKindOfExercise(rank: Double, kind: Exercise.Kind?, expected: Reading) {
+        #expect(Reading(rank: rank, of: kind) == expected)
+    }
+
+    @Test
+    func imperialReadersReadPoundsAndMiles() {
+        #expect(Reading.weight(kilograms: 100).formatted(.reading(units: Units(weight: .imperial, distance: .metric))).hasSuffix(" lb"))
+        #expect(Reading.distance(meters: 5000).formatted(.reading(units: Units(weight: .metric, distance: .imperial))).hasSuffix(" mi"))
+    }
+
+    @Test(arguments: [
+        (Reading.weight(kilograms: 100), "kg"),
+        (.distance(meters: 5000), "km"),
+        (.distance(meters: 400), "m"),
+    ])
+    func metricReadingsUseMetricUnits(reading: Reading, symbol: String) {
+        #expect(reading.formatted(.reading(units: .metric)).hasSuffix(" \(symbol)"))
+    }
+
+    @Test(arguments: [(1, "1 rep"), (12, "12 reps")])
+    func repsAreTheirOwnUnit(reps: Int, expected: String) {
+        #expect(Reading.reps(reps).formatted(.reading(units: .metric)) == expected)
+    }
+
+    @Test
+    func shortDurationsReadInSeconds() {
+        #expect(Reading.duration(seconds: 40).formatted(.reading(units: .metric)) == Duration.seconds(40).formatted(.units(allowed: [.seconds], width: .abbreviated)))
+    }
+
     @Test
     func dotListSkipsEmptyParts() {
         #expect(["80 kg", "", "3 × 8"].formatted(.dotList) == "80 kg · 3 × 8")
     }
 
-    @Test(arguments: [(1, "1 exercise"), (5, "5 exercises")])
+    @Test(arguments: [(1, "1 Exercise"), (5, "5 Exercises")])
     func exerciseCountAgreesWithTheNumber(count: Int, expected: String) {
         #expect(count.formatted(.exerciseCount) == expected)
     }
@@ -24,15 +60,26 @@ struct FormatTests {
     func weightTargetShowsLoadSetsAndReps() {
         let target = ExerciseTarget.weight(kilograms: 100, reps: 8, sets: 3)
 
-        #expect(target.formatted(.exerciseTarget(system: .metric)) == "100 kg · 3 × 8")
+        #expect(target.formatted(.exerciseTarget(units: .metric)) == "100 kg · 3 × 8")
+    }
+
+    @Test(arguments: [
+        (Units.System.metric, "10 kg", "1 km"),
+        (Units.System.imperial, "20 lb", "1 mi"),
+    ])
+    func initialTargetsAreRoundInTheReadersUnits(system: Units.System, load: String, distance: String) {
+        let units = Units(weight: system, distance: system)
+
+        #expect(Reading(rank: ExerciseTarget.initial(for: .weight, in: units).rank, of: .weight).formatted(.reading(units: units)) == load)
+        #expect(Reading(rank: ExerciseTarget.initial(for: .distance, in: units).rank, of: .distance).formatted(.reading(units: units)) == distance)
     }
 
     @Test
     func weightTargetReadsInTheGivenSystem() {
         let target = ExerciseTarget.weight(kilograms: 100, reps: 8, sets: 3)
 
-        #expect(target.formatted(.exerciseTarget(system: .metric)).contains(" kg"))
-        #expect(target.formatted(.exerciseTarget(system: .imperial)).contains(" lb"))
+        #expect(target.formatted(.exerciseTarget(units: .metric)).contains(" kg"))
+        #expect(target.formatted(.exerciseTarget(units: Units(weight: .imperial, distance: .metric))).contains(" lb"))
     }
 
     @Test(arguments: [
@@ -40,9 +87,9 @@ struct FormatTests {
         ExerciseTarget.distance(meters: 5 * 1000, sets: 1),
     ])
     func singleSetShowsOnlyTheRank(target: ExerciseTarget) {
-        let rank = RankFormat(kind: target.exerciseKind, system: .metric).format(target.rank)
+        let rank = Reading(rank: target.rank, of: target.exerciseKind).formatted(.reading(units: .metric))
 
-        #expect(target.formatted(.exerciseTarget(system: .metric)) == rank)
+        #expect(target.formatted(.exerciseTarget(units: .metric)) == rank)
     }
 
     @Test(arguments: [
@@ -50,8 +97,8 @@ struct FormatTests {
         ExerciseTarget.distance(meters: 5 * 1000, sets: 3),
     ])
     func severalSetsCountTheSets(target: ExerciseTarget) {
-        let rank = RankFormat(kind: target.exerciseKind, system: .metric).format(target.rank)
-        let formatted = target.formatted(.exerciseTarget(system: .metric))
+        let rank = Reading(rank: target.rank, of: target.exerciseKind).formatted(.reading(units: .metric))
+        let formatted = target.formatted(.exerciseTarget(units: .metric))
 
         #expect(formatted != rank)
         #expect(formatted.contains(rank))
@@ -93,7 +140,7 @@ struct FormatTests {
     func workoutWithoutRecentSessionsShowsOnlyItsExercises() throws {
         let store = try TestStore()
 
-        #expect(try store.workout.formatted(WorkoutDetailsFormat(at: Calendar.berlin().date(10))) == "3 exercises")
+        #expect(try store.workout.formatted(WorkoutDetailsFormat(at: Calendar.berlin().date(10))) == "3 Exercises")
     }
 
     @MainActor
@@ -102,7 +149,7 @@ struct FormatTests {
         let store = try TestStore()
         try store.session(7, minutes: 45)
 
-        let expected = ["3 exercises", DurationFormat().format(45 * 60)].formatted(.dotList)
+        let expected = ["3 Exercises", Reading.duration(seconds: 45 * 60).formatted(.reading(units: .metric))].formatted(.dotList)
         #expect(try store.workout.formatted(WorkoutDetailsFormat(at: Calendar.berlin().date(10))) == expected)
     }
 }

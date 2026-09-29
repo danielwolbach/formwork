@@ -283,6 +283,7 @@ struct SessionActivityAttributesTests {
         let state = try #require(SessionActivityAttributes.ContentState(session: session))
 
         #expect(state.title == "Squat")
+        #expect(state.target == session.currentEntry?.target)
         #expect(state.pictogram == Exercise.Kind.bodyweight.pictogram)
         #expect(state.workout == store.workout.pictogram)
         #expect(state.status == nil)

@@ -13,8 +13,21 @@ public enum DeepLink {
     public static let session = URL(string: "\(scheme)://session")!
 }
 
+public enum AppGroup {
+    public static let identifier = "group.de.danielwolbach.Formwork"
+
+    public static var defaults: UserDefaults {
+        UserDefaults(suiteName: identifier)!
+    }
+}
+
+/// Keys must not contain dots: `@AppStorage` observes them with KVO, which reads a dot as a key path and never fires.
 public enum StorageKeys {
-    public static let onboardingPending = "onboarding.pending"
+    public static let onboardingPending = "onboardingPending"
+
+    public static let weightSystem = "unitsWeight"
+
+    public static let distanceSystem = "unitsDistance"
 }
 
 public enum WidgetKind {

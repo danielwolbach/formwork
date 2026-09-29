@@ -1,6 +1,6 @@
 //
 //  Storage.swift
-//  Formwork
+//  FormworkKit
 //
 //  Created by Daniel Wolbach on 06.09.26.
 //
@@ -16,7 +16,7 @@ public enum Storage {
         Samples.container
     } else {
         try unwrap(
-            ModelContainer(for: schema, migrationPlan: Migrations.self, configurations: [ModelConfiguration(schema: schema, groupContainer: .identifier("group.de.danielwolbach.Formwork"))]),
+            ModelContainer(for: schema, migrationPlan: Migrations.self, configurations: [ModelConfiguration(schema: schema, groupContainer: .identifier(AppGroup.identifier))]),
             "Failed to initialize storage"
         )
     }

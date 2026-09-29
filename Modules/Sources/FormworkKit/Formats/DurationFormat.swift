@@ -7,10 +7,8 @@
 
 import Foundation
 
-public struct DurationFormat: FormatStyle {
-    public init() {}
-
-    public func format(_ seconds: Double) -> String {
+struct DurationFormat: FormatStyle {
+    func format(_ seconds: Double) -> String {
         if seconds < 60 {
             return Duration.seconds(seconds).formatted(.units(allowed: [.seconds], width: .abbreviated))
         }

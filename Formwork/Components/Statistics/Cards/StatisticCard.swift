@@ -1,6 +1,6 @@
 //
 //  StatisticCard.swift
-//  FormworkKit
+//  Formwork
 //
 //  Created by Daniel Wolbach on 24.09.26.
 //
@@ -59,23 +59,23 @@ struct StatisticCard: View {
     @ViewBuilder
     private var card: some View {
         switch kind {
-        case .lastCompleted: MetricCard(LastCompleted(history.allTime))
-        case .weekStreak: MetricCard(WeekStreak(history.allTime))
-        case .weeklySessions: MetricCard(Trend<WeeklySessions>(history))
-        case .typicalDuration: MetricCard(Trend<TypicalDuration>(history))
-        case .typicalStartTime: MetricCard(TypicalStartTime(history.recent))
-        case .completionRate: MetricCard(Trend<CompletionRate>(history))
-        case .completions: MetricCard(Trend<Completions>(history))
-        case .favoriteWorkout: MetricCard(FavoriteWorkout(history.recent))
-        case .favoriteExercise: MetricCard(FavoriteExercise(history.recent))
-        case .mostSkippedExercise: MetricCard(MostSkippedExercise(history.recent))
-        case .personalBest: MetricCard(PersonalBest(history.allTime))
+        case .lastCompleted: IndicatorCard(LastCompleted(history.allTime))
+        case .weekStreak: IndicatorCard(WeekStreak(history.allTime))
+        case .weeklySessions: IndicatorCard(Trend<WeeklySessions>(history))
+        case .typicalDuration: IndicatorCard(Trend<TypicalDuration>(history))
+        case .typicalStartTime: IndicatorCard(TypicalStartTime(history.recent))
+        case .completionRate: IndicatorCard(Trend<CompletionRate>(history))
+        case .completions: IndicatorCard(Trend<Completions>(history))
+        case .favoriteWorkout: IndicatorCard(FavoriteWorkout(history.recent))
+        case .favoriteExercise: IndicatorCard(FavoriteExercise(history.recent))
+        case .mostSkippedExercise: IndicatorCard(MostSkippedExercise(history.recent))
+        case .personalBest: IndicatorCard(PersonalBest(history.allTime))
         case .activeDays: ActiveDaysCard(ActiveDays(history.weeks(Self.activeDaysWeeks)))
         case .categories: CategoriesCard(Categories(history.recent))
         case .progression: ProgressionCard(Progression(history.weeks(54)))
-        case .totalVolume: MetricCard(Trend<TotalVolume>(history))
-        case .oneRepMax: MetricCard(OneRepMax(history.allTime))
-        case .typicalInterval: MetricCard(Trend<TypicalInterval>(history))
+        case .totalVolume: IndicatorCard(Trend<TotalVolume>(history))
+        case .oneRepMax: IndicatorCard(OneRepMax(history.allTime))
+        case .typicalInterval: IndicatorCard(Trend<TypicalInterval>(history))
         }
     }
 
@@ -86,12 +86,12 @@ struct StatisticCard: View {
         case .weekStreak: StreakSheet(history: history)
         case .weeklySessions: MetricSheet<WeeklySessions>(history: history)
         case .typicalDuration: MetricSheet<TypicalDuration>(history: history)
-        case .typicalStartTime: ValuesSheet<TypicalStartTime>(history: history)
+        case .typicalStartTime: IndicatorSheet<TypicalStartTime>(history: history)
         case .completionRate: MetricSheet<CompletionRate>(history: history)
         case .completions: MetricSheet<Completions>(history: history)
-        case .favoriteWorkout: ValuesSheet<FavoriteWorkout>(history: history)
-        case .favoriteExercise: ValuesSheet<FavoriteExercise>(history: history)
-        case .mostSkippedExercise: ValuesSheet<MostSkippedExercise>(history: history)
+        case .favoriteWorkout: IndicatorSheet<FavoriteWorkout>(history: history)
+        case .favoriteExercise: IndicatorSheet<FavoriteExercise>(history: history)
+        case .mostSkippedExercise: IndicatorSheet<MostSkippedExercise>(history: history)
         case .personalBest: MetricSheet<PersonalBest>(history: history)
         case .activeDays: ActiveDaysSheet(history: history)
         case .categories: CategoriesSheet(history: history)

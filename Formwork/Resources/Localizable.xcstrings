@@ -140,6 +140,17 @@
         }
       }
     },
+    "field.distanceUnit.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Distance Unit"
+          }
+        }
+      }
+    },
     "field.exercises.title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -472,6 +483,17 @@
         }
       }
     },
+    "field.units.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Units"
+          }
+        }
+      }
+    },
     "field.viewMode.title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -479,6 +501,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "View Mode"
+          }
+        }
+      }
+    },
+    "field.weightUnit.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weight Unit"
           }
         }
       }
@@ -624,7 +657,26 @@
       }
     },
     "screen.sessions.title" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sessions"
+          }
+        }
+      }
+    },
+    "screen.settings.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Settings"
+          }
+        }
+      }
     },
     "screen.statistics.title" : {
       "extractionState" : "manual",

@@ -8,9 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		CAF7F80C305D29BC003DEA83 /* FormworkKit in Frameworks */ = {isa = PBXBuildFile; productRef = CAF7F80B305D29BC003DEA83 /* FormworkKit */; };
-		CAF7F829C09738E49B84629D /* FormworkUI in Frameworks */ = {isa = PBXBuildFile; productRef = CAF7F8782404104B5FB16C51 /* FormworkUI */; };
 		CAF7F827305D5BD1003DEA83 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = CAF7F826305D5BD1003DEA83 /* README.md */; };
 		CAF7F829305D5BE7003DEA83 /* CONTRIBUTING.md in Resources */ = {isa = PBXBuildFile; fileRef = CAF7F828305D5BE7003DEA83 /* CONTRIBUTING.md */; };
+		CAF7F829C09738E49B84629D /* FormworkUI in Frameworks */ = {isa = PBXBuildFile; productRef = CAF7F8782404104B5FB16C51 /* FormworkUI */; };
 		CAF7F831305D66F2003DEA83 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CAF7F830305D66F2003DEA83 /* WidgetKit.framework */; };
 		CAF7F833305D66F2003DEA83 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CAF7F832305D66F2003DEA83 /* SwiftUI.framework */; };
 		CAF7F840305D66F3003DEA83 /* FormworkWidgetsExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = CAF7F82E305D66F2003DEA83 /* FormworkWidgetsExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };

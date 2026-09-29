@@ -17,6 +17,9 @@ struct OnboardingScreen: View {
     @Environment(\.dismiss)
     private var dismiss: DismissAction
 
+    @Environment(\.units)
+    private var units: Units
+
     @AppStorage(StorageKeys.onboardingPending)
     private var onboardingPending: Bool = true
 
@@ -94,7 +97,7 @@ struct OnboardingScreen: View {
 
     private func finish() {
         do {
-            try StarterCatalog.seed(into: modelContext)
+            try StarterCatalog.seed(into: modelContext, units: units)
         } catch {
             // TODO: Log error
         }
@@ -211,8 +214,11 @@ private struct CatalogPreview: View {
 }
 
 private struct WorkoutPreview: View {
+    @Environment(\.units)
+    private var units: Units
+
     var body: some View {
-        WorkoutCard(StarterCatalog.Samples.workout())
+        WorkoutCard(StarterCatalog.Samples.workout(in: units))
             .allowsHitTesting(false)
     }
 }
@@ -220,7 +226,8 @@ private struct WorkoutPreview: View {
 private struct SessionPreview: View {
     private let exercise = StarterCatalog.Samples.exercise(of: .weight)
 
-    private let target = StarterCatalog.Samples.weightTarget
+    @Environment(\.units)
+    private var units: Units
 
     var body: some View {
         HStack(alignment: .top, spacing: 16) {
@@ -240,7 +247,7 @@ private struct SessionPreview: View {
                     .lineLimit(1)
                     .font(.headline)
 
-                Text(target.formatted(.exerciseTarget(system: .current)))
+                Text(StarterCatalog.Samples.weightTarget(in: units).formatted(.exerciseTarget(units: units)))
                     .lineLimit(1)
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
@@ -257,12 +264,15 @@ private struct SessionPreview: View {
 }
 
 private struct StatisticsPreview: View {
+    @Environment(\.units)
+    private var units: Units
+
     var body: some View {
         TileGrid {
-            MetricCard(StarterCatalog.Samples.weekStreak)
-            MetricCard(StarterCatalog.Samples.weeklySessions)
-            MetricCard(StarterCatalog.Samples.personalBest)
-            MetricCard(StarterCatalog.Samples.totalVolume)
+            IndicatorCard(StarterCatalog.Samples.weekStreak)
+            IndicatorCard(StarterCatalog.Samples.weeklySessions)
+            IndicatorCard(StarterCatalog.Samples.personalBest(in: units))
+            IndicatorCard(StarterCatalog.Samples.totalVolume(in: units))
         }
     }
 }

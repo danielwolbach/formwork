@@ -11,7 +11,7 @@ public struct MostSkippedExercise {
     public let exercise: Exercise?
 }
 
-extension MostSkippedExercise: Statistic {
+extension MostSkippedExercise: Indicator {
     public init(_ window: History.Window) {
         let tally = window.entries
             .filter(\.status.isSkipped)
@@ -39,7 +39,7 @@ extension MostSkippedExercise: Statistic {
         String(localized: .statisticMostSkippedExerciseTitle)
     }
 
-    public var formattedValue: String? {
-        exercise?.title
+    public var reading: Reading? {
+        exercise.map { .name($0.title) }
     }
 }

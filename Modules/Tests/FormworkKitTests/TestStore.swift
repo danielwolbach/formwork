@@ -62,3 +62,7 @@ extension ExerciseTarget {
         }
     }
 }
+
+extension Units {
+    static let metric = Units(weight: .metric, distance: .metric)
+}

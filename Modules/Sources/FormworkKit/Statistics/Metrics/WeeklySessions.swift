@@ -32,7 +32,7 @@ extension WeeklySessions: Metric {
         String(localized: .statisticWeeklySessionsTitle)
     }
 
-    public var format: FloatingPointFormatStyle<Double> {
-        .number.precision(.fractionLength(1))
+    public func reading(of value: Double) -> Reading {
+        .rate(value)
     }
 }

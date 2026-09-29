@@ -12,8 +12,6 @@ public struct TypicalInterval {
 }
 
 extension TypicalInterval: Metric {
-    public typealias Format = IntervalFormat
-
     public init(_ window: History.Window) {
         let calendar = window.history.calendar
         let days = switch window.history.subject {
@@ -46,7 +44,7 @@ extension TypicalInterval: Metric {
         String(localized: .statisticTypicalIntervalTitle)
     }
 
-    public var format: Format {
-        IntervalFormat()
+    public func reading(of value: Double) -> Reading {
+        .days(value)
     }
 }

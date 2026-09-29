@@ -57,10 +57,6 @@ extension ActiveDays: Statistic {
         String(localized: .statisticActiveDaysTitle)
     }
 
-    public var formattedValue: String? {
-        nil
-    }
-
     public var weekdaySymbols: [String] {
         let symbols = calendar.veryShortWeekdaySymbols
         return (0 ..< 7).map { symbols[(calendar.firstWeekday - 1 + $0) % 7] }

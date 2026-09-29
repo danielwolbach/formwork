@@ -18,6 +18,9 @@ struct SessionMiniPlayer: View {
     @Environment(\.presentSession)
     private var presentSession: PresentSessionAction
 
+    @Environment(\.units)
+    private var units: Units
+
     @State
     private var navigator: SessionNavigator
 
@@ -123,7 +126,7 @@ struct SessionMiniPlayer: View {
                 Text(entry.title)
                     .font(.caption)
 
-                Text(entry.target.formatted(.exerciseTarget(system: .current)))
+                Text(entry.target.formatted(.exerciseTarget(units: units)))
                     .font(.caption2)
                     .foregroundStyle(.secondary)
             }

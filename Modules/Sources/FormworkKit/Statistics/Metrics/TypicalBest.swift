@@ -7,17 +7,12 @@
 
 public struct TypicalBest {
     let target: ExerciseTarget?
-
-    let unitSystem: UnitSystem
 }
 
 extension TypicalBest: Metric {
-    public typealias Format = RankFormat
-
     public init(_ window: History.Window) {
         let ranked = Progression.bests(in: window).map(\.target).sorted { $0.rank < $1.rank }
         self.target = ranked.isEmpty ? nil : ranked[(ranked.count - 1) / 2]
-        self.unitSystem = .current
     }
 
     public static var info: String {
@@ -40,7 +35,7 @@ extension TypicalBest: Metric {
         target?.rank
     }
 
-    public var format: Format {
-        RankFormat(kind: target?.exerciseKind, system: unitSystem)
+    public func reading(of value: Double) -> Reading {
+        Reading(rank: value, of: target?.exerciseKind)
     }
 }

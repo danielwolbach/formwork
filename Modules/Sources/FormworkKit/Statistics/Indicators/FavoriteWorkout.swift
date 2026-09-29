@@ -11,7 +11,7 @@ public struct FavoriteWorkout {
     public let workout: Workout?
 }
 
-extension FavoriteWorkout: Statistic {
+extension FavoriteWorkout: Indicator {
     public init(_ window: History.Window) {
         let tally = window.sessions.reduce(into: [Workout: (count: Int, latest: Date)]()) { tally, session in
             guard let workout = session.workout else {
@@ -37,7 +37,7 @@ extension FavoriteWorkout: Statistic {
         String(localized: .statisticFavoriteWorkoutTitle)
     }
 
-    public var formattedValue: String? {
-        workout?.title
+    public var reading: Reading? {
+        workout.map { .name($0.title) }
     }
 }

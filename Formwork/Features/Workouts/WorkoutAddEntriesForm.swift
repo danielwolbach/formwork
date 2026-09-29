@@ -14,6 +14,9 @@ struct WorkoutAddEntriesForm: View {
     @Environment(\.dismiss)
     private var dismiss: DismissAction
 
+    @Environment(\.units)
+    private var units: Units
+
     @Query
     private var exercises: [Exercise]
 
@@ -216,16 +219,7 @@ struct WorkoutAddEntriesForm: View {
     }
 
     private func initialTarget(for exercise: Exercise) -> ExerciseTarget {
-        if let current = exercise.currentHighestTarget {
-            return current
-        }
-
-        return switch exercise.kind {
-        case .weight: .weight()
-        case .bodyweight: .bodyweight()
-        case .duration: .duration()
-        case .distance: .distance()
-        }
+        exercise.currentHighestTarget ?? .initial(for: exercise.kind, in: units)
     }
 
     private func commit() {

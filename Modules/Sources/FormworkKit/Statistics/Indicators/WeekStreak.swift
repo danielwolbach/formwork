@@ -13,7 +13,7 @@ public struct WeekStreak {
     public let isCurrentWeekFulfilled: Bool
 }
 
-extension WeekStreak: Statistic {
+extension WeekStreak: Indicator {
     public init(_ window: History.Window) {
         guard let streak = window.streakWeeks else {
             self.weeks = 0
@@ -46,7 +46,7 @@ extension WeekStreak: Statistic {
         String(localized: .statisticWeekStreakTitle)
     }
 
-    public var formattedValue: String? {
-        weeks.formatted()
+    public var reading: Reading? {
+        .count(weeks)
     }
 }

@@ -19,6 +19,9 @@ struct WorkoutForm: View {
     @Environment(\.dismiss)
     private var dismiss: DismissAction
 
+    @Environment(\.units)
+    private var units: Units
+
     @State
     private var name: String = ""
 
@@ -121,7 +124,7 @@ struct WorkoutForm: View {
             LazyVStack(spacing: 0) {
                 ForEach(entries) { entry in
                     HStack {
-                        PictogramRow(entry.pictogram, title: entry.title, subtitle: entry.target.formatted(.exerciseTarget(system: .current)))
+                        PictogramRow(entry.pictogram, title: entry.title, subtitle: entry.target.formatted(.exerciseTarget(units: units)))
 
                         Image(systemName: "line.3.horizontal")
                             .foregroundStyle(.tertiary)

@@ -19,6 +19,7 @@ enum Sheet: Identifiable, Hashable, View {
     case workoutStatistics(_ workout: Workout)
     case workoutEntryStatistics(_ entry: WorkoutEntry)
     case exerciseGuide(_ exercise: Exercise)
+    case settings
 
     var body: some View {
         switch self {
@@ -32,6 +33,7 @@ enum Sheet: Identifiable, Hashable, View {
         case let .workoutStatistics(workout): WorkoutStatisticsScreen(workout)
         case let .workoutEntryStatistics(entry): WorkoutEntryStatisticsScreen(entry)
         case let .exerciseGuide(exercise): ExerciseGuideSheet(exercise)
+        case .settings: SettingsScreen()
         }
     }
 

@@ -12,8 +12,6 @@ public struct TypicalDuration {
 }
 
 extension TypicalDuration: Metric {
-    public typealias Format = DurationFormat
-
     public init(_ window: History.Window) {
         let durations = switch window.history.subject {
         case .exercise, .entry: window.entries.filter(\.status.isCompleted).compactMap(\.duration)
@@ -43,7 +41,7 @@ extension TypicalDuration: Metric {
         String(localized: .statisticTypicalDurationTitle)
     }
 
-    public var format: Format {
-        DurationFormat()
+    public func reading(of value: Double) -> Reading {
+        .duration(seconds: value)
     }
 }

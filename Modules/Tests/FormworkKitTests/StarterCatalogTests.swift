@@ -45,7 +45,7 @@ struct StarterCatalogTests {
         let container = try ModelContainer(for: Storage.schema, configurations: [configuration])
         let context = container.mainContext
 
-        try StarterCatalog.seed(into: context)
+        try StarterCatalog.seed(into: context, units: .metric)
 
         #expect(try context.fetchCount(FetchDescriptor<Exercise>()) == StarterCatalog.exercises.count)
     }
@@ -54,7 +54,7 @@ struct StarterCatalogTests {
     func everyWorkoutTrainsCatalogExercises() {
         let keys = Set(StarterCatalog.exercises.map(\.name.key))
 
-        for workout in StarterCatalog.workouts {
+        for workout in StarterCatalog.workouts(in: .metric) {
             #expect(!workout.entries.isEmpty)
 
             for entry in workout.entries {
@@ -69,14 +69,14 @@ struct StarterCatalogTests {
         let container = try ModelContainer(for: Storage.schema, configurations: [configuration])
         let context = container.mainContext
 
-        try StarterCatalog.seed(into: context)
+        try StarterCatalog.seed(into: context, units: .metric)
 
         let workouts = try context.fetch(FetchDescriptor<Workout>())
         let exercises = try context.fetch(FetchDescriptor<Exercise>())
 
         // A workout that copied its exercises instead of linking them would push this past the catalog.
         #expect(exercises.count == StarterCatalog.exercises.count)
-        #expect(workouts.count == StarterCatalog.workouts.count)
+        #expect(workouts.count == StarterCatalog.workouts(in: .metric).count)
 
         for workout in workouts {
             let linked = workout.entries.sorted().compactMap(\.exercise)
@@ -92,7 +92,7 @@ struct StarterCatalogTests {
         let container = try ModelContainer(for: Storage.schema, configurations: [configuration])
         let context = container.mainContext
 
-        try StarterCatalog.seed(into: context)
+        try StarterCatalog.seed(into: context, units: .metric)
 
         let workouts = try context.fetch(FetchDescriptor<Workout>())
 
@@ -101,10 +101,23 @@ struct StarterCatalogTests {
     }
 
     @Test
+    func imperialReadersStartWithRoundPounds() throws {
+        let configuration = ModelConfiguration(schema: Storage.schema, isStoredInMemoryOnly: true)
+        let container = try ModelContainer(for: Storage.schema, configurations: [configuration])
+        let context = container.mainContext
+        let units = Units(weight: .imperial, distance: .imperial)
+
+        try StarterCatalog.seed(into: context, units: units)
+
+        let weight = try #require(try context.fetch(FetchDescriptor<WorkoutEntry>()).first { $0.target.exerciseKind == .weight })
+        #expect(Reading.weight(kilograms: weight.target.rank).formatted(.reading(units: units)) == "20 lb")
+    }
+
+    @Test
     func seedingLeavesAnExistingCatalogAlone() throws {
         let store = try TestStore()
 
-        try StarterCatalog.seed(into: store.context)
+        try StarterCatalog.seed(into: store.context, units: .metric)
 
         #expect(try store.context.fetchCount(FetchDescriptor<Exercise>()) == 3)
     }

@@ -12,7 +12,7 @@ public struct SessionActivityAttributes: ActivityAttributes {
     public struct ContentState: Codable, Hashable, Sendable {
         public var title: String
 
-        public var subtitle: String?
+        public var target: ExerciseTarget
 
         public var pictogram: Pictogram
 
@@ -32,7 +32,7 @@ public struct SessionActivityAttributes: ActivityAttributes {
 
         public init(
             title: String,
-            subtitle: String?,
+            target: ExerciseTarget,
             pictogram: Pictogram,
             workout: Pictogram,
             status: Pictogram?,
@@ -43,7 +43,7 @@ public struct SessionActivityAttributes: ActivityAttributes {
             canMoveBackward: Bool
         ) {
             self.title = title
-            self.subtitle = subtitle
+            self.target = target
             self.pictogram = pictogram
             self.workout = workout
             self.status = status
@@ -66,7 +66,7 @@ extension SessionActivityAttributes.ContentState {
 
         self.init(
             title: current.title,
-            subtitle: current.target.formatted(.exerciseTarget(system: .current)),
+            target: current.target,
             pictogram: current.pictogram,
             workout: session.workout?.pictogram ?? .workout,
             status: current.status.isPending ? nil : current.status.pictogram,

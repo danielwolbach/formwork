@@ -13,15 +13,15 @@ public struct SessionSummary {
 
         public let title: String
 
-        public let formattedValue: String?
+        public let reading: Reading?
 
         let value: Value?
 
-        init(_ value: Value?, title: String, pictogram: Pictogram, format: (Value) -> String?) {
+        init(_ value: Value?, title: String, pictogram: Pictogram, reading: (Value) -> Reading) {
             self.value = value
             self.title = title
             self.pictogram = pictogram
-            self.formattedValue = value.flatMap(format)
+            self.reading = value.map(reading)
         }
     }
 
@@ -61,7 +61,7 @@ extension Session {
 extension SessionSummary.Figure where Value == Duration {
     static func duration(_ duration: Duration?) -> Self {
         Self(duration, title: String(localized: .placeholder), pictogram: .duration) {
-            DurationFormat().format($0 / .seconds(1))
+            .duration(seconds: $0 / .seconds(1))
         }
     }
 }
@@ -71,7 +71,7 @@ extension SessionSummary.Figure where Value == Date {
         let local = session?.localCalendar(from: calendar) ?? calendar
 
         return Self(date, title: String(localized: .placeholder), pictogram: .time) {
-            $0.formatted(local.formatStyle(time: .shortened))
+            .time($0, calendar: local)
         }
     }
 }
@@ -79,19 +79,19 @@ extension SessionSummary.Figure where Value == Date {
 extension SessionSummary.Figure where Value == Double {
     static func skipRate(_ rate: Double?) -> Self {
         Self(rate, title: String(localized: .placeholder), pictogram: .skipped) {
-            $0.formatted(.percent.precision(.fractionLength(0)))
+            .percent($0)
         }
     }
 
     static func totalVolume(_ volume: Double?) -> Self {
         Self(volume, title: String(localized: .placeholder), pictogram: .volume) {
-            $0.formatted(RankFormat(kind: .weight, system: .current))
+            .weight(kilograms: $0)
         }
     }
 
     static func medianExerciseDuration(_ seconds: Double?) -> Self {
         Self(seconds, title: String(localized: .placeholder), pictogram: .pace) {
-            $0.formatted(DurationFormat())
+            .duration(seconds: $0)
         }
     }
 }
@@ -99,7 +99,7 @@ extension SessionSummary.Figure where Value == Double {
 extension SessionSummary.Figure where Value == Int {
     static func completedExercises(_ count: Int) -> Self {
         Self(count, title: String(localized: .placeholder), pictogram: .completed) {
-            $0.formatted()
+            .count($0)
         }
     }
 }

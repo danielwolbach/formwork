@@ -1,6 +1,6 @@
 //
 //  Haptics.swift
-//  FormworkKit
+//  Formwork
 //
 //  Created by Daniel Wolbach on 06.09.26.
 //

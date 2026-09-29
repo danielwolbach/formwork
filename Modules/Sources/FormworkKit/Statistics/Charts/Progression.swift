@@ -23,8 +23,6 @@ public struct Progression {
     public let points: [Point]
 
     public let curve: [Point]
-
-    public let unitSystem: UnitSystem
 }
 
 extension Progression: Statistic {
@@ -39,7 +37,6 @@ extension Progression: Statistic {
         self.curve = weekly.reversed().compactMap { day in
             TypicalBest(history.days(History.recentDays, endingOn: day)).target.map { Point(date: day, target: $0) }
         }
-        self.unitSystem = .current
     }
 
     public static var info: String {
@@ -52,14 +49,6 @@ extension Progression: Statistic {
 
     public var title: String {
         String(localized: .statisticProgressionTitle)
-    }
-
-    public var formattedValue: String? {
-        nil
-    }
-
-    public var format: RankFormat {
-        RankFormat(kind: points.last?.target.exerciseKind, system: unitSystem)
     }
 
     static func bests(in window: History.Window) -> [Point] {
@@ -88,5 +77,9 @@ extension Progression: Statistic {
         return best
             .sorted { $0.key < $1.key }
             .map { Point(date: $0.key, target: $0.value) }
+    }
+
+    public func reading(of rank: Double) -> Reading {
+        Reading(rank: rank, of: points.last?.target.exerciseKind)
     }
 }

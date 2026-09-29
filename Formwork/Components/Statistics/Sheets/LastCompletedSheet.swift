@@ -1,6 +1,6 @@
 //
 //  LastCompletedSheet.swift
-//  FormworkKit
+//  Formwork
 //
 //  Created by Daniel Wolbach on 24.09.26.
 //
@@ -12,11 +12,14 @@ import SwiftUI
 struct LastCompletedSheet: View {
     let history: History
 
+    @Environment(\.units)
+    private var units: Units
+
     var body: some View {
         let lastCompleted = LastCompleted(history.allTime)
 
         StatisticSheet(lastCompleted, history: history) {
-            ValueRow(title: lastCompleted.title, value: lastCompleted.formattedValue)
+            ValueRow(title: lastCompleted.title, value: lastCompleted.reading?.formatted(.reading(units: units)))
                 .padding()
                 .card()
                 .padding(.horizontal)

@@ -33,7 +33,7 @@ extension CompletionRate: Metric {
         String(localized: .statisticCompletionRateTitle)
     }
 
-    public var format: FloatingPointFormatStyle<Double>.Percent {
-        .percent.precision(.fractionLength(0))
+    public func reading(of value: Double) -> Reading {
+        .percent(value)
     }
 }

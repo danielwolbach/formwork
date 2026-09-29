@@ -39,7 +39,7 @@ extension Completions: Metric {
         Double(count)
     }
 
-    public var format: FloatingPointFormatStyle<Double> {
-        .number.precision(.fractionLength(0))
+    public func reading(of value: Double) -> Reading {
+        .count(Int(value.rounded()))
     }
 }

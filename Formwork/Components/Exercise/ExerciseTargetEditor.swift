@@ -10,13 +10,13 @@ import FormworkUI
 import SwiftUI
 
 struct ExerciseTargetEditor: View {
-    private let system: UnitSystem
-
     @Binding
     private var target: ExerciseTarget
 
-    init(target: Binding<ExerciseTarget>, system: UnitSystem = .current) {
-        self.system = system
+    @Environment(\.units)
+    private var units: Units
+
+    init(target: Binding<ExerciseTarget>) {
         self._target = target
     }
 
@@ -34,7 +34,7 @@ struct ExerciseTargetEditor: View {
             NumberStepper(
                 target.title,
                 value: weight,
-                suffix: system.weightUnit.symbol,
+                suffix: units.weightUnit.symbol,
                 stepSize: weightStep,
                 fractionLength: 1,
                 range: 0 ... weightLimit
@@ -79,7 +79,7 @@ struct ExerciseTargetEditor: View {
             NumberStepper(
                 target.title,
                 value: distance,
-                suffix: system.distanceUnit.symbol,
+                suffix: units.distanceUnit.symbol,
                 stepSize: distanceStep,
                 fractionLength: 2,
                 range: 0 ... 1000
@@ -90,7 +90,7 @@ struct ExerciseTargetEditor: View {
     }
 
     private var weight: Binding<Double> {
-        let factor = Measurement(value: 1, unit: system.weightUnit).converted(to: .kilograms).value
+        let factor = Measurement(value: 1, unit: units.weightUnit).converted(to: .kilograms).value
 
         return Binding(
             get: {
@@ -103,14 +103,14 @@ struct ExerciseTargetEditor: View {
     }
 
     private var weightStep: Double {
-        switch system {
+        switch units.weight {
         case .metric: 2.5
         case .imperial: 5
         }
     }
 
     private var weightLimit: Double {
-        switch system {
+        switch units.weight {
         case .metric: 1000
         case .imperial: 2000
         }
@@ -132,7 +132,7 @@ struct ExerciseTargetEditor: View {
     }
 
     private var distance: Binding<Double> {
-        let factor = Measurement(value: 1, unit: system.distanceUnit).converted(to: .meters).value
+        let factor = Measurement(value: 1, unit: units.distanceUnit).converted(to: .meters).value
 
         return Binding(
             get: {
@@ -145,7 +145,7 @@ struct ExerciseTargetEditor: View {
     }
 
     private var distanceStep: Double {
-        switch system {
+        switch units.distance {
         case .metric: 0.1
         case .imperial: 0.25
         }

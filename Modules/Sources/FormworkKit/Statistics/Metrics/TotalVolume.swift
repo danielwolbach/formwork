@@ -9,13 +9,9 @@ import Foundation
 
 public struct TotalVolume {
     public let kilograms: Double?
-
-    public let unitSystem: UnitSystem
 }
 
 extension TotalVolume: Metric {
-    public typealias Format = RankFormat
-
     public init(_ window: History.Window) {
         let volume = window.entries
             .filter(\.status.isCompleted)
@@ -23,7 +19,6 @@ extension TotalVolume: Metric {
             .reduce(0, +)
 
         self.kilograms = volume == 0 ? nil : volume
-        self.unitSystem = .current
     }
 
     public static var info: String {
@@ -46,7 +41,7 @@ extension TotalVolume: Metric {
         kilograms
     }
 
-    public var format: Format {
-        RankFormat(kind: .weight, system: unitSystem)
+    public func reading(of value: Double) -> Reading {
+        .weight(kilograms: value)
     }
 }

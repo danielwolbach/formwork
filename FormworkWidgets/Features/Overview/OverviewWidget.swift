@@ -104,7 +104,7 @@ struct OverviewEntry: TimelineEntry {
 
 extension OverviewEntry {
     static var sample: OverviewEntry {
-        guard let workout = StarterCatalog.workouts.first else {
+        guard let workout = StarterCatalog.workouts(in: .current).first else {
             preconditionFailure("The starter catalog has no workout.")
         }
 

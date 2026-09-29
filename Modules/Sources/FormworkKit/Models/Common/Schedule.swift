@@ -1,6 +1,6 @@
 //
 //  Schedule.swift
-//  Formwork
+//  FormworkKit
 //
 //  Created by Daniel Wolbach on 06.09.26.
 //

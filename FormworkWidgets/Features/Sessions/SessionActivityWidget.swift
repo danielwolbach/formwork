@@ -1,6 +1,6 @@
 //
 //  SessionActivityWidget.swift
-//  Formwork
+//  FormworkWidgets
 //
 //  Created by Daniel Wolbach on 06.09.26.
 //
@@ -74,12 +74,10 @@ struct SessionActivityWidget: Widget {
                 .lineLimit(1)
                 .font(.headline)
 
-            if let subtitle = context.state.subtitle {
-                Text(subtitle)
-                    .lineLimit(1)
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-            }
+            TargetSubtitle(target: context.state.target)
+                .lineLimit(1)
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
         }
     }
 
@@ -140,11 +138,25 @@ struct SessionActivityWidget: Widget {
     }
 }
 
+private struct TargetSubtitle: View {
+    let target: ExerciseTarget
+
+    @AppStorage(StorageKeys.weightSystem, store: AppGroup.defaults)
+    private var weightSystem: Units.System = .current
+
+    @AppStorage(StorageKeys.distanceSystem, store: AppGroup.defaults)
+    private var distanceSystem: Units.System = .current
+
+    var body: some View {
+        Text(target.formatted(.exerciseTarget(units: Units(weight: weightSystem, distance: distanceSystem))))
+    }
+}
+
 extension SessionActivityAttributes.ContentState {
     fileprivate static var preview: Self {
         .init(
             title: "Barbell Squat",
-            subtitle: "3 × 8",
+            target: .weight(kilograms: 80, reps: 8, sets: 3),
             pictogram: Pictogram(image: "dumbbell", tint: .indigo),
             workout: .workout,
             status: nil,
@@ -179,7 +191,6 @@ extension SessionActivityAttributes.ContentState {
 
     fileprivate static var finished: Self {
         var state = Self.preview
-        state.subtitle = "Session complete"
         state.status = Pictogram(image: "checkmark.circle.fill", tint: .green)
         state.canMoveForward = false
         state.resolved = 5

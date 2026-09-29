@@ -7,16 +7,11 @@
 
 public struct PersonalBest {
     let target: ExerciseTarget?
-
-    let unitSystem: UnitSystem
 }
 
 extension PersonalBest: Metric {
-    public typealias Format = RankFormat
-
     public init(_ window: History.Window) {
         self.target = Progression.bests(in: window).map(\.target).max { $0.rank < $1.rank }
-        self.unitSystem = .current
     }
 
     public static var info: String {
@@ -39,7 +34,7 @@ extension PersonalBest: Metric {
         target?.rank
     }
 
-    public var format: Format {
-        RankFormat(kind: target?.exerciseKind, system: unitSystem)
+    public func reading(of value: Double) -> Reading {
+        Reading(rank: value, of: target?.exerciseKind)
     }
 }

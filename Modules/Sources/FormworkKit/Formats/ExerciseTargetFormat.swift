@@ -8,14 +8,14 @@
 import Foundation
 
 public struct ExerciseTargetFormat: FormatStyle {
-    let system: UnitSystem
+    let units: Units
 
-    public init(system: UnitSystem) {
-        self.system = system
+    public init(units: Units) {
+        self.units = units
     }
 
     public func format(_ target: ExerciseTarget) -> String {
-        let rank = RankFormat(kind: target.exerciseKind, system: system).format(target.rank)
+        let rank = Reading(rank: target.rank, of: target.exerciseKind).formatted(.reading(units: units))
 
         return switch target {
         case let .weight(_, reps, sets): [rank, String(localized: .exerciseTargetWeightScheme(sets: sets, reps: reps))].formatted(.dotList)
@@ -27,8 +27,8 @@ public struct ExerciseTargetFormat: FormatStyle {
 }
 
 extension FormatStyle where Self == ExerciseTargetFormat {
-    public static func exerciseTarget(system: UnitSystem) -> ExerciseTargetFormat {
-        ExerciseTargetFormat(system: system)
+    public static func exerciseTarget(units: Units) -> ExerciseTargetFormat {
+        ExerciseTargetFormat(units: units)
     }
 }
 

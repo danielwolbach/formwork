@@ -9,13 +9,9 @@ import Foundation
 
 public struct OneRepMax {
     public let kilograms: Double?
-
-    public let unitSystem: UnitSystem
 }
 
 extension OneRepMax: Metric {
-    public typealias Format = RankFormat
-
     public init(_ window: History.Window) {
         self.kilograms = window.entries
             .filter(\.status.isCompleted)
@@ -27,7 +23,6 @@ extension OneRepMax: Metric {
                 return kilograms * (1 + Double(reps) / 30)
             }
             .max()
-        self.unitSystem = .current
     }
 
     public static var info: String {
@@ -50,7 +45,7 @@ extension OneRepMax: Metric {
         kilograms
     }
 
-    public var format: Format {
-        RankFormat(kind: .weight, system: unitSystem)
+    public func reading(of value: Double) -> Reading {
+        .weight(kilograms: value)
     }
 }

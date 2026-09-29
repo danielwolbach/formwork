@@ -13,7 +13,7 @@ public struct TypicalStartTime {
     public let calendar: Calendar
 }
 
-extension TypicalStartTime: Statistic {
+extension TypicalStartTime: Indicator {
     public init(_ window: History.Window) {
         let calendar = window.history.calendar
         let minute = window.sessions.compactMap { $0.startMinute(in: calendar) }.clockMedoid
@@ -33,7 +33,7 @@ extension TypicalStartTime: Statistic {
         String(localized: .statisticTypicalStartTimeTitle)
     }
 
-    public var formattedValue: String? {
-        time.flatMap { calendar.date(from: $0) }?.formatted(calendar.formatStyle(time: .shortened))
+    public var reading: Reading? {
+        time.flatMap { calendar.date(from: $0) }.map { .time($0, calendar: calendar) }
     }
 }

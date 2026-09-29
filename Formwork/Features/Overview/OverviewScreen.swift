@@ -27,6 +27,9 @@ struct OverviewScreen: View {
     private var workouts: [Workout]
 
     @State
+    private var sheet: Sheet? = nil
+
+    @State
     private var sessionActiveAlert: Bool = false
 
     var body: some View {
@@ -44,9 +47,20 @@ struct OverviewScreen: View {
         .navigationDestination(for: Session.self) { session in
             SessionScreen(session)
         }
+        .navigationDestination(for: Route.self) { route in
+            route
+        }
         .toolbar {
             Menu(.more) {
-                DebugMenu()
+                Section {
+                    Button(.settings) {
+                        sheet = .settings
+                    }
+                }
+
+                Section {
+                    DebugMenu()
+                }
             }
         }
         .alert(.alertReplaceSessionTitle, isPresented: $sessionActiveAlert) {
@@ -67,6 +81,11 @@ struct OverviewScreen: View {
             }
         } message: {
             Text(.alertReplaceSessionMessage)
+        }
+        .sheet(item: $sheet) { sheet in
+            NavigationStack {
+                sheet
+            }
         }
     }
 

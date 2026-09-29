@@ -1,6 +1,6 @@
 //
 //  MetricSheet.swift
-//  FormworkKit
+//  Formwork
 //
 //  Created by Daniel Wolbach on 24.09.26.
 //
@@ -17,6 +17,9 @@ struct MetricSheet<M: Metric>: View {
 
     private let trend: Trend<M>
 
+    @Environment(\.units)
+    private var units: Units
+
     init(history: History) {
         self.history = history
         self.overall = M(history.allTime)
@@ -26,14 +29,14 @@ struct MetricSheet<M: Metric>: View {
     var body: some View {
         StatisticSheet(overall, history: history) {
             ValuesSection(
-                overall: overall.formattedValue,
-                recent: trend.recent.formattedValue,
-                baseline: trend.baseline?.formattedValue,
+                overall: overall.reading?.formatted(.reading(units: units)),
+                recent: trend.recent.reading?.formatted(.reading(units: units)),
+                baseline: trend.baseline?.reading?.formatted(.reading(units: units)),
                 direction: trend.direction
             )
 
             YearSection(years: history.years) { year in
-                MonthlyChart(series: Series<M>(history, year: year), format: overall.format)
+                MonthlyChart(series: Series<M>(history, year: year), metric: overall)
             }
         }
         .tint(overall.pictogram.color)
@@ -43,7 +46,10 @@ struct MetricSheet<M: Metric>: View {
 private struct MonthlyChart<M: Metric>: View {
     let series: Series<M>
 
-    let format: M.Format
+    let metric: M
+
+    @Environment(\.units)
+    private var units: Units
 
     var body: some View {
         let peak = series.bars.compactMap(\.statistic.value).max() ?? 0
@@ -64,7 +70,16 @@ private struct MonthlyChart<M: Metric>: View {
             }
         }
         .chartYAxis {
-            AxisMarks(format: format, position: .leading, values: step.map { .stride(by: $0) } ?? .automatic)
+            AxisMarks(position: .leading, values: step.map { .stride(by: $0) } ?? .automatic) { mark in
+                AxisGridLine()
+                AxisTick()
+
+                if let value = mark.as(Double.self) {
+                    AxisValueLabel {
+                        Text(verbatim: metric.reading(of: value).formatted(.reading(units: units)))
+                    }
+                }
+            }
         }
 
         scaled(chart, step: step, peak: peak)

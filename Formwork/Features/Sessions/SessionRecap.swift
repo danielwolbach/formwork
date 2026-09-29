@@ -23,17 +23,17 @@ struct SessionRecap: View {
             PictogramHeader(session.pictogram, title: session.title, subtitle: session.startDate.formatted(session.wallClockTime(date: .numeric)))
 
             TileGrid {
-                MetricCard(summary.duration)
+                IndicatorCard(summary.duration)
 
-                MetricCard(summary.endTime)
+                IndicatorCard(summary.endTime)
 
-                MetricCard(summary.skipRate)
+                IndicatorCard(summary.skipRate)
 
-                MetricCard(summary.medianExerciseDuration)
+                IndicatorCard(summary.medianExerciseDuration)
 
-                MetricCard(summary.completedExercises)
+                IndicatorCard(summary.completedExercises)
 
-                MetricCard(summary.totalVolume)
+                IndicatorCard(summary.totalVolume)
             }
             .padding(.horizontal)
 
@@ -56,6 +56,9 @@ private struct SessionEntryRow: View {
 
     private let entry: SessionEntry
 
+    @Environment(\.units)
+    private var units: Units
+
     init(_ entry: SessionEntry) {
         self.entry = entry
     }
@@ -64,7 +67,7 @@ private struct SessionEntryRow: View {
         let details = details
 
         VStack(alignment: .leading, spacing: 8) {
-            PictogramRow(entry.pictogram, title: entry.title, subtitle: entry.target.formatted(.exerciseTarget(system: .current)), badge: badge)
+            PictogramRow(entry.pictogram, title: entry.title, subtitle: entry.target.formatted(.exerciseTarget(units: units)), badge: badge)
 
             if !details.isEmpty {
                 FlowLayout(alignment: .leading) {
@@ -91,12 +94,12 @@ private struct SessionEntryRow: View {
         }
 
         if let duration = entry.duration, entry.status.isCompleted {
-            details.append(Detail(pictogram: .pace, text: duration.formatted(DurationFormat())))
+            details.append(Detail(pictogram: .pace, text: Reading.duration(seconds: duration).formatted(.reading(units: units))))
         }
 
         if let previous = entry.previous, previous.rank != entry.target.rank {
             let change = entry.target.rank - previous.rank
-            details.append(Detail(pictogram: change > 0 ? .increase : .decrease, text: RankFormat(kind: entry.target.exerciseKind, system: .current).format(abs(change))))
+            details.append(Detail(pictogram: change > 0 ? .increase : .decrease, text: Reading(rank: abs(change), of: entry.target.exerciseKind).formatted(.reading(units: units))))
         }
 
         return details

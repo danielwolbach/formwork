@@ -14,6 +14,9 @@ import UniformTypeIdentifiers
 struct SessionShareLink: View {
     private let session: Session
 
+    @Environment(\.units)
+    private var units: Units
+
     @State
     private var shareImage: SessionShareImage?
 
@@ -38,7 +41,7 @@ struct SessionShareLink: View {
             }
         }
         .task(id: session.persistentModelID) {
-            shareImage = SessionShareImage(session: session)
+            shareImage = SessionShareImage(session: session, units: units)
         }
     }
 
@@ -51,6 +54,9 @@ private struct SessionShareCard: View {
     let session: Session
 
     let tint: Color
+
+    @Environment(\.units)
+    private var units: Units
 
     init(session: Session) {
         self.session = session
@@ -106,10 +112,10 @@ private struct SessionShareCard: View {
         let summary = session.summary()
 
         TileGrid(columns: 2, spacing: 8, aspectRatio: 2) {
-            MetricCard(summary.duration)
-            MetricCard(summary.totalVolume)
-            MetricCard(summary.completedExercises)
-            MetricCard(summary.medianExerciseDuration)
+            IndicatorCard(summary.duration)
+            IndicatorCard(summary.totalVolume)
+            IndicatorCard(summary.completedExercises)
+            IndicatorCard(summary.medianExerciseDuration)
             personalBest.tileSpan(columns: 2)
         }
     }
@@ -155,7 +161,7 @@ private struct SessionShareCard: View {
                 VStack(alignment: .trailing) {
                     HStack(spacing: 2) {
                         if let previous = personalBest.previousBest {
-                            Text(verbatim: RankFormat(kind: previous.exerciseKind, system: .current).format(previous.rank))
+                            Text(verbatim: Reading(rank: previous.rank, of: previous.exerciseKind).formatted(.reading(units: units)))
                                 .font(.footnote)
                         }
 
@@ -165,7 +171,7 @@ private struct SessionShareCard: View {
                     .foregroundStyle(.secondary)
                     .baselineOffset(2)
 
-                    Text(verbatim: RankFormat(kind: personalBest.target.exerciseKind, system: .current).format(personalBest.target.rank))
+                    Text(verbatim: Reading(rank: personalBest.target.rank, of: personalBest.target.exerciseKind).formatted(.reading(units: units)))
                         .font(.system(.title3, design: .rounded, weight: .semibold))
                         .lineLimit(1)
                         .minimumScaleFactor(0.5)
@@ -184,8 +190,8 @@ private struct SessionShareImage: Transferable {
     let name: String
 
     @MainActor
-    init?(session: Session) {
-        guard let image = Self.renderShareImage(for: session) else {
+    init?(session: Session, units: Units) {
+        guard let image = Self.renderShareImage(for: session, units: units) else {
             return nil
         }
 
@@ -203,11 +209,12 @@ private struct SessionShareImage: Transferable {
     }
 
     @MainActor
-    private static func renderShareImage(for session: Session) -> UIImage? {
+    private static func renderShareImage(for session: Session, units: Units) -> UIImage? {
         let renderer = ImageRenderer(
             content: SessionShareCard(session: session)
                 .environment(\.colorScheme, .light)
                 .environment(\.locale, .current)
+                .environment(\.units, units)
         )
         renderer.scale = 3
         renderer.isOpaque = true
@@ -218,7 +225,7 @@ private struct SessionShareImage: Transferable {
 #Preview("Rendered") {
     let sessions = (try? Samples.container.mainContext.fetch(Session.finishedDescriptor)) ?? []
 
-    if let session = sessions.first, let shareImage = SessionShareImage(session: session) {
+    if let session = sessions.first, let shareImage = SessionShareImage(session: session, units: .current) {
         Image(uiImage: shareImage.image)
             .resizable()
             .scaledToFit()

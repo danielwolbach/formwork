@@ -20,10 +20,5 @@ public protocol Statistic {
         get
     }
 
-    /// The value as text, the same wherever the statistic is shown. Chart statistics have none.
-    var formattedValue: String? {
-        get
-    }
-
     init(_ window: History.Window)
 }

@@ -1,6 +1,6 @@
 //
-//  MetricCard.swift
-//  FormworkKit
+//  IndicatorCard.swift
+//  Formwork
 //
 //  Created by Daniel Wolbach on 24.09.26.
 //
@@ -9,24 +9,20 @@ import FormworkKit
 import FormworkUI
 import SwiftUI
 
-struct MetricCard: View {
+struct IndicatorCard: View {
     private let pictogram: Pictogram
 
     private let title: String
 
-    private let value: String?
+    private let reading: Reading?
 
     private let direction: Direction?
 
-    init(pictogram: Pictogram, title: String, value: String?, direction: Direction? = nil) {
-        self.pictogram = pictogram
-        self.title = title
-        self.value = value
-        self.direction = direction
-    }
+    @Environment(\.units)
+    private var units: Units
 
-    init(_ statistic: some Statistic, direction: Direction? = nil) {
-        self.init(pictogram: statistic.pictogram, title: statistic.title, value: statistic.formattedValue, direction: direction)
+    init(_ indicator: some Indicator, direction: Direction? = nil) {
+        self.init(pictogram: indicator.pictogram, title: indicator.title, reading: indicator.reading, direction: direction)
     }
 
     init(_ trend: Trend<some Metric>) {
@@ -34,7 +30,14 @@ struct MetricCard: View {
     }
 
     init(_ figure: SessionSummary.Figure<some Any>) {
-        self.init(pictogram: figure.pictogram, title: figure.title, value: figure.formattedValue)
+        self.init(pictogram: figure.pictogram, title: figure.title, reading: figure.reading)
+    }
+
+    private init(pictogram: Pictogram, title: String, reading: Reading?, direction: Direction? = nil) {
+        self.pictogram = pictogram
+        self.title = title
+        self.reading = reading
+        self.direction = direction
     }
 
     var body: some View {
@@ -48,7 +51,7 @@ struct MetricCard: View {
                 .foregroundStyle(.secondary)
 
             HStack(spacing: 4) {
-                Text(verbatim: value ?? "—")
+                Text(verbatim: reading?.formatted(.reading(units: units)) ?? "—")
                     .font(.system(.title3, design: .rounded, weight: .semibold))
                     .lineLimit(1)
                     .minimumScaleFactor(0.5)
@@ -79,6 +82,6 @@ struct MetricCard: View {
 }
 
 #Preview {
-    MetricCard(StarterCatalog.Samples.weekStreak)
+    IndicatorCard(StarterCatalog.Samples.weekStreak)
         .padding()
 }

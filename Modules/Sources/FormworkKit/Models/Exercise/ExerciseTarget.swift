@@ -5,7 +5,9 @@
 //  Created by Daniel Wolbach on 04.09.26.
 //
 
-public enum ExerciseTarget: Codable, Sendable {
+import Foundation
+
+public enum ExerciseTarget: Codable, Hashable, Sendable {
     case weight(kilograms: Double = 10, reps: Int = 10, sets: Int = 3)
     case bodyweight(reps: Int = 10, sets: Int = 3)
     case duration(seconds: Int = 60 * 10, sets: Int = 1)
@@ -44,6 +46,23 @@ extension ExerciseTarget {
         case .bodyweight: Exercise.Kind.bodyweight
         case .duration: Exercise.Kind.duration
         case .distance: Exercise.Kind.distance
+        }
+    }
+}
+
+extension ExerciseTarget {
+    public static func initial(for kind: Exercise.Kind, in units: Units) -> ExerciseTarget {
+        switch kind {
+        case .weight:
+            let load = units.weight == .metric ? Measurement(value: 10, unit: UnitMass.kilograms) : Measurement(value: 20, unit: UnitMass.pounds)
+            return .weight(kilograms: load.converted(to: .kilograms).value)
+        case .bodyweight:
+            return .bodyweight()
+        case .duration:
+            return .duration()
+        case .distance:
+            let distance = units.distance == .metric ? Measurement(value: 1, unit: UnitLength.kilometers) : Measurement(value: 1, unit: UnitLength.miles)
+            return .distance(meters: Int(distance.converted(to: .meters).value.rounded()))
         }
     }
 }

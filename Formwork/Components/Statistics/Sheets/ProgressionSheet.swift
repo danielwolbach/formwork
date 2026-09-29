@@ -1,6 +1,6 @@
 //
 //  ProgressionSheet.swift
-//  FormworkKit
+//  Formwork
 //
 //  Created by Daniel Wolbach on 24.09.26.
 //
@@ -11,6 +11,9 @@ import SwiftUI
 
 struct ProgressionSheet: View {
     private let history: History
+
+    @Environment(\.units)
+    private var units: Units
 
     init(history: History) {
         self.history = history
@@ -23,9 +26,9 @@ struct ProgressionSheet: View {
 
         StatisticSheet(progression, history: history) {
             ValuesSection(
-                overall: best.formattedValue,
-                recent: trend.recent.formattedValue,
-                baseline: trend.baseline?.formattedValue,
+                overall: best.reading?.formatted(.reading(units: units)),
+                recent: trend.recent.reading?.formatted(.reading(units: units)),
+                baseline: trend.baseline?.reading?.formatted(.reading(units: units)),
                 direction: trend.direction
             )
 

@@ -60,7 +60,9 @@ extension Action {
 
     public static let debug = Action(title: .actionDebugTitle, image: "ladybug")
 
-    public static let viewMode = Action(title: .placeholder, image: "calendar.day.timeline.left")
+    public static let viewMode = Action(title: .actionViewModeTitle, image: "calendar.day.timeline.left")
+
+    public static let settings = Action(title: .actionSettingsTitle, image: "gear")
 
     // Exercise
 

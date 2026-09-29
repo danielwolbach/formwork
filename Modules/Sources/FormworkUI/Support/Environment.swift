@@ -23,4 +23,7 @@ public struct PresentSessionAction {
 extension EnvironmentValues {
     @Entry
     public var presentSession = PresentSessionAction { _ in }
+
+    @Entry
+    public var units: Units = .current
 }

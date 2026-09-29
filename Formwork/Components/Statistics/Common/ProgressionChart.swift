@@ -1,6 +1,6 @@
 //
 //  ProgressionChart.swift
-//  FormworkKit
+//  Formwork
 //
 //  Created by Daniel Wolbach on 24.09.26.
 //
@@ -15,6 +15,9 @@ struct ProgressionChart: View {
 
     private var isYear = false
 
+    @Environment(\.units)
+    private var units: Units
+
     init(_ progression: Progression, isYear: Bool = false) {
         self.progression = progression
         self.isYear = isYear
@@ -22,7 +25,6 @@ struct ProgressionChart: View {
 
     var body: some View {
         let color = progression.pictogram.color
-        let format = progression.format
 
         Chart {
             ForEach(progression.curve) { point in
@@ -61,7 +63,7 @@ struct ProgressionChart: View {
 
                 if let rank = mark.as(Double.self) {
                     AxisValueLabel {
-                        Text(verbatim: format.format(rank))
+                        Text(verbatim: progression.reading(of: rank).formatted(.reading(units: units)))
                     }
                 }
             }

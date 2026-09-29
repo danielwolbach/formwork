@@ -57,33 +57,33 @@ struct StatisticFormattingTests {
         let statistic = LastCompleted(date: nil, session: nil, calendar: .berlin())
 
         #expect(statistic.date == nil)
-        #expect(statistic.formattedValue == nil)
+        #expect(statistic.reading?.formatted(.reading(units: .metric)) == nil)
         #expect(statistic.title == String(localized: .statisticLastCompletedTitle))
         #expect(statistic.pictogram == .date)
     }
 
     @Test
     func valueIsFormattedAsSubtitle() {
-        #expect(Completions(count: 3).formattedValue == "3")
+        #expect(Completions(count: 3).reading?.formatted(.reading(units: .metric)) == "3")
     }
 
     @Test
     func weeklySessionsShowOneDecimal() {
-        #expect(WeeklySessions(value: 2).formattedValue == 2.0.formatted(.number.precision(.fractionLength(1))))
-        #expect(WeeklySessions(value: 1.46).formattedValue == 1.5.formatted(.number.precision(.fractionLength(1))))
+        #expect(WeeklySessions(value: 2).reading?.formatted(.reading(units: .metric)) == 2.0.formatted(.number.precision(.fractionLength(1))))
+        #expect(WeeklySessions(value: 1.46).reading?.formatted(.reading(units: .metric)) == 1.5.formatted(.number.precision(.fractionLength(1))))
     }
 
     @Test(arguments: [42.0, 2000, 3500])
     func typicalDurationUnderAnHourReadsLikeAnExercise(seconds: Double) {
         let exerciseStyle = Duration.UnitsFormatStyle.units(allowed: [.minutes, .seconds], width: .abbreviated, maximumUnitCount: 1)
 
-        #expect(TypicalDuration(value: seconds).formattedValue == Duration.seconds(seconds).formatted(exerciseStyle))
+        #expect(TypicalDuration(value: seconds).reading?.formatted(.reading(units: .metric)) == Duration.seconds(seconds).formatted(exerciseStyle))
     }
 
     @Test(arguments: [(6120.0, 6120.0), (3590, 3600)])
     func typicalDurationFromAnHourReadsInHoursAndMinutes(seconds: Double, shown: Double) {
         // 59 min 50 sec rounds to the hour, so it reads as 1 hr rather than 60 min.
-        #expect(TypicalDuration(value: seconds).formattedValue == Duration.seconds(shown).formatted(.units(allowed: [.hours, .minutes], width: .abbreviated)))
+        #expect(TypicalDuration(value: seconds).reading?.formatted(.reading(units: .metric)) == Duration.seconds(shown).formatted(.units(allowed: [.hours, .minutes], width: .abbreviated)))
     }
 
     @Test
@@ -92,7 +92,7 @@ struct StatisticFormattingTests {
         var style = Date.RelativeFormatStyle(presentation: .named, calendar: .berlin(), capitalizationContext: .beginningOfSentence)
         style.allowedFields = [.day]
 
-        #expect(LastCompleted(date: date, session: nil, calendar: .berlin()).formattedValue == date.formatted(style))
+        #expect(LastCompleted(date: date, session: nil, calendar: .berlin()).reading?.formatted(.reading(units: .metric)) == date.formatted(style))
     }
 
     @Test
@@ -103,8 +103,8 @@ struct StatisticFormattingTests {
         let later = try #require(calendar.date(byAdding: .minute, value: 1, to: midnight))
 
         #expect(
-            LastCompleted(date: midnight, session: nil, calendar: calendar).formattedValue
-                == LastCompleted(date: later, session: nil, calendar: calendar).formattedValue
+            LastCompleted(date: midnight, session: nil, calendar: calendar).reading?.formatted(.reading(units: .metric))
+                == LastCompleted(date: later, session: nil, calendar: calendar).reading?.formatted(.reading(units: .metric))
         )
     }
 
@@ -119,7 +119,7 @@ struct StatisticFormattingTests {
 
         let statistic = LastCompleted(date: date, session: nil, calendar: newYork)
 
-        #expect(try statistic.formattedValue == calendar.date(28, month: 5, year: 2025).formatted(style))
+        #expect(try statistic.reading?.formatted(.reading(units: .metric)) == calendar.date(28, month: 5, year: 2025).formatted(style))
     }
 
     @Test
@@ -129,9 +129,9 @@ struct StatisticFormattingTests {
         newYork.timeZone = try #require(TimeZone(identifier: "America/New_York"))
         let time = DateComponents(hour: 8, minute: 15)
 
-        let value = try #require(TypicalStartTime(time: time, calendar: tokyo).formattedValue)
+        let value = try #require(TypicalStartTime(time: time, calendar: tokyo).reading?.formatted(.reading(units: .metric)))
 
-        #expect(value == TypicalStartTime(time: time, calendar: newYork).formattedValue)
+        #expect(value == TypicalStartTime(time: time, calendar: newYork).reading?.formatted(.reading(units: .metric)))
     }
 
     @Test(arguments: [
@@ -141,7 +141,7 @@ struct StatisticFormattingTests {
         (ExerciseTarget.distance(meters: 5 * 1000), "5 km"),
     ])
     func personalBestShowsOnlyTheRank(target: ExerciseTarget, expected: String) {
-        #expect(PersonalBest(target: target, unitSystem: .metric).formattedValue == expected)
+        #expect(PersonalBest(target: target).reading?.formatted(.reading(units: .metric)) == expected)
     }
 }
 
@@ -545,7 +545,7 @@ struct OverallStatisticsTests {
         let favorite = try FavoriteWorkout(history(at: calendar.date(16)).allTime)
 
         #expect(favorite.workout === store.workout)
-        #expect(favorite.formattedValue == store.workout.name)
+        #expect(favorite.reading?.formatted(.reading(units: .metric)) == store.workout.name)
     }
 
     @Test
@@ -589,7 +589,7 @@ struct OverallStatisticsTests {
 
         let favorite = try FavoriteExercise(history(at: calendar.date(16)).allTime)
 
-        #expect(favorite.formattedValue == "Squat")
+        #expect(favorite.reading?.formatted(.reading(units: .metric)) == "Squat")
         #expect(try FavoriteExercise(history(at: calendar.date(16)).recent).exercise === favorite.exercise)
     }
 
@@ -601,7 +601,7 @@ struct OverallStatisticsTests {
         entries[0].status = .completed(date: session.startDate.addingTimeInterval(120))
 
         // Once each, and the squat was completed after the bench press.
-        #expect(try FavoriteExercise(history(at: calendar.date(16)).allTime).formattedValue == "Squat")
+        #expect(try FavoriteExercise(history(at: calendar.date(16)).allTime).reading?.formatted(.reading(units: .metric)) == "Squat")
     }
 
     @Test
@@ -758,7 +758,7 @@ struct WorkoutStatisticsTests {
         let allTime = try history().allTime
 
         #expect(Completions(allTime).value == 2)
-        #expect(MostSkippedExercise(allTime).formattedValue == "Bench Press")
+        #expect(MostSkippedExercise(allTime).reading?.formatted(.reading(units: .metric)) == "Bench Press")
         #expect(try LastCompleted(allTime).date == calendar.date(8, hour: 9))
     }
 
@@ -830,10 +830,10 @@ struct WorkoutStatisticsTests {
     func lastCompletedShowsTheDayItStartedOnItsClock() throws {
         // Runs from 23:30 on May 28 to 00:30 on May 29 in New York. It started at 05:30 on May 29 in Berlin.
         try store.session(28, month: 5, hour: 23, minute: 30, zone: "America/New_York")
-        let value = try LastCompleted(history().allTime).formattedValue
+        let value = try LastCompleted(history().allTime).reading?.formatted(.reading(units: .metric))
 
-        #expect(try value == LastCompleted(date: calendar.date(28, month: 5), session: nil, calendar: calendar).formattedValue)
-        #expect(try value != LastCompleted(date: calendar.date(29, month: 5), session: nil, calendar: calendar).formattedValue)
+        #expect(try value == LastCompleted(date: calendar.date(28, month: 5), session: nil, calendar: calendar).reading?.formatted(.reading(units: .metric)))
+        #expect(try value != LastCompleted(date: calendar.date(29, month: 5), session: nil, calendar: calendar).reading?.formatted(.reading(units: .metric)))
     }
 
     @Test
@@ -877,7 +877,7 @@ struct ExerciseStatisticsTests {
         #expect(CompletionRate(allTime).value == nil)
         #expect(PersonalBest(allTime).target == nil)
         #expect(Completions(allTime).value == 0)
-        #expect(Completions(allTime).formattedValue == "0")
+        #expect(Completions(allTime).reading?.formatted(.reading(units: .metric)) == "0")
     }
 
     @Test
@@ -1115,18 +1115,18 @@ struct SessionSummaryTests {
         // The store's exercises are all bodyweight, which carries no load, so there is nothing to total.
         #expect(summary(session).completedExercises.value == 3)
         #expect(summary(session).totalVolume.value == nil)
-        #expect(summary(session).totalVolume.formattedValue == nil)
+        #expect(summary(session).totalVolume.reading?.formatted(.reading(units: .metric)) == nil)
     }
 
     @Test
-    func totalVolumeReadsInTheReadersUnits() throws {
+    func totalVolumeReadsAsAWeight() throws {
         let session = try store.session(7)
         let entry = try #require(session.entries.sorted().first)
         entry.target = .weight(kilograms: 100, reps: 5, sets: 2)
         entry.status = .completed(date: session.startDate)
 
         #expect(summary(session).totalVolume.value == 1000)
-        #expect(summary(session).totalVolume.formattedValue == RankFormat(kind: .weight, system: .current).format(1000))
+        #expect(summary(session).totalVolume.reading == .weight(kilograms: 1000))
     }
 
     @Test
@@ -1220,8 +1220,7 @@ struct SessionSummaryTests {
         quick.status = .completed(date: session.startDate.addingTimeInterval(40))
 
         #expect(quick.duration == 40)
-        #expect(DurationFormat().format(40) == Duration.seconds(40).formatted(.units(allowed: [.seconds], width: .abbreviated)))
-        #expect(summary(session).medianExerciseDuration.formattedValue == DurationFormat().format(0))
+        #expect(summary(session).medianExerciseDuration.reading == .duration(seconds: 0))
     }
 
     @Test
@@ -1235,8 +1234,8 @@ struct SessionSummaryTests {
         let inBerlin = Date.FormatStyle(date: .omitted, time: .shortened, calendar: calendar, timeZone: calendar.timeZone)
 
         #expect(summary(session).endTime.value == ended)
-        #expect(summary(session).endTime.formattedValue == ended.formatted(inNewYork))
-        #expect(summary(session).endTime.formattedValue != ended.formatted(inBerlin))
+        #expect(summary(session).endTime.reading?.formatted(.reading(units: .metric)) == ended.formatted(inNewYork))
+        #expect(summary(session).endTime.reading?.formatted(.reading(units: .metric)) != ended.formatted(inBerlin))
     }
 }
 
@@ -1364,12 +1363,6 @@ struct SessionEntryComparisonTests {
     }
 
     @Test
-    func differenceInRepsReadsAsACount() {
-        #expect(RankFormat(kind: .bodyweight, system: .metric).format(2) == "2 reps")
-        #expect(RankFormat(kind: .bodyweight, system: .metric).format(1) == "1 rep")
-    }
-
-    @Test
     func differenceReadsInTheReadersUnits() throws {
         squat.kind = .weight
         let earlier = try store.session(7)
@@ -1384,7 +1377,7 @@ struct SessionEntryComparisonTests {
         let entry = try #require(later.entries.sorted().first)
         let previous = try #require(entry.previous)
 
-        #expect(RankFormat(kind: entry.target.exerciseKind, system: .metric).format(entry.target.rank - previous.rank) == "\(2.5.formatted()) kg")
+        #expect(Reading(rank: entry.target.rank - previous.rank, of: entry.target.exerciseKind) == .weight(kilograms: 2.5))
     }
 
     @Test
@@ -1742,35 +1735,14 @@ struct ProgressionTests {
 
         // The rank is in kilograms, and the axis reads in whatever the reader measures in.
         #expect(progression.points.map(\.target.rank) == [100])
-        #expect(progression.format.format(100) == RankFormat(kind: .weight, system: progression.unitSystem).format(100))
-    }
-
-    @Test
-    func imperialReadersReadPoundsAndMiles() {
-        #expect(RankFormat(kind: .weight, system: .imperial).format(100).hasSuffix(" lb"))
-        #expect(RankFormat(kind: .distance, system: .imperial).format(5000).hasSuffix(" mi"))
-    }
-
-    @Test(arguments: [
-        (ExerciseTarget.weight(kilograms: 100, reps: 5, sets: 3), "kg"),
-        (ExerciseTarget.distance(meters: 5 * 1000), "km"),
-    ])
-    func metricTargetsReadInMetricUnits(target: ExerciseTarget, symbol: String) {
-        #expect(RankFormat(kind: target.exerciseKind, system: .metric).format(target.rank).hasSuffix(" \(symbol)"))
-    }
-
-    @Test(arguments: [(1, "1 rep"), (12, "12 reps")])
-    func repsAreTheirOwnUnit(reps: Int, expected: String) {
-        let target = ExerciseTarget.bodyweight(reps: reps, sets: 3)
-
-        #expect(RankFormat(kind: target.exerciseKind, system: .metric).format(target.rank) == expected)
+        #expect(progression.reading(of: 100) == .weight(kilograms: 100))
     }
 
     @Test
     func repsAreTheUnitToReadRepsBackIn() throws {
         try squatSession(7, reps: 10)
 
-        #expect(try progression().format.format(10) == "10 reps")
+        #expect(try progression().reading(of: 10) == .reps(10))
     }
 }
 

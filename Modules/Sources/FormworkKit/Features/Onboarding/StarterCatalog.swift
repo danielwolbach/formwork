@@ -60,23 +60,23 @@ public enum StarterCatalog {
         ExerciseEntry(name: .StarterCatalog.exerciseTreadmillName, kind: .distance, categories: [.cardio]),
     ]
 
-    public static var workouts: [WorkoutEntry] {
+    public static func workouts(in units: Units) -> [WorkoutEntry] {
         [
             WorkoutEntry(
                 name: .StarterCatalog.workoutStarterName,
                 pictogram: .workout,
                 schedule: .today(),
                 entries: [
-                    WorkoutEntry.Entry(exercise: .StarterCatalog.exerciseTreadmillName, target: .distance()),
+                    WorkoutEntry.Entry(exercise: .StarterCatalog.exerciseTreadmillName, target: .initial(for: .distance, in: units)),
                     WorkoutEntry.Entry(exercise: .StarterCatalog.exercisePushUpName, target: .bodyweight(reps: 12, sets: 3)),
-                    WorkoutEntry.Entry(exercise: .StarterCatalog.exerciseBenchPressName, target: .weight()),
-                    WorkoutEntry.Entry(exercise: .StarterCatalog.exercisePlankName, target: .duration(seconds: 45)),
+                    WorkoutEntry.Entry(exercise: .StarterCatalog.exerciseBenchPressName, target: .initial(for: .weight, in: units)),
+                    WorkoutEntry.Entry(exercise: .StarterCatalog.exercisePlankName, target: .duration(seconds: 60)),
                 ]
             ),
         ]
     }
 
-    public static func seed(into context: ModelContext) throws {
+    public static func seed(into context: ModelContext, units: Units) throws {
         // Only seed when there are no exercises already in the catalog or we
         // might fill a catalog that was already filled from another device.
         guard try context.fetchCount(FetchDescriptor<Exercise>()) == 0 else {
@@ -93,7 +93,7 @@ public enum StarterCatalog {
             seeded[entry.name.key] = exercise
         }
 
-        for entry in workouts {
+        for entry in workouts(in: units) {
             let workout = Workout(name: String(localized: entry.name), pictogram: entry.pictogram, schedule: entry.schedule, entries: [])
             context.insert(workout)
 
@@ -109,24 +109,24 @@ public enum StarterCatalog {
 }
 
 extension StarterCatalog.Samples {
-    public static var weekStreak: some Statistic {
+    public static var weekStreak: some Indicator {
         WeekStreak(weeks: 6, isCurrentWeekFulfilled: true)
     }
 
-    public static var weeklySessions: some Statistic {
+    public static var weeklySessions: some Indicator {
         WeeklySessions(value: 2.8)
     }
 
-    public static var personalBest: some Statistic {
-        PersonalBest(target: .weight(kilograms: 90, reps: 10, sets: 3), unitSystem: .current)
+    public static func personalBest(in units: Units) -> some Indicator {
+        PersonalBest(target: .weight(kilograms: kilograms(metric: 90, imperial: 200, in: units), reps: 10, sets: 3))
     }
 
-    public static var totalVolume: SessionSummary.Figure<Double> {
-        .totalVolume(12480)
+    public static func totalVolume(in units: Units) -> SessionSummary.Figure<Double> {
+        .totalVolume(kilograms(metric: 12480, imperial: 27500, in: units))
     }
 
-    public static var weightTarget: ExerciseTarget {
-        .weight(kilograms: 85, reps: 10, sets: 3)
+    public static func weightTarget(in units: Units) -> ExerciseTarget {
+        .weight(kilograms: kilograms(metric: 85, imperial: 185, in: units), reps: 10, sets: 3)
     }
 
     public static func activeWeek(calendar: Calendar = .current) -> ActiveDays {
@@ -150,11 +150,15 @@ extension StarterCatalog.Samples {
         return entry.detachedExercise
     }
 
-    public static func workout() -> Workout {
-        guard let entry = StarterCatalog.workouts.first else {
+    public static func workout(in units: Units) -> Workout {
+        guard let entry = StarterCatalog.workouts(in: units).first else {
             preconditionFailure("The starter catalog has no workout.")
         }
 
         return entry.detachedWorkout
+    }
+
+    private static func kilograms(metric: Double, imperial pounds: Double, in units: Units) -> Double {
+        units.weight == .metric ? metric : Measurement(value: pounds, unit: UnitMass.pounds).converted(to: .kilograms).value
     }
 }

@@ -34,6 +34,12 @@ private struct AppContent: View {
     @AppStorage(StorageKeys.onboardingPending)
     private var onboardingPending: Bool = true
 
+    @AppStorage(StorageKeys.weightSystem, store: AppGroup.defaults)
+    private var weightSystem: Units.System = .current
+
+    @AppStorage(StorageKeys.distanceSystem, store: AppGroup.defaults)
+    private var distanceSystem: Units.System = .current
+
     @State
     private var presentedSession: Session? = nil
 
@@ -102,6 +108,8 @@ private struct AppContent: View {
                 WidgetCenter.shared.reloadAllTimelines()
             }
         }
+        // Outermost, so the covers and the bottom accessory read the units too.
+        .environment(\.units, Units(weight: weightSystem, distance: distanceSystem))
     }
 
     private var activityState: SessionActivityAttributes.ContentState? {

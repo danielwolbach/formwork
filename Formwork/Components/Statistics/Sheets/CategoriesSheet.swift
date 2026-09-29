@@ -1,6 +1,6 @@
 //
 //  CategoriesSheet.swift
-//  FormworkKit
+//  Formwork
 //
 //  Created by Daniel Wolbach on 24.09.26.
 //
