@@ -8,12 +8,14 @@
 
 /* Begin PBXBuildFile section */
 		CAF7F80C305D29BC003DEA83 /* FormworkKit in Frameworks */ = {isa = PBXBuildFile; productRef = CAF7F80B305D29BC003DEA83 /* FormworkKit */; };
+		CAF7F829C09738E49B84629D /* FormworkUI in Frameworks */ = {isa = PBXBuildFile; productRef = CAF7F8782404104B5FB16C51 /* FormworkUI */; };
 		CAF7F827305D5BD1003DEA83 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = CAF7F826305D5BD1003DEA83 /* README.md */; };
 		CAF7F829305D5BE7003DEA83 /* CONTRIBUTING.md in Resources */ = {isa = PBXBuildFile; fileRef = CAF7F828305D5BE7003DEA83 /* CONTRIBUTING.md */; };
 		CAF7F831305D66F2003DEA83 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CAF7F830305D66F2003DEA83 /* WidgetKit.framework */; };
 		CAF7F833305D66F2003DEA83 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CAF7F832305D66F2003DEA83 /* SwiftUI.framework */; };
 		CAF7F840305D66F3003DEA83 /* FormworkWidgetsExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = CAF7F82E305D66F2003DEA83 /* FormworkWidgetsExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		CAF7F84B305D68B5003DEA83 /* FormworkKit in Frameworks */ = {isa = PBXBuildFile; productRef = CAF7F84A305D68B5003DEA83 /* FormworkKit */; };
+		CAF7F86E2C7F751F2D17DF0D /* FormworkUI in Frameworks */ = {isa = PBXBuildFile; productRef = CAF7F8C3B3CEB99A1B4CCF21 /* FormworkUI */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -88,12 +90,14 @@
 			isa = PBXFrameworksBuildPhase;
 			files = (
 				CAF7F80C305D29BC003DEA83 /* FormworkKit in Frameworks */,
+				CAF7F829C09738E49B84629D /* FormworkUI in Frameworks */,
 			);
 		};
 		CAF7F82B305D66F2003DEA83 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			files = (
 				CAF7F84B305D68B5003DEA83 /* FormworkKit in Frameworks */,
+				CAF7F86E2C7F751F2D17DF0D /* FormworkUI in Frameworks */,
 				CAF7F833305D66F2003DEA83 /* SwiftUI.framework in Frameworks */,
 				CAF7F831305D66F2003DEA83 /* WidgetKit.framework in Frameworks */,
 			);
@@ -154,6 +158,7 @@
 			name = Formwork;
 			packageProductDependencies = (
 				CAF7F80B305D29BC003DEA83 /* FormworkKit */,
+				CAF7F8782404104B5FB16C51 /* FormworkUI */,
 			);
 			productName = MyApp;
 			productReference = 000000000000000000000120 /* Formwork.app */;
@@ -175,6 +180,7 @@
 			name = FormworkWidgetsExtension;
 			packageProductDependencies = (
 				CAF7F84A305D68B5003DEA83 /* FormworkKit */,
+				CAF7F8C3B3CEB99A1B4CCF21 /* FormworkUI */,
 			);
 			productName = FormworkWidgetsExtension;
 			productReference = CAF7F82E305D66F2003DEA83 /* FormworkWidgetsExtension.appex */;
@@ -208,7 +214,7 @@
 			mainGroup = 000000000000000000000001;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				CAF7F80A305D29BC003DEA83 /* XCLocalSwiftPackageReference "FormworkKit" */,
+				CAF7F80A305D29BC003DEA83 /* XCLocalSwiftPackageReference "Modules" */,
 			);
 			preferredProjectObjectVersion = 90;
 			productRefGroup = 000000000000000000000020 /* Products */;
@@ -589,9 +595,9 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		CAF7F80A305D29BC003DEA83 /* XCLocalSwiftPackageReference "FormworkKit" */ = {
+		CAF7F80A305D29BC003DEA83 /* XCLocalSwiftPackageReference "Modules" */ = {
 			isa = XCLocalSwiftPackageReference;
-			relativePath = FormworkKit;
+			relativePath = Modules;
 		};
 /* End XCLocalSwiftPackageReference section */
 
@@ -602,8 +608,18 @@
 		};
 		CAF7F84A305D68B5003DEA83 /* FormworkKit */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = CAF7F80A305D29BC003DEA83 /* XCLocalSwiftPackageReference "FormworkKit" */;
+			package = CAF7F80A305D29BC003DEA83 /* XCLocalSwiftPackageReference "Modules" */;
 			productName = FormworkKit;
+		};
+		CAF7F8782404104B5FB16C51 /* FormworkUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CAF7F80A305D29BC003DEA83 /* XCLocalSwiftPackageReference "Modules" */;
+			productName = FormworkUI;
+		};
+		CAF7F8C3B3CEB99A1B4CCF21 /* FormworkUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CAF7F80A305D29BC003DEA83 /* XCLocalSwiftPackageReference "Modules" */;
+			productName = FormworkUI;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

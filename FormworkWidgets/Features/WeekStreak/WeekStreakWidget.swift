@@ -6,6 +6,7 @@
 //
 
 import FormworkKit
+import FormworkUI
 import SwiftData
 import SwiftUI
 import WidgetKit

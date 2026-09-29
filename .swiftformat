@@ -13,7 +13,7 @@
 --wraptypealiases before-first
 --allowpartialwrapping false
 
---exclude FormworkKit/.build
+--exclude Modules/.build
 
 # Declarations and ordering, see CONTRIBUTING.md
 --enable organizeDeclarations,wrapGuardStatementBodies

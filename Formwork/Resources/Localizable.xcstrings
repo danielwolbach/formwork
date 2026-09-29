@@ -140,9 +140,6 @@
         }
       }
     },
-    "field.date.title" : {
-      "extractionState" : "manual"
-    },
     "field.exercises.title" : {
       "extractionState" : "manual",
       "localizations" : {

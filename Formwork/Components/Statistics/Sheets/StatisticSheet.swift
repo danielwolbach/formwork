@@ -6,6 +6,7 @@
 //
 
 import FormworkKit
+import FormworkUI
 import SwiftUI
 
 struct StatisticSheet<S: Statistic, Content: View>: View {

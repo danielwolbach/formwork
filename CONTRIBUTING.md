@@ -14,12 +14,38 @@ The following guidelines form the basis of every contributed code:
 What follows are less important hints for contributed code:
 
 - Every UI view should have at least one sensible preview.
-- Every action should be added as an `ActionDescriptor`.
-- User facing strings should never be in code but rather in the `Localizable` catalog.
+- Every action should be added as an `Action`.
+- User facing strings should never be in code but rather in their target's `Localizable` catalog (see Structure).
 
 ## Rules
 
 Most of these rules are enforced by SwiftFormat (see `.swiftformat`). Run `swiftformat .` before committing, or `swiftformat . --lint` to only check. SwiftLint (see `.swiftlint.yml`) only reports likely bugs; check with `swiftlint lint --strict`. A pre-commit hook in `.githooks` blocks commits that fail either check; enable it once per clone with `git config core.hooksPath .githooks`. Rules marked *(manual)* are not covered by the tool and are kept by hand.
+
+### Structure
+
+The app and its extensions share one local package, `Modules`, with two libraries. The dependencies only point one way: the app and the extensions depend on both libraries, `FormworkUI` on `FormworkKit`, and `FormworkKit` on neither. *(manual)*
+
+- `FormworkKit` holds everything that isn't a view: models, statistics, storage and the parts of features the app and extensions share, like intents.
+- `FormworkUI` holds the design system: views and styles that know nothing about exercises, workouts or statistics, and `Action`.
+- The app holds everything that knows the domain and is shown on screen.
+
+Code lives where its narrowest user is. A view used by one feature stays in that feature and moves to `Components` once a second feature uses it, not before. *(manual)*
+
+| Folder | Holds |
+| --- | --- |
+| `Formwork/Features/<Feature>` | Screens (`…Screen`), forms (`…Form`) and the views only they use. A feature is a tab or a flow, and a screen belongs to the feature of what it shows. |
+| `Formwork/Components/<Topic>` | Views used by several features, grouped by domain, e.g. `Exercise` or `Statistics`. |
+| `Formwork/Support` | App-wide plumbing that isn't a feature: navigation, haptics, debug tools, extensions. |
+| `FormworkKit/Models/<Model>` | SwiftData models and the value types they're made of. |
+| `FormworkKit/Statistics` | Everything worked out from models: histories, statistics, trends and their formats. |
+| `FormworkKit/Features/<Feature>` | The non-view parts of a feature that several targets need. |
+| `FormworkKit/Protocols` | Protocols no single domain owns. |
+| `FormworkKit/Support` | Infrastructure: storage, schema, samples, constants, extensions. |
+| `FormworkUI/Components/<Kind>` | Domain-agnostic building blocks: content, input, layout, navigation, styles. |
+| `FormworkUI/Support` | Environment values and view extensions. |
+
+- Folders that collect several things are plural (`Features/Workouts`); a model's own folder is singular (`Models/Workout`). The same name means the same thing in every target. *(manual)*
+- Each target has its own `Localizable` catalog. `FormworkKit`'s names concepts, like kinds, categories and statistics; words that only exist because of a screen, like actions or headings, go into `FormworkUI`'s or the app's. *(manual)*
 
 ### Declarations
 

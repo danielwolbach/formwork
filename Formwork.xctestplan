@@ -14,7 +14,7 @@
   "testTargets" : [
     {
       "target" : {
-        "containerPath" : "container:FormworkKit",
+        "containerPath" : "container:Modules",
         "identifier" : "FormworkKitTests",
         "name" : "FormworkKitTests"
       }

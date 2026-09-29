@@ -2,7 +2,7 @@
 # SwiftFormat (see .swiftformat), so formatting, naming, length and redundancy rules stay off.
 
 excluded:
-  - FormworkKit/.build
+  - Modules/.build
 
 only_rules:
   # Likely bugs and crashes

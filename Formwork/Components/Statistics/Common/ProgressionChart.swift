@@ -7,6 +7,7 @@
 
 import Charts
 import FormworkKit
+import FormworkUI
 import SwiftUI
 
 struct ProgressionChart: View {

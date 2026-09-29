@@ -1,0 +1,553 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "%lld reps" : {
+
+    },
+    "exercise.category.arms.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arms"
+          }
+        }
+      }
+    },
+    "exercise.category.back.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Back"
+          }
+        }
+      }
+    },
+    "exercise.category.cardio.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cardio"
+          }
+        }
+      }
+    },
+    "exercise.category.chest.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chest"
+          }
+        }
+      }
+    },
+    "exercise.category.core.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Core"
+          }
+        }
+      }
+    },
+    "exercise.category.flexibility.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Flexibility"
+          }
+        }
+      }
+    },
+    "exercise.category.legs.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Legs"
+          }
+        }
+      }
+    },
+    "exercise.category.mindfulness.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mindfulness"
+          }
+        }
+      }
+    },
+    "exercise.category.other.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Other"
+          }
+        }
+      }
+    },
+    "exercise.category.shoulders.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shoulders"
+          }
+        }
+      }
+    },
+    "exercise.kind.bodyweight.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bodyweight"
+          }
+        }
+      }
+    },
+    "exercise.kind.distance.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Distance"
+          }
+        }
+      }
+    },
+    "exercise.kind.duration.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Duration"
+          }
+        }
+      }
+    },
+    "exercise.kind.weight.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weight"
+          }
+        }
+      }
+    },
+    "exercise.target.bodyweight.subtitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld × %2$lld"
+          }
+        }
+      }
+    },
+    "exercise.target.distance.subtitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld × %2$@"
+          }
+        }
+      }
+    },
+    "exercise.target.duration.subtitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld × %2$@"
+          }
+        }
+      }
+    },
+    "exercise.target.weight.subtitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ • %2$lld × %3$lld"
+          }
+        }
+      }
+    },
+    "intent.backward.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Backward"
+          }
+        }
+      }
+    },
+    "intent.complete.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Complete"
+          }
+        }
+      }
+    },
+    "intent.forward.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Forward"
+          }
+        }
+      }
+    },
+    "intent.undo.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Undo"
+          }
+        }
+      }
+    },
+    "placeholder" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Placeholder"
+          }
+        }
+      }
+    },
+    "statistic.activeDays.info" : {
+      "extractionState" : "manual"
+    },
+    "statistic.activeDays.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Active Days"
+          }
+        }
+      }
+    },
+    "statistic.categories.info" : {
+      "extractionState" : "manual"
+    },
+    "statistic.categories.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Categories"
+          }
+        }
+      }
+    },
+    "statistic.completionRate.info" : {
+      "extractionState" : "manual"
+    },
+    "statistic.completionRate.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Completion Rate"
+          }
+        }
+      }
+    },
+    "statistic.completions.info" : {
+      "extractionState" : "manual"
+    },
+    "statistic.completions.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Completions"
+          }
+        }
+      }
+    },
+    "statistic.favoriteExercise.info" : {
+      "extractionState" : "manual"
+    },
+    "statistic.favoriteExercise.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Favorite Exercise"
+          }
+        }
+      }
+    },
+    "statistic.favoriteWorkout.info" : {
+      "extractionState" : "manual"
+    },
+    "statistic.favoriteWorkout.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Favorite Workout"
+          }
+        }
+      }
+    },
+    "statistic.lastCompleted.info" : {
+      "extractionState" : "manual"
+    },
+    "statistic.lastCompleted.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Last Completed"
+          }
+        }
+      }
+    },
+    "statistic.longestWeekStreak.info" : {
+      "extractionState" : "manual"
+    },
+    "statistic.longestWeekStreak.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Longest Week Streak"
+          }
+        }
+      }
+    },
+    "statistic.mostSkippedExercise.info" : {
+      "extractionState" : "manual"
+    },
+    "statistic.mostSkippedExercise.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Most Skipped Exercise"
+          }
+        }
+      }
+    },
+    "statistic.oneRepMax.info" : {
+      "extractionState" : "manual"
+    },
+    "statistic.oneRepMax.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "One Rep Max"
+          }
+        }
+      }
+    },
+    "statistic.personalBest.info" : {
+      "extractionState" : "manual"
+    },
+    "statistic.personalBest.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Personal Best"
+          }
+        }
+      }
+    },
+    "statistic.progression.info" : {
+      "extractionState" : "manual"
+    },
+    "statistic.progression.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Progression"
+          }
+        }
+      }
+    },
+    "statistic.totalVolume.info" : {
+      "extractionState" : "manual"
+    },
+    "statistic.totalVolume.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Total Volume"
+          }
+        }
+      }
+    },
+    "statistic.typicalBest.info" : {
+      "extractionState" : "manual"
+    },
+    "statistic.typicalBest.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Typical Best"
+          }
+        }
+      }
+    },
+    "statistic.typicalDuration.info" : {
+      "extractionState" : "manual"
+    },
+    "statistic.typicalDuration.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Typical Duration"
+          }
+        }
+      }
+    },
+    "statistic.typicalInterval.info" : {
+      "extractionState" : "manual"
+    },
+    "statistic.typicalInterval.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Typical Interval"
+          }
+        }
+      }
+    },
+    "statistic.typicalStartTime.info" : {
+      "extractionState" : "manual"
+    },
+    "statistic.typicalStartTime.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Typical Start Time"
+          }
+        }
+      }
+    },
+    "statistic.weeklyActiveDays.info" : {
+      "extractionState" : "manual"
+    },
+    "statistic.weeklySessions.info" : {
+      "extractionState" : "manual"
+    },
+    "statistic.weeklySessions.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weekly Sessions"
+          }
+        }
+      }
+    },
+    "statistic.weekStreak.info" : {
+      "extractionState" : "manual"
+    },
+    "statistic.weekStreak.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Week Streak"
+          }
+        }
+      }
+    },
+    "unitSystem.imperial.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Imperial"
+          }
+        }
+      }
+    },
+    "unitSystem.metric.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Metric"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.3"
+}
