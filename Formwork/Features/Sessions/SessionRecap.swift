@@ -23,15 +23,15 @@ struct SessionRecap: View {
 
             TileGrid {
                 MetricCard(summary.duration)
-                
+
                 MetricCard(summary.endTime)
-                
+
                 MetricCard(summary.skipRate)
-                
+
                 MetricCard(summary.medianExerciseDuration)
-                
+
                 MetricCard(summary.completedExercises)
-                
+
                 MetricCard(summary.totalVolume)
             }
             .padding(.horizontal)

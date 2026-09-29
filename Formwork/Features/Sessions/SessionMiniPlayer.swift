@@ -27,6 +27,13 @@ struct SessionMiniPlayer: View {
     }
 
     var body: some View {
+        // Replacing a session deletes and saves it while this view is still on screen, and its entries can't be read then.
+        if !session.isDeleted, session.modelContext != nil {
+            content
+        }
+    }
+
+    private var content: some View {
         HStack(spacing: 0) {
             SessionEntryPager(navigator: navigator) { entry in
                 row(for: entry)

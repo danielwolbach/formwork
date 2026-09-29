@@ -27,6 +27,7 @@ struct WorkoutIndexScreen: View {
                             WorkoutCard(workout)
                         }
                     }
+                    .swipeActionsContainer()
                     .animation(.snappy, value: workouts.count)
                     .padding(.horizontal)
                 }

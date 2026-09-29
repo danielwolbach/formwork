@@ -42,6 +42,7 @@ struct ExerciseCategoryScreen: View {
                             ExerciseRow(exercise)
                         }
                     }
+                    .swipeActionsContainer()
                     .animation(.snappy, value: matching.count)
                 }
                 .overlay {

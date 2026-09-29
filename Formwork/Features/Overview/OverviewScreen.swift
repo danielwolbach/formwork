@@ -109,6 +109,7 @@ struct OverviewScreen: View {
                             WorkoutCard(workout)
                         }
                     }
+                    .swipeActionsContainer()
                 }
             }
             .padding(.horizontal)

@@ -86,6 +86,7 @@ struct WorkoutScreen: View {
                             WorkoutEntryRow(entry)
                         }
                     }
+                    .swipeActionsContainer()
                     .animation(.snappy, value: workout.entries.count)
                 }
             }

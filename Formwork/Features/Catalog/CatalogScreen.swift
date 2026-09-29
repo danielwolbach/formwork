@@ -144,6 +144,7 @@ struct CatalogScreen: View {
                 ExerciseRow(exercise)
             }
         }
+        .swipeActionsContainer()
         .animation(.snappy, value: exercises.count)
     }
 

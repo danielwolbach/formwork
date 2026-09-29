@@ -67,7 +67,9 @@ private struct AppContent: View {
         }
         .environment(\.presentSession, PresentSessionAction(action: presentSession))
         .fullScreenCover(isPresented: $onboardingPending) {
-            OnboardingScreen()
+            NavigationStack {
+                OnboardingScreen()
+            }
         }
         .fullScreenCover(item: $presentedSession) { session in
             NavigationStack {
@@ -78,7 +80,9 @@ private struct AppContent: View {
         .tabBarMinimizeBehavior(activeSessions.isEmpty ? .automatic : .onScrollDown)
         .tabViewBottomAccessory(isEnabled: !activeSessions.isEmpty) {
             if let session = activeSessions.first {
+                // Keyed by session, so replacing it rebuilds the navigator instead of keeping the deleted one.
                 SessionMiniPlayer(session, namespace: presentedSessionNamespace)
+                    .id(session.persistentModelID)
             }
         }
         .task(id: activityState) {

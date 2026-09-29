@@ -73,6 +73,7 @@ struct StatisticsScreen: View {
                             SessionRow(session)
                         }
                     }
+                    .swipeActionsContainer()
                     .animation(.snappy, value: sessions.count)
                 } accessory: {
                     NavigationLink(value: Route.sessions) {

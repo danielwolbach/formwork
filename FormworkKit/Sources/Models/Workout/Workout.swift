@@ -65,7 +65,7 @@ extension Workout {
 
         do {
             for running in try modelContext.fetch(runningDescriptor) {
-                modelContext.delete(running)
+                running.discard()
             }
         } catch {
             // TODO: Log error.

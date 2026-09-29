@@ -38,6 +38,7 @@ struct WorkoutEntryRow: View {
         }
         .buttonStyle(.plain)
         .swipeActions {
+            // No destructive role: it makes SwiftUI expect the row to disappear, so cancelling the alert leaves the button stuck.
             Button(Action.remove.title, systemImage: Action.remove.image) {
                 removeAlert = true
             }

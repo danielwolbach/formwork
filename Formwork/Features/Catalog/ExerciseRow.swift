@@ -38,6 +38,7 @@ struct ExerciseRow: View {
         }
         .buttonStyle(.plain)
         .swipeActions {
+            // No destructive role: it makes SwiftUI expect the row to disappear, so cancelling the alert leaves the button stuck.
             Button(Action.delete.title, systemImage: Action.delete.image) {
                 deleteAlert = true
             }

@@ -139,6 +139,7 @@ struct WorkoutForm: View {
             .reorderContainer(for: WorkoutEntry.self) { difference in
                 entries.apply(difference: difference)
             }
+            .swipeActionsContainer()
             .padding(.vertical, 8)
             .card()
             .padding(.horizontal)

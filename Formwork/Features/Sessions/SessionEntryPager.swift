@@ -6,6 +6,7 @@
 //
 
 import FormworkKit
+import SwiftData
 import SwiftUI
 import UIKit
 
@@ -92,6 +93,12 @@ struct SessionEntryPager<Page: View>: View {
 
     private var slots: [Slot] {
         let session = navigator.session
+
+        // Observes the session on its own, so it can redraw after a replaced session was deleted and saved.
+        guard !session.isDeleted, session.modelContext != nil else {
+            return []
+        }
+
         let ordered = session.orderedEntries
 
         guard let current = session.currentEntry, let center = ordered.firstIndex(where: { $0 === current }) else {

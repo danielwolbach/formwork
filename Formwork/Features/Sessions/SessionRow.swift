@@ -35,6 +35,7 @@ struct SessionRow: View {
         }
         .buttonStyle(.plain)
         .swipeActions {
+            // No destructive role: it makes SwiftUI expect the row to disappear, so cancelling the alert leaves the button stuck.
             Button(Action.delete.title, systemImage: Action.delete.image) {
                 deleteAlert = true
             }
@@ -49,21 +50,21 @@ struct SessionRow: View {
             }
         } preview: {
             let summary = session.summary()
-            
+
             VStack(spacing: 16) {
                 DisplayableRow(session)
-                
+
                 TileGrid {
                     MetricCard(summary.duration)
-                    
+
                     MetricCard(summary.endTime)
-                    
+
                     MetricCard(summary.skipRate)
-                    
+
                     MetricCard(summary.medianExerciseDuration)
-                    
+
                     MetricCard(summary.completedExercises)
-                    
+
                     MetricCard(summary.totalVolume)
                 }
             }

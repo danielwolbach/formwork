@@ -28,6 +28,7 @@ struct SessionListScreen: View {
                             SessionRow(session)
                         }
                     }
+                    .swipeActionsContainer()
                     .animation(.snappy, value: sessions.count)
                 }
             }
