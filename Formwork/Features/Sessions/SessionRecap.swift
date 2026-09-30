@@ -19,7 +19,7 @@ struct SessionRecap: View {
     var body: some View {
         let summary = session.summary()
 
-        VStack(spacing: 32) {
+        ContentStack {
             PictogramHeader(session.pictogram, title: session.title, subtitle: session.startDate.formatted(session.wallClockTime(date: .numeric)))
 
             TileGrid {
@@ -35,12 +35,10 @@ struct SessionRecap: View {
 
                 IndicatorCard(summary.totalVolume)
             }
-            .padding(.horizontal)
 
             VStack(spacing: 0) {
                 ForEach(session.orderedEntries) { entry in
                     SessionEntryRow(entry)
-                        .padding(.horizontal)
                         .padding(.vertical, 8)
                 }
             }

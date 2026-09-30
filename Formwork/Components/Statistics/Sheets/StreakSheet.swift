@@ -21,7 +21,7 @@ struct StreakSheet: View {
 
         StatisticSheet(current, history: history) {
             GroupBox {
-                VStack(spacing: 16) {
+                VStack(spacing: .groups) {
                     ValueRow(title: current.title, value: current.reading?.formatted(.reading(units: units)))
 
                     Divider()
@@ -29,7 +29,6 @@ struct StreakSheet: View {
                     ValueRow(title: longest.title, value: longest.reading?.formatted(.reading(units: units)))
                 }
             }
-            .padding(.horizontal)
         }
         .groupBoxStyle(.card)
         .tint(current.pictogram.color)

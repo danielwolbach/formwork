@@ -41,7 +41,7 @@ public struct TileGrid: Layout {
 
     private let aspectRatio: CGFloat
 
-    public init(columns: Int = 2, spacing: CGFloat = 8, aspectRatio: CGFloat = 1.7) {
+    public init(columns: Int = 2, spacing: CGFloat = .items, aspectRatio: CGFloat = 1.7) {
         self.columns = max(1, columns)
         self.spacing = spacing
         self.aspectRatio = aspectRatio

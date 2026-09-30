@@ -31,32 +31,33 @@ struct WorkoutStatisticsScreen: View {
                 }
             } else {
                 ScrollView {
-                    TileGrid {
-                        StatisticCard(.lastCompleted, of: history)
+                    ContentStack {
+                        TileGrid {
+                            StatisticCard(.lastCompleted, of: history)
 
-                        StatisticCard(.typicalDuration, of: history)
+                            StatisticCard(.typicalDuration, of: history)
 
-                        StatisticCard(.completionRate, of: history)
+                            StatisticCard(.completionRate, of: history)
 
-                        StatisticCard(.mostSkippedExercise, of: history)
+                            StatisticCard(.mostSkippedExercise, of: history)
 
-                        StatisticCard(.activeDays, of: history)
-                            .tileSpan(rows: 2, columns: 2)
+                            StatisticCard(.activeDays, of: history)
+                                .tileSpan(rows: 2, columns: 2)
 
-                        StatisticCard(.typicalStartTime, of: history)
+                            StatisticCard(.typicalStartTime, of: history)
 
-                        StatisticCard(.completions, of: history)
+                            StatisticCard(.completions, of: history)
 
-                        StatisticCard(.typicalInterval, of: history)
+                            StatisticCard(.typicalInterval, of: history)
 
-                        StatisticCard(.totalVolume, of: history)
+                            StatisticCard(.totalVolume, of: history)
 
-                        StatisticCard(.categories, of: history)
-                            .tileSpan(rows: 2, columns: 2)
+                            StatisticCard(.categories, of: history)
+                                .tileSpan(rows: 2, columns: 2)
+                        }
                     }
-                    .padding(.horizontal)
-                    .padding(.bottom)
                 }
+                .contentMargins(.bottom, .sections, for: .scrollContent)
             }
         }
         .toolbar {

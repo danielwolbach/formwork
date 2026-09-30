@@ -32,7 +32,7 @@ struct ScheduleEditor: View {
     }
 
     var body: some View {
-        VStack(spacing: 24) {
+        VStack(spacing: .groups) {
             rhythmPicker
 
             Divider()
@@ -58,7 +58,7 @@ struct ScheduleEditor: View {
     }
 
     private var weeklyScheduleEditor: some View {
-        VStack(spacing: 24) {
+        VStack(spacing: .groups) {
             WeekdayPicker(weekdays, calendar: calendar)
 
             // A weekly schedule without weekdays is inactive, so there's no rhythm to set yet.
@@ -74,7 +74,7 @@ struct ScheduleEditor: View {
     }
 
     private var dailyScheduleEditor: some View {
-        VStack(spacing: 24) {
+        VStack(spacing: .groups) {
             intervalStepper(
                 Text(.fieldRhythmDailyIntervalTitle(count: schedule.interval)),
                 range: Self.dayIntervals

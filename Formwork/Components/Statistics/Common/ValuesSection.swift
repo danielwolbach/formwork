@@ -28,9 +28,9 @@ struct ValuesSection: View {
     var body: some View {
         SectionView {
             GroupBox {
-                VStack(spacing: 16) {
+                VStack(spacing: .groups) {
                     if let baseline, let direction {
-                        HStack(spacing: 12) {
+                        HStack(spacing: .items) {
                             column(title: String(localized: .fieldBeforeTitle), value: baseline, footnote: String(localized: .fieldBeforeSubtitle(days: History.baselineDays)))
 
                             Image(systemName: direction.image)
@@ -50,7 +50,6 @@ struct ValuesSection: View {
                 }
             }
             .groupBoxStyle(.card)
-            .padding(.horizontal)
         }
     }
 

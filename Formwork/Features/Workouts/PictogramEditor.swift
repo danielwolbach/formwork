@@ -52,7 +52,7 @@ private struct PictogramSheet: View {
 
     var body: some View {
         ScrollView {
-            VStack(spacing: 32) {
+            ContentStack {
                 PictogramView(draft)
                     .frame(width: 128)
 
@@ -60,17 +60,16 @@ private struct PictogramSheet: View {
                     GroupBox {
                         PictogramColorPicker(selection: $draft.tint)
                     }
-                    .padding(.horizontal)
                 }
 
                 SectionView(.init(localized: .fieldImageTitle)) {
                     GroupBox {
                         PictogramImagePicker(selection: $draft.image)
                     }
-                    .padding(.horizontal)
                 }
             }
         }
+        .contentMargins(.bottom, .sections, for: .scrollContent)
         .groupBoxStyle(.card)
         .navigationTitle(.screenPictogramTitle)
         .navigationBarTitleDisplayMode(.inline)

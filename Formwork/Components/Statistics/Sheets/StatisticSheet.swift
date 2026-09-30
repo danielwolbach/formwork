@@ -31,9 +31,8 @@ struct StatisticSheet<S: Statistic, Content: View>: View {
 
     var body: some View {
         ScrollView {
-            VStack(spacing: 16) {
+            ContentStack(spacing: .groups) {
                 PictogramRow(pictogram, title: title, subtitle: subtitle)
-                    .padding(.horizontal)
 
                 content
 
@@ -44,12 +43,10 @@ struct StatisticSheet<S: Statistic, Content: View>: View {
                             .foregroundStyle(.secondary)
                     }
                     .groupBoxStyle(.card)
-                    .padding(.horizontal)
                 }
             }
-            .padding(.vertical, 16)
-            .padding(.top, 16)
         }
+        .contentMargins(.vertical, .sections, for: .scrollContent)
         .presentationDragIndicator(.visible)
     }
 }

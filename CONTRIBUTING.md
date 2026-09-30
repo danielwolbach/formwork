@@ -124,3 +124,11 @@ private var dismiss: DismissAction
 @Observable
 final class Foo {}
 ```
+
+### Layout
+
+- Screens put their content in `ScrollView { ContentStack { … } }`. `ContentStack` gives every child the screen margin, and only content that has to reach the screen edges, like a swipeable list, opts out with `.edgeToEdge()`. Views never add the screen margin themselves. *(manual)*
+- `SectionView` applies the margin to its header and content itself, so a list inside a section can use `.edgeToEdge()` too.
+- Every vertical `ScrollView` keeps its last content clear of the tab bar and bottom bars with `.contentMargins(.bottom, .sections, for: .scrollContent)`. Sheets without a toolbar use `.vertical` instead, since no navigation bar leaves room at the top. *(manual)*
+- Structural spacing uses the named values: `.sections` (32) between sections, `.groups` (16) between groups inside a card and between the sections of a compact sheet, `.items` (8) between sibling cards or tiles and below a header. Spacing inside a single component stays a literal. *(manual)*
+- Styles like `.groupBoxStyle(.card)` and `.labeledContentStyle(.row)` are set by the view that creates the styled views, on the smallest container around them, never once at the app root. That way every view and its preview look right on their own. *(manual)*

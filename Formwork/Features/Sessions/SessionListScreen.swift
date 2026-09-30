@@ -32,6 +32,7 @@ struct SessionListScreen: View {
                     .swipeActionsContainer()
                     .animation(.snappy, value: sessions.count)
                 }
+                .contentMargins(.bottom, .sections, for: .scrollContent)
             }
         }
         .navigationTitle(.screenSessionsTitle)

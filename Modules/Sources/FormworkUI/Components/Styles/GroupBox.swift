@@ -11,7 +11,7 @@ public struct CardGroupBoxStyle: GroupBoxStyle {
     public init() {}
 
     public func makeBody(configuration: Configuration) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: .items) {
             configuration.label
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
@@ -57,12 +57,11 @@ extension GroupBoxStyle where Self == CardGroupBoxStyle {
     var isOn = true
 
     ScrollView {
-        VStack(spacing: 32) {
+        ContentStack {
             SectionView("Title", subtitle: "Subtitle") {
                 GroupBox {
                     Toggle("Setting", isOn: $isOn)
                 }
-                .padding(.horizontal)
             }
 
             SectionView("Title") {
@@ -72,7 +71,6 @@ extension GroupBoxStyle where Self == CardGroupBoxStyle {
                 } label: {
                     Label("Label", systemImage: "link")
                 }
-                .padding(.horizontal)
             }
         }
     }

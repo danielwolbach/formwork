@@ -63,6 +63,7 @@ struct WorkoutAddEntriesForm: View {
                         }
                     }
                 }
+                .contentMargins(.bottom, .sections, for: .scrollContent)
                 .overlay {
                     if matching.isEmpty {
                         if trimmedSearchText.isEmpty {

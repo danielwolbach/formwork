@@ -25,14 +25,12 @@ struct CategoriesSheet: View {
                 GroupBox {
                     CategoriesBreakdown(recent)
                 }
-                .padding(.horizontal)
             }
 
             SectionView(.init(localized: .fieldOverallTitle)) {
                 GroupBox {
                     CategoriesBreakdown(Categories(history.allTime))
                 }
-                .padding(.horizontal)
             }
 
             YearSection(years: history.years) { year in

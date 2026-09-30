@@ -23,15 +23,17 @@ struct WorkoutIndexScreen: View {
                 emptyState
             } else {
                 ScrollView {
-                    LazyVStack(spacing: 8) {
-                        ForEach(workouts) { workout in
-                            WorkoutCard(workout)
+                    ContentStack {
+                        LazyVStack(spacing: .items) {
+                            ForEach(workouts) { workout in
+                                WorkoutCard(workout)
+                            }
                         }
+                        .swipeActionsContainer()
+                        .animation(.snappy, value: workouts.count)
                     }
-                    .swipeActionsContainer()
-                    .animation(.snappy, value: workouts.count)
-                    .padding(.horizontal)
                 }
+                .contentMargins(.bottom, .sections, for: .scrollContent)
             }
         }
         .navigationTitle(.screenWorkoutsTitle)

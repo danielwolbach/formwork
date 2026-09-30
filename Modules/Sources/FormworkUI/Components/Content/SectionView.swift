@@ -24,7 +24,7 @@ public struct SectionView<Content: View, Accessory: View>: View {
     }
 
     public var body: some View {
-        VStack {
+        ContentStack(spacing: .items) {
             HStack {
                 VStack(alignment: .leading) {
                     if let title {
@@ -45,12 +45,13 @@ public struct SectionView<Content: View, Accessory: View>: View {
 
                 accessory
             }
-            .padding(.horizontal)
             // Optical alignment with rounded cards.
             .padding(.horizontal, 2)
 
             content
         }
+        // Applies the margins itself, so content marked edge to edge can reach the screen edges.
+        .edgeToEdge()
     }
 }
 
@@ -65,12 +66,36 @@ extension SectionView where Accessory == EmptyView {
         GroupBox {
             Text("Hello World")
         }
-        .padding(.horizontal)
     } accessory: {
         Button("Accessory") {
             // Do nothing.
         }
         .buttonStyle(.glass)
+    }
+    .groupBoxStyle(.card)
+}
+
+#Preview("Edge to edge") {
+    ScrollView {
+        ContentStack {
+            SectionView("Card") {
+                GroupBox {
+                    Text("Hello World")
+                }
+            }
+
+            SectionView("List") {
+                LazyVStack(spacing: 0) {
+                    ForEach(1 ... 3, id: \.self) { index in
+                        Text("Row \(index)")
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding()
+                            .background(.fill.quaternary)
+                    }
+                }
+                .edgeToEdge()
+            }
+        }
     }
     .groupBoxStyle(.card)
 }

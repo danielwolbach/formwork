@@ -45,14 +45,17 @@ struct CatalogScreen: View {
                 emptyState
             } else {
                 ScrollView {
-                    if sort == .category, !searchPresented {
-                        categoryGrid
-                            .transition(.blurReplace)
-                    } else {
-                        exerciseList(matching)
-                            .transition(.blurReplace)
+                    ContentStack {
+                        if sort == .category, !searchPresented {
+                            categoryGrid
+                                .transition(.blurReplace)
+                        } else {
+                            exerciseList(matching)
+                                .transition(.blurReplace)
+                        }
                     }
                 }
+                .contentMargins(.bottom, .sections, for: .scrollContent)
                 .overlay {
                     if !trimmedSearchText.isEmpty, matching.isEmpty {
                         ContentUnavailableView.search(text: trimmedSearchText)
@@ -110,7 +113,6 @@ struct CatalogScreen: View {
                 }
             }
         }
-        .padding(.horizontal)
     }
 
     private var emptyState: some View {
@@ -147,6 +149,7 @@ struct CatalogScreen: View {
         }
         .swipeActionsContainer()
         .animation(.snappy, value: exercises.count)
+        .edgeToEdge()
     }
 
     private func countExercises(in category: Exercise.Category) -> Int {

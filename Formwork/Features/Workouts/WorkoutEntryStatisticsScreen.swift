@@ -37,14 +37,16 @@ struct WorkoutEntryStatisticsScreen: View {
                 }
             } else {
                 ScrollView {
-                    ZStack {
-                        ExerciseStatistics(history: history)
-                            .padding(.horizontal)
-                            .id(viewMode)
-                            .transition(.blurReplace)
+                    ContentStack {
+                        ZStack {
+                            ExerciseStatistics(history: history)
+                                .id(viewMode)
+                                .transition(.blurReplace)
+                        }
+                        .animation(.smooth, value: viewMode)
                     }
-                    .animation(.smooth, value: viewMode)
                 }
+                .contentMargins(.bottom, .sections, for: .scrollContent)
             }
         }
         .navigationTitle(.screenStatisticsTitle)

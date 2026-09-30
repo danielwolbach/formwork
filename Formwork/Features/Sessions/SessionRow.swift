@@ -52,7 +52,7 @@ struct SessionRow: View {
         } preview: {
             let summary = session.summary()
 
-            VStack(spacing: 16) {
+            ContentStack(spacing: .groups) {
                 PictogramRow(session.pictogram, title: session.title, subtitle: session.startDate.formatted(session.wallClockTime(date: .numeric)))
 
                 TileGrid {
@@ -70,7 +70,7 @@ struct SessionRow: View {
                 }
             }
             .frame(width: 360)
-            .padding()
+            .padding(.vertical)
         }
         .alert(.alertDeleteSessionTitle, isPresented: $deleteAlert) {
             Button(.cancel) {

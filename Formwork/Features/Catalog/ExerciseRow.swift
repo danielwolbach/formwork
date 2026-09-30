@@ -59,7 +59,7 @@ struct ExerciseRow: View {
         } preview: {
             let history = History(.exercise(exercise))
 
-            VStack(spacing: 16) {
+            ContentStack(spacing: .groups) {
                 PictogramRow(exercise.pictogram, title: exercise.title, subtitle: exercise.categories.formatted(.exerciseCategories))
 
                 if !history.sessions.isEmpty {
@@ -79,7 +79,7 @@ struct ExerciseRow: View {
                 }
             }
             .frame(width: 360)
-            .padding()
+            .padding(.vertical)
         }
         .alert(.alertDeleteExerciseTitle, isPresented: $deleteAlert) {
             Button(.cancel) {

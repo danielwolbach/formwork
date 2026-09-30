@@ -47,7 +47,7 @@ struct WorkoutCard: View {
                     .padding()
                     .background(workout.pictogram.color.quinary)
 
-                VStack(alignment: .leading, spacing: 16) {
+                VStack(alignment: .leading, spacing: .groups) {
                     VStack(alignment: .leading) {
                         Text(workout.title)
                             .lineLimit(1)
@@ -118,7 +118,7 @@ struct WorkoutCard: View {
                 }
             }
         } preview: {
-            VStack(spacing: 16) {
+            ContentStack(spacing: .groups) {
                 PictogramRow(workout.pictogram, title: workout.title, subtitle: workout.formatted(.workoutDetails))
 
                 if !workout.exerciseCategories.isEmpty {
@@ -131,7 +131,7 @@ struct WorkoutCard: View {
                 }
             }
             .frame(width: 360)
-            .padding()
+            .padding(.vertical)
         }
         .alert(.alertDeleteWorkoutTitle, isPresented: $deleteAlert) {
             Button(.cancel) {

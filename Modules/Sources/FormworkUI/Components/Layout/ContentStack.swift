@@ -12,7 +12,7 @@ public struct ContentStack<Content: View>: View {
 
     private let content: Content
 
-    public init(spacing: CGFloat = 32, @ViewBuilder content: () -> Content) {
+    public init(spacing: CGFloat = .sections, @ViewBuilder content: () -> Content) {
         self.spacing = spacing
         self.content = content()
     }
@@ -37,6 +37,14 @@ extension View {
     }
 }
 
+extension CGFloat {
+    public static let sections: CGFloat = 32
+
+    public static let groups: CGFloat = 16
+
+    public static let items: CGFloat = 8
+}
+
 #Preview("Screen") {
     ScrollView {
         ContentStack {
@@ -54,8 +62,15 @@ extension View {
             }
 
             GroupBox {
-                Text("A card keeps the margin.")
+                VStack(spacing: .groups) {
+                    LabeledContent("First", value: "1")
+
+                    Divider()
+
+                    LabeledContent("Second", value: "2")
+                }
             }
+            .labeledContentStyle(.row)
 
             LazyVStack(spacing: 0) {
                 ForEach(1 ... 3, id: \.self) { index in
@@ -85,7 +100,7 @@ extension View {
             }
 
             // What a section containing a list would do internally.
-            ContentStack(spacing: 8) {
+            ContentStack(spacing: .items) {
                 Text("Section")
                     .font(.headline)
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -106,9 +121,9 @@ extension View {
     .groupBoxStyle(.card)
 }
 
-#Preview("Tight spacing") {
+#Preview("Sheet") {
     ScrollView {
-        ContentStack(spacing: 16) {
+        ContentStack(spacing: .groups) {
             ForEach(1 ... 3, id: \.self) { index in
                 GroupBox {
                     Text("Card \(index)")

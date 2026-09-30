@@ -40,7 +40,7 @@ struct StatisticsScreen: View {
 
     private func statisticsContent(_ history: History) -> some View {
         ScrollView {
-            VStack(spacing: 32) {
+            ContentStack {
                 TileGrid {
                     StatisticCard(.weekStreak, of: history)
 
@@ -66,7 +66,6 @@ struct StatisticsScreen: View {
 
                     StatisticCard(.totalVolume, of: history)
                 }
-                .padding(.horizontal)
 
                 SectionView(.init(localized: .placeholder)) {
                     LazyVStack(spacing: 0) {
@@ -76,6 +75,7 @@ struct StatisticsScreen: View {
                     }
                     .swipeActionsContainer()
                     .animation(.snappy, value: sessions.count)
+                    .edgeToEdge()
                 } accessory: {
                     NavigationLink(value: Route.sessions) {
                         Label(.viewAll)
@@ -85,6 +85,7 @@ struct StatisticsScreen: View {
                 }
             }
         }
+        .contentMargins(.bottom, .sections, for: .scrollContent)
     }
 }
 

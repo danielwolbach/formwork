@@ -28,7 +28,7 @@ struct CalendarSection: View {
 
         SectionView(.init(localized: .fieldCalendarTitle), subtitle: subtitle) {
             GroupBox {
-                VStack(spacing: 12) {
+                VStack(spacing: .groups) {
                     LazyVGrid(columns: GridItem.ntile(n: 7, spacing: 0)) {
                         ForEach(Schedule.Weekday.ordered()) { weekday in
                             Text(weekday.symbol())
@@ -68,7 +68,6 @@ struct CalendarSection: View {
                 }
             }
             .groupBoxStyle(.card)
-            .padding(.horizontal)
         } accessory: {
             if !isShowingToday {
                 Button(.today) {

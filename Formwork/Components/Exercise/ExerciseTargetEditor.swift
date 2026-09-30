@@ -30,7 +30,7 @@ struct ExerciseTargetEditor: View {
     }
 
     private var weightTargetEditor: some View {
-        VStack(spacing: 24) {
+        VStack(spacing: .sections) {
             NumberStepper(
                 target.title,
                 value: weight,
@@ -40,7 +40,7 @@ struct ExerciseTargetEditor: View {
                 range: 0 ... weightLimit
             )
 
-            HStack(spacing: 12) {
+            HStack(spacing: .groups) {
                 NumberStepper(.init(localized: .fieldSetsTitle), value: $target.sets, range: 1 ... 100)
 
                 Divider()
@@ -52,7 +52,7 @@ struct ExerciseTargetEditor: View {
     }
 
     private var bodyweightTargetEditor: some View {
-        VStack(spacing: 24) {
+        VStack(spacing: .sections) {
             NumberStepper(target.title, value: $target.reps, suffix: String(localized: .fieldRepsUnit), stepSize: 1)
 
             NumberStepper(.init(localized: .fieldSetsTitle), value: $target.sets, range: 1 ... 100)
@@ -60,7 +60,7 @@ struct ExerciseTargetEditor: View {
     }
 
     private var durationTargetEditor: some View {
-        VStack(spacing: 24) {
+        VStack(spacing: .sections) {
             NumberStepper(
                 target.title,
                 value: minutes,
@@ -75,7 +75,7 @@ struct ExerciseTargetEditor: View {
     }
 
     private var distanceTargetEditor: some View {
-        VStack(spacing: 24) {
+        VStack(spacing: .sections) {
             NumberStepper(
                 target.title,
                 value: distance,

@@ -46,6 +46,7 @@ struct ExerciseCategoryScreen: View {
                     .swipeActionsContainer()
                     .animation(.snappy, value: matching.count)
                 }
+                .contentMargins(.bottom, .sections, for: .scrollContent)
                 .overlay {
                     if !trimmedSearchText.isEmpty, matching.isEmpty {
                         ContentUnavailableView.search(text: trimmedSearchText)

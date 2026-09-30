@@ -54,8 +54,9 @@ struct ExerciseStatistics: View {
 #Preview {
     NavigationStack {
         ScrollView {
-            ExerciseStatistics(history: History(.exercise(Samples.exercises[2])))
-                .padding(.horizontal)
+            ContentStack {
+                ExerciseStatistics(history: History(.exercise(Samples.exercises[2])))
+            }
         }
     }
     .sampleData()

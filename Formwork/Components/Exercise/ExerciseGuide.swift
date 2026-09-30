@@ -36,7 +36,7 @@ struct ExerciseGuide: View {
     }
 
     var body: some View {
-        VStack(spacing: 8) {
+        VStack(spacing: .items) {
             if let link = exercise.link {
                 Button {
                     if ["http", "https"].contains(link.scheme?.lowercased()) {

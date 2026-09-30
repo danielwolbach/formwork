@@ -54,6 +54,7 @@ struct SessionPlayerScreen: View {
                 }
             }
         }
+        .contentMargins(.bottom, .sections, for: .scrollContent)
         .scrollDisabled(session.isActive)
         .animation(.smooth, value: session.isActive)
         .navigationBarTitleDisplayMode(.inline)
@@ -140,12 +141,12 @@ struct SessionPlayerScreen: View {
 
     private var controls: some View {
         VStack(spacing: 32) {
-            HStack {
+            HStack(spacing: 24) {
                 Button(.backward) {
                     navigator.backward()
                 }
                 .disabled(session.previousEntry == nil)
-                .buttonStyle(.glass)
+                .buttonStyle(.plain)
                 .buttonBorderShape(.circle)
                 .labelStyle(.fixedIconOnly)
 
@@ -157,13 +158,13 @@ struct SessionPlayerScreen: View {
                     navigator.forward()
                 }
                 .disabled(session.nextEntry == nil)
-                .buttonStyle(.glass)
+                .buttonStyle(.plain)
                 .buttonBorderShape(.circle)
                 .labelStyle(.fixedIconOnly)
             }
             .controlSize(.large)
 
-            HStack(spacing: 16) {
+            HStack(spacing: .items) {
                 Button(.guide) {
                     if let exercise = session.currentEntry?.exercise {
                         sheet = .exerciseGuide(exercise)
@@ -188,22 +189,24 @@ struct SessionPlayerScreen: View {
         .padding(.horizontal)
     }
 
-    @ViewBuilder
     private var primaryAction: some View {
-        if session.isComplete {
-            Button(.finishSession) {
-                finishAlert = true
+        Group {
+            if session.isComplete {
+                Button(.finishSession) {
+                    finishAlert = true
+                }
+                .fontWeight(.semibold)
+            } else if let status = session.currentEntry?.status {
+                Button(.complete) {
+                    Haptics.impact(.medium)
+                    navigator.complete()
+                }
+                .fontWeight(.semibold)
+                .tint(.green)
+                .disabled(!status.isPending)
             }
-            .fontWeight(.semibold)
-        } else if let status = session.currentEntry?.status {
-            Button(.complete) {
-                Haptics.impact(.medium)
-                navigator.complete()
-            }
-            .fontWeight(.semibold)
-            .tint(.green)
-            .disabled(!status.isPending)
         }
+        .frame(minWidth: 132 + 48)
     }
 
     @ViewBuilder

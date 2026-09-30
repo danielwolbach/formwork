@@ -47,7 +47,7 @@ struct WorkoutForm: View {
 
     var body: some View {
         ScrollView {
-            VStack(spacing: 32) {
+            ContentStack {
                 PictogramEditor($pictogram)
                     .frame(width: 192)
 
@@ -55,14 +55,12 @@ struct WorkoutForm: View {
                     GroupBox {
                         TextField(.fieldNamePlaceholder, text: $name)
                     }
-                    .padding(.horizontal)
                 }
 
                 SectionView(.init(localized: .fieldScheduleTitle)) {
                     GroupBox {
                         ScheduleEditor($schedule, saved: workout?.schedule)
                     }
-                    .padding(.horizontal)
                 }
 
                 SectionView(.init(localized: .fieldExercisesTitle)) {
@@ -79,6 +77,7 @@ struct WorkoutForm: View {
                 }
             }
         }
+        .contentMargins(.bottom, .sections, for: .scrollContent)
         .groupBoxStyle(.card)
         .navigationTitle(workout == nil ? .screenCreateWorkoutTitle : .screenEditWorkoutTitle)
         .navigationBarTitleDisplayMode(.inline)
@@ -120,7 +119,6 @@ struct WorkoutForm: View {
                     .buttonStyle(.cardProminent)
                 }
             }
-            .padding(.horizontal)
         } else {
             LazyVStack(spacing: 0) {
                 ForEach(entries) { entry in
@@ -148,7 +146,6 @@ struct WorkoutForm: View {
             .padding(.vertical, 8)
             .background(.ultraThinMaterial)
             .clipShape(.rect(cornerRadius: 16, style: .continuous))
-            .padding(.horizontal)
         }
     }
 

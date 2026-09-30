@@ -21,7 +21,7 @@ struct SettingsScreen: View {
 
     var body: some View {
         ScrollView {
-            VStack(spacing: 32) {
+            ContentStack {
                 SectionView(.init(localized: .fieldAboutTitle)) {
                     GroupBox {
                         HStack {
@@ -45,12 +45,11 @@ struct SettingsScreen: View {
                             Spacer(minLength: 0)
                         }
                     }
-                    .padding(.horizontal)
                 }
 
                 SectionView(.init(localized: .fieldUnitsTitle)) {
                     GroupBox {
-                        VStack(spacing: 16) {
+                        VStack(spacing: .groups) {
                             LabeledContent {
                                 Picker(.fieldWeightUnitTitle, selection: $weightSystem) {
                                     ForEach(Units.System.allCases) { system in
@@ -76,10 +75,10 @@ struct SettingsScreen: View {
                             }
                         }
                     }
-                    .padding(.horizontal)
                 }
             }
         }
+        .contentMargins(.bottom, .sections, for: .scrollContent)
         .groupBoxStyle(.card)
         .labeledContentStyle(.row)
         .navigationTitle(.screenSettingsTitle)

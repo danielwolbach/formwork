@@ -59,26 +59,23 @@ struct ExerciseForm: View {
 
     var body: some View {
         ScrollView {
-            VStack(spacing: 32) {
+            ContentStack {
                 SectionView(.init(localized: .fieldNameTitle)) {
                     GroupBox {
                         TextField(.fieldNamePlaceholder, text: $name)
                     }
-                    .padding(.horizontal)
                 }
 
                 SectionView(.init(localized: .fieldKindTitle)) {
                     GroupBox {
                         ExerciseKindPicker(kind: $kind)
                     }
-                    .padding(.horizontal)
                 }
 
                 SectionView(.init(localized: .fieldCategoryTitle)) {
                     GroupBox {
                         ExerciseCategoryPicker(categories: $categories)
                     }
-                    .padding(.horizontal)
                 }
 
                 SectionView(.init(localized: .fieldLinkTitle)) {
@@ -98,7 +95,6 @@ struct ExerciseForm: View {
                             }
                         }
                     }
-                    .padding(.horizontal)
                 }
 
                 SectionView(.init(localized: .fieldNotesTitle)) {
@@ -112,10 +108,10 @@ struct ExerciseForm: View {
                         }
                     }
                     .buttonStyle(.plain)
-                    .padding(.horizontal)
                 }
             }
         }
+        .contentMargins(.bottom, .sections, for: .scrollContent)
         .groupBoxStyle(.card)
         .navigationTitle(exercise == nil ? .screenCreateExerciseTitle : .screenEditExerciseTile)
         .navigationBarTitleDisplayMode(.inline)

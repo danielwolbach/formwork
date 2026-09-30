@@ -30,6 +30,7 @@ struct SessionScreen: View {
         ScrollView {
             SessionRecap(session)
         }
+        .contentMargins(.bottom, .sections, for: .scrollContent)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Menu(.more) {

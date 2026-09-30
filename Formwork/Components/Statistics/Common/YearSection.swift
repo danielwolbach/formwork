@@ -31,7 +31,6 @@ struct YearSection<Content: View>: View {
                 content(year)
             }
             .groupBoxStyle(.card)
-            .padding(.horizontal)
         } accessory: {
             Button(.backward) {
                 selection = year - 1

@@ -40,7 +40,7 @@ struct WorkoutScreen: View {
 
     var body: some View {
         ScrollView {
-            VStack(spacing: 32) {
+            ContentStack {
                 PictogramHeader(workout.pictogram, title: workout.title, subtitle: workout.formatted(.workoutDetails))
 
                 HStack {
@@ -89,9 +89,11 @@ struct WorkoutScreen: View {
                     }
                     .swipeActionsContainer()
                     .animation(.snappy, value: workout.entries.count)
+                    .edgeToEdge()
                 }
             }
         }
+        .contentMargins(.bottom, .sections, for: .scrollContent)
         .navigationDestination(for: WorkoutEntry.self) { entry in
             WorkoutEntryScreen(entry)
         }

@@ -33,18 +33,17 @@ struct ExerciseScreen: View {
         let history = History(.exercise(exercise))
 
         ScrollView {
-            VStack(spacing: 32) {
+            ContentStack {
                 PictogramHeader(exercise.pictogram, title: exercise.title, subtitle: exercise.categories.formatted(.exerciseCategories))
 
                 if !history.sessions.isEmpty {
                     ExerciseStatistics(history: .init(.exercise(exercise)))
-                        .padding(.horizontal)
                 }
 
                 ExerciseGuide(exercise)
-                    .padding(.horizontal)
             }
         }
+        .contentMargins(.bottom, .sections, for: .scrollContent)
         .toolbar {
             Menu(.more) {
                 Section {

@@ -22,7 +22,6 @@ struct LastCompletedSheet: View {
             GroupBox {
                 ValueRow(title: lastCompleted.title, value: lastCompleted.reading?.formatted(.reading(units: units)))
             }
-            .padding(.horizontal)
         }
         .groupBoxStyle(.card)
         .tint(lastCompleted.pictogram.color)

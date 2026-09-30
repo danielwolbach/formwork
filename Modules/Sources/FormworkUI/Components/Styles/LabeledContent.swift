@@ -59,7 +59,7 @@ extension LabeledContentStyle where Self == RowLabeledContentStyle {
 
 #Preview("Value") {
     GroupBox {
-        VStack(spacing: 16) {
+        VStack(spacing: .groups) {
             LabeledContent {
                 Text(verbatim: "12")
                     .font(.system(.title, design: .rounded, weight: .semibold))
