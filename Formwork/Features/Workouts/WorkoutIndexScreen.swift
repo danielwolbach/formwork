@@ -64,7 +64,7 @@ struct WorkoutIndexScreen: View {
                 sheet = .createWorkout
             }
             .labelStyle(.fixedTitleAndIcon)
-            .buttonStyle(.cardProminent())
+            .buttonStyle(.cardProminent)
         }
     }
 }

@@ -123,7 +123,7 @@ struct CatalogScreen: View {
                 sheet = .createExercise
             }
             .labelStyle(.fixedTitleAndIcon)
-            .buttonStyle(.cardProminent())
+            .buttonStyle(.cardProminent)
         }
     }
 
@@ -185,7 +185,7 @@ private struct ExerciseCategoryTile: View {
             .padding()
         }
         .foregroundStyle(.white)
-        .card(category.pictogram.color)
+        .background(category.pictogram.color, in: .rect(cornerRadius: 16, style: .continuous))
     }
 }
 

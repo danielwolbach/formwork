@@ -77,7 +77,8 @@ struct IndicatorCard: View {
                     .accessibilityHidden(true)
             }
         }
-        .card(pictogram.tint.color.quinary)
+        .background(pictogram.color.quinary)
+        .clipShape(.rect(cornerRadius: 16, style: .continuous))
     }
 }
 

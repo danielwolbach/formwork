@@ -38,13 +38,13 @@ struct StatisticSheet<S: Statistic, Content: View>: View {
                 content
 
                 SectionView(.init(localized: .fieldInfoTitle)) {
-                    Text(info)
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding()
-                        .card()
-                        .padding(.horizontal)
+                    GroupBox {
+                        Text(info)
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    }
+                    .groupBoxStyle(.card)
+                    .padding(.horizontal)
                 }
             }
             .padding(.vertical, 16)

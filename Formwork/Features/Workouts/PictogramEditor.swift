@@ -57,20 +57,21 @@ private struct PictogramSheet: View {
                     .frame(width: 128)
 
                 SectionView(.init(localized: .fieldColorTitle)) {
-                    PictogramColorPicker(selection: $draft.tint)
-                        .padding()
-                        .card()
-                        .padding(.horizontal)
+                    GroupBox {
+                        PictogramColorPicker(selection: $draft.tint)
+                    }
+                    .padding(.horizontal)
                 }
 
                 SectionView(.init(localized: .fieldImageTitle)) {
-                    PictogramImagePicker(selection: $draft.image)
-                        .padding()
-                        .card()
-                        .padding(.horizontal)
+                    GroupBox {
+                        PictogramImagePicker(selection: $draft.image)
+                    }
+                    .padding(.horizontal)
                 }
             }
         }
+        .groupBoxStyle(.card)
         .navigationTitle(.screenPictogramTitle)
         .navigationBarTitleDisplayMode(.inline)
         .sensoryFeedback(.selection, trigger: draft.tint)

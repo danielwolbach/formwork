@@ -27,28 +27,29 @@ struct ValuesSection: View {
 
     var body: some View {
         SectionView {
-            VStack(spacing: 16) {
-                if let baseline, let direction {
-                    HStack(spacing: 12) {
-                        column(title: String(localized: .fieldBeforeTitle), value: baseline, footnote: String(localized: .fieldBeforeSubtitle(days: History.baselineDays)))
+            GroupBox {
+                VStack(spacing: 16) {
+                    if let baseline, let direction {
+                        HStack(spacing: 12) {
+                            column(title: String(localized: .fieldBeforeTitle), value: baseline, footnote: String(localized: .fieldBeforeSubtitle(days: History.baselineDays)))
 
-                        Image(systemName: direction.image)
-                            .font(.title.weight(.semibold))
-                            .foregroundStyle(.tint)
-                            .frame(maxWidth: .infinity)
+                            Image(systemName: direction.image)
+                                .font(.title.weight(.semibold))
+                                .foregroundStyle(.tint)
+                                .frame(maxWidth: .infinity)
 
-                        column(title: String(localized: .fieldRecentTitle), value: recent, footnote: String(localized: .fieldRecentSubtitle(days: History.recentDays)))
+                            column(title: String(localized: .fieldRecentTitle), value: recent, footnote: String(localized: .fieldRecentSubtitle(days: History.recentDays)))
+                        }
+                    } else {
+                        ValueRow(title: String(localized: .fieldRecentTitle), value: recent, footnote: String(localized: .fieldRecentSubtitle(days: History.recentDays)))
                     }
-                } else {
-                    ValueRow(title: String(localized: .fieldRecentTitle), value: recent, footnote: String(localized: .fieldRecentSubtitle(days: History.recentDays)))
+
+                    Divider()
+
+                    ValueRow(title: .init(localized: .fieldOverallTitle), value: overall)
                 }
-
-                Divider()
-
-                ValueRow(title: .init(localized: .fieldOverallTitle), value: overall)
             }
-            .padding()
-            .card()
+            .groupBoxStyle(.card)
             .padding(.horizontal)
         }
     }

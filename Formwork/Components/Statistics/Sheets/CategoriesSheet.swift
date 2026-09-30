@@ -22,23 +22,24 @@ struct CategoriesSheet: View {
 
         StatisticSheet(recent, history: history) {
             SectionView(.init(localized: .fieldRecentTitle), subtitle: .init(localized: .fieldRecentSubtitle(days: History.recentDays))) {
-                CategoriesBreakdown(recent)
-                    .padding()
-                    .card()
-                    .padding(.horizontal)
+                GroupBox {
+                    CategoriesBreakdown(recent)
+                }
+                .padding(.horizontal)
             }
 
             SectionView(.init(localized: .fieldOverallTitle)) {
-                CategoriesBreakdown(Categories(history.allTime))
-                    .padding()
-                    .card()
-                    .padding(.horizontal)
+                GroupBox {
+                    CategoriesBreakdown(Categories(history.allTime))
+                }
+                .padding(.horizontal)
             }
 
             YearSection(years: history.years) { year in
                 CategoriesChart(series: Series<Categories>(history, year: year))
             }
         }
+        .groupBoxStyle(.card)
         .tint(recent.pictogram.color)
     }
 }

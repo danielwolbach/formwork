@@ -17,19 +17,14 @@ struct CategoriesCard: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading) {
-            Label(categories.title, systemImage: categories.pictogram.image)
-                .font(.subheadline)
-                .lineLimit(1)
-                .foregroundStyle(.secondary)
-
+        GroupBox {
             CategoriesBreakdown(categories, rowLimit: 3)
 
             Spacer(minLength: 0)
+        } label: {
+            Label(categories.title, systemImage: categories.pictogram.image)
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding()
-        .card()
+        .groupBoxStyle(.card)
     }
 }
 

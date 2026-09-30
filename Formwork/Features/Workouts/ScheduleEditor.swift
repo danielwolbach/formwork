@@ -43,6 +43,7 @@ struct ScheduleEditor: View {
             }
         }
         .animation(.snappy, value: schedule)
+        .labeledContentStyle(.row)
     }
 
     private var rhythmPicker: some View {
@@ -84,12 +85,10 @@ struct ScheduleEditor: View {
     }
 
     private var anchorPicker: some View {
-        HStack {
-            Text(.fieldStartDateTitle)
-
-            Spacer(minLength: 0)
-
+        LabeledContent {
             DateButton(String(localized: .fieldStartDateTitle), date: $schedule.anchor)
+        } label: {
+            Text(.fieldStartDateTitle)
         }
     }
 
@@ -140,24 +139,22 @@ struct ScheduleEditor: View {
     }
 
     private func intervalStepper(_ title: Text, range: ClosedRange<Int>) -> some View {
-        HStack {
-            title
-
-            Spacer(minLength: 0)
-
+        LabeledContent {
             Button(.decrease) {
                 schedule.interval -= 1
             }
-            .buttonStyle(.card())
+            .buttonStyle(.card)
             .labelStyle(.fixedIconOnly)
             .disabled(schedule.interval <= range.lowerBound)
 
             Button(.increase) {
                 schedule.interval += 1
             }
-            .buttonStyle(.card())
+            .buttonStyle(.card)
             .labelStyle(.fixedIconOnly)
             .disabled(schedule.interval >= range.upperBound)
+        } label: {
+            title
         }
     }
 }
@@ -176,32 +173,21 @@ private struct WeekdayPicker: View {
     var body: some View {
         HStack {
             ForEach(Schedule.Weekday.ordered(in: calendar)) { weekday in
-                Toggle(isOn: isSelected(Schedule.Weekdays([weekday]))) {
+                let option = Schedule.Weekdays([weekday])
+
+                Button {
+                    weekdays.formSymmetricDifference(option)
+                } label: {
                     Text(weekday.symbol(in: calendar))
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
-                .toggleStyle(.card())
+                .buttonStyle(CardButtonStyle(style: weekdays.contains(option) ? .selected : .bordered))
                 .buttonBorderShape(.circle)
                 .aspectRatio(1, contentMode: .fit)
                 .accessibilityLabel(weekday.name(in: calendar))
             }
         }
         .sensoryFeedback(.selection, trigger: weekdays)
-    }
-
-    private func isSelected(_ option: Schedule.Weekdays) -> Binding<Bool> {
-        Binding(
-            get: {
-                weekdays.contains(option)
-            },
-            set: { isOn in
-                if isOn {
-                    weekdays.insert(option)
-                } else {
-                    weekdays.remove(option)
-                }
-            }
-        )
     }
 }
 

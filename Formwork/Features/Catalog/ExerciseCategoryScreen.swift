@@ -97,7 +97,7 @@ struct ExerciseCategoryScreen: View {
                 sheet = .createExerciseInCategories([category])
             }
             .labelStyle(.fixedTitleAndIcon)
-            .buttonStyle(.cardProminent())
+            .buttonStyle(.cardProminent)
         }
     }
 

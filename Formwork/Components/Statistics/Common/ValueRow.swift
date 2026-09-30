@@ -5,6 +5,7 @@
 //  Created by Daniel Wolbach on 24.09.26.
 //
 
+import FormworkUI
 import SwiftUI
 
 struct ValueRow: View {
@@ -21,24 +22,19 @@ struct ValueRow: View {
     }
 
     var body: some View {
-        HStack {
-            VStack(alignment: .leading, spacing: 4) {
-                Text(title)
-                    .font(.headline)
-
-                if let footnote {
-                    Text(footnote)
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
-                }
-            }
-
-            Spacer()
-
+        LabeledContent {
             Text(verbatim: value ?? "—")
                 .font(.system(.title, design: .rounded, weight: .semibold))
                 .lineLimit(1)
                 .minimumScaleFactor(0.5)
+        } label: {
+            Text(title)
+                .font(.headline)
+
+            if let footnote {
+                Text(footnote)
+            }
         }
+        .labeledContentStyle(.row)
     }
 }

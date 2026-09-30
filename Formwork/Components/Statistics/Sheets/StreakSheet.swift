@@ -20,17 +20,18 @@ struct StreakSheet: View {
         let longest = LongestWeekStreak(history.allTime)
 
         StatisticSheet(current, history: history) {
-            VStack(spacing: 16) {
-                ValueRow(title: current.title, value: current.reading?.formatted(.reading(units: units)))
+            GroupBox {
+                VStack(spacing: 16) {
+                    ValueRow(title: current.title, value: current.reading?.formatted(.reading(units: units)))
 
-                Divider()
+                    Divider()
 
-                ValueRow(title: longest.title, value: longest.reading?.formatted(.reading(units: units)))
+                    ValueRow(title: longest.title, value: longest.reading?.formatted(.reading(units: units)))
+                }
             }
-            .padding()
-            .card()
             .padding(.horizontal)
         }
+        .groupBoxStyle(.card)
         .tint(current.pictogram.color)
     }
 }

@@ -35,15 +35,6 @@ extension Pictogram.Tint {
 }
 
 extension View {
-    public func card(_ style: some ShapeStyle) -> some View {
-        background(style)
-            .clipShape(.rect(cornerRadius: 16, style: .continuous))
-    }
-
-    public func card() -> some View {
-        card(.ultraThinMaterial)
-    }
-
     public func sampleData() -> some View {
         modelContainer(Samples.container)
     }

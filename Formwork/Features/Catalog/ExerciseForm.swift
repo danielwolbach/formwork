@@ -61,43 +61,43 @@ struct ExerciseForm: View {
         ScrollView {
             VStack(spacing: 32) {
                 SectionView(.init(localized: .fieldNameTitle)) {
-                    TextField(.fieldNamePlaceholder, text: $name)
-                        .padding()
-                        .card()
-                        .padding(.horizontal)
+                    GroupBox {
+                        TextField(.fieldNamePlaceholder, text: $name)
+                    }
+                    .padding(.horizontal)
                 }
 
                 SectionView(.init(localized: .fieldKindTitle)) {
-                    ExerciseKindPicker(kind: $kind)
-                        .padding()
-                        .card()
-                        .padding(.horizontal)
+                    GroupBox {
+                        ExerciseKindPicker(kind: $kind)
+                    }
+                    .padding(.horizontal)
                 }
 
                 SectionView(.init(localized: .fieldCategoryTitle)) {
-                    ExerciseCategoryPicker(categories: $categories)
-                        .padding()
-                        .card()
-                        .padding(.horizontal)
+                    GroupBox {
+                        ExerciseCategoryPicker(categories: $categories)
+                    }
+                    .padding(.horizontal)
                 }
 
                 SectionView(.init(localized: .fieldLinkTitle)) {
-                    HStack {
-                        TextField(.fieldLinkPlaceholder, text: $link)
-                            .keyboardType(.URL)
-                            .textContentType(.URL)
-                            .textInputAutocapitalization(.never)
-                            .autocorrectionDisabled()
+                    GroupBox {
+                        HStack {
+                            TextField(.fieldLinkPlaceholder, text: $link)
+                                .keyboardType(.URL)
+                                .textContentType(.URL)
+                                .textInputAutocapitalization(.never)
+                                .autocorrectionDisabled()
 
-                        if QRCodeScanner.isSupported {
-                            Button(.scanQRCode) {
-                                showScanner = true
+                            if QRCodeScanner.isSupported {
+                                Button(.scanQRCode) {
+                                    showScanner = true
+                                }
+                                .labelStyle(.fixedIconOnly)
                             }
-                            .labelStyle(.fixedIconOnly)
                         }
                     }
-                    .padding()
-                    .card()
                     .padding(.horizontal)
                 }
 
@@ -105,18 +105,18 @@ struct ExerciseForm: View {
                     NavigationLink {
                         ExerciseNotesScreen(notes: $notes)
                     } label: {
-                        TextField(.fieldNotesPlaceholder, text: .constant(notes), axis: .vertical)
-                            .lineLimit(4...)
-                            .disabled(true)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .padding()
-                            .card()
+                        GroupBox {
+                            TextField(.fieldNotesPlaceholder, text: .constant(notes), axis: .vertical)
+                                .lineLimit(4...)
+                                .disabled(true)
+                        }
                     }
                     .buttonStyle(.plain)
                     .padding(.horizontal)
                 }
             }
         }
+        .groupBoxStyle(.card)
         .navigationTitle(exercise == nil ? .screenCreateExerciseTitle : .screenEditExerciseTile)
         .navigationBarTitleDisplayMode(.inline)
         .scrollDismissesKeyboard(.immediately)
@@ -201,7 +201,9 @@ private struct ExerciseKindPicker: View {
     var body: some View {
         TileGrid {
             ForEach(Exercise.Kind.allCases) { candidate in
-                Toggle(isOn: binding(for: candidate)) {
+                Button {
+                    kind = candidate
+                } label: {
                     VStack {
                         Image(systemName: candidate.pictogram.image)
                             .frame(width: 24, height: 24)
@@ -213,24 +215,12 @@ private struct ExerciseKindPicker: View {
                     .padding()
                     .frame(maxWidth: .infinity)
                 }
-                .toggleStyle(.card(tint: candidate.pictogram.color))
+                .buttonStyle(CardButtonStyle(style: kind == candidate ? .selected : .bordered))
+                .tint(candidate.pictogram.color)
             }
         }
         .buttonBorderShape(.roundedRectangle(radius: 8))
         .sensoryFeedback(.selection, trigger: kind)
-    }
-
-    private func binding(for candidate: Exercise.Kind) -> Binding<Bool> {
-        Binding(
-            get: {
-                kind == candidate
-            },
-            set: { selected in
-                if selected {
-                    kind = candidate
-                }
-            }
-        )
     }
 }
 
@@ -245,30 +235,18 @@ private struct ExerciseCategoryPicker: View {
     var body: some View {
         FlowLayout(spacing: 8) {
             ForEach(Exercise.Category.allCases) { candidate in
-                Toggle(candidate.title, systemImage: candidate.pictogram.image, isOn: binding(for: candidate))
-                    .font(.subheadline)
-                    .lineLimit(1)
-                    .toggleStyle(.card(tint: candidate.pictogram.color))
-                    .labelStyle(.fixedTitleAndIcon)
+                Button(candidate.title, systemImage: candidate.pictogram.image) {
+                    categories.formSymmetricDifference([candidate])
+                }
+                .font(.subheadline)
+                .lineLimit(1)
+                .buttonStyle(CardButtonStyle(style: categories.contains(candidate) ? .selected : .bordered))
+                .tint(candidate.pictogram.color)
+                .labelStyle(.fixedTitleAndIcon)
             }
         }
         .buttonBorderShape(.capsule)
         .sensoryFeedback(.selection, trigger: categories)
-    }
-
-    private func binding(for candidate: Exercise.Category) -> Binding<Bool> {
-        Binding(
-            get: {
-                categories.contains(candidate)
-            },
-            set: { selected in
-                if selected {
-                    categories.insert(candidate)
-                } else {
-                    categories.remove(candidate)
-                }
-            }
-        )
     }
 }
 

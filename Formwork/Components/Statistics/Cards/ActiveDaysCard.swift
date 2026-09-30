@@ -20,12 +20,7 @@ struct ActiveDaysCard: View {
         let days = activeDays.days
         let weeks = stride(from: 0, to: days.count, by: 7).map { Array(days[$0 ..< min($0 + 7, days.count)]) }
 
-        VStack(alignment: .leading) {
-            Label(activeDays.title, systemImage: activeDays.pictogram.image)
-                .font(.subheadline)
-                .lineLimit(1)
-                .foregroundStyle(.secondary)
-
+        GroupBox {
             HStack(spacing: 2) {
                 weekdays
 
@@ -35,9 +30,10 @@ struct ActiveDaysCard: View {
             }
 
             Spacer(minLength: 0)
+        } label: {
+            Label(activeDays.title, systemImage: activeDays.pictogram.image)
         }
-        .padding()
-        .card()
+        .groupBoxStyle(.card)
     }
 
     private var weekdays: some View {

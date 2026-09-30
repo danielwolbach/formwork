@@ -139,7 +139,7 @@ struct WorkoutAddEntriesForm: View {
                 sheet = .createExerciseInCategories(selectedCategories)
             }
             .labelStyle(.fixedTitleAndIcon)
-            .buttonStyle(.cardProminent())
+            .buttonStyle(.cardProminent)
         }
     }
 
@@ -179,11 +179,12 @@ struct WorkoutAddEntriesForm: View {
         .buttonStyle(.plain)
 
         if selected {
-            ExerciseTargetEditor(target: target(for: exercise))
-                .padding()
-                .frame(maxWidth: .infinity)
-                .card()
-                .padding(.horizontal)
+            GroupBox {
+                ExerciseTargetEditor(target: target(for: exercise))
+                    .frame(maxWidth: .infinity)
+            }
+            .groupBoxStyle(.card)
+            .padding(.horizontal)
         }
     }
 
@@ -249,14 +250,16 @@ private struct ExerciseCategoryFilterBar: View {
             GlassEffectContainer(spacing: 8) {
                 HStack(spacing: 8) {
                     ForEach(Exercise.Category.allCases) { category in
-                        Toggle(isOn: binding(for: category)) {
-                            Label(category.title, systemImage: category.pictogram.image)
+                        Button(category.title, systemImage: category.pictogram.image) {
+                            selection.formSymmetricDifference([category])
                         }
                         .labelStyle(.fixedTitleAndIcon)
-                        .toggleStyle(.glass(tint: category.pictogram.color))
+                        .buttonStyle(.glassProminent)
+                        .tint(isSelected(category) ? category.pictogram.color : .clear)
                     }
                 }
             }
+            .buttonBorderShape(.capsule)
             .padding(.horizontal, 32)
             .padding(.vertical, 8)
         }
@@ -264,11 +267,8 @@ private struct ExerciseCategoryFilterBar: View {
         .scrollClipDisabled()
     }
 
-    private func binding(for category: Exercise.Category) -> Binding<Bool> {
-        Binding(
-            get: { selection.isEmpty || selection.contains(category) },
-            set: { _ in selection.formSymmetricDifference([category]) }
-        )
+    private func isSelected(_ category: Exercise.Category) -> Bool {
+        selection.isEmpty || selection.contains(category)
     }
 }
 

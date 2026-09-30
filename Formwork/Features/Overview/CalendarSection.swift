@@ -27,46 +27,47 @@ struct CalendarSection: View {
         let sessionsInMonth = sessionsInMonth
 
         SectionView(.init(localized: .fieldCalendarTitle), subtitle: subtitle) {
-            VStack(spacing: 12) {
-                LazyVGrid(columns: GridItem.ntile(n: 7, spacing: 0)) {
-                    ForEach(Schedule.Weekday.ordered()) { weekday in
-                        Text(weekday.symbol())
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                    }
-                }
-
-                LazyVGrid(columns: GridItem.ntile(n: 7, spacing: 0), spacing: 12) {
-                    ForEach(Array(days.enumerated()), id: \.offset) { _, day in
-                        if let day {
-                            let completed = completed(on: day, among: sessionsInMonth)
-
-                            Button {
-                                selectedDay = Calendar.current.component(.day, from: day)
-                            } label: {
-                                CalendarDay(
-                                    day: day,
-                                    isSelected: Calendar.current.isDate(day, inSameDayAs: selection),
-                                    completed: completed,
-                                    planned: planned(on: day, besides: completed)
-                                )
-                            }
-                            .buttonStyle(.plain)
-                        } else {
-                            Color.clear
+            GroupBox {
+                VStack(spacing: 12) {
+                    LazyVGrid(columns: GridItem.ntile(n: 7, spacing: 0)) {
+                        ForEach(Schedule.Weekday.ordered()) { weekday in
+                            Text(weekday.symbol())
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
                         }
                     }
+
+                    LazyVGrid(columns: GridItem.ntile(n: 7, spacing: 0), spacing: 12) {
+                        ForEach(Array(days.enumerated()), id: \.offset) { _, day in
+                            if let day {
+                                let completed = completed(on: day, among: sessionsInMonth)
+
+                                Button {
+                                    selectedDay = Calendar.current.component(.day, from: day)
+                                } label: {
+                                    CalendarDay(
+                                        day: day,
+                                        isSelected: Calendar.current.isDate(day, inSameDayAs: selection),
+                                        completed: completed,
+                                        planned: planned(on: day, besides: completed)
+                                    )
+                                }
+                                .buttonStyle(.plain)
+                            } else {
+                                Color.clear
+                            }
+                        }
+                    }
+                    .sensoryFeedback(.selection, trigger: selectedDay)
+                    .padding(.bottom, 8)
+
+                    Divider()
+
+                    let finished = sessions(on: selection, among: sessionsInMonth)
+                    CalendarDayList(day: selection, sessions: finished, planned: planned(on: selection, besides: finished.compactMap(\.workout)))
                 }
-                .sensoryFeedback(.selection, trigger: selectedDay)
-                .padding(.bottom, 8)
-
-                Divider()
-
-                let finished = sessions(on: selection, among: sessionsInMonth)
-                CalendarDayList(day: selection, sessions: finished, planned: planned(on: selection, besides: finished.compactMap(\.workout)))
             }
-            .padding()
-            .card()
+            .groupBoxStyle(.card)
             .padding(.horizontal)
         } accessory: {
             if !isShowingToday {

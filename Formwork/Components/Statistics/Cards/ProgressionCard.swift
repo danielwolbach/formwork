@@ -18,12 +18,7 @@ struct ProgressionCard: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading) {
-            Label(progression.title, systemImage: progression.pictogram.image)
-                .font(.subheadline)
-                .lineLimit(1)
-                .foregroundStyle(.secondary)
-
+        GroupBox {
             if progression.points.isEmpty {
                 Image(systemName: progression.pictogram.image)
                     .font(.largeTitle)
@@ -33,8 +28,9 @@ struct ProgressionCard: View {
                 ProgressionChart(progression)
                     .padding(.top)
             }
+        } label: {
+            Label(progression.title, systemImage: progression.pictogram.image)
         }
-        .padding()
-        .card()
+        .groupBoxStyle(.card)
     }
 }

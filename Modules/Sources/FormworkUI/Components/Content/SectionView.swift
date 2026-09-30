@@ -62,15 +62,15 @@ extension SectionView where Accessory == EmptyView {
 
 #Preview {
     SectionView("Title", subtitle: "Subtitle") {
-        Text("Hello World")
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding()
-            .card()
-            .padding(.horizontal)
+        GroupBox {
+            Text("Hello World")
+        }
+        .padding(.horizontal)
     } accessory: {
         Button("Accessory") {
             // Do nothing.
         }
         .buttonStyle(.glass)
     }
+    .groupBoxStyle(.card)
 }

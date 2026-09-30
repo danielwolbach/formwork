@@ -45,27 +45,22 @@ struct ExerciseGuide: View {
                         openURL(link)
                     }
                 } label: {
-                    HStack {
-                        VStack(alignment: .leading, spacing: 8) {
-                            Label(.fieldLinkTitle, systemImage: "link")
-                                .font(.subheadline)
-                                .foregroundStyle(.secondary)
-                                .lineLimit(1)
-
+                    GroupBox {
+                        HStack {
                             if let host = link.host().map({ String($0.trimmingPrefix("www.")) }) {
                                 Text(host)
                                     .font(.headline)
                                     .lineLimit(1)
                             }
+
+                            Spacer(minLength: 0)
+
+                            Image(systemName: "arrow.up.right")
+                                .foregroundStyle(.tertiary)
                         }
-
-                        Spacer(minLength: 0)
-
-                        Image(systemName: "arrow.up.right")
-                            .foregroundStyle(.tertiary)
+                    } label: {
+                        Label(.fieldLinkTitle, systemImage: "link")
                     }
-                    .padding()
-                    .card()
                 }
                 .buttonStyle(.plain)
             }
@@ -73,21 +68,17 @@ struct ExerciseGuide: View {
             Button {
                 sheet = .editExerciseNotes(exercise)
             } label: {
-                VStack(alignment: .leading, spacing: 8) {
-                    Label(.fieldNotesTitle, systemImage: "document")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                        .lineLimit(1)
-
+                GroupBox {
                     TextField(.fieldNotesPlaceholder, text: .constant(exercise.notes), axis: .vertical)
                         .lineLimit(4...)
                         .disabled(true)
+                } label: {
+                    Label(.fieldNotesTitle, systemImage: "document")
                 }
-                .padding()
-                .card()
             }
             .buttonStyle(.plain)
         }
+        .groupBoxStyle(.card)
         .fullScreenCover(item: $browserPage) { page in
             SafariView(url: page.url) {
                 browserPage = nil

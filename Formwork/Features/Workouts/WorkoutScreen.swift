@@ -79,7 +79,7 @@ struct WorkoutScreen: View {
                             sheet = .workoutAddEntries(workout)
                         }
                         .labelStyle(.fixedTitleAndIcon)
-                        .buttonStyle(.cardProminent())
+                        .buttonStyle(.cardProminent)
                     }
                 } else {
                     LazyVStack(spacing: 0) {

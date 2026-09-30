@@ -173,7 +173,7 @@ private struct SessionShareCard: View {
             }
             .padding()
             .frame(maxHeight: .infinity)
-            .card(Pictogram.record.color.quinary)
+            .background(Pictogram.record.color.quinary, in: .rect(cornerRadius: 16, style: .continuous))
         }
     }
 }

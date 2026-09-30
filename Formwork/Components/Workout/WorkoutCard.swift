@@ -70,7 +70,8 @@ struct WorkoutCard: View {
                 }
                 .padding()
             }
-            .card()
+            .background(.ultraThinMaterial)
+            .clipShape(.rect(cornerRadius: 16, style: .continuous))
         }
         .buttonStyle(.plain)
         .swipeActions {

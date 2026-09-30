@@ -7,47 +7,89 @@
 
 import SwiftUI
 
-public struct NoFeedbackButtonStyle: ButtonStyle {
-    public func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-    }
-}
-
-extension ButtonStyle where Self == NoFeedbackButtonStyle {
-    public static var noFeedback: NoFeedbackButtonStyle {
-        NoFeedbackButtonStyle()
-    }
-}
-
 public struct CardButtonStyle: ButtonStyle {
-    private var tint: Color = .accentColor
+    public enum Style {
+        case bordered, prominent, selected
+    }
 
-    private var isProminent = false
+    private let style: Style
 
-    public init(tint: Color, isProminent: Bool = false) {
-        self.tint = tint
-        self.isProminent = isProminent
+    @Environment(\.controlSize)
+    private var controlSize
+
+    @Environment(\.isEnabled)
+    private var isEnabled
+
+    public init(style: Style) {
+        self.style = style
+    }
+
+    private var padding: EdgeInsets {
+        switch controlSize {
+        case .mini: EdgeInsets(top: 5, leading: 10, bottom: 5, trailing: 10)
+        case .small: EdgeInsets(top: 5, leading: 10, bottom: 5, trailing: 10)
+        case .regular: EdgeInsets(top: 7, leading: 12, bottom: 7, trailing: 12)
+        case .large: EdgeInsets(top: 15, leading: 20, bottom: 15, trailing: 20)
+        case .extraLarge: EdgeInsets(top: 15, leading: 20, bottom: 15, trailing: 20)
+        @unknown default: EdgeInsets(top: 7, leading: 12, bottom: 7, trailing: 12)
+        }
     }
 
     public func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .padding(.horizontal, 12)
-            .padding(.vertical, 6)
-            .foregroundStyle(isProminent ? Color.white : tint)
-            .background {
-                ButtonBorderShape.buttonBorder.fill(isProminent ? tint : Color(.quaternarySystemFill))
-            }
-            .contentShape(ButtonBorderShape.buttonBorder)
-            .opacity(configuration.isPressed ? 0.6 : 1)
+        let active = style == .prominent || style == .selected
+
+        ZStack {
+            configuration.label
+                .foregroundStyle(.secondary)
+                .opacity(active ? 0 : 1)
+
+            configuration.label
+                .foregroundStyle(.tint)
+                .opacity(active ? 1 : 0)
+                .accessibilityHidden(true)
+        }
+        .padding(padding)
+        .font(controlSize == .small || controlSize == .mini ? .subheadline : .default)
+        .background {
+            ButtonBorderShape.buttonBorder.fill(.ultraThinMaterial)
+            ButtonBorderShape.buttonBorder.fill(.tint.quinary).opacity(active ? 1 : 0)
+        }
+        .overlay {
+            ButtonBorderShape.buttonBorder
+                .strokeBorder(.tint, lineWidth: 2)
+                .opacity(style == .selected ? 1 : 0)
+        }
+        .opacity(isEnabled ? 1 : 0.6)
+        .opacity(configuration.isPressed ? 0.9 : 1)
+        .animation(.snappy(duration: 0.2), value: configuration.isPressed)
+        .animation(.snappy(duration: 0), value: style)
+        .accessibilityAddTraits(style == .selected ? [.isSelected] : [])
     }
 }
 
 extension ButtonStyle where Self == CardButtonStyle {
-    public static func card(tint: Color = .primary) -> CardButtonStyle {
-        CardButtonStyle(tint: tint)
+    public static var card: CardButtonStyle {
+        CardButtonStyle(style: .bordered)
     }
 
-    public static func cardProminent(tint: Color = .accentColor) -> CardButtonStyle {
-        CardButtonStyle(tint: tint, isProminent: true)
+    public static var cardProminent: CardButtonStyle {
+        CardButtonStyle(style: .prominent)
+    }
+
+    public static var cardSelected: CardButtonStyle {
+        CardButtonStyle(style: .selected)
+    }
+}
+
+#Preview {
+    VStack {
+        Button(.startSession) {}
+            .buttonStyle(.card)
+
+        Button(.startSession) {}
+            .buttonStyle(.cardProminent)
+
+        Button(.startSession) {}
+            .buttonStyle(.cardSelected)
     }
 }

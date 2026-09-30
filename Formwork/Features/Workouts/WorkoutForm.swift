@@ -52,17 +52,17 @@ struct WorkoutForm: View {
                     .frame(width: 192)
 
                 SectionView(.init(localized: .fieldNameTitle)) {
-                    TextField(.fieldNamePlaceholder, text: $name)
-                        .padding()
-                        .card()
-                        .padding(.horizontal)
+                    GroupBox {
+                        TextField(.fieldNamePlaceholder, text: $name)
+                    }
+                    .padding(.horizontal)
                 }
 
                 SectionView(.init(localized: .fieldScheduleTitle)) {
-                    ScheduleEditor($schedule, saved: workout?.schedule)
-                        .padding()
-                        .card()
-                        .padding(.horizontal)
+                    GroupBox {
+                        ScheduleEditor($schedule, saved: workout?.schedule)
+                    }
+                    .padding(.horizontal)
                 }
 
                 SectionView(.init(localized: .fieldExercisesTitle)) {
@@ -74,11 +74,12 @@ struct WorkoutForm: View {
                             showEntriesPicker = true
                         }
                         .labelStyle(.fixedTitleAndIcon)
-                        .buttonStyle(.cardProminent())
+                        .buttonStyle(.cardProminent)
                     }
                 }
             }
         }
+        .groupBoxStyle(.card)
         .navigationTitle(workout == nil ? .screenCreateWorkoutTitle : .screenEditWorkoutTitle)
         .navigationBarTitleDisplayMode(.inline)
         .scrollDismissesKeyboard(.immediately)
@@ -106,19 +107,19 @@ struct WorkoutForm: View {
     @ViewBuilder
     private var entriesEditor: some View {
         if entries.isEmpty {
-            ContentUnavailableView {
-                Label(.emptyWorkoutEntriesTitle, systemImage: "dumbbell")
-            } description: {
-                Text(.emptyWorkoutEntriesMessage)
-            } actions: {
-                Button(.addExercise) {
-                    showEntriesPicker = true
+            GroupBox {
+                ContentUnavailableView {
+                    Label(.emptyWorkoutEntriesTitle, systemImage: "dumbbell")
+                } description: {
+                    Text(.emptyWorkoutEntriesMessage)
+                } actions: {
+                    Button(.addExercise) {
+                        showEntriesPicker = true
+                    }
+                    .labelStyle(.fixedTitleAndIcon)
+                    .buttonStyle(.cardProminent)
                 }
-                .labelStyle(.fixedTitleAndIcon)
-                .buttonStyle(.cardProminent())
             }
-            .padding()
-            .card()
             .padding(.horizontal)
         } else {
             LazyVStack(spacing: 0) {
@@ -145,7 +146,8 @@ struct WorkoutForm: View {
             }
             .swipeActionsContainer()
             .padding(.vertical, 8)
-            .card()
+            .background(.ultraThinMaterial)
+            .clipShape(.rect(cornerRadius: 16, style: .continuous))
             .padding(.horizontal)
         }
     }

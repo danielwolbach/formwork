@@ -26,7 +26,7 @@ public struct DateButton: View {
         Button(date.formatted(date: .abbreviated, time: .omitted)) {
             isPresented = true
         }
-        .buttonStyle(.card())
+        .buttonStyle(.card)
         .labelStyle(.fixedTitleAndIcon)
         .popover(isPresented: $isPresented) {
             DatePicker(title, selection: $date, displayedComponents: .date)

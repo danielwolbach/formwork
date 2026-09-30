@@ -27,10 +27,11 @@ struct YearSection<Content: View>: View {
         let year = selection ?? years.upperBound
 
         SectionView(String(year)) {
-            content(year)
-                .padding()
-                .card()
-                .padding(.horizontal)
+            GroupBox {
+                content(year)
+            }
+            .groupBoxStyle(.card)
+            .padding(.horizontal)
         } accessory: {
             Button(.backward) {
                 selection = year - 1
