@@ -21,7 +21,6 @@ public enum AppGroup {
     }
 }
 
-/// Keys must not contain dots: `@AppStorage` observes them with KVO, which reads a dot as a key path and never fires.
 public enum StorageKeys {
     public static let onboardingPending = "onboardingPending"
 
@@ -34,4 +33,16 @@ public enum WidgetKind {
     public static let overview = "OverviewWidget"
 
     public static let weekStreak = "WeekStreakWidget"
+}
+
+public enum AppMetadata {
+    public static var appName: String {
+        Bundle.main.object(forInfoDictionaryKey: "CFBundleDisplayName") as? String
+            ?? Bundle.main.object(forInfoDictionaryKey: "CFBundleName") as? String
+            ?? "Formwork"
+    }
+    
+    public static var version: String? {
+        Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
+    }
 }

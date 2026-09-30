@@ -63,12 +63,6 @@ private struct SessionShareCard: View {
         self.tint = session.workout?.pictogram.color ?? Pictogram.workout.color
     }
 
-    private static var appName: String {
-        Bundle.main.object(forInfoDictionaryKey: "CFBundleDisplayName") as? String
-            ?? Bundle.main.object(forInfoDictionaryKey: "CFBundleName") as? String
-            ?? "Formwork"
-    }
-
     var body: some View {
         VStack(spacing: 24) {
             header
@@ -127,7 +121,7 @@ private struct SessionShareCard: View {
                 .frame(width: 24, height: 24)
                 .clipShape(.rect(cornerRadius: 6.3, style: .continuous))
 
-            Text(verbatim: Self.appName)
+            Text(verbatim: AppMetadata.appName)
                 .font(.system(.footnote, design: .rounded, weight: .medium))
                 .foregroundStyle(.secondary)
         }

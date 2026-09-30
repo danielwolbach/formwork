@@ -85,6 +85,17 @@
     "empty.workouts.title" : {
       "extractionState" : "manual"
     },
+    "field.about.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "About"
+          }
+        }
+      }
+    },
     "field.before.subtitle" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -490,6 +501,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Units"
+          }
+        }
+      }
+    },
+    "field.version.scheme" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version %1$(version)@"
           }
         }
       }
