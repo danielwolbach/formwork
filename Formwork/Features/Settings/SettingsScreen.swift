@@ -13,6 +13,12 @@ struct SettingsScreen: View {
     @Environment(\.dismiss)
     private var dismiss: DismissAction
 
+    @Environment(\.presentPaywall)
+    private var presentPaywall: PresentPaywallAction
+
+    @Environment(\.fullVersion)
+    private var fullVersion: FullVersion
+
     @AppStorage(StorageKeys.weightSystem, store: AppGroup.defaults)
     private var weightSystem: Units.System = .current
 
@@ -27,28 +33,42 @@ struct SettingsScreen: View {
             ContentStack {
                 SectionView(.init(localized: .fieldAboutTitle)) {
                     GroupBox {
-                        HStack {
-                            Image(.imageAppIcon)
-                                .resizable()
-                                .frame(width: 64, height: 64)
-                                .onTapGesture {
-                                    easterEggTaps += 1
-                                }
+                        VStack(spacing: .groups) {
+                            HStack {
+                                Image(.imageAppIcon)
+                                    .resizable()
+                                    .frame(width: 64, height: 64)
+                                    .onTapGesture {
+                                        easterEggTaps += 1
+                                    }
 
-                            VStack(alignment: .leading) {
-                                Text(verbatim: AppMetadata.appName)
-                                    .font(.headline)
-                                    .lineLimit(1)
-
-                                if let version = AppMetadata.version {
-                                    Text(.fieldVersionScheme(version: version))
-                                        .font(.subheadline)
-                                        .foregroundStyle(.secondary)
+                                VStack(alignment: .leading) {
+                                    Text(verbatim: AppMetadata.appName)
+                                        .font(.headline)
                                         .lineLimit(1)
+
+                                    if let version = AppMetadata.version {
+                                        Text(.fieldVersionScheme(version: version))
+                                            .font(.subheadline)
+                                            .foregroundStyle(.secondary)
+                                            .lineLimit(1)
+                                    }
                                 }
+
+                                Spacer(minLength: 0)
                             }
 
-                            Spacer(minLength: 0)
+                            if !fullVersion.isUnlocked {
+                                Divider()
+
+                                LabeledContent(.fieldFullVersionTitle) {
+                                    Button(.purchase) {
+                                        presentPaywall()
+                                    }
+                                    .fontWeight(.medium)
+                                    .buttonStyle(.cardProminent)
+                                }
+                            }
                         }
                     }
                 }

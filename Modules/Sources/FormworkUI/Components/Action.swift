@@ -48,6 +48,8 @@ extension Action {
 
     public static let coninue = Action(title: .actionContinueTitle, image: "chevron.forward")
 
+    public static let retry = Action(title: .actionRetryTitle, image: "arrow.clockwise")
+
     public static let minimize = Action(title: .actionMinimizeTitle, image: "chevron.down")
 
     public static let share = Action(title: .actionShareTitle, image: "square.and.arrow.up")
@@ -63,6 +65,8 @@ extension Action {
     public static let viewMode = Action(title: .actionViewModeTitle, image: "calendar.day.timeline.left")
 
     public static let settings = Action(title: .actionSettingsTitle, image: "gear")
+
+    public static let purchase = Action(title: .actionPurchaseTitle, image: "cart")
 
     // Exercise
 

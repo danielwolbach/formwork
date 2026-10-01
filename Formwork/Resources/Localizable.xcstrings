@@ -31,6 +31,21 @@
     "alert.finishSession.title" : {
       "extractionState" : "manual"
     },
+    "alert.nothingToRestore.message" : {
+      "extractionState" : "manual"
+    },
+    "alert.nothingToRestore.title" : {
+      "extractionState" : "manual"
+    },
+    "alert.purchaseFailed.title" : {
+      "extractionState" : "manual"
+    },
+    "alert.purchasePending.message" : {
+      "extractionState" : "manual"
+    },
+    "alert.purchasePending.title" : {
+      "extractionState" : "manual"
+    },
     "alert.removeWorkoutEntry.message" : {
       "extractionState" : "manual"
     },
@@ -43,6 +58,9 @@
     "alert.replaceSession.title" : {
       "extractionState" : "manual"
     },
+    "alert.restoreFailed.title" : {
+      "extractionState" : "manual"
+    },
     "empty.allDone.message" : {
       "extractionState" : "manual"
     },
@@ -53,6 +71,12 @@
       "extractionState" : "manual"
     },
     "empty.exercises.title" : {
+      "extractionState" : "manual"
+    },
+    "empty.products.message" : {
+      "extractionState" : "manual"
+    },
+    "empty.products.title" : {
       "extractionState" : "manual"
     },
     "empty.restDay.message" : {
@@ -169,6 +193,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Exercises"
+          }
+        }
+      }
+    },
+    "field.fullVersion.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Full Version"
           }
         }
       }
@@ -567,6 +602,127 @@
     },
     "onboarding.workouts.title" : {
       "extractionState" : "manual"
+    },
+    "paywall.exercises.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exercises"
+          }
+        }
+      }
+    },
+    "paywall.free.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Free"
+          }
+        }
+      }
+    },
+    "paywall.full.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Full"
+          }
+        }
+      }
+    },
+    "paywall.liveActivity.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Live Aktivity"
+          }
+        }
+      }
+    },
+    "paywall.message" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unlock all features and support a solo developer."
+          }
+        }
+      }
+    },
+    "paywall.privacy.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Privacy"
+          }
+        }
+      }
+    },
+    "paywall.restore.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restore"
+          }
+        }
+      }
+    },
+    "paywall.terms.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Terms"
+          }
+        }
+      }
+    },
+    "paywall.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unlock the Full Version"
+          }
+        }
+      }
+    },
+    "paywall.unlimited.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unlimited"
+          }
+        }
+      }
+    },
+    "paywall.workouts.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Workouts"
+          }
+        }
+      }
     },
     "placeholder" : {
       "extractionState" : "manual",

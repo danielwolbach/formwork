@@ -41,6 +41,12 @@ private struct AppContent: View {
     private var distanceSystem: Units.System = .current
 
     @State
+    private var fullVersion = FullVersion()
+
+    @State
+    private var showPaywall: Bool = false
+
+    @State
     private var presentedSession: Session? = nil
 
     @Namespace
@@ -72,7 +78,11 @@ private struct AppContent: View {
                 }
             }
         }
-        .environment(\.presentSession, PresentSessionAction(action: presentSession))
+        .fullScreenCover(isPresented: $showPaywall) {
+            NavigationStack {
+                PaywallScreen()
+            }
+        }
         .fullScreenCover(isPresented: $onboardingPending) {
             NavigationStack {
                 OnboardingScreen()
@@ -92,6 +102,9 @@ private struct AppContent: View {
                     .id(session.persistentModelID)
             }
         }
+        .task {
+            await fullVersion.observe()
+        }
         .task(id: activityState) {
             await SessionActivity.sync(activityState)
         }
@@ -108,12 +121,19 @@ private struct AppContent: View {
                 WidgetCenter.shared.reloadAllTimelines()
             }
         }
-        // Outermost, so the covers and the bottom accessory read the units too.
+        // Outermost, so the covers and the bottom accessory read the environment too.
+        .environment(\.presentPaywall, PresentPaywallAction(action: presentPaywall))
+        .environment(\.presentSession, PresentSessionAction(action: presentSession))
+        .environment(\.fullVersion, fullVersion)
         .environment(\.units, Units(weight: weightSystem, distance: distanceSystem))
     }
 
     private var activityState: SessionActivityAttributes.ContentState? {
         activeSessions.first.flatMap(SessionActivityAttributes.ContentState.init(session:))
+    }
+
+    private func presentPaywall() {
+        showPaywall = true
     }
 
     private func presentSession(session: Session) {

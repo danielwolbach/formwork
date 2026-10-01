@@ -61,6 +61,7 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Resources/Info.plist,
+				Resources/Products.storekit,
 			);
 			target = 000000000000000100000000 /* Formwork */;
 		};
