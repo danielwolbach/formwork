@@ -8,7 +8,7 @@
 import SwiftUI
 
 public struct SectionView<Content: View, Accessory: View>: View {
-    private let title: String?
+    private let title: String
 
     private let subtitle: String?
 
@@ -16,7 +16,7 @@ public struct SectionView<Content: View, Accessory: View>: View {
 
     private let accessory: Accessory
 
-    public init(_ title: String?, subtitle: String? = nil, @ViewBuilder content: () -> Content, @ViewBuilder accessory: () -> Accessory) {
+    public init(_ title: String, subtitle: String? = nil, @ViewBuilder content: () -> Content, @ViewBuilder accessory: () -> Accessory) {
         self.title = title
         self.subtitle = subtitle
         self.content = content()
@@ -27,11 +27,9 @@ public struct SectionView<Content: View, Accessory: View>: View {
         ContentStack(spacing: .items) {
             HStack {
                 VStack(alignment: .leading) {
-                    if let title {
-                        Text(title)
-                            .lineLimit(1)
-                            .font(.headline)
-                    }
+                    Text(title)
+                        .lineLimit(1)
+                        .font(.headline)
 
                     if let subtitle {
                         Text(subtitle)
@@ -56,7 +54,7 @@ public struct SectionView<Content: View, Accessory: View>: View {
 }
 
 extension SectionView where Accessory == EmptyView {
-    public init(_ title: String? = nil, subtitle: String? = nil, @ViewBuilder content: () -> Content) {
+    public init(_ title: String, subtitle: String? = nil, @ViewBuilder content: () -> Content) {
         self.init(title, subtitle: subtitle, content: content, accessory: { EmptyView() })
     }
 }

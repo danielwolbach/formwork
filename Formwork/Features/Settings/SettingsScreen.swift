@@ -19,6 +19,9 @@ struct SettingsScreen: View {
     @AppStorage(StorageKeys.distanceSystem, store: AppGroup.defaults)
     private var distanceSystem: Units.System = .current
 
+    @State
+    private var easterEggTaps = 0
+
     var body: some View {
         ScrollView {
             ContentStack {
@@ -28,6 +31,9 @@ struct SettingsScreen: View {
                             Image(.imageAppIcon)
                                 .resizable()
                                 .frame(width: 64, height: 64)
+                                .onTapGesture {
+                                    easterEggTaps += 1
+                                }
 
                             VStack(alignment: .leading) {
                                 Text(verbatim: AppMetadata.appName)
@@ -89,6 +95,11 @@ struct SettingsScreen: View {
                     dismiss()
                 }
             }
+        }
+        .sheet(isPresented: Binding<Bool>(get: { easterEggTaps >= 5 }, set: { _ in easterEggTaps = 0 })) {
+            EasterEgg()
+                .presentationDragIndicator(.visible)
+                .presentationDetents([.medium])
         }
     }
 }

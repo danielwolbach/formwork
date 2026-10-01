@@ -143,20 +143,27 @@ struct SessionPlayerScreen: View {
         VStack(spacing: 32) {
             HStack(spacing: 24) {
                 Button(.backward) {
+                    Haptics.impact(.soft)
                     navigator.backward()
                 }
+                .font(.system(size: 24))
+                .foregroundStyle(.secondary)
                 .disabled(session.previousEntry == nil)
                 .buttonStyle(.plain)
                 .buttonBorderShape(.circle)
                 .labelStyle(.fixedIconOnly)
 
                 primaryAction
+                    .fontWeight(.semibold)
                     .buttonStyle(.glassProminent)
                     .labelStyle(.fixedTitleAndIcon)
 
                 Button(.forward) {
+                    Haptics.impact(.soft)
                     navigator.forward()
                 }
+                .font(.system(size: 24))
+                .foregroundStyle(.secondary)
                 .disabled(session.nextEntry == nil)
                 .buttonStyle(.plain)
                 .buttonBorderShape(.circle)
@@ -195,13 +202,11 @@ struct SessionPlayerScreen: View {
                 Button(.finishSession) {
                     finishAlert = true
                 }
-                .fontWeight(.semibold)
             } else if let status = session.currentEntry?.status {
                 Button(.complete) {
                     Haptics.impact(.medium)
                     navigator.complete()
                 }
-                .fontWeight(.semibold)
                 .tint(.green)
                 .disabled(!status.isPending)
             }
@@ -266,7 +271,6 @@ private struct SessionEntryPage: View {
 
             Spacer()
         }
-        .frame(maxHeight: .infinity, alignment: .top)
     }
 }
 

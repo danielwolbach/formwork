@@ -26,31 +26,29 @@ struct ValuesSection: View {
     }
 
     var body: some View {
-        SectionView {
-            GroupBox {
-                VStack(spacing: .groups) {
-                    if let baseline, let direction {
-                        HStack(spacing: .items) {
-                            column(title: String(localized: .fieldBeforeTitle), value: baseline, footnote: String(localized: .fieldBeforeSubtitle(days: History.baselineDays)))
+        GroupBox {
+            VStack(spacing: .groups) {
+                if let baseline, let direction {
+                    HStack(spacing: .items) {
+                        column(title: String(localized: .fieldBeforeTitle), value: baseline, footnote: String(localized: .fieldBeforeSubtitle(days: History.baselineDays)))
 
-                            Image(systemName: direction.image)
-                                .font(.title.weight(.semibold))
-                                .foregroundStyle(.tint)
-                                .frame(maxWidth: .infinity)
+                        Image(systemName: direction.image)
+                            .font(.title.weight(.semibold))
+                            .foregroundStyle(.tint)
+                            .frame(maxWidth: .infinity)
 
-                            column(title: String(localized: .fieldRecentTitle), value: recent, footnote: String(localized: .fieldRecentSubtitle(days: History.recentDays)))
-                        }
-                    } else {
-                        ValueRow(title: String(localized: .fieldRecentTitle), value: recent, footnote: String(localized: .fieldRecentSubtitle(days: History.recentDays)))
+                        column(title: String(localized: .fieldRecentTitle), value: recent, footnote: String(localized: .fieldRecentSubtitle(days: History.recentDays)))
                     }
-
-                    Divider()
-
-                    ValueRow(title: .init(localized: .fieldOverallTitle), value: overall)
+                } else {
+                    ValueRow(title: String(localized: .fieldRecentTitle), value: recent, footnote: String(localized: .fieldRecentSubtitle(days: History.recentDays)))
                 }
+
+                Divider()
+
+                ValueRow(title: .init(localized: .fieldOverallTitle), value: overall)
             }
-            .groupBoxStyle(.card)
         }
+        .groupBoxStyle(.card)
     }
 
     private func column(title: String, value: String?, footnote: String) -> some View {
