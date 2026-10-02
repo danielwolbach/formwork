@@ -43,6 +43,9 @@ struct SessionRecap: View {
                 }
             }
         }
+        .navigationDestination(for: Exercise.self) { exercise in
+            ExerciseScreen(exercise)
+        }
     }
 }
 
@@ -62,10 +65,29 @@ private struct SessionEntryRow: View {
     }
 
     var body: some View {
+        if let exercise = entry.exercise {
+            NavigationLink(value: exercise) {
+                content
+            }
+            .buttonStyle(.plain)
+        } else {
+            content
+        }
+    }
+
+    @ViewBuilder
+    private var content: some View {
         let details = details
 
         VStack(alignment: .leading, spacing: 8) {
-            PictogramRow(entry.pictogram, title: entry.title, subtitle: entry.target.formatted(.exerciseTarget(units: units)), badge: badge)
+            HStack {
+                PictogramRow(entry.pictogram, title: entry.title, subtitle: entry.target.formatted(.exerciseTarget(units: units)), badge: badge)
+
+                if entry.exercise != nil {
+                    Image(systemName: "chevron.forward")
+                        .foregroundStyle(.tertiary)
+                }
+            }
 
             if !details.isEmpty {
                 FlowLayout(alignment: .leading) {
@@ -78,6 +100,7 @@ private struct SessionEntryRow: View {
                 .padding(.leading, 64 + 8)
             }
         }
+        .contentShape(.rect)
     }
 
     private var badge: Pictogram {

@@ -13,8 +13,10 @@ enum Sheet: Identifiable, Hashable, View {
     case createExerciseInCategories(_ categories: Set<Exercise.Category>)
     case editExercise(_ exercise: Exercise)
     case editExerciseNotes(_ exercise: Exercise)
+    case exerciseAddToWorkout(_ exercise: Exercise)
     case createWorkout
     case editWorkout(_ workout: Workout)
+    case workout(_ workout: Workout)
     case workoutAddEntries(_ workout: Workout)
     case workoutStatistics(_ workout: Workout)
     case workoutEntryStatistics(_ entry: WorkoutEntry)
@@ -36,13 +38,15 @@ enum Sheet: Identifiable, Hashable, View {
         case let .createExerciseInCategories(categories): ExerciseForm(categories: categories)
         case let .editExercise(exercise): ExerciseForm(exercise)
         case let .editExerciseNotes(exercise): ExerciseNotesSheet(exercise)
+        case let .exerciseAddToWorkout(exercise): ExerciseAddToWorkoutForm(exercise)
         case .createWorkout: WorkoutForm()
         case let .editWorkout(workout): WorkoutForm(workout)
+        case let .workout(workout): WorkoutSheet(workout)
         case let .workoutAddEntries(workout): WorkoutAddEntriesForm(workout: workout)
-        case let .workoutStatistics(workout): WorkoutStatisticsScreen(workout)
-        case let .workoutEntryStatistics(entry): WorkoutEntryStatisticsScreen(entry)
+        case let .workoutStatistics(workout): WorkoutStatisticsSheet(workout)
+        case let .workoutEntryStatistics(entry): WorkoutEntryStatisticsSheet(entry)
         case let .exerciseGuide(exercise): ExerciseGuideSheet(exercise)
-        case .settings: SettingsScreen()
+        case .settings: SettingsSheet()
         }
     }
 

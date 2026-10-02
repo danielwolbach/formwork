@@ -59,6 +59,12 @@ struct ExerciseScreen: View {
         .toolbar {
             Menu(.more) {
                 Section {
+                    Button(.addToWorkout) {
+                        sheet = .exerciseAddToWorkout(exercise)
+                    }
+                }
+
+                Section {
                     Button(.edit) {
                         sheet = .editExercise(exercise)
                     }

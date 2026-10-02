@@ -20,6 +20,9 @@ struct SessionScreen: View {
     private var dismiss: DismissAction
 
     @State
+    private var sheet: Sheet? = nil
+
+    @State
     private var deleteAlert = false
 
     init(_ session: Session) {
@@ -41,6 +44,14 @@ struct SessionScreen: View {
                     }
 
                     Section {
+                        if let workout = session.workout {
+                            Button(.viewWorkout) {
+                                sheet = .workout(workout)
+                            }
+                        }
+                    }
+
+                    Section {
                         Button(.delete) {
                             deleteAlert = true
                         }
@@ -58,6 +69,9 @@ struct SessionScreen: View {
             }
         } message: {
             Text(.alertDeleteSessionMessage)
+        }
+        .sheet(item: $sheet) { sheet in
+            sheet
         }
     }
 

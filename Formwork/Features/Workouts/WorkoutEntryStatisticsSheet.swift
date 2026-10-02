@@ -1,5 +1,5 @@
 //
-//  WorkoutEntryStatisticsScreen.swift
+//  WorkoutEntryStatisticsSheet.swift
 //  Formwork
 //
 //  Created by Daniel Wolbach on 24.09.26.
@@ -9,7 +9,7 @@ import FormworkKit
 import FormworkUI
 import SwiftUI
 
-struct WorkoutEntryStatisticsScreen: View {
+struct WorkoutEntryStatisticsSheet: View {
     private enum ViewMode: Hashable {
         case workout, overall
     }
@@ -90,7 +90,7 @@ struct WorkoutEntryStatisticsScreen: View {
 
 #Preview {
     NavigationStack {
-        WorkoutEntryStatisticsScreen(Samples.workouts[0].entries.sorted()[1])
+        WorkoutEntryStatisticsSheet(Samples.workouts[0].entries.sorted()[1])
     }
     .sampleData()
 }

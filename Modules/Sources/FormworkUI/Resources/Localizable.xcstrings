@@ -12,6 +12,17 @@
         }
       }
     },
+    "action.addToWorkout.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add to Workout"
+          }
+        }
+      }
+    },
     "action.archive.title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -277,7 +288,15 @@
       }
     },
     "action.retry.title" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Retry"
+          }
+        }
+      }
     },
     "action.scanQRCode.title" : {
       "extractionState" : "manual",
@@ -418,6 +437,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "View Statistics"
+          }
+        }
+      }
+    },
+    "action.viewWorkout.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "View Workout"
           }
         }
       }

@@ -1,5 +1,5 @@
 //
-//  SettingsScreen.swift
+//  SettingsSheet.swift
 //  Formwork
 //
 //  Created by Daniel Wolbach on 29.09.26.
@@ -10,7 +10,7 @@ import FormworkUI
 import SwiftData
 import SwiftUI
 
-struct SettingsScreen: View {
+struct SettingsSheet: View {
     @Environment(\.dismiss)
     private var dismiss: DismissAction
 
@@ -173,7 +173,7 @@ struct SettingsScreen: View {
 
 #Preview {
     NavigationStack {
-        SettingsScreen()
+        SettingsSheet()
     }
     .sampleData()
 }

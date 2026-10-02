@@ -1,5 +1,5 @@
 //
-//  WorkoutStatisticsScreen.swift
+//  WorkoutStatisticsSheet.swift
 //  Formwork
 //
 //  Created by Daniel Wolbach on 18.09.26.
@@ -9,7 +9,7 @@ import FormworkKit
 import FormworkUI
 import SwiftUI
 
-struct WorkoutStatisticsScreen: View {
+struct WorkoutStatisticsSheet: View {
     private let workout: Workout
 
     @Environment(\.dismiss)
@@ -62,7 +62,7 @@ struct WorkoutStatisticsScreen: View {
         }
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
-                Button(.minimize) {
+                Button(.cancel) {
                     dismiss()
                 }
             }
@@ -75,7 +75,7 @@ struct WorkoutStatisticsScreen: View {
 
 #Preview {
     NavigationStack {
-        WorkoutStatisticsScreen(Samples.workouts.first!)
+        WorkoutStatisticsSheet(Samples.workouts.first!)
     }
     .sampleData()
 }

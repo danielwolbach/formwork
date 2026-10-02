@@ -60,7 +60,7 @@ struct ExerciseRow: View {
                 .labelStyle(.fixedIconOnly)
             } else {
                 Button(.addToWorkout) {
-                    // TODO:
+                    sheet = .exerciseAddToWorkout(exercise)
                 }
                 .labelStyle(.fixedIconOnly)
             }
@@ -69,7 +69,7 @@ struct ExerciseRow: View {
             Section {
                 if !exercise.isArchived {
                     Button(.addToWorkout) {
-                        // TODO:
+                        sheet = .exerciseAddToWorkout(exercise)
                     }
                 }
             }

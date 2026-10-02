@@ -610,6 +610,17 @@
         }
       }
     },
+    "field.target.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Target"
+          }
+        }
+      }
+    },
     "field.today.title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -661,6 +672,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Weight Unit"
+          }
+        }
+      }
+    },
+    "field.workout.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Workout"
           }
         }
       }
@@ -845,6 +867,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Add Exercise"
+          }
+        }
+      }
+    },
+    "screen.addToWorkout.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add to Workout"
           }
         }
       }
