@@ -33,6 +33,10 @@ struct TestStore {
         container.mainContext
     }
 
+    var sessions: [Session] {
+        (try? context.fetch(FetchDescriptor<Session>())) ?? []
+    }
+
     func startSession() throws -> Session {
         guard let session = workout.startSession() else {
             throw TestStoreError.sessionNotStarted

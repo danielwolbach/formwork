@@ -7,6 +7,7 @@
 
 import FormworkKit
 import FormworkUI
+import SwiftData
 import SwiftUI
 
 struct WorkoutEntryStatisticsSheet: View {
@@ -18,6 +19,9 @@ struct WorkoutEntryStatisticsSheet: View {
 
     @Environment(\.dismiss)
     private var dismiss: DismissAction
+
+    @Query(Session.finishedDescriptor)
+    private var sessions: [Session]
 
     @State
     private var viewMode: ViewMode
@@ -39,7 +43,7 @@ struct WorkoutEntryStatisticsSheet: View {
                 ScrollView {
                     ContentStack {
                         ZStack {
-                            ExerciseStatistics(history: history)
+                            StatisticGrid(history)
                                 .id(viewMode)
                                 .transition(.blurReplace)
                         }
@@ -77,9 +81,9 @@ struct WorkoutEntryStatisticsSheet: View {
 
     private var history: History {
         if viewMode == .overall, let exercise = entry.exercise {
-            History(.exercise(exercise))
+            History(.exercise(exercise), among: sessions)
         } else {
-            History(.entry(entry))
+            History(.entry(entry), among: sessions)
         }
     }
 

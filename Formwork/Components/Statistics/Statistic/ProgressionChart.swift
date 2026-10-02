@@ -13,7 +13,7 @@ import SwiftUI
 struct ProgressionChart: View {
     private let progression: Progression
 
-    private var isYear = false
+    private let isYear: Bool
 
     @Environment(\.units)
     private var units: Units
@@ -24,7 +24,7 @@ struct ProgressionChart: View {
     }
 
     var body: some View {
-        let color = progression.pictogram.color
+        let color = Progression.pictogram.color
 
         Chart {
             ForEach(progression.curve) { point in
@@ -58,7 +58,7 @@ struct ProgressionChart: View {
         }
         .chartYScale(domain: .automatic(includesZero: false))
         .chartYAxis {
-            AxisMarks(position: .leading, values: durationStep.map { .stride(by: $0) } ?? .automatic(desiredCount: 3)) { mark in
+            AxisMarks(position: .leading, values: axisStep.map { .stride(by: $0) } ?? .automatic(desiredCount: 3)) { mark in
                 AxisGridLine()
 
                 if let rank = mark.as(Double.self) {
@@ -72,12 +72,17 @@ struct ProgressionChart: View {
         .foregroundStyle(.tertiary)
     }
 
-    private var durationStep: Double? {
-        guard progression.points.first?.target.exerciseKind == .duration else {
-            return nil
-        }
-
+    private var axisStep: Double? {
         let peak = (progression.curve.map(\.target.rank) + progression.points.map(\.target.rank)).max() ?? 0
-        return TypicalDuration.axisStep(upTo: peak, count: 3)
+        return ReadingAxis.step(upTo: peak, count: 3, reading: progression.reading(of:))
     }
+}
+
+#Preview {
+    let history = History(.exercise(Samples.exercises[2]), among: Samples.sessions)
+
+    ProgressionChart(Progression(history.year(history.years.upperBound)), isYear: true)
+        .frame(height: 200)
+        .padding()
+        .sampleData()
 }

@@ -50,24 +50,10 @@ struct SessionRow: View {
                 }
             }
         } preview: {
-            let summary = session.summary()
-
             ContentStack(spacing: .groups) {
                 PictogramRow(session.pictogram, title: session.title, subtitle: session.startDate.formatted(session.wallClockTime(date: .numeric)))
 
-                TileGrid {
-                    IndicatorCard(summary.duration)
-
-                    IndicatorCard(summary.endTime)
-
-                    IndicatorCard(summary.skipRate)
-
-                    IndicatorCard(summary.medianExerciseDuration)
-
-                    IndicatorCard(summary.completedExercises)
-
-                    IndicatorCard(summary.totalVolume)
-                }
+                SessionFigureGrid(session)
             }
             .frame(width: 360)
             .padding(.vertical)

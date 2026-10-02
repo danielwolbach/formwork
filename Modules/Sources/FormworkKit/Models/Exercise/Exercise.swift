@@ -34,6 +34,9 @@ public class Exercise {
     @Relationship(deleteRule: .nullify, inverse: \SessionEntry.exercise)
     public var sessionEntries: [SessionEntry] = []
 
+    @Relationship(deleteRule: .cascade, inverse: \StatisticPin.exercise)
+    public var pins: [StatisticPin] = []
+
     public var isArchived: Bool = false
 
     public var creationDate: Date = Date.distantPast

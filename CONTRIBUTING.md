@@ -37,7 +37,7 @@ Code lives where its narrowest user is. A view used by one feature stays in that
 | `Formwork/Components/<Topic>` | Views used by several features, grouped by domain, e.g. `Exercise` or `Statistics`. |
 | `Formwork/Support` | App-wide plumbing that isn't a feature: navigation, haptics, debug tools, extensions. |
 | `FormworkKit/Models/<Model>` | SwiftData models and the value types they're made of. |
-| `FormworkKit/Statistics` | Everything worked out from models: histories, statistics and trends. Statistics are sorted by the protocol they conform to: `Charts/` (`Statistic`), `Indicators/` and `Metrics/`. |
+| `FormworkKit/Statistics` | Everything worked out from models: histories, statistics, trends and session figures. Statistics are sorted by the protocol they conform to: `Charts/` (`Statistic`), `Indicators/` and `Metrics/`; figures of a single session go into `Figures/`. |
 | `FormworkKit/Formats` | Format styles that turn models and values into text, for any view to apply. |
 | `FormworkKit/Features/<Feature>` | The non-view parts of a feature that several targets need. |
 | `FormworkKit/Support` | Infrastructure: storage, schema, samples, constants, extensions. |

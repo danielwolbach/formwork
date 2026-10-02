@@ -224,7 +224,15 @@ extension Session {
     }
 
     func startMinute(in calendar: Calendar) -> Int? {
-        let time = localCalendar(from: calendar).dateComponents([.hour, .minute], from: startDate)
+        minute(of: startDate, in: calendar)
+    }
+
+    func endMinute(in calendar: Calendar) -> Int? {
+        endDate.flatMap { minute(of: $0, in: calendar) }
+    }
+
+    private func minute(of date: Date, in calendar: Calendar) -> Int? {
+        let time = localCalendar(from: calendar).dateComponents([.hour, .minute], from: date)
         guard let hour = time.hour, let minute = time.minute else {
             return nil
         }

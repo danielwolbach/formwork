@@ -60,6 +60,10 @@ public enum StarterCatalog {
         ExerciseEntry(name: .StarterCatalog.exerciseTreadmillName, kind: .distance, categories: [.cardio]),
     ]
 
+    public static var pins: [StatisticKind] {
+        [.weekStreak, .lastCompleted]
+    }
+
     public static func workouts(in units: Units) -> [WorkoutEntry] {
         [
             WorkoutEntry(
@@ -105,6 +109,10 @@ public enum StarterCatalog {
                 workout.append(exercise: exercise, target: item.target)
             }
         }
+
+        for kind in pins {
+            try StatisticPin.append(kind, of: .all, into: context)
+        }
     }
 }
 
@@ -121,8 +129,8 @@ extension StarterCatalog.Samples {
         PersonalBest(target: .weight(kilograms: kilograms(metric: 90, imperial: 200, in: units), reps: 10, sets: 3))
     }
 
-    public static func totalVolume(in units: Units) -> SessionSummary.Figure<Double> {
-        .totalVolume(kilograms(metric: 12480, imperial: 27500, in: units))
+    public static func totalVolume(in units: Units) -> SessionVolume {
+        SessionVolume(value: kilograms(metric: 12480, imperial: 27500, in: units))
     }
 
     public static func weightTarget(in units: Units) -> ExerciseTarget {

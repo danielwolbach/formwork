@@ -102,26 +102,10 @@ struct WorkoutEntryRow: View {
                 }
             }
         } preview: {
-            let history = History(.entry(entry))
-
             ContentStack(spacing: .groups) {
                 PictogramRow(entry.pictogram, title: entry.title, subtitle: entry.target.formatted(.exerciseTarget(units: units)), badge: badge)
 
-                if !history.sessions.isEmpty {
-                    TileGrid {
-                        StatisticCard(.lastCompleted, of: history)
-
-                        StatisticCard(.completionRate, of: history)
-
-                        StatisticCard(.personalBest, of: history)
-
-                        StatisticCard(.completions, of: history)
-
-                        StatisticCard(.typicalDuration, of: history)
-
-                        StatisticCard(.typicalInterval, of: history)
-                    }
-                }
+                StatisticPreview(.entry(entry))
             }
             .frame(width: 360)
             .padding(.vertical)

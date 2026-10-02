@@ -19,16 +19,16 @@ extension TypicalBest: Metric {
         String(localized: .statisticTypicalBestInfo)
     }
 
-    public static var tolerance: Double? {
-        0.02
-    }
-
-    public var pictogram: Pictogram {
+    public static var pictogram: Pictogram {
         .progression
     }
 
-    public var title: String {
+    public static var title: String {
         String(localized: .statisticTypicalBestTitle)
+    }
+
+    public static var tolerance: Double? {
+        0.02
     }
 
     public var value: Double? {

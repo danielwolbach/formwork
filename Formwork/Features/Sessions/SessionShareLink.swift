@@ -101,15 +101,12 @@ private struct SessionShareCard: View {
         }
     }
 
-    @ViewBuilder
     private var summary: some View {
-        let summary = session.summary()
-
         TileGrid(columns: 2, spacing: 8, aspectRatio: 2) {
-            IndicatorCard(summary.duration)
-            IndicatorCard(summary.totalVolume)
-            IndicatorCard(summary.completedExercises)
-            IndicatorCard(summary.medianExerciseDuration)
+            ReadingCard(SessionDuration(session))
+            ReadingCard(SessionVolume(session))
+            ReadingCard(SessionCompletedExercises(session))
+            ReadingCard(SessionExerciseDuration(session))
             personalBest.tileSpan(columns: 2)
         }
     }

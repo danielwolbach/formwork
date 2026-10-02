@@ -13,32 +13,23 @@ public struct TypicalDuration {
 
 extension TypicalDuration: Metric {
     public init(_ window: History.Window) {
-        let durations = switch window.history.subject {
-        case .exercise, .entry: window.entries.filter(\.status.isCompleted).compactMap(\.duration)
-        case .all, .workout: window.sessions.compactMap(\.duration)
-        }
-
-        self.value = durations.median
+        self.value = window.completions.compactMap(\.duration).median
     }
 
     public static var info: String {
         String(localized: .statisticTypicalDurationInfo)
     }
 
-    public static var tolerance: Double? {
-        0.05
-    }
-
-    public static var axisSteps: [Double] {
-        [15, 30, 60, 120, 300, 600, 900, 1800, 3600, 7200]
-    }
-
-    public var pictogram: Pictogram {
+    public static var pictogram: Pictogram {
         .duration
     }
 
-    public var title: String {
+    public static var title: String {
         String(localized: .statisticTypicalDurationTitle)
+    }
+
+    public static var tolerance: Double? {
+        0.05
     }
 
     public func reading(of value: Double) -> Reading {

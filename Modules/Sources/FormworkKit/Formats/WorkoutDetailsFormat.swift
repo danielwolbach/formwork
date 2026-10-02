@@ -16,7 +16,7 @@ public struct WorkoutDetailsFormat: FormatStyle {
 
     public func format(_ workout: Workout) -> String {
         let count = workout.entries.count { !$0.isArchived }.formatted(.exerciseCount)
-        let duration = TypicalDuration(History(.workout(workout), at: now).recent).value.map(DurationFormat().format)
+        let duration = TypicalDuration(History(.workout(workout), among: workout.sessions, at: now).recent).value.map(DurationFormat().format)
 
         return [count, duration].compactMap(\.self).formatted(.dotList)
     }

@@ -96,26 +96,10 @@ struct ExerciseRow: View {
                 }
             }
         } preview: {
-            let history = History(.exercise(exercise))
-
             ContentStack(spacing: .groups) {
                 PictogramRow(exercise.pictogram, title: exercise.title, subtitle: exercise.categories.formatted(.exerciseCategories))
 
-                if !history.sessions.isEmpty {
-                    TileGrid {
-                        StatisticCard(.lastCompleted, of: history)
-
-                        StatisticCard(.completionRate, of: history)
-
-                        StatisticCard(.personalBest, of: history)
-
-                        StatisticCard(.completions, of: history)
-
-                        StatisticCard(.typicalDuration, of: history)
-
-                        StatisticCard(.typicalInterval, of: history)
-                    }
-                }
+                StatisticPreview(.exercise(exercise))
             }
             .frame(width: 360)
             .padding(.vertical)

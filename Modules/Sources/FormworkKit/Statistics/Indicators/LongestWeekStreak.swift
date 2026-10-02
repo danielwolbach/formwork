@@ -33,11 +33,11 @@ extension LongestWeekStreak: Indicator {
         String(localized: .statisticLongestWeekStreakInfo)
     }
 
-    public var pictogram: Pictogram {
+    public static var pictogram: Pictogram {
         .record
     }
 
-    public var title: String {
+    public static var title: String {
         String(localized: .statisticLongestWeekStreakTitle)
     }
 

@@ -1,5 +1,5 @@
 //
-//  IndicatorCard.swift
+//  ReadingCard.swift
 //  Formwork
 //
 //  Created by Daniel Wolbach on 24.09.26.
@@ -9,7 +9,7 @@ import FormworkKit
 import FormworkUI
 import SwiftUI
 
-struct IndicatorCard: View {
+struct ReadingCard: View {
     private let pictogram: Pictogram
 
     private let title: String
@@ -21,16 +21,20 @@ struct IndicatorCard: View {
     @Environment(\.units)
     private var units: Units
 
-    init(_ indicator: some Indicator, direction: Direction? = nil) {
-        self.init(pictogram: indicator.pictogram, title: indicator.title, reading: indicator.reading, direction: direction)
+    init<I: Indicator>(_ indicator: I) {
+        self.init(pictogram: I.pictogram, title: I.title, reading: indicator.reading)
     }
 
-    init(_ trend: Trend<some Metric>) {
-        self.init(trend.recent, direction: trend.direction)
+    init(_ kind: StatisticKind, reading: Reading?, direction: Direction?) {
+        self.init(pictogram: kind.statistic.pictogram, title: kind.statistic.title, reading: reading, direction: direction)
     }
 
-    init(_ figure: SessionSummary.Figure<some Any>) {
-        self.init(pictogram: figure.pictogram, title: figure.title, reading: figure.reading)
+    init<F: SessionFigure>(_ figure: F) {
+        self.init(pictogram: F.pictogram, title: F.title, reading: figure.reading)
+    }
+
+    init<M: SessionMeasure>(_ comparison: SessionComparison<M>) {
+        self.init(pictogram: M.pictogram, title: M.title, reading: comparison.current.reading, direction: comparison.direction)
     }
 
     private init(pictogram: Pictogram, title: String, reading: Reading?, direction: Direction? = nil) {
@@ -83,6 +87,6 @@ struct IndicatorCard: View {
 }
 
 #Preview {
-    IndicatorCard(StarterCatalog.Samples.weekStreak)
+    ReadingCard(StarterCatalog.Samples.weekStreak)
         .padding()
 }

@@ -269,10 +269,10 @@ private struct StatisticsPreview: View {
 
     var body: some View {
         TileGrid {
-            IndicatorCard(StarterCatalog.Samples.weekStreak)
-            IndicatorCard(StarterCatalog.Samples.weeklySessions)
-            IndicatorCard(StarterCatalog.Samples.personalBest(in: units))
-            IndicatorCard(StarterCatalog.Samples.totalVolume(in: units))
+            ReadingCard(StarterCatalog.Samples.weekStreak)
+            ReadingCard(StarterCatalog.Samples.weeklySessions)
+            ReadingCard(StarterCatalog.Samples.personalBest(in: units))
+            ReadingCard(StarterCatalog.Samples.totalVolume(in: units))
         }
     }
 }

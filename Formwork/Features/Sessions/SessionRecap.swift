@@ -17,24 +17,10 @@ struct SessionRecap: View {
     }
 
     var body: some View {
-        let summary = session.summary()
-
         ContentStack {
             PictogramHeader(session.pictogram, title: session.title, subtitle: session.startDate.formatted(session.wallClockTime(date: .numeric)))
 
-            TileGrid {
-                IndicatorCard(summary.duration)
-
-                IndicatorCard(summary.endTime)
-
-                IndicatorCard(summary.skipRate)
-
-                IndicatorCard(summary.medianExerciseDuration)
-
-                IndicatorCard(summary.completedExercises)
-
-                IndicatorCard(summary.totalVolume)
-            }
+            SessionFigureGrid(session)
 
             VStack(spacing: 0) {
                 ForEach(session.orderedEntries) { entry in

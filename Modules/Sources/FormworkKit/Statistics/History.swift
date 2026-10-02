@@ -21,13 +21,15 @@
 //   `period`.
 // - Streaks are what the user saw on a window's last day on record: they count every session up to then,
 //   before the window too.
+// - A statistic that asks when, how often or how long the subject was done reads the window's `completions` (a
+//   workout's finished sessions, an exercise's completed entries) instead of switching on the subject itself.
 //
 
 import Foundation
 
 public struct History: Hashable {
     public enum Subject: Hashable {
-        case all([Session])
+        case all
         case workout(Workout)
         case exercise(Exercise)
         case entry(WorkoutEntry)
@@ -44,23 +46,48 @@ public struct History: Hashable {
 
         public let entries: [SessionEntry]
 
+        let completions: [Completion]
+
         fileprivate init(_ history: History, period: DateInterval) {
             let start = max(period.start, history.interval.start)
             let interval = DateInterval(start: start, end: max(start, min(period.end, history.interval.end)))
             let sessions = history.sessions.filter { $0.falls(into: interval, in: history.calendar) }
-
-            self.history = history
-            self.period = period
-            self.interval = interval
-            self.sessions = sessions
-            self.entries = sessions.flatMap(\.entries).filter { entry in
+            let entries = sessions.flatMap(\.entries).filter { entry in
                 switch history.subject {
                 case .all, .workout: true
                 case let .exercise(exercise): entry.exercise == exercise
                 case let .entry(slot): entry.workoutEntry == slot
                 }
             }
+
+            self.history = history
+            self.period = period
+            self.interval = interval
+            self.sessions = sessions
+            self.entries = entries
+            self.completions = switch history.subject {
+            case .all, .workout:
+                sessions.compactMap { session in
+                    session.endDate.map { Completion(session: session, date: $0, duration: session.duration) }
+                }
+            case .exercise, .entry:
+                entries.compactMap { entry -> Completion? in
+                    guard entry.status.isCompleted, let session = entry.session, let date = entry.status.resolvedDate else {
+                        return nil
+                    }
+
+                    return Completion(session: session, date: date, duration: entry.duration)
+                }
+            }
         }
+    }
+
+    struct Completion: Hashable {
+        let session: Session
+
+        let date: Date
+
+        let duration: TimeInterval?
     }
 
     public let subject: Subject
@@ -73,17 +100,12 @@ public struct History: Hashable {
 
     public let interval: DateInterval
 
-    public init(_ subject: Subject, at now: Date = .now, calendar: Calendar = .current) {
-        let candidates = switch subject {
-        case let .all(sessions): sessions
-        case let .workout(workout): workout.sessions
-        case let .exercise(exercise): Array(Set(exercise.sessionEntries.compactMap(\.session)))
-        case let .entry(slot): Array(Set(slot.sessionEntries.compactMap(\.session)))
-        }
-
+    public init(_ subject: Subject, among candidates: [Session], at now: Date = .now, calendar: Calendar = .current) {
         let today = calendar.startOfDay(for: now)
         let tomorrow = calendar.date(byAdding: .day, value: 1, to: today) ?? today
-        let sessions = candidates.filter { !$0.isActive && $0.falls(into: DateInterval(start: .distantPast, end: tomorrow), in: calendar) }
+        let sessions = candidates.filter { session in
+            !session.isActive && session.falls(into: DateInterval(start: .distantPast, end: tomorrow), in: calendar) && subject.includes(session)
+        }
         let first = sessions.compactMap { $0.period(of: .day, in: calendar)?.start }.min()
 
         self.subject = subject
@@ -95,12 +117,21 @@ public struct History: Hashable {
 }
 
 extension History.Subject {
-    public var title: String {
+    public var title: String? {
         switch self {
-        case .all: String(localized: .placeholder)
+        case .all: nil
         case let .workout(workout): workout.title
         case let .exercise(exercise): exercise.title
         case let .entry(slot): slot.title
+        }
+    }
+
+    fileprivate func includes(_ session: Session) -> Bool {
+        switch self {
+        case .all: true
+        case let .workout(workout): session.workout == workout
+        case let .exercise(exercise): session.entries.contains { $0.exercise == exercise }
+        case let .entry(slot): session.entries.contains { $0.workoutEntry == slot }
         }
     }
 }
@@ -112,6 +143,10 @@ extension History {
 
     public static var baselineDays: Int {
         84
+    }
+
+    static var minimumSessions: Int {
+        3
     }
 
     public var allTime: Window {
@@ -154,7 +189,7 @@ extension History {
 }
 
 extension History.Window {
-    public var lengthInWeeks: Double? {
+    var lengthInWeeks: Double? {
         guard let days = history.calendar.dateComponents([.day], from: interval.start, to: interval.end).day, days > 0 else {
             return nil
         }
@@ -162,7 +197,7 @@ extension History.Window {
         return Double(max(days, 7)) / 7
     }
 
-    public var streakWeeks: (weeks: Set<Date>, current: Date)? {
+    var streakWeeks: (weeks: Set<Date>, current: Date)? {
         let calendar = history.calendar
 
         guard

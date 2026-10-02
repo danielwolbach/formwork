@@ -29,16 +29,16 @@ extension OneRepMax: Metric {
         String(localized: .statisticOneRepMaxInfo)
     }
 
-    public static var tolerance: Double? {
-        0.02
-    }
-
-    public var pictogram: Pictogram {
+    public static var pictogram: Pictogram {
         .strength
     }
 
-    public var title: String {
+    public static var title: String {
         String(localized: .statisticOneRepMaxTitle)
+    }
+
+    public static var tolerance: Double? {
+        0.02
     }
 
     public var value: Double? {

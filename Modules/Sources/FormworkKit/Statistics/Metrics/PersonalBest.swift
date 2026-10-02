@@ -18,16 +18,16 @@ extension PersonalBest: Metric {
         String(localized: .statisticPersonalBestInfo)
     }
 
-    public static var tolerance: Double? {
-        nil
-    }
-
-    public var pictogram: Pictogram {
+    public static var pictogram: Pictogram {
         .record
     }
 
-    public var title: String {
+    public static var title: String {
         String(localized: .statisticPersonalBestTitle)
+    }
+
+    public static var tolerance: Double? {
+        nil
     }
 
     public var value: Double? {

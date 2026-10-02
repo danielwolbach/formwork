@@ -84,6 +84,14 @@ public enum Samples {
         Samples.workouts.forEach(container.mainContext.insert)
         Samples.sessions.forEach(container.mainContext.insert)
 
+        [
+            StatisticPin(.weekStreak, of: .all, order: 0),
+            StatisticPin(.lastCompleted, of: .all, order: 1),
+            StatisticPin(.weeklySessions, of: .all, order: 2),
+            StatisticPin(.oneRepMax, of: .exercise(Samples.exercises[2]), order: 3),
+        ]
+        .forEach(container.mainContext.insert)
+
         _ = Samples.workouts[0].startSession()
 
         return container

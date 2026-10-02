@@ -49,3 +49,16 @@ struct YearSection<Content: View>: View {
         .buttonBorderShape(.circle)
     }
 }
+
+#Preview {
+    let history = History(.all, among: Samples.sessions)
+
+    ScrollView {
+        ContentStack {
+            YearSection(years: history.years) { year in
+                ActiveDaysYear(ActiveDays(history.year(year)))
+            }
+        }
+    }
+    .sampleData()
+}

@@ -22,7 +22,7 @@ struct CategoriesCard: View {
 
             Spacer(minLength: 0)
         } label: {
-            Label(categories.title, systemImage: categories.pictogram.image)
+            Label(Categories.title, systemImage: Categories.pictogram.image)
         }
         .groupBoxStyle(.card)
     }
@@ -93,7 +93,7 @@ struct CategoriesBreakdown: View {
 
 #Preview {
     TileGrid(columns: 1) {
-        CategoriesCard(Categories(History(.all(Samples.sessions)).recent))
+        CategoriesCard(Categories(History(.all, among: Samples.sessions).recent))
     }
     .padding()
 }

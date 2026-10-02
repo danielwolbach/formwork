@@ -20,9 +20,6 @@ struct OverviewScreen: View {
     @Query(Session.activeDescriptor)
     private var activeSessions: [Session]
 
-    @Query
-    private var sessions: [Session]
-
     @Query(filter: #Predicate<Workout> { !$0.isArchived })
     private var workouts: [Workout]
 
@@ -35,7 +32,7 @@ struct OverviewScreen: View {
     var body: some View {
         ScrollView {
             ContentStack {
-                statisticsSection
+                PinnedStatisticsSection()
 
                 todaySection
 
@@ -87,17 +84,6 @@ struct OverviewScreen: View {
         }
         .sheet(item: $sheet) { sheet in
             sheet
-        }
-    }
-
-    @ViewBuilder
-    private var statisticsSection: some View {
-        let history = History(.all(sessions))
-
-        TileGrid {
-            StatisticCard(.weekStreak, of: history)
-
-            StatisticCard(.lastCompleted, of: history)
         }
     }
 

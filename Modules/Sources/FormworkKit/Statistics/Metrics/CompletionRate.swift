@@ -21,16 +21,16 @@ extension CompletionRate: Metric {
         String(localized: .statisticCompletionRateInfo)
     }
 
-    public static var tolerance: Double? {
-        0.05
-    }
-
-    public var pictogram: Pictogram {
+    public static var pictogram: Pictogram {
         .completed
     }
 
-    public var title: String {
+    public static var title: String {
         String(localized: .statisticCompletionRateTitle)
+    }
+
+    public static var tolerance: Double? {
+        0.05
     }
 
     public func reading(of value: Double) -> Reading {

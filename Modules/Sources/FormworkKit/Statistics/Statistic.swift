@@ -12,11 +12,11 @@ public protocol Statistic {
         get
     }
 
-    var pictogram: Pictogram {
+    static var pictogram: Pictogram {
         get
     }
 
-    var title: String {
+    static var title: String {
         get
     }
 

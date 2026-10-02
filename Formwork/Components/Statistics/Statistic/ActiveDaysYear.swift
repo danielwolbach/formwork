@@ -1,5 +1,5 @@
 //
-//  ActiveDaysSheet.swift
+//  ActiveDaysYear.swift
 //  Formwork
 //
 //  Created by Daniel Wolbach on 24.09.26.
@@ -8,25 +8,6 @@
 import FormworkKit
 import FormworkUI
 import SwiftUI
-
-struct ActiveDaysSheet: View {
-    private let history: History
-
-    init(history: History) {
-        self.history = history
-    }
-
-    var body: some View {
-        let recent = ActiveDays(history.recent)
-
-        StatisticSheet(recent, history: history) {
-            YearSection(years: history.years) { year in
-                ActiveDaysYear(ActiveDays(history.year(year)))
-            }
-        }
-        .tint(recent.pictogram.color)
-    }
-}
 
 struct ActiveDaysYear: View {
     private let activeDays: ActiveDays
@@ -78,13 +59,13 @@ struct ActiveDaysYear: View {
             return AnyShapeStyle(.clear)
         }
 
-        return day.sessionCount > 0 ? AnyShapeStyle(activeDays.pictogram.color) : AnyShapeStyle(.gray.quaternary)
+        return day.sessionCount > 0 ? AnyShapeStyle(ActiveDays.pictogram.color) : AnyShapeStyle(.gray.quaternary)
     }
 }
 
 #Preview {
-    NavigationStack {}
-        .sheet(isPresented: .constant(true)) {
-            ActiveDaysSheet(history: History(.all(Samples.sessions)))
-        }
+    let history = History(.all, among: Samples.sessions)
+
+    ActiveDaysYear(ActiveDays(history.year(history.years.upperBound)))
+        .padding()
 }

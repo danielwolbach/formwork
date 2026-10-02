@@ -13,27 +13,20 @@ public struct FavoriteWorkout {
 
 extension FavoriteWorkout: Indicator {
     public init(_ window: History.Window) {
-        let tally = window.sessions.reduce(into: [Workout: (count: Int, latest: Date)]()) { tally, session in
-            guard let workout = session.workout else {
-                return
-            }
-
-            let current = tally[workout] ?? (0, .distantPast)
-            tally[workout] = (current.count + 1, max(current.latest, session.endDate ?? .distantPast))
+        self.workout = window.sessions.mostFrequent { session in
+            session.workout.map { ($0, session.endDate ?? .distantPast) }
         }
-
-        self.workout = tally.max { ($0.value.count, $0.value.latest) < ($1.value.count, $1.value.latest) }?.key
     }
 
     public static var info: String {
         String(localized: .statisticFavoriteWorkoutInfo)
     }
 
-    public var pictogram: Pictogram {
+    public static var pictogram: Pictogram {
         .workout
     }
 
-    public var title: String {
+    public static var title: String {
         String(localized: .statisticFavoriteWorkoutTitle)
     }
 

@@ -13,29 +13,24 @@ public struct MostSkippedExercise {
 
 extension MostSkippedExercise: Indicator {
     public init(_ window: History.Window) {
-        let tally = window.entries
-            .filter(\.status.isSkipped)
-            .reduce(into: [Exercise: (count: Int, latest: Date)]()) { tally, entry in
-                guard let exercise = entry.exercise, let skipped = entry.status.resolvedDate else {
-                    return
-                }
-
-                let current = tally[exercise] ?? (0, .distantPast)
-                tally[exercise] = (current.count + 1, max(current.latest, skipped))
+        self.exercise = window.entries.filter(\.status.isSkipped).mostFrequent { entry in
+            guard let exercise = entry.exercise, let skipped = entry.status.resolvedDate else {
+                return nil
             }
 
-        self.exercise = tally.max { ($0.value.count, $0.value.latest) < ($1.value.count, $1.value.latest) }?.key
+            return (exercise, skipped)
+        }
     }
 
     public static var info: String {
         String(localized: .statisticMostSkippedExerciseInfo)
     }
 
-    public var pictogram: Pictogram {
+    public static var pictogram: Pictogram {
         .skipped
     }
 
-    public var title: String {
+    public static var title: String {
         String(localized: .statisticMostSkippedExerciseTitle)
     }
 

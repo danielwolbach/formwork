@@ -14,15 +14,8 @@ public struct TypicalInterval {
 extension TypicalInterval: Metric {
     public init(_ window: History.Window) {
         let calendar = window.history.calendar
-        let days = switch window.history.subject {
-        case .exercise, .entry:
-            window.entries.filter(\.status.isCompleted).compactMap { $0.session?.period(of: .day, in: calendar)?.start }
-        case .all, .workout:
-            window.sessions.compactMap { $0.period(of: .day, in: calendar)?.start }
-        }
-
-        let sorted = Array(Set(days)).sorted()
-        self.value = zip(sorted, sorted.dropFirst())
+        let days = Set(window.completions.compactMap { $0.session.period(of: .day, in: calendar)?.start }).sorted()
+        self.value = zip(days, days.dropFirst())
             .compactMap { calendar.dateComponents([.day], from: $0, to: $1).day }
             .map(Double.init)
             .median
@@ -32,16 +25,16 @@ extension TypicalInterval: Metric {
         String(localized: .statisticTypicalIntervalInfo)
     }
 
-    public static var tolerance: Double? {
-        0.1
-    }
-
-    public var pictogram: Pictogram {
+    public static var pictogram: Pictogram {
         .frequency
     }
 
-    public var title: String {
+    public static var title: String {
         String(localized: .statisticTypicalIntervalTitle)
+    }
+
+    public static var tolerance: Double? {
+        0.1
     }
 
     public func reading(of value: Double) -> Reading {

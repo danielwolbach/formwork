@@ -1,6 +1,15 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "Best" : {
+
+    },
+    "Category" : {
+
+    },
+    "Day" : {
+
+    },
     "exercise.category.arms.title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -289,6 +298,9 @@
         }
       }
     },
+    "Month" : {
+
+    },
     "placeholder" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -299,6 +311,9 @@
           }
         }
       }
+    },
+    "Recent" : {
+
     },
     "statistic.activeDays.info" : {
       "extractionState" : "manual"
@@ -590,6 +605,9 @@
           }
         }
       }
+    },
+    "Value" : {
+
     }
   },
   "version" : "1.3"

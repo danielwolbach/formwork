@@ -44,11 +44,11 @@ extension Categories: Statistic {
         String(localized: .statisticCategoriesInfo)
     }
 
-    public var pictogram: Pictogram {
+    public static var pictogram: Pictogram {
         .categories
     }
 
-    public var title: String {
+    public static var title: String {
         String(localized: .statisticCategoriesTitle)
     }
 }

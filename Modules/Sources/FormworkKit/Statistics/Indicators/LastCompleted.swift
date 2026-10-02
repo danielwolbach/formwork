@@ -17,29 +17,20 @@ public struct LastCompleted {
 
 extension LastCompleted: Indicator {
     public init(_ window: History.Window) {
-        let calendar = window.history.calendar
+        let last = window.completions.max { $0.date < $1.date }
 
-        switch window.history.subject {
-        case .exercise, .entry:
-            let last = window.entries
-                .filter(\.status.isCompleted)
-                .max { ($0.status.resolvedDate ?? .distantPast) < ($1.status.resolvedDate ?? .distantPast) }
-            self.init(date: last?.status.resolvedDate, session: last?.session, calendar: calendar)
-        case .all, .workout:
-            let last = window.sessions.max { ($0.endDate ?? .distantPast) < ($1.endDate ?? .distantPast) }
-            self.init(date: last?.endDate, session: last, calendar: calendar)
-        }
+        self.init(date: last?.date, session: last?.session, calendar: window.history.calendar)
     }
 
     public static var info: String {
         String(localized: .statisticLastCompletedInfo)
     }
 
-    public var pictogram: Pictogram {
+    public static var pictogram: Pictogram {
         .date
     }
 
-    public var title: String {
+    public static var title: String {
         String(localized: .statisticLastCompletedTitle)
     }
 

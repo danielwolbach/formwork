@@ -22,6 +22,9 @@ public class Workout {
     @Relationship(deleteRule: .nullify, inverse: \Session.workout)
     public var sessions: [Session] = []
 
+    @Relationship(deleteRule: .cascade, inverse: \StatisticPin.workout)
+    public var pins: [StatisticPin] = []
+
     public var isArchived: Bool = false
 
     public var creationDate: Date = Date.distantPast

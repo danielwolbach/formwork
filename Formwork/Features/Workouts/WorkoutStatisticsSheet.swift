@@ -7,6 +7,7 @@
 
 import FormworkKit
 import FormworkUI
+import SwiftData
 import SwiftUI
 
 struct WorkoutStatisticsSheet: View {
@@ -15,12 +16,15 @@ struct WorkoutStatisticsSheet: View {
     @Environment(\.dismiss)
     private var dismiss: DismissAction
 
+    @Query(Session.finishedDescriptor)
+    private var sessions: [Session]
+
     init(_ workout: Workout) {
         self.workout = workout
     }
 
     var body: some View {
-        let history = History(.workout(workout))
+        let history = History(.workout(workout), among: sessions)
 
         Group {
             if history.sessions.isEmpty {
@@ -32,29 +36,7 @@ struct WorkoutStatisticsSheet: View {
             } else {
                 ScrollView {
                     ContentStack {
-                        TileGrid {
-                            StatisticCard(.lastCompleted, of: history)
-
-                            StatisticCard(.typicalDuration, of: history)
-
-                            StatisticCard(.completionRate, of: history)
-
-                            StatisticCard(.mostSkippedExercise, of: history)
-
-                            StatisticCard(.activeDays, of: history)
-                                .tileSpan(rows: 2, columns: 2)
-
-                            StatisticCard(.typicalStartTime, of: history)
-
-                            StatisticCard(.completions, of: history)
-
-                            StatisticCard(.typicalInterval, of: history)
-
-                            StatisticCard(.totalVolume, of: history)
-
-                            StatisticCard(.categories, of: history)
-                                .tileSpan(rows: 2, columns: 2)
-                        }
+                        StatisticGrid(history)
                     }
                 }
                 .contentMargins(.bottom, .sections, for: .scrollContent)

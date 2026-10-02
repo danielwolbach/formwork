@@ -8,15 +8,13 @@
 import Foundation
 
 public struct Progression {
-    public struct Point: Identifiable {
+    public struct Point {
         public let date: Date
 
         public let target: ExerciseTarget
-
-        public var id: Date {
-            date
-        }
     }
+
+    public let kind: Exercise.Kind?
 
     public let period: DateInterval
 
@@ -32,6 +30,8 @@ extension Progression: Statistic {
         let weekly = sequence(first: last) { history.calendar.date(byAdding: .weekOfYear, value: -1, to: $0) }
             .prefix { $0 >= window.interval.start }
 
+        // From the exercise, not the points: the curve looks back before the window and may have no point to go on.
+        self.kind = Self.exercise(of: history.subject)?.kind
         self.period = window.period
         self.points = Self.bests(in: window)
         self.curve = weekly.reversed().compactMap { day in
@@ -43,22 +43,16 @@ extension Progression: Statistic {
         String(localized: .statisticProgressionInfo)
     }
 
-    public var pictogram: Pictogram {
+    public static var pictogram: Pictogram {
         .progression
     }
 
-    public var title: String {
+    public static var title: String {
         String(localized: .statisticProgressionTitle)
     }
 
     static func bests(in window: History.Window) -> [Point] {
-        let exercise: Exercise? = switch window.history.subject {
-        case .all, .workout: nil
-        case let .exercise(exercise): exercise
-        case let .entry(slot): slot.exercise
-        }
-
-        guard let exercise else {
+        guard let exercise = exercise(of: window.history.subject) else {
             return []
         }
 
@@ -79,7 +73,21 @@ extension Progression: Statistic {
             .map { Point(date: $0.key, target: $0.value) }
     }
 
+    private static func exercise(of subject: History.Subject) -> Exercise? {
+        switch subject {
+        case .all, .workout: nil
+        case let .exercise(exercise): exercise
+        case let .entry(slot): slot.exercise
+        }
+    }
+
     public func reading(of rank: Double) -> Reading {
-        Reading(rank: rank, of: points.last?.target.exerciseKind)
+        Reading(rank: rank, of: kind)
+    }
+}
+
+extension Progression.Point: Identifiable {
+    public var id: Date {
+        date
     }
 }

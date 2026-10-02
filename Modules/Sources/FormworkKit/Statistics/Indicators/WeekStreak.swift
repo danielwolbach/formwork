@@ -38,11 +38,11 @@ extension WeekStreak: Indicator {
         String(localized: .statisticWeekStreakInfo)
     }
 
-    public var pictogram: Pictogram {
+    public static var pictogram: Pictogram {
         .streak
     }
 
-    public var title: String {
+    public static var title: String {
         String(localized: .statisticWeekStreakTitle)
     }
 

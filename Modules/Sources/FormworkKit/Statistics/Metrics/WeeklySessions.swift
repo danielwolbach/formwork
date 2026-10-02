@@ -20,16 +20,16 @@ extension WeeklySessions: Metric {
         String(localized: .statisticWeeklySessionsInfo)
     }
 
-    public static var tolerance: Double? {
-        0.1
-    }
-
-    public var pictogram: Pictogram {
+    public static var pictogram: Pictogram {
         .frequency
     }
 
-    public var title: String {
+    public static var title: String {
         String(localized: .statisticWeeklySessionsTitle)
+    }
+
+    public static var tolerance: Double? {
+        0.1
     }
 
     public func reading(of value: Double) -> Reading {

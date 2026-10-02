@@ -36,3 +36,18 @@ extension [Double] {
         return count.isMultiple(of: 2) ? (sorted[middle - 1] + sorted[middle]) / 2 : sorted[middle]
     }
 }
+
+extension Sequence {
+    func mostFrequent<Key: Hashable>(by occurrence: (Element) -> (key: Key, date: Date)?) -> Key? {
+        let tally = reduce(into: [Key: (count: Int, latest: Date)]()) { tally, element in
+            guard let seen = occurrence(element) else {
+                return
+            }
+
+            let current = tally[seen.key] ?? (0, .distantPast)
+            tally[seen.key] = (current.count + 1, Swift.max(current.latest, seen.date))
+        }
+
+        return tally.max { ($0.value.count, $0.value.latest) < ($1.value.count, $1.value.latest) }?.key
+    }
+}

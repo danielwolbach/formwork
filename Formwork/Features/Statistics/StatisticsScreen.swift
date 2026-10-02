@@ -25,7 +25,7 @@ struct StatisticsScreen: View {
 
     @ViewBuilder
     private var content: some View {
-        let history = History(.all(sessions))
+        let history = History(.all, among: sessions)
 
         if history.sessions.isEmpty {
             ContentUnavailableView {
@@ -41,31 +41,7 @@ struct StatisticsScreen: View {
     private func statisticsContent(_ history: History) -> some View {
         ScrollView {
             ContentStack {
-                TileGrid {
-                    StatisticCard(.weekStreak, of: history)
-
-                    StatisticCard(.lastCompleted, of: history)
-
-                    StatisticCard(.activeDays, of: history)
-                        .tileSpan(rows: 2, columns: 2)
-
-                    StatisticCard(.weeklySessions, of: history)
-
-                    StatisticCard(.completions, of: history)
-
-                    StatisticCard(.typicalDuration, of: history)
-
-                    StatisticCard(.typicalStartTime, of: history)
-
-                    StatisticCard(.categories, of: history)
-                        .tileSpan(rows: 2, columns: 2)
-
-                    StatisticCard(.favoriteWorkout, of: history)
-
-                    StatisticCard(.favoriteExercise, of: history)
-
-                    StatisticCard(.totalVolume, of: history)
-                }
+                StatisticGrid(history)
 
                 SectionView(.init(localized: .placeholder)) {
                     LazyVStack(spacing: 0) {

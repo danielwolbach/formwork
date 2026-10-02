@@ -13,26 +13,23 @@ public struct Completions {
 
 extension Completions: Metric {
     public init(_ window: History.Window) {
-        self.count = switch window.history.subject {
-        case .exercise, .entry: window.entries.count(where: \.status.isCompleted)
-        case .all, .workout: window.sessions.count
-        }
+        self.count = window.completions.count
     }
 
     public static var info: String {
         String(localized: .statisticCompletionsInfo)
     }
 
-    public static var tolerance: Double? {
-        nil
-    }
-
-    public var pictogram: Pictogram {
+    public static var pictogram: Pictogram {
         .tally
     }
 
-    public var title: String {
+    public static var title: String {
         String(localized: .statisticCompletionsTitle)
+    }
+
+    public static var tolerance: Double? {
+        nil
     }
 
     public var value: Double? {

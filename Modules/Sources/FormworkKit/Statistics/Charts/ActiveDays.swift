@@ -24,12 +24,8 @@ public struct ActiveDays {
 extension ActiveDays: Statistic {
     public init(_ window: History.Window) {
         let calendar = window.history.calendar
-        let trained = switch window.history.subject {
-        case .exercise, .entry: window.entries.filter(\.status.isCompleted).compactMap(\.session)
-        case .all, .workout: window.sessions
-        }
-
-        let counts = trained.reduce(into: [Date: Int]()) { counts, session in
+        // An exercise done twice in one session is still one session.
+        let counts = Set(window.completions.map(\.session)).reduce(into: [Date: Int]()) { counts, session in
             guard let day = session.period(of: .day, in: calendar)?.start else {
                 return
             }
@@ -49,11 +45,11 @@ extension ActiveDays: Statistic {
         String(localized: .statisticActiveDaysInfo)
     }
 
-    public var pictogram: Pictogram {
+    public static var pictogram: Pictogram {
         .activity
     }
 
-    public var title: String {
+    public static var title: String {
         String(localized: .statisticActiveDaysTitle)
     }
 
