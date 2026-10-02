@@ -22,6 +22,12 @@ struct WorkoutScreen: View {
     @Environment(\.presentSession)
     private var presentSession: PresentSessionAction
 
+    @Environment(\.fullVersion)
+    private var fullVersion: FullVersion
+
+    @Environment(\.presentPaywall)
+    private var presentPaywall: PresentPaywallAction
+
     @Query(Session.activeDescriptor)
     private var activeSessions: [Session]
 
@@ -39,9 +45,16 @@ struct WorkoutScreen: View {
     }
 
     var body: some View {
+        let badge = workout.isArchived ? Pictogram.archivedBadge : nil
+
         ScrollView {
             ContentStack {
-                PictogramHeader(workout.pictogram, title: workout.title, subtitle: workout.formatted(.workoutDetails))
+                PictogramHeader(
+                    workout.pictogram,
+                    title: workout.title,
+                    subtitle: workout.formatted(.workoutDetails),
+                    badge: badge
+                )
 
                 HStack {
                     Button(.addExercise) {
@@ -58,7 +71,7 @@ struct WorkoutScreen: View {
                     .buttonStyle(.glassProminent)
                     .fontWeight(.medium)
                     .tint(.green)
-                    .disabled(workout.entries.isEmpty)
+                    .disabled(!workout.isStartable)
 
                     Button(.viewStatistics) {
                         sheet = .workoutStatistics(workout)
@@ -103,7 +116,7 @@ struct WorkoutScreen: View {
                     Button(.startSession) {
                         startSession()
                     }
-                    .disabled(workout.entries.isEmpty)
+                    .disabled(!workout.isStartable)
                 }
 
                 Section {
@@ -121,6 +134,18 @@ struct WorkoutScreen: View {
                         sheet = .editWorkout(workout)
                     }
 
+                    if workout.isArchived {
+                        Button(.unarchive) {
+                            unarchive()
+                        }
+                    } else {
+                        Button(.archive) {
+                            archive()
+                        }
+                    }
+                }
+
+                Section {
                     Button(.delete) {
                         deleteAlert = true
                     }
@@ -156,10 +181,22 @@ struct WorkoutScreen: View {
             Text(.alertReplaceSessionMessage)
         }
         .sheet(item: $sheet) { sheet in
-            NavigationStack {
-                sheet
-            }
+            sheet
         }
+    }
+
+    private func archive() {
+        workout.isArchived = true
+        dismiss()
+    }
+
+    private func unarchive() {
+        guard fullVersion.canAddWorkout(in: context) else {
+            presentPaywall()
+            return
+        }
+
+        workout.isArchived = false
     }
 
     private func delete() {

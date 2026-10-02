@@ -80,4 +80,6 @@ extension Pictogram {
     public static let recordBadge = Pictogram(image: "trophy.circle.fill", tint: .yellow)
 
     public static let editBadge = Pictogram(image: "pencil.circle.fill", tint: .gray)
+
+    public static let archivedBadge = Pictogram(image: "archivebox.circle.fill", tint: .gray)
 }

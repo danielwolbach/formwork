@@ -32,6 +32,16 @@ struct SessionLifecycleTests {
     }
 
     @Test
+    func startSkipsArchivedExercises() throws {
+        store.workout.entries.sorted().first?.exercise?.isArchived = true
+
+        let session = try store.startSession()
+
+        #expect(session.orderedEntries.map(\.title) == ["Bench Press", "Deadlift"])
+        #expect(session.currentEntry?.title == "Bench Press")
+    }
+
+    @Test
     func startReplacesRunningSessionButKeepsFinishedOnes() throws {
         let finished = try store.startSession()
         finished.finish()

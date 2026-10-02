@@ -34,6 +34,8 @@ public class Exercise {
     @Relationship(deleteRule: .nullify, inverse: \SessionEntry.exercise)
     public var sessionEntries: [SessionEntry] = []
 
+    public var isArchived: Bool = false
+
     public var creationDate: Date = Date.distantPast
 
     public init(name: String, kind: Kind, categories: Set<Category>, link: URL? = nil, notes: String = "") {

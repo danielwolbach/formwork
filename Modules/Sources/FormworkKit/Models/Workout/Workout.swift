@@ -22,6 +22,8 @@ public class Workout {
     @Relationship(deleteRule: .nullify, inverse: \Session.workout)
     public var sessions: [Session] = []
 
+    public var isArchived: Bool = false
+
     public var creationDate: Date = Date.distantPast
 
     public init(name: String, pictogram: Pictogram, schedule: Schedule, entries: [WorkoutEntry]) {
@@ -42,8 +44,13 @@ extension Workout {
         name
     }
 
+    public var isStartable: Bool {
+        !isArchived && entries.contains { !$0.isArchived }
+    }
+
     public var exerciseCategories: [Exercise.Category] {
         let counts = entries
+            .filter { !$0.isArchived }
             .compactMap(\.exercise)
             .flatMap(\.categories)
             .reduce(into: [:]) { counts, category in counts[category, default: 0] += 1 }

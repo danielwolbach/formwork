@@ -12,6 +12,17 @@
         }
       }
     },
+    "action.archive.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Archive"
+          }
+        }
+      }
+    },
     "action.backward.title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -122,6 +133,17 @@
         }
       }
     },
+    "action.deselectAll.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deselect All"
+          }
+        }
+      }
+    },
     "action.discardSession.title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -206,17 +228,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "More"
-          }
-        }
-      }
-    },
-    "action.purchase.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Purchase"
           }
         }
       }
@@ -345,6 +356,17 @@
         }
       }
     },
+    "action.unarchive.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unarchive"
+          }
+        }
+      }
+    },
     "action.undo.title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -352,6 +374,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Undo"
+          }
+        }
+      }
+    },
+    "action.unlockFullVersion.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unlock Full Version"
           }
         }
       }

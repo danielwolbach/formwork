@@ -61,10 +61,80 @@
     "alert.restoreFailed.title" : {
       "extractionState" : "manual"
     },
+    "downgrade.message" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your access to the full version has ende and you can keep up to %#@workoutLimit@ and %#@exerciseLimit@. Everything else is archived and can be restored in settings."
+          },
+          "substitutions" : {
+            "exerciseLimit" : {
+              "argNum" : 2,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg active exercise"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg active exercises"
+                    }
+                  }
+                }
+              }
+            },
+            "workoutLimit" : {
+              "argNum" : 1,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg active workout"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg active workouts"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "downgrade.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Downgrade"
+          }
+        }
+      }
+    },
     "empty.allDone.message" : {
       "extractionState" : "manual"
     },
     "empty.allDone.title" : {
+      "extractionState" : "manual"
+    },
+    "empty.archive.message" : {
+      "extractionState" : "manual"
+    },
+    "empty.archive.title" : {
       "extractionState" : "manual"
     },
     "empty.exercises.message" : {
@@ -116,6 +186,39 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "About"
+          }
+        }
+      }
+    },
+    "field.archive.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Archive"
+          }
+        }
+      }
+    },
+    "field.archived.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Archived"
+          }
+        }
+      }
+    },
+    "field.archivedItems.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Archived Items"
           }
         }
       }
@@ -193,17 +296,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Exercises"
-          }
-        }
-      }
-    },
-    "field.fullVersion.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Full Version"
           }
         }
       }
@@ -573,6 +665,17 @@
         }
       }
     },
+    "field.workouts.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Workouts"
+          }
+        }
+      }
+    },
     "onboarding.catalog.message" : {
       "extractionState" : "manual"
     },
@@ -603,13 +706,24 @@
     "onboarding.workouts.title" : {
       "extractionState" : "manual"
     },
-    "paywall.exercises.title" : {
+    "paywall.activeExercises.title" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Exercises"
+            "value" : "Active Exercises"
+          }
+        }
+      }
+    },
+    "paywall.activeWorkouts.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Active Workouts"
           }
         }
       }
@@ -642,7 +756,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Live Aktivity"
+            "value" : "Live Activity"
           }
         }
       }
@@ -713,17 +827,6 @@
         }
       }
     },
-    "paywall.workouts.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Workouts"
-          }
-        }
-      }
-    },
     "placeholder" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -742,6 +845,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Add Exercise"
+          }
+        }
+      }
+    },
+    "screen.archive.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Archive"
           }
         }
       }

@@ -11,7 +11,16 @@ import SwiftData
 import SwiftUI
 
 struct WorkoutIndexScreen: View {
-    @Query(sort: \Workout.name)
+    @Environment(\.modelContext)
+    private var context: ModelContext
+
+    @Environment(\.fullVersion)
+    private var fullVersion: FullVersion
+
+    @Environment(\.presentPaywall)
+    private var presentPaywall: PresentPaywallAction
+
+    @Query(filter: #Predicate<Workout> { !$0.isArchived }, sort: \Workout.name)
     private var workouts: [Workout]
 
     @State
@@ -44,15 +53,17 @@ struct WorkoutIndexScreen: View {
             Menu(.more) {
                 Section {
                     Button(.createWorkout) {
-                        sheet = .createWorkout
+                        if fullVersion.canAddWorkout(in: context) {
+                            sheet = .createWorkout
+                        } else {
+                            presentPaywall()
+                        }
                     }
                 }
             }
         }
         .sheet(item: $sheet) { sheet in
-            NavigationStack {
-                sheet
-            }
+            sheet
         }
     }
 

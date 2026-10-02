@@ -14,7 +14,7 @@ struct CalendarSection: View {
     @Query(Session.finishedDescriptor)
     private var sessions: [Session]
 
-    @Query
+    @Query(filter: #Predicate<Workout> { !$0.isArchived })
     private var workouts: [Workout]
 
     @State

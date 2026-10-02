@@ -28,6 +28,64 @@ struct WorkoutTests {
     }
 
     @Test
+    func canAddWorkoutUntilTheLimitIgnoringArchived() {
+        let fullVersion = FullVersion()
+
+        #expect(fullVersion.canAddWorkout(in: store.context))
+
+        let second = Workout(name: "Upper Body", pictogram: .workout, schedule: .inactive, entries: [])
+        store.context.insert(second)
+
+        #expect(!fullVersion.canAddWorkout(in: store.context))
+
+        second.isArchived = true
+
+        #expect(fullVersion.canAddWorkout(in: store.context))
+    }
+
+    @Test
+    func canAddExerciseUntilTheLimitIgnoringArchived() {
+        let fullVersion = FullVersion()
+        var added: [Exercise] = []
+
+        for index in 0 ..< FullVersion.exerciseLimit - 3 {
+            let exercise = Exercise(name: "Exercise \(index)", kind: .bodyweight, categories: [])
+            store.context.insert(exercise)
+            added.append(exercise)
+        }
+
+        #expect(!fullVersion.canAddExercise(in: store.context))
+
+        added.first?.isArchived = true
+
+        #expect(fullVersion.canAddExercise(in: store.context))
+    }
+
+    @Test
+    func archivedWorkoutIsNotStartable() {
+        #expect(store.workout.isStartable)
+
+        store.workout.isArchived = true
+
+        #expect(!store.workout.isStartable)
+    }
+
+    @Test
+    func isStartableNeedsAnExerciseThatIsNotArchived() {
+        let exercises = store.workout.entries.compactMap(\.exercise)
+
+        for exercise in exercises.dropLast() {
+            exercise.isArchived = true
+        }
+
+        #expect(store.workout.isStartable)
+
+        exercises.last?.isArchived = true
+
+        #expect(!store.workout.isStartable)
+    }
+
+    @Test
     func appendContinuesAfterHighestOrder() {
         let exercise = Exercise(name: "Plank", kind: .duration, categories: [.core])
         store.context.insert(exercise)

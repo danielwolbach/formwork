@@ -100,6 +100,7 @@ struct WorkoutForm: View {
             NavigationStack {
                 WorkoutAddEntriesForm(entries: $entries)
             }
+            .paywallPresenter()
         }
     }
 

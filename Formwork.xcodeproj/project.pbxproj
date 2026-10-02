@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CA2C7110306EDA6B008DA8D7 /* ExerciseTargetEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA2C70B5306EDA6B008DA8D7 /* ExerciseTargetEditor.swift */; };
 		CAF7F80C305D29BC003DEA83 /* FormworkKit in Frameworks */ = {isa = PBXBuildFile; productRef = CAF7F80B305D29BC003DEA83 /* FormworkKit */; };
 		CAF7F827305D5BD1003DEA83 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = CAF7F826305D5BD1003DEA83 /* README.md */; };
 		CAF7F829305D5BE7003DEA83 /* CONTRIBUTING.md in Resources */ = {isa = PBXBuildFile; fileRef = CAF7F828305D5BE7003DEA83 /* CONTRIBUTING.md */; };
@@ -42,6 +43,7 @@
 
 /* Begin PBXFileReference section */
 		000000000000000000000120 /* Formwork.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Formwork.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		CA2C70B5306EDA6B008DA8D7 /* ExerciseTargetEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseTargetEditor.swift; sourceTree = "<group>"; };
 		CAF7F826305D5BD1003DEA83 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		CAF7F828305D5BE7003DEA83 /* CONTRIBUTING.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CONTRIBUTING.md; sourceTree = "<group>"; };
 		CAF7F82E305D66F2003DEA83 /* FormworkWidgetsExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = FormworkWidgetsExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -115,6 +117,7 @@
 				CAF7F834305D66F2003DEA83 /* FormworkWidgets */,
 				CAF7F82F305D66F2003DEA83 /* Frameworks */,
 				000000000000000000000020 /* Products */,
+				CA2C70B5306EDA6B008DA8D7 /* ExerciseTargetEditor.swift */,
 			);
 			sourceTree = "<group>";
 		};
@@ -247,6 +250,7 @@
 		000000000000000120000000 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			files = (
+				CA2C7110306EDA6B008DA8D7 /* ExerciseTargetEditor.swift in Sources */,
 			);
 		};
 		CAF7F82A305D66F2003DEA83 /* Sources */ = {

@@ -22,6 +22,15 @@ enum Sheet: Identifiable, Hashable, View {
     case settings
 
     var body: some View {
+        // Outside the stack: pushed screens take the stack's environment, not its root view's, so a presenter inside would never reach them.
+        NavigationStack {
+            content
+        }
+        .paywallPresenter()
+    }
+
+    @ViewBuilder
+    private var content: some View {
         switch self {
         case .createExercise: ExerciseForm()
         case let .createExerciseInCategories(categories): ExerciseForm(categories: categories)

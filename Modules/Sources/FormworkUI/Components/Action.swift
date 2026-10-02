@@ -30,7 +30,13 @@ extension Action {
 
     public static let edit = Action(title: .actionEditTitle, image: "pencil")
 
+    public static let archive = Action(title: .actionArchiveTitle, image: "archivebox")
+
+    public static let unarchive = Action(title: .actionUnarchiveTitle, image: "tray.and.arrow.up")
+
     public static let delete = Action(title: .actionDeleteTitle, image: "trash", role: .destructive)
+
+    public static let deselectAll = Action(title: .actionDeselectAllTitle, image: "xmark.circle")
 
     public static let remove = Action(title: .actionRemoveTitle, image: "minus.circle", role: .destructive)
 
@@ -66,7 +72,7 @@ extension Action {
 
     public static let settings = Action(title: .actionSettingsTitle, image: "gear")
 
-    public static let purchase = Action(title: .actionPurchaseTitle, image: "cart")
+    public static let unlockFullVersion = Action(title: .actionUnlockFullVersionTitle, image: "lock.open.fill")
 
     // Exercise
 
@@ -75,6 +81,8 @@ extension Action {
     public static let scanQRCode = Action(title: .actionScanQRCodeTitle, image: "qrcode.viewfinder")
 
     public static let guide = Action(title: .actionGuideTitle, image: "info.circle")
+
+    public static let addToWorkout = Action(title: .placeholder, image: "text.badge.plus")
 
     // Workout
 

@@ -23,7 +23,7 @@ struct OverviewScreen: View {
     @Query
     private var sessions: [Session]
 
-    @Query
+    @Query(filter: #Predicate<Workout> { !$0.isArchived })
     private var workouts: [Workout]
 
     @State
@@ -36,7 +36,9 @@ struct OverviewScreen: View {
         ScrollView {
             ContentStack {
                 statisticsSection
+
                 todaySection
+
                 CalendarSection()
             }
         }
@@ -84,9 +86,7 @@ struct OverviewScreen: View {
             Text(.alertReplaceSessionMessage)
         }
         .sheet(item: $sheet) { sheet in
-            NavigationStack {
-                sheet
-            }
+            sheet
         }
     }
 
@@ -138,6 +138,7 @@ struct OverviewScreen: View {
                 .labelStyle(.fixedTitleAndIcon)
                 .buttonStyle(.glassProminent)
                 .tint(.green)
+                .disabled(!workout.isStartable)
             }
         }
     }

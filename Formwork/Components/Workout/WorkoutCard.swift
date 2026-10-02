@@ -83,19 +83,26 @@ struct WorkoutCard: View {
             .labelStyle(.fixedIconOnly)
         }
         .swipeActions(edge: .leading) {
-            Button(.startSession) {
-                startSession()
+            if workout.isStartable {
+                Button(.startSession) {
+                    startSession()
+                }
+                .tint(.green)
+                .labelStyle(.fixedIconOnly)
+            } else {
+                Button(.viewStatistics) {
+                    sheet = .workoutStatistics(workout)
+                }
+                .tint(.green)
+                .labelStyle(.fixedIconOnly)
             }
-            .tint(.green)
-            .labelStyle(.fixedIconOnly)
-            .disabled(workout.entries.isEmpty)
         }
         .contextMenu {
             Section {
                 Button(.startSession) {
                     startSession()
                 }
-                .disabled(workout.entries.isEmpty)
+                .disabled(!workout.isStartable)
             }
 
             Section {
@@ -113,6 +120,12 @@ struct WorkoutCard: View {
                     sheet = .editWorkout(workout)
                 }
 
+                Button(.archive) {
+                    archive()
+                }
+            }
+
+            Section {
                 Button(.delete) {
                     deleteAlert = true
                 }
@@ -162,10 +175,12 @@ struct WorkoutCard: View {
             Text(.alertReplaceSessionMessage)
         }
         .sheet(item: $sheet) { sheet in
-            NavigationStack {
-                sheet
-            }
+            sheet
         }
+    }
+
+    private func archive() {
+        workout.isArchived = true
     }
 
     private func delete() {

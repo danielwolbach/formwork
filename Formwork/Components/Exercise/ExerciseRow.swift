@@ -16,6 +16,12 @@ struct ExerciseRow: View {
     @Environment(\.modelContext)
     private var context: ModelContext
 
+    @Environment(\.fullVersion)
+    private var fullVersion: FullVersion
+
+    @Environment(\.presentPaywall)
+    private var presentPaywall: PresentPaywallAction
+
     @State
     private var deleteAlert: Bool = false
 
@@ -46,12 +52,45 @@ struct ExerciseRow: View {
             .tint(.red)
             .labelStyle(.fixedIconOnly)
         }
+        .swipeActions(edge: .leading) {
+            if exercise.isArchived {
+                Button(.unarchive) {
+                    unarchive()
+                }
+                .labelStyle(.fixedIconOnly)
+            } else {
+                Button(.addToWorkout) {
+                    // TODO:
+                }
+                .labelStyle(.fixedIconOnly)
+            }
+        }
         .contextMenu {
+            Section {
+                if !exercise.isArchived {
+                    Button(.addToWorkout) {
+                        // TODO:
+                    }
+                }
+            }
+
             Section {
                 Button(.edit) {
                     sheet = .editExercise(exercise)
                 }
 
+                if exercise.isArchived {
+                    Button(.unarchive) {
+                        unarchive()
+                    }
+                } else {
+                    Button(.archive) {
+                        archive()
+                    }
+                }
+            }
+
+            Section {
                 Button(.delete) {
                     deleteAlert = true
                 }
@@ -93,11 +132,22 @@ struct ExerciseRow: View {
             Text(.alertDeleteExerciseMessage)
         }
         .sheet(item: $sheet) { sheet in
-            NavigationStack {
-                sheet
-            }
+            sheet
         }
         .padding(.horizontal, 8)
+    }
+
+    private func archive() {
+        exercise.isArchived = true
+    }
+
+    private func unarchive() {
+        guard fullVersion.canAddExercise(in: context) else {
+            presentPaywall()
+            return
+        }
+
+        exercise.isArchived = false
     }
 
     private func delete() {

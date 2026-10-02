@@ -31,6 +31,12 @@ private struct AppContent: View {
     @Query(Session.activeDescriptor)
     private var activeSessions: [Session]
 
+    @Query(filter: #Predicate<Workout> { !$0.isArchived })
+    private var workouts: [Workout]
+
+    @Query(filter: #Predicate<Exercise> { !$0.isArchived })
+    private var exercises: [Exercise]
+
     @AppStorage(StorageKeys.onboardingPending)
     private var onboardingPending: Bool = true
 
@@ -42,9 +48,6 @@ private struct AppContent: View {
 
     @State
     private var fullVersion = FullVersion()
-
-    @State
-    private var showPaywall: Bool = false
 
     @State
     private var presentedSession: Session? = nil
@@ -78,10 +81,13 @@ private struct AppContent: View {
                 }
             }
         }
-        .fullScreenCover(isPresented: $showPaywall) {
+        .paywallPresenter()
+        // Closes by itself once archiving or unlocking makes the condition false.
+        .fullScreenCover(isPresented: Binding<Bool>(get: { needsDowngrade }, set: { _ in })) {
             NavigationStack {
-                PaywallScreen()
+                DowngradeScreen()
             }
+            .paywallPresenter()
         }
         .fullScreenCover(isPresented: $onboardingPending) {
             NavigationStack {
@@ -122,18 +128,25 @@ private struct AppContent: View {
             }
         }
         // Outermost, so the covers and the bottom accessory read the environment too.
-        .environment(\.presentPaywall, PresentPaywallAction(action: presentPaywall))
         .environment(\.presentSession, PresentSessionAction(action: presentSession))
         .environment(\.fullVersion, fullVersion)
         .environment(\.units, Units(weight: weightSystem, distance: distanceSystem))
     }
 
-    private var activityState: SessionActivityAttributes.ContentState? {
-        activeSessions.first.flatMap(SessionActivityAttributes.ContentState.init(session:))
+    private var needsDowngrade: Bool {
+        guard fullVersion.hasCheckedEntitlements, !fullVersion.isUnlocked, !onboardingPending, presentedSession == nil else {
+            return false
+        }
+
+        return workouts.count > FullVersion.workoutLimit || exercises.count > FullVersion.exerciseLimit
     }
 
-    private func presentPaywall() {
-        showPaywall = true
+    private var activityState: SessionActivityAttributes.ContentState? {
+        guard fullVersion.isUnlocked || !fullVersion.hasCheckedEntitlements else {
+            return nil
+        }
+
+        return activeSessions.first.flatMap(SessionActivityAttributes.ContentState.init(session:))
     }
 
     private func presentSession(session: Session) {

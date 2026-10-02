@@ -17,7 +17,16 @@ struct WorkoutAddEntriesForm: View {
     @Environment(\.units)
     private var units: Units
 
-    @Query
+    @Environment(\.modelContext)
+    private var context: ModelContext
+
+    @Environment(\.fullVersion)
+    private var fullVersion: FullVersion
+
+    @Environment(\.presentPaywall)
+    private var presentPaywall: PresentPaywallAction
+
+    @Query(filter: #Predicate<Exercise> { !$0.isArchived })
     private var exercises: [Exercise]
 
     @Binding
@@ -119,14 +128,16 @@ struct WorkoutAddEntriesForm: View {
 
             ToolbarItem(placement: .bottomBar) {
                 Button(.createExercise) {
-                    sheet = .createExerciseInCategories(selectedCategories)
+                    if fullVersion.canAddExercise(in: context) {
+                        sheet = .createExerciseInCategories(selectedCategories)
+                    } else {
+                        presentPaywall()
+                    }
                 }
             }
         }
         .sheet(item: $sheet) { sheet in
-            NavigationStack {
-                sheet
-            }
+            sheet
         }
     }
 
@@ -168,10 +179,12 @@ struct WorkoutAddEntriesForm: View {
             HStack {
                 PictogramRow(exercise.pictogram, title: exercise.title, subtitle: exercise.categories.formatted(.exerciseCategories))
 
-                if selected {
-                    Image(systemName: "checkmark")
-                        .foregroundStyle(Color.accentColor)
-                }
+                Image(systemName: selected ? "checkmark.circle.fill" : "circle")
+                    .font(.title2)
+                    .foregroundStyle(selected ? AnyShapeStyle(.tint) : AnyShapeStyle(.tertiary))
+                    .transaction {
+                        $0.animation = nil
+                    }
             }
             .animation(.snappy(duration: 0.2), value: selected)
             .padding(.horizontal)
@@ -186,6 +199,7 @@ struct WorkoutAddEntriesForm: View {
             }
             .groupBoxStyle(.card)
             .padding(.horizontal)
+            .padding(.vertical, 8)
         }
     }
 

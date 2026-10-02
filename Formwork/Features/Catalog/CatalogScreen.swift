@@ -22,7 +22,16 @@ struct CatalogScreen: View {
         }
     }
 
-    @Query
+    @Environment(\.modelContext)
+    private var context: ModelContext
+
+    @Environment(\.fullVersion)
+    private var fullVersion: FullVersion
+
+    @Environment(\.presentPaywall)
+    private var presentPaywall: PresentPaywallAction
+
+    @Query(filter: #Predicate<Exercise> { !$0.isArchived })
     private var exercises: [Exercise]
 
     @State
@@ -78,7 +87,11 @@ struct CatalogScreen: View {
             Menu(.more) {
                 Section {
                     Button(.createExercise) {
-                        sheet = .createExercise
+                        if fullVersion.canAddExercise(in: context) {
+                            sheet = .createExercise
+                        } else {
+                            presentPaywall()
+                        }
                     }
                 }
 
@@ -99,9 +112,7 @@ struct CatalogScreen: View {
             }
         }
         .sheet(item: $sheet) { sheet in
-            NavigationStack {
-                sheet
-            }
+            sheet
         }
     }
 

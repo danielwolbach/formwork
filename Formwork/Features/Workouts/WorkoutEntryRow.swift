@@ -16,6 +16,12 @@ struct WorkoutEntryRow: View {
     @Environment(\.modelContext)
     private var context: ModelContext
 
+    @Environment(\.fullVersion)
+    private var fullVersion: FullVersion
+
+    @Environment(\.presentPaywall)
+    private var presentPaywall: PresentPaywallAction
+
     @Environment(\.units)
     private var units: Units
 
@@ -32,7 +38,9 @@ struct WorkoutEntryRow: View {
     var body: some View {
         NavigationLink(value: entry) {
             HStack {
-                PictogramRow(entry.pictogram, title: entry.title, subtitle: entry.target.formatted(.exerciseTarget(units: units)))
+                // Dimmed as well as badged: the entry is skipped in sessions, which should read at a glance.
+                PictogramRow(entry.pictogram, title: entry.title, subtitle: entry.target.formatted(.exerciseTarget(units: units)), badge: badge)
+                    .opacity(entry.isArchived ? 0.5 : 1)
 
                 Image(systemName: "chevron.forward")
                     .foregroundStyle(.tertiary)
@@ -40,6 +48,7 @@ struct WorkoutEntryRow: View {
             .padding(8)
             .contentShape(.rect)
         }
+        .accessibilityValue(entry.isArchived ? Text(.fieldArchivedTitle) : Text(verbatim: ""))
         .buttonStyle(.plain)
         .swipeActions {
             // No destructive role: it makes SwiftUI expect the row to disappear, so cancelling the alert leaves the button stuck.
@@ -50,10 +59,17 @@ struct WorkoutEntryRow: View {
             .labelStyle(.fixedIconOnly)
         }
         .swipeActions(edge: .leading) {
-            Button(.viewStatistics) {
-                sheet = .workoutEntryStatistics(entry)
+            if entry.isArchived {
+                Button(.unarchive) {
+                    unarchive()
+                }
+                .labelStyle(.fixedIconOnly)
+            } else {
+                Button(.viewStatistics) {
+                    sheet = .workoutEntryStatistics(entry)
+                }
+                .labelStyle(.fixedIconOnly)
             }
-            .labelStyle(.fixedIconOnly)
         }
         .contextMenu {
             Section {
@@ -69,6 +85,18 @@ struct WorkoutEntryRow: View {
                     }
                 }
 
+                if entry.isArchived {
+                    Button(.unarchive) {
+                        unarchive()
+                    }
+                } else {
+                    Button(.archive) {
+                        archive()
+                    }
+                }
+            }
+
+            Section {
                 Button(.remove) {
                     removeAlert = true
                 }
@@ -77,7 +105,7 @@ struct WorkoutEntryRow: View {
             let history = History(.entry(entry))
 
             ContentStack(spacing: .groups) {
-                PictogramRow(entry.pictogram, title: entry.title, subtitle: entry.target.formatted(.exerciseTarget(units: units)))
+                PictogramRow(entry.pictogram, title: entry.title, subtitle: entry.target.formatted(.exerciseTarget(units: units)), badge: badge)
 
                 if !history.sessions.isEmpty {
                     TileGrid {
@@ -110,11 +138,27 @@ struct WorkoutEntryRow: View {
             Text(.alertRemoveWorkoutEntryMessage)
         }
         .sheet(item: $sheet) { sheet in
-            NavigationStack {
-                sheet
-            }
+            sheet
         }
         .padding(.horizontal, 8)
+    }
+
+    private var badge: Pictogram? {
+        entry.isArchived ? .archivedBadge : nil
+    }
+
+    /// Archiving acts on the exercise, so it applies to every workout using it and to the catalog.
+    private func archive() {
+        entry.exercise?.isArchived = true
+    }
+
+    private func unarchive() {
+        guard fullVersion.canAddExercise(in: context) else {
+            presentPaywall()
+            return
+        }
+
+        entry.exercise?.isArchived = false
     }
 
     private func remove() {

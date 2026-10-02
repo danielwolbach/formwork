@@ -86,9 +86,7 @@ struct ExerciseGuide: View {
             .ignoresSafeArea()
         }
         .sheet(item: $sheet) { sheet in
-            NavigationStack {
-                sheet
-            }
+            sheet
         }
     }
 }

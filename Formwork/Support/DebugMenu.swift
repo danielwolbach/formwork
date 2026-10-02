@@ -26,6 +26,12 @@ struct DebugMenu: View {
                     VerbatimLabel(verbatim: "Restart Onboarding", systemImage: "arrow.counterclockwise")
                 }
 
+                Button {
+                    unarchiveAll()
+                } label: {
+                    VerbatimLabel(verbatim: "Unarchive All", systemImage: "archivebox")
+                }
+
                 Button(role: .destructive) {
                     Storage.deleteEverything(in: modelContext)
                 } label: {
@@ -35,6 +41,19 @@ struct DebugMenu: View {
         #else
             EmptyView()
         #endif
+    }
+
+    private func unarchiveAll() {
+        let exercises = (try? modelContext.fetch(FetchDescriptor<Exercise>(predicate: #Predicate { $0.isArchived }))) ?? []
+        let workouts = (try? modelContext.fetch(FetchDescriptor<Workout>(predicate: #Predicate { $0.isArchived }))) ?? []
+
+        for exercise in exercises {
+            exercise.isArchived = false
+        }
+
+        for workout in workouts {
+            workout.isArchived = false
+        }
     }
 }
 

@@ -7,6 +7,7 @@
 
 import Observation
 import StoreKit
+import SwiftData
 
 @MainActor
 @Observable
@@ -16,18 +17,25 @@ public final class FullVersion {
         "de.danielwolbach.Formwork.fullversion.yearly",
     ]
 
+    public nonisolated static let workoutLimit = 2
+
+    public nonisolated static let exerciseLimit = 10
+
     public private(set) var products: [Product] = []
 
     public private(set) var isUnlocked = false
+
+    public private(set) var hasCheckedEntitlements = false
 
     public private(set) var isLoadingProducts = false
 
     public nonisolated init() {}
 
-    /// Runs for the app's lifetime: loads products, then follows renewals, refunds, Ask to Buy, other devices.
+    /// Runs for the app's lifetime: checks entitlements, loads products, then follows renewals, refunds, Ask to Buy, other devices.
     public func observe() async {
-        await loadProducts()
+        // Entitlements first: they're answered locally, while loading products can wait on a slow network.
         await refresh()
+        await loadProducts()
 
         for await result in Transaction.updates {
             await handle(result)
@@ -59,6 +67,16 @@ public final class FullVersion {
         await refresh()
     }
 
+    /// Counted on demand, so callers like rows don't each need a query over every exercise or workout.
+    /// A failed count allows it: a free user shouldn't be blocked by a storage hiccup.
+    public func canAddExercise(in context: ModelContext) -> Bool {
+        isUnlocked || (try? context.fetchCount(FetchDescriptor<Exercise>(predicate: #Predicate { !$0.isArchived }))) ?? 0 < Self.exerciseLimit
+    }
+
+    public func canAddWorkout(in context: ModelContext) -> Bool {
+        isUnlocked || (try? context.fetchCount(FetchDescriptor<Workout>(predicate: #Predicate { !$0.isArchived }))) ?? 0 < Self.workoutLimit
+    }
+
     private func handle(_ verification: VerificationResult<Transaction>) async {
         // An unverified transaction is left unfinished, so StoreKit delivers it again and a later verification can still unlock it.
         guard case let .verified(transaction) = verification else {
@@ -76,5 +94,6 @@ public final class FullVersion {
             active = true
         }
         isUnlocked = active
+        hasCheckedEntitlements = true
     }
 }

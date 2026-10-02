@@ -19,6 +19,12 @@ struct ExerciseScreen: View {
     @Environment(\.dismiss)
     private var dismiss: DismissAction
 
+    @Environment(\.fullVersion)
+    private var fullVersion: FullVersion
+
+    @Environment(\.presentPaywall)
+    private var presentPaywall: PresentPaywallAction
+
     @State
     private var sheet: Sheet? = nil
 
@@ -31,10 +37,16 @@ struct ExerciseScreen: View {
 
     var body: some View {
         let history = History(.exercise(exercise))
+        let badge = exercise.isArchived ? Pictogram.archivedBadge : nil
 
         ScrollView {
             ContentStack {
-                PictogramHeader(exercise.pictogram, title: exercise.title, subtitle: exercise.categories.formatted(.exerciseCategories))
+                PictogramHeader(
+                    exercise.pictogram,
+                    title: exercise.title,
+                    subtitle: exercise.categories.formatted(.exerciseCategories),
+                    badge: badge
+                )
 
                 if !history.sessions.isEmpty {
                     ExerciseStatistics(history: .init(.exercise(exercise)))
@@ -51,6 +63,18 @@ struct ExerciseScreen: View {
                         sheet = .editExercise(exercise)
                     }
 
+                    if exercise.isArchived {
+                        Button(.unarchive) {
+                            unarchive()
+                        }
+                    } else {
+                        Button(.archive) {
+                            archive()
+                        }
+                    }
+                }
+
+                Section {
                     Button(.delete) {
                         deleteAlert = true
                     }
@@ -69,10 +93,22 @@ struct ExerciseScreen: View {
             Text(.alertDeleteExerciseMessage)
         }
         .sheet(item: $sheet) { sheet in
-            NavigationStack {
-                sheet
-            }
+            sheet
         }
+    }
+
+    private func archive() {
+        exercise.isArchived = true
+        dismiss()
+    }
+
+    private func unarchive() {
+        guard fullVersion.canAddExercise(in: context) else {
+            presentPaywall()
+            return
+        }
+
+        exercise.isArchived = false
     }
 
     private func delete() {

@@ -19,6 +19,12 @@ struct WorkoutEntryScreen: View {
     @Environment(\.dismiss)
     private var dismiss: DismissAction
 
+    @Environment(\.fullVersion)
+    private var fullVersion: FullVersion
+
+    @Environment(\.presentPaywall)
+    private var presentPaywall: PresentPaywallAction
+
     @State
     private var sheet: Sheet? = nil
 
@@ -30,10 +36,17 @@ struct WorkoutEntryScreen: View {
     }
 
     var body: some View {
+        let badge = entry.isArchived ? Pictogram.archivedBadge : nil
+
         ScrollView {
             ContentStack {
                 // The exercise's categories rather than the entry's target, which the editor below shows.
-                PictogramHeader(entry.pictogram, title: entry.title, subtitle: entry.exercise?.categories.formatted(.exerciseCategories))
+                PictogramHeader(
+                    entry.pictogram,
+                    title: entry.title,
+                    subtitle: entry.exercise?.categories.formatted(.exerciseCategories),
+                    badge: badge
+                )
 
                 ExerciseTargetEditor(target: Bindable(entry).target)
 
@@ -56,8 +69,20 @@ struct WorkoutEntryScreen: View {
                         Button(.edit) {
                             sheet = .editExercise(exercise)
                         }
-                    }
 
+                        if exercise.isArchived {
+                            Button(.unarchive) {
+                                unarchive()
+                            }
+                        } else {
+                            Button(.archive) {
+                                archive()
+                            }
+                        }
+                    }
+                }
+
+                Section {
                     Button(.remove) {
                         deleteAlert = true
                     }
@@ -65,9 +90,7 @@ struct WorkoutEntryScreen: View {
             }
         }
         .sheet(item: $sheet) { sheet in
-            NavigationStack {
-                sheet
-            }
+            sheet
         }
         .alert(.alertRemoveWorkoutEntryTitle, isPresented: $deleteAlert) {
             Button(.cancel) {
@@ -80,6 +103,20 @@ struct WorkoutEntryScreen: View {
         } message: {
             Text(.alertRemoveWorkoutEntryMessage)
         }
+    }
+
+    /// Archiving acts on the exercise, so it applies to every workout using it and to the catalog.
+    private func archive() {
+        entry.exercise?.isArchived = true
+    }
+
+    private func unarchive() {
+        guard fullVersion.canAddExercise(in: context) else {
+            presentPaywall()
+            return
+        }
+
+        entry.exercise?.isArchived = false
     }
 
     private func remove() {

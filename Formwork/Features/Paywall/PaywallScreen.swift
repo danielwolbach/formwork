@@ -94,15 +94,17 @@ struct PaywallScreen: View {
 
     private var header: some View {
         VStack(spacing: .items) {
-            Image(.imageAppIcon)
-                .resizable()
+            Image(systemName: "crown")
+                .font(.system(size: 48))
                 .frame(width: 64, height: 64)
+                .foregroundStyle(.tint)
 
             Text(.paywallTitle)
                 .font(.title)
                 .fontWeight(.bold)
 
             Text(.paywallMessage)
+                .font(.body)
                 .foregroundStyle(.secondary)
         }
         .multilineTextAlignment(.center)
@@ -273,8 +275,8 @@ private struct PlanComparison: View {
     }
 
     private let rows: [Row] = [
-        Row(feature: .paywallExercisesTitle, free: .text("10"), full: .text(String(localized: .paywallUnlimitedTitle))),
-        Row(feature: .paywallWorkoutsTitle, free: .text("1"), full: .text(String(localized: .paywallUnlimitedTitle))),
+        Row(feature: .paywallActiveExercisesTitle, free: .text("\(FullVersion.exerciseLimit)"), full: .text(String(localized: .paywallUnlimitedTitle))),
+        Row(feature: .paywallActiveWorkoutsTitle, free: .text("\(FullVersion.workoutLimit)"), full: .text(String(localized: .paywallUnlimitedTitle))),
         Row(feature: .paywallLiveActivityTitle, free: .included(false), full: .included(true)),
     ]
 

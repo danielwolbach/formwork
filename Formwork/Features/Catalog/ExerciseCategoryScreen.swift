@@ -13,7 +13,16 @@ import SwiftUI
 struct ExerciseCategoryScreen: View {
     private let category: Exercise.Category
 
-    @Query(sort: \Exercise.name)
+    @Environment(\.modelContext)
+    private var context: ModelContext
+
+    @Environment(\.fullVersion)
+    private var fullVersion: FullVersion
+
+    @Environment(\.presentPaywall)
+    private var presentPaywall: PresentPaywallAction
+
+    @Query(filter: #Predicate<Exercise> { !$0.isArchived }, sort: \Exercise.name)
     private var exercises: [Exercise]
 
     @State
@@ -63,7 +72,11 @@ struct ExerciseCategoryScreen: View {
             Menu(.more) {
                 Section {
                     Button(.createExercise) {
-                        sheet = .createExerciseInCategories([category])
+                        if fullVersion.canAddExercise(in: context) {
+                            sheet = .createExerciseInCategories([category])
+                        } else {
+                            presentPaywall()
+                        }
                     }
                 }
 
@@ -81,9 +94,7 @@ struct ExerciseCategoryScreen: View {
             }
         }
         .sheet(item: $sheet) { sheet in
-            NavigationStack {
-                sheet
-            }
+            sheet
         }
         .animation(.snappy, value: searchText)
     }
@@ -95,7 +106,11 @@ struct ExerciseCategoryScreen: View {
             Text(.emptyExercisesMessage)
         } actions: {
             Button(.createExercise) {
-                sheet = .createExerciseInCategories([category])
+                if fullVersion.canAddExercise(in: context) {
+                    sheet = .createExerciseInCategories([category])
+                } else {
+                    presentPaywall()
+                }
             }
             .labelStyle(.fixedTitleAndIcon)
             .buttonStyle(.cardProminent)

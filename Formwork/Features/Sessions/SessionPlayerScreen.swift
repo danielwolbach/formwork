@@ -111,9 +111,7 @@ struct SessionPlayerScreen: View {
             }
         }
         .sheet(item: $sheet) { sheet in
-            NavigationStack {
-                sheet
-            }
+            sheet
         }
         .alert(.alertFinishSessionTitle, isPresented: $finishAlert) {
             Button(.cancel) {

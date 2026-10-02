@@ -44,4 +44,8 @@ extension WorkoutEntry {
     public var title: String {
         exercise?.title ?? .init(localized: .placeholder)
     }
+
+    public var isArchived: Bool {
+        exercise?.isArchived ?? false
+    }
 }
