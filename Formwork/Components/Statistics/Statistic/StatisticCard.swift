@@ -27,13 +27,6 @@ struct StatisticCard: View {
             label
         }
         .buttonStyle(.plain)
-        .contextMenu {
-            StatisticPinControl(kind, of: history.subject) { isPinned in
-                Button(isPinned.wrappedValue ? .unpin : .pin) {
-                    isPinned.wrappedValue.toggle()
-                }
-            }
-        }
         .tileSpan(rows: span, columns: span)
     }
 

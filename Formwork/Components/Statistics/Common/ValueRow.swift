@@ -45,7 +45,7 @@ struct ValueRow: View {
 
 #Preview {
     GroupBox {
-        ValueRow(title: PersonalBest.title, reading: .weight(kilograms: 100), footnote: String(localized: .fieldRecentSubtitle(days: History.recentDays)))
+        ValueRow(title: StatisticKind.personalBest.definition.title, reading: .weight(kilograms: 100), footnote: String(localized: .fieldRecentSubtitle(days: History.recentDays)))
     }
     .groupBoxStyle(.card)
     .padding()

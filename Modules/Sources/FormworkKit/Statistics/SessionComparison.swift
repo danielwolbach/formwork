@@ -7,35 +7,38 @@
 
 import Foundation
 
-public struct SessionComparison<S: SessionFigure> {
+public struct SessionComparison {
     public struct Point: Identifiable {
         public let id: Int
 
         public let date: Date
 
-        public let figure: S
+        public let value: Double?
 
         public let isCurrent: Bool
 
         public let isBaseline: Bool
     }
 
-    public let current: S
-
-    public let baseline: S?
+    public let kind: SessionFigureKind
 
     public let session: Session
 
-    let calendar: Calendar
+    public let current: Reading?
+
+    /// The usual value of the workout's sessions before; nil with fewer than three of them.
+    public let baseline: Reading?
+
+    public let direction: Trend.Direction?
 
     let window: History.Window?
 
     /// The baseline is the workout's sessions in the days before the session's day, so it never includes the
     /// session itself and stays meaningful for sessions long past.
-    public init(_ session: Session, among sessions: [Session], calendar: Calendar = .current) {
-        self.current = S(session, calendar: calendar)
+    public init(_ kind: SessionFigureKind, of session: Session, among sessions: [Session], calendar: Calendar = .current) {
+        self.kind = kind
         self.session = session
-        self.calendar = calendar
+        self.current = kind.reading(of: session, calendar: calendar)
 
         guard
             let workout = session.workout,
@@ -43,27 +46,37 @@ public struct SessionComparison<S: SessionFigure> {
             let before = calendar.date(byAdding: .day, value: -1, to: day)
         else {
             self.baseline = nil
+            self.direction = nil
             self.window = nil
             return
         }
 
         let history = History(.workout(workout), among: sessions, at: day, calendar: calendar)
         let window = history.days(History.recentDays, endingOn: before)
+        let usual = window.sessions.count < History.minimumSessions ? [] : window.sessions
 
-        self.baseline = window.sessions.count < History.minimumSessions ? nil : S(typicalOf: window.sessions, calendar: calendar)
+        switch kind.definition.value {
+        case let .measure(unit, tolerance, value):
+            let typical = usual.compactMap(value).median
+
+            self.baseline = typical.map { Reading($0, as: unit) }
+            self.direction = Trend.Direction(from: typical, to: value(session), tolerance: tolerance)
+        case let .clock(minute):
+            self.baseline = usual.compactMap { minute($0, calendar) }.clockMedoid.flatMap { Reading(minuteOfDay: $0, in: calendar) }
+            self.direction = nil
+        }
+
         self.window = window
     }
 }
 
-extension SessionComparison where S: SessionMeasure {
-    public var direction: Direction? {
-        S.tolerance.flatMap { Direction(from: baseline?.value, to: current.value, tolerance: $0) }
-    }
-}
-
 extension SessionComparison {
-    /// The workout's sessions up to and including this one, oldest first.
+    /// The workout's sessions up to and including this one, oldest first. Empty for figures that don't chart.
     public func points(count: Int = 20) -> [Point] {
+        guard case let .measure(_, _, value) = kind.definition.value else {
+            return []
+        }
+
         let sessions = (window?.history.sessions ?? [session])
             .filter { $0.startDate <= session.startDate }
             .sorted { $0.startDate < $1.startDate }
@@ -74,7 +87,7 @@ extension SessionComparison {
             Point(
                 id: index,
                 date: other.startDate,
-                figure: S(other, calendar: calendar),
+                value: value(other),
                 isCurrent: other === session,
                 isBaseline: baseline.contains { $0 === other }
             )

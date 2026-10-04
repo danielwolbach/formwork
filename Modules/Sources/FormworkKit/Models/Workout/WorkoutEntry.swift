@@ -21,9 +21,6 @@ public class WorkoutEntry {
     @Relationship(deleteRule: .nullify, inverse: \SessionEntry.workoutEntry)
     public var sessionEntries: [SessionEntry] = []
 
-    @Relationship(deleteRule: .cascade, inverse: \StatisticPin.entry)
-    public var pins: [StatisticPin] = []
-
     public var creationDate: Date = Date.distantPast
 
     public init(exercise: Exercise? = nil, target: ExerciseTarget) {

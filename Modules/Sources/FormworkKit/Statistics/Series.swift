@@ -7,18 +7,19 @@
 
 import Foundation
 
-public struct Series<S: Statistic> {
+/// One value per month of a year, for the months on record.
+public struct Series<Value> {
     public struct Bar {
         public let month: Date
 
-        public let statistic: S
+        public let value: Value
     }
 
     public let period: DateInterval
 
     public let bars: [Bar]
 
-    public init(_ history: History, year: Int) {
+    public init(_ history: History, year: Int, value: (History.Window) -> Value) {
         let period = history.year(year).period
 
         self.period = period
@@ -26,7 +27,7 @@ public struct Series<S: Statistic> {
             .prefix { $0 < period.end }
             .compactMap { month in
                 let window = history.month(containing: month)
-                return window.interval.duration > 0 ? Bar(month: month, statistic: S(window)) : nil
+                return window.interval.duration > 0 ? Bar(month: month, value: value(window)) : nil
             }
     }
 }

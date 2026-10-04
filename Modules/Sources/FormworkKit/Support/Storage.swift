@@ -34,10 +34,6 @@ public enum Storage {
             for exercise in try modelContext.fetch(FetchDescriptor<Exercise>()) {
                 modelContext.delete(exercise)
             }
-
-            for pin in try modelContext.fetch(FetchDescriptor<StatisticPin>()) {
-                modelContext.delete(pin)
-            }
         } catch {
             // TODO: Log error
         }

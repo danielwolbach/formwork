@@ -11,14 +11,17 @@ import FormworkUI
 import SwiftUI
 
 struct MonthlyChart: View {
-    private let monthly: StatisticDetails.MonthlyBars
+    private let series: Series<Double?>
 
-    init(_ monthly: StatisticDetails.MonthlyBars) {
-        self.monthly = monthly
+    private let reading: (Double) -> Reading
+
+    init(_ series: Series<Double?>, reading: @escaping (Double) -> Reading) {
+        self.series = series
+        self.reading = reading
     }
 
     var body: some View {
-        Chart(monthly.bars) { bar in
+        Chart(series.bars) { bar in
             if let value = bar.value {
                 BarMark(
                     x: .value(.placeholder, bar.month, unit: .month),
@@ -27,13 +30,13 @@ struct MonthlyChart: View {
                 .foregroundStyle(.tint)
             }
         }
-        .chartXScale(domain: monthly.period.start ... monthly.period.end)
+        .chartXScale(domain: series.period.start ... series.period.end)
         .chartXAxis {
             AxisMarks(values: .stride(by: .month)) {
                 AxisValueLabel(format: .dateTime.month(.narrow), centered: true)
             }
         }
-        .readingAxis(upTo: monthly.bars.compactMap(\.value).max() ?? 0, reading: monthly.reading)
+        .readingAxis(upTo: series.bars.compactMap(\.value).max() ?? 0, reading: reading)
         .frame(height: 192)
     }
 }

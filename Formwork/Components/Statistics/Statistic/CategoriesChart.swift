@@ -15,7 +15,7 @@ struct CategoriesChart: View {
 
     var body: some View {
         Chart(series.bars) { bar in
-            ForEach(bar.statistic.shares) { share in
+            ForEach(bar.value.shares) { share in
                 BarMark(
                     x: .value(.placeholder, bar.month, unit: .month),
                     y: .value(share.category.title, share.count)
@@ -39,6 +39,6 @@ struct CategoriesChart: View {
 #Preview {
     let history = History(.all, among: Samples.sessions)
 
-    CategoriesChart(series: Series<Categories>(history, year: history.years.upperBound))
+    CategoriesChart(series: Series(history, year: history.years.upperBound, value: Categories.init))
         .padding()
 }

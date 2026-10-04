@@ -23,7 +23,7 @@ public struct Progression {
     public let curve: [Point]
 }
 
-extension Progression: Statistic {
+extension Progression {
     public init(_ window: History.Window) {
         let history = window.history
         let last = history.calendar.date(byAdding: .day, value: -1, to: window.interval.end) ?? window.interval.end
@@ -31,53 +31,11 @@ extension Progression: Statistic {
             .prefix { $0 >= window.interval.start }
 
         // From the exercise, not the points: the curve looks back before the window and may have no point to go on.
-        self.kind = Self.exercise(of: history.subject)?.kind
+        self.kind = history.subject.exercise?.kind
         self.period = window.period
-        self.points = Self.bests(in: window)
+        self.points = window.dailyBests
         self.curve = weekly.reversed().compactMap { day in
-            TypicalBest(history.days(History.recentDays, endingOn: day)).target.map { Point(date: day, target: $0) }
-        }
-    }
-
-    public static var info: String {
-        String(localized: .statisticProgressionInfo)
-    }
-
-    public static var pictogram: Pictogram {
-        .progression
-    }
-
-    public static var title: String {
-        String(localized: .statisticProgressionTitle)
-    }
-
-    static func bests(in window: History.Window) -> [Point] {
-        guard let exercise = exercise(of: window.history.subject) else {
-            return []
-        }
-
-        let best = window.entries
-            .filter { $0.status.isCompleted && $0.target.exerciseKind == exercise.kind }
-            .reduce(into: [Date: ExerciseTarget]()) { best, entry in
-                guard let day = entry.session?.period(of: .day, in: window.history.calendar)?.start else {
-                    return
-                }
-
-                if best[day].map({ $0.rank < entry.target.rank }) ?? true {
-                    best[day] = entry.target
-                }
-            }
-
-        return best
-            .sorted { $0.key < $1.key }
-            .map { Point(date: $0.key, target: $0.value) }
-    }
-
-    private static func exercise(of subject: History.Subject) -> Exercise? {
-        switch subject {
-        case .all, .workout: nil
-        case let .exercise(exercise): exercise
-        case let .entry(slot): slot.exercise
+            history.days(History.recentDays, endingOn: day).typicalBest.map { Point(date: day, target: $0) }
         }
     }
 

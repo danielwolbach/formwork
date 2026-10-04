@@ -32,7 +32,7 @@ struct OverviewScreen: View {
     var body: some View {
         ScrollView {
             ContentStack {
-                PinnedStatisticsSection()
+                StatisticChips()
 
                 todaySection
 

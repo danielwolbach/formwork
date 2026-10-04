@@ -243,39 +243,6 @@
         }
       }
     },
-    "action.moveBackward.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Move Backward"
-          }
-        }
-      }
-    },
-    "action.moveForward.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Move Forward"
-          }
-        }
-      }
-    },
-    "action.pin.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pin to Overview"
-          }
-        }
-      }
-    },
     "action.queue.title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -437,17 +404,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Unlock Full Version"
-          }
-        }
-      }
-    },
-    "action.unpin.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Unpin"
           }
         }
       }

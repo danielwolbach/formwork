@@ -20,10 +20,10 @@ struct StatisticSheet: View {
     }
 
     var body: some View {
-        let statistic = kind.statistic
+        let definition = kind.definition
         let details = kind.details(of: history)
 
-        DetailSheet(statistic.pictogram, title: statistic.title, subtitle: history.subject.title, info: statistic.info) {
+        DetailSheet(definition.pictogram, title: definition.title, subtitle: history.subject.title, info: definition.info) {
             if !details.values.isEmpty {
                 GroupBox {
                     VStack(spacing: .groups) {
@@ -60,16 +60,6 @@ struct StatisticSheet: View {
                     chart(yearly.chart(year))
                 }
             }
-        } accessory: {
-            StatisticPinControl(kind, of: history.subject) { isPinned in
-                Toggle(.pin, isOn: isPinned)
-                    .symbolVariant(isPinned.wrappedValue ? .fill : .none)
-                    .labelStyle(.iconOnly)
-                    .toggleStyle(.button)
-                    .buttonStyle(.cardProminent)
-                    .buttonBorderShape(.circle)
-                    .sensoryFeedback(.selection, trigger: isPinned.wrappedValue)
-            }
         }
     }
 
@@ -86,7 +76,7 @@ struct StatisticSheet: View {
     @ViewBuilder
     private func chart(_ chart: StatisticDetails.Chart) -> some View {
         switch chart {
-        case let .monthly(monthly): MonthlyChart(monthly)
+        case let .monthly(series, reading): MonthlyChart(series, reading: reading)
         case let .activeDays(activeDays): ActiveDaysYear(activeDays)
         case let .categories(series): CategoriesChart(series: series)
         case let .progression(progression): ProgressionChart(progression, isYear: true).frame(height: 200)

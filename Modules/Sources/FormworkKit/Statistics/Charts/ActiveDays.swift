@@ -21,7 +21,7 @@ public struct ActiveDays {
     public let days: [Day]
 }
 
-extension ActiveDays: Statistic {
+extension ActiveDays {
     public init(_ window: History.Window) {
         let calendar = window.history.calendar
         // An exercise done twice in one session is still one session.
@@ -39,18 +39,6 @@ extension ActiveDays: Statistic {
             .map { date in
                 Day(date: date, sessionCount: counts[date] ?? 0, isAhead: date >= window.history.interval.end)
             }
-    }
-
-    public static var info: String {
-        String(localized: .statisticActiveDaysInfo)
-    }
-
-    public static var pictogram: Pictogram {
-        .activity
-    }
-
-    public static var title: String {
-        String(localized: .statisticActiveDaysTitle)
     }
 
     public var weekdaySymbols: [String] {

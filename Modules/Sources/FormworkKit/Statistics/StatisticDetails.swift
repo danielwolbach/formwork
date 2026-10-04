@@ -11,14 +11,14 @@ import Foundation
 public struct StatisticDetails {
     public enum Value: Hashable {
         /// Recent against before; `before` is nil while there isn't enough history to compare.
-        case trend(recent: Reading?, before: Reading?, direction: Direction?)
+        case trend(recent: Reading?, before: Reading?, direction: Trend.Direction?)
         case recent(Reading?)
         case overall(Reading?)
         case named(String, Reading?)
     }
 
     public enum Chart {
-        case monthly(MonthlyBars)
+        case monthly(Series<Double?>, reading: (Double) -> Reading)
         case activeDays(ActiveDays)
         case categories(Series<Categories>)
         case progression(Progression)
@@ -36,21 +36,6 @@ public struct StatisticDetails {
         }
     }
 
-    /// A metric's `Series` without the metric's type, so a view can draw any of them.
-    public struct MonthlyBars {
-        public struct Bar {
-            public let month: Date
-
-            public let value: Double?
-        }
-
-        public let period: DateInterval
-
-        public let bars: [Bar]
-
-        public let reading: (Double) -> Reading
-    }
-
     public let values: [Value]
 
     public let categories: (recent: Categories, overall: Categories)?
@@ -64,91 +49,60 @@ public struct StatisticDetails {
     }
 }
 
-extension StatisticDetails {
-    static func metric<M: Metric>(_: M.Type, of history: History) -> Self {
-        let overall = M(history.allTime)
-
-        return StatisticDetails(
-            values: [.trend(Trend<M>(history)), .overall(overall.reading)],
-            yearly: Yearly(history) { .monthly(MonthlyBars(Series<M>(history, year: $0), reading: overall.reading(of:))) }
-        )
-    }
-
-    static func indicator<I: Indicator>(_: I.Type, of history: History) -> Self {
-        StatisticDetails(values: [.recent(I(history.recent).reading), .overall(I(history.allTime).reading)])
-    }
-}
-
-extension StatisticDetails.Value {
-    /// A metric that never compares shows its recent value alone.
-    static func trend<M: Metric>(_ trend: Trend<M>) -> Self {
-        guard M.tolerance != nil else {
-            return .recent(trend.recent.reading)
-        }
-
-        return .trend(recent: trend.recent.reading, before: trend.baseline?.reading, direction: trend.direction)
-    }
-
-    static func named<I: Indicator>(_ indicator: I) -> Self {
-        .named(I.title, indicator.reading)
-    }
-}
-
-extension StatisticDetails.MonthlyBars {
-    init(_ series: Series<some Metric>, reading: @escaping (Double) -> Reading) {
-        self.init(period: series.period, bars: series.bars.map { Bar(month: $0.month, value: $0.statistic.value) }, reading: reading)
-    }
-}
-
-extension StatisticDetails.MonthlyBars.Bar: Identifiable {
-    public var id: Date {
-        month
-    }
-}
-
 extension StatisticKind {
     public func details(of history: History) -> StatisticDetails {
+        let allTime = history.allTime
+
         switch self {
-        case .lastCompleted:
-            StatisticDetails(values: [.named(LastCompleted(history.allTime))])
         case .weekStreak:
-            StatisticDetails(values: [.named(WeekStreak(history.allTime)), .named(LongestWeekStreak(history.allTime))])
-        case .weeklySessions:
-            .metric(WeeklySessions.self, of: history)
-        case .typicalDuration:
-            .metric(TypicalDuration.self, of: history)
-        case .typicalStartTime:
-            .indicator(TypicalStartTime.self, of: history)
-        case .completionRate:
-            .metric(CompletionRate.self, of: history)
-        case .completions:
-            .metric(Completions.self, of: history)
-        case .favoriteWorkout:
-            .indicator(FavoriteWorkout.self, of: history)
-        case .favoriteExercise:
-            .indicator(FavoriteExercise.self, of: history)
-        case .mostSkippedExercise:
-            .indicator(MostSkippedExercise.self, of: history)
-        case .personalBest:
-            .metric(PersonalBest.self, of: history)
+            return StatisticDetails(values: [
+                .named(definition.title, .count(allTime.weekStreak.weeks)),
+                .named(String(localized: .statisticLongestWeekStreakTitle), .count(allTime.longestWeekStreak)),
+            ])
         case .activeDays:
-            StatisticDetails(yearly: StatisticDetails.Yearly(history) { .activeDays(ActiveDays(history.year($0))) })
+            return StatisticDetails(yearly: StatisticDetails.Yearly(history) { .activeDays(ActiveDays(history.year($0))) })
         case .categories:
-            StatisticDetails(
-                categories: (Categories(history.recent), Categories(history.allTime)),
-                yearly: StatisticDetails.Yearly(history) { .categories(Series(history, year: $0)) }
+            return StatisticDetails(
+                categories: (Categories(history.recent), Categories(allTime)),
+                yearly: StatisticDetails.Yearly(history) { .categories(Series(history, year: $0, value: Categories.init)) }
             )
         case .progression:
-            StatisticDetails(
-                values: [.trend(Trend<TypicalBest>(history)), .overall(PersonalBest(history.allTime).reading)],
+            let read = { Reading(rank: $0, of: history.subject.exercise?.kind) }
+            let trend = Trend(history, tolerance: 0.02) { $0.typicalBest?.rank }
+
+            return StatisticDetails(
+                values: [
+                    .trend(recent: trend.recent.map(read), before: trend.before.map(read), direction: trend.direction),
+                    .overall(StatisticKind.personalBest.reading(in: allTime)),
+                ],
                 yearly: StatisticDetails.Yearly(history) { .progression(Progression(history.year($0))) }
             )
-        case .totalVolume:
-            .metric(TotalVolume.self, of: history)
-        case .oneRepMax:
-            .metric(OneRepMax.self, of: history)
-        case .typicalInterval:
-            .metric(TypicalInterval.self, of: history)
+        default:
+            return valueDetails(of: history)
+        }
+    }
+
+    private func valueDetails(of history: History) -> StatisticDetails {
+        switch definition.value {
+        case let .metric(unit, tolerance, _, value):
+            let read = { Reading($0, as: unit, of: history.subject.exercise?.kind) }
+            let trend = Trend(history, tolerance: tolerance, value: value)
+            let comparison: StatisticDetails.Value = if tolerance == nil {
+                .recent(trend.recent.map(read))
+            } else {
+                .trend(recent: trend.recent.map(read), before: trend.before.map(read), direction: trend.direction)
+            }
+
+            return StatisticDetails(
+                values: [comparison, .overall(reading(in: history.allTime))],
+                yearly: StatisticDetails.Yearly(history) { .monthly(Series(history, year: $0, value: value), reading: read) }
+            )
+        case .indicator(card: .recent, _):
+            return StatisticDetails(values: [.recent(reading(in: history.recent)), .overall(reading(in: history.allTime))])
+        case .indicator(card: .allTime, _):
+            return StatisticDetails(values: [.named(definition.title, reading(in: history.allTime))])
+        case .chart:
+            preconditionFailure("\(self) describes its own chart.")
         }
     }
 }

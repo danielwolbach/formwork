@@ -7,20 +7,51 @@
 
 import Foundation
 
-public struct Trend<M: Metric> {
-    public let recent: M
+public struct Trend {
+    public enum Direction: Sendable {
+        case up
+        case down
+        case flat
+    }
 
-    public let baseline: M?
+    let recent: Double?
 
-    public init(_ history: History) {
+    let before: Double?
+
+    let direction: Direction?
+
+    /// Without a tolerance the value doesn't compare, so `before` and `direction` stay nil.
+    init(_ history: History, tolerance: Double?, value: (History.Window) -> Double?) {
         let baseline = history.baseline
-        self.recent = M(history.recent)
-        self.baseline = M.tolerance == nil || baseline.sessions.count < History.minimumSessions ? nil : M(baseline)
+        let recent = value(history.recent)
+        let before = tolerance == nil || baseline.sessions.count < History.minimumSessions ? nil : value(baseline)
+
+        self.recent = recent
+        self.before = before
+        self.direction = tolerance.flatMap { Direction(from: before, to: recent, tolerance: $0) }
     }
 }
 
-extension Trend {
-    public var direction: Direction? {
-        M.tolerance.flatMap { Direction(from: baseline?.value, to: recent.value, tolerance: $0) }
+extension Trend.Direction {
+    init?(from old: Double?, to new: Double?, tolerance: Double) {
+        guard let old, let new else {
+            return nil
+        }
+
+        guard old != 0 else {
+            self = new == 0 ? .flat : .up
+            return
+        }
+
+        let change = (new - old) / abs(old)
+        self = abs(change) <= tolerance ? .flat : change > 0 ? .up : .down
+    }
+
+    public var image: String {
+        switch self {
+        case .up: "arrow.up.forward"
+        case .down: "arrow.down.forward"
+        case .flat: "arrow.forward"
+        }
     }
 }

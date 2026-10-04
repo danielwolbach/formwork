@@ -31,7 +31,7 @@ struct ActiveDaysCard: View {
 
             Spacer(minLength: 0)
         } label: {
-            Label(ActiveDays.title, systemImage: ActiveDays.pictogram.image)
+            Label(StatisticKind.activeDays.definition.title, systemImage: StatisticKind.activeDays.definition.pictogram.image)
         }
         .groupBoxStyle(.card)
     }
@@ -73,7 +73,7 @@ struct ActiveDaysCard: View {
         } else if day.sessionCount == 0 {
             AnyShapeStyle(.gray.quaternary)
         } else {
-            AnyShapeStyle(ActiveDays.pictogram.color)
+            AnyShapeStyle(StatisticKind.activeDays.definition.pictogram.color)
         }
     }
 }

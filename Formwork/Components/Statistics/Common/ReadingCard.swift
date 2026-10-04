@@ -16,28 +16,20 @@ struct ReadingCard: View {
 
     private let reading: Reading?
 
-    private let direction: Direction?
+    private let direction: Trend.Direction?
 
     @Environment(\.units)
     private var units: Units
 
-    init<I: Indicator>(_ indicator: I) {
-        self.init(pictogram: I.pictogram, title: I.title, reading: indicator.reading)
+    init(_ kind: StatisticKind, reading: Reading?, direction: Trend.Direction? = nil) {
+        self.init(pictogram: kind.definition.pictogram, title: kind.definition.title, reading: reading, direction: direction)
     }
 
-    init(_ kind: StatisticKind, reading: Reading?, direction: Direction?) {
-        self.init(pictogram: kind.statistic.pictogram, title: kind.statistic.title, reading: reading, direction: direction)
+    init(_ kind: SessionFigureKind, reading: Reading?, direction: Trend.Direction? = nil) {
+        self.init(pictogram: kind.definition.pictogram, title: kind.definition.title, reading: reading, direction: direction)
     }
 
-    init<F: SessionFigure>(_ figure: F) {
-        self.init(pictogram: F.pictogram, title: F.title, reading: figure.reading)
-    }
-
-    init<M: SessionMeasure>(_ comparison: SessionComparison<M>) {
-        self.init(pictogram: M.pictogram, title: M.title, reading: comparison.current.reading, direction: comparison.direction)
-    }
-
-    private init(pictogram: Pictogram, title: String, reading: Reading?, direction: Direction? = nil) {
+    private init(pictogram: Pictogram, title: String, reading: Reading?, direction: Trend.Direction? = nil) {
         self.pictogram = pictogram
         self.title = title
         self.reading = reading
@@ -87,6 +79,6 @@ struct ReadingCard: View {
 }
 
 #Preview {
-    ReadingCard(StarterCatalog.Samples.weekStreak)
+    ReadingCard(.weekStreak, reading: StarterCatalog.Samples.weekStreak)
         .padding()
 }

@@ -32,20 +32,10 @@ struct SessionFigureCard: View {
         .buttonStyle(.plain)
     }
 
-    @ViewBuilder
     private var label: some View {
-        switch kind {
-        case .duration: card(SessionDuration.self)
-        case .endTime: ReadingCard(SessionEndTime(session))
-        case .skipRate: card(SessionSkipRate.self)
-        case .exerciseDuration: card(SessionExerciseDuration.self)
-        case .completedExercises: card(SessionCompletedExercises.self)
-        case .volume: card(SessionVolume.self)
-        }
-    }
+        let comparison = SessionComparison(kind, of: session, among: sessions)
 
-    private func card<M: SessionMeasure>(_: M.Type) -> some View {
-        ReadingCard(SessionComparison<M>(session, among: sessions))
+        return ReadingCard(kind, reading: comparison.current, direction: comparison.direction)
     }
 }
 

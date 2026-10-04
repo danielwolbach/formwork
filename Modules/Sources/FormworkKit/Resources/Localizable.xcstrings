@@ -1,15 +1,6 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "Best" : {
-
-    },
-    "Category" : {
-
-    },
-    "Day" : {
-
-    },
     "exercise.category.arms.title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -298,9 +289,6 @@
         }
       }
     },
-    "Month" : {
-
-    },
     "placeholder" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -312,8 +300,89 @@
         }
       }
     },
-    "Recent" : {
-
+    "sessionFigure.completedExercises.info" : {
+      "extractionState" : "manual"
+    },
+    "sessionFigure.completedExercises.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Completed Exercises"
+          }
+        }
+      }
+    },
+    "sessionFigure.duration.info" : {
+      "extractionState" : "manual"
+    },
+    "sessionFigure.duration.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Duration"
+          }
+        }
+      }
+    },
+    "sessionFigure.endTime.info" : {
+      "extractionState" : "manual"
+    },
+    "sessionFigure.endTime.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "End Time"
+          }
+        }
+      }
+    },
+    "sessionFigure.exerciseDuration.info" : {
+      "extractionState" : "manual"
+    },
+    "sessionFigure.exerciseDuration.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Time per Exercise"
+          }
+        }
+      }
+    },
+    "sessionFigure.skipRate.info" : {
+      "extractionState" : "manual"
+    },
+    "sessionFigure.skipRate.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skip Rate"
+          }
+        }
+      }
+    },
+    "sessionFigure.volume.info" : {
+      "extractionState" : "manual"
+    },
+    "sessionFigure.volume.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Total Volume"
+          }
+        }
+      }
     },
     "statistic.activeDays.info" : {
       "extractionState" : "manual"
@@ -413,9 +482,6 @@
         }
       }
     },
-    "statistic.longestWeekStreak.info" : {
-      "extractionState" : "manual"
-    },
     "statistic.longestWeekStreak.title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -493,20 +559,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Total Volume"
-          }
-        }
-      }
-    },
-    "statistic.typicalBest.info" : {
-      "extractionState" : "manual"
-    },
-    "statistic.typicalBest.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Typical Best"
           }
         }
       }
@@ -605,9 +657,6 @@
           }
         }
       }
-    },
-    "Value" : {
-
     }
   },
   "version" : "1.3"

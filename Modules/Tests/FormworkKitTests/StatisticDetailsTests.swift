@@ -56,7 +56,7 @@ struct StatisticDetailsTests {
 
         let details = try StatisticKind.weekStreak.details(of: history(.all))
 
-        #expect(details.values == [.named(WeekStreak.title, .count(1)), .named(LongestWeekStreak.title, .count(1))])
+        #expect(details.values == [.named(StatisticKind.weekStreak.definition.title, .count(1)), .named(String(localized: .statisticLongestWeekStreakTitle), .count(1))])
         #expect(details.yearly == nil)
     }
 
@@ -101,12 +101,12 @@ struct StatisticDetailsTests {
 
         let yearly = try #require(StatisticKind.completions.details(of: history(.workout(store.workout))).yearly)
 
-        guard case let .monthly(monthly) = yearly.chart(2026) else {
+        guard case let .monthly(series, reading) = yearly.chart(2026) else {
             Issue.record("Expected the monthly chart.")
             return
         }
 
-        #expect(monthly.bars.map(\.value) == [1])
-        #expect(monthly.reading(1) == .count(1))
+        #expect(series.bars.map(\.value) == [1])
+        #expect(reading(1) == .count(1))
     }
 }

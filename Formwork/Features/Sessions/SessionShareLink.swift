@@ -103,10 +103,9 @@ private struct SessionShareCard: View {
 
     private var summary: some View {
         TileGrid(columns: 2, spacing: 8, aspectRatio: 2) {
-            ReadingCard(SessionDuration(session))
-            ReadingCard(SessionVolume(session))
-            ReadingCard(SessionCompletedExercises(session))
-            ReadingCard(SessionExerciseDuration(session))
+            ForEach([SessionFigureKind.duration, .volume, .completedExercises, .exerciseDuration]) { kind in
+                ReadingCard(kind, reading: kind.reading(of: session))
+            }
             personalBest.tileSpan(columns: 2)
         }
     }

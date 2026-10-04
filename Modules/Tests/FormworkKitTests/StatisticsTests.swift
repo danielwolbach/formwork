@@ -51,65 +51,72 @@ extension TestStore {
 
 // MARK: - Formatting
 
+extension StatisticKind {
+    func reading(of value: Double, for subject: History.Subject = .all) -> Reading? {
+        guard case let .metric(unit, _, _, _) = definition.value else {
+            return nil
+        }
+
+        return Reading(value, as: unit, of: subject.exercise?.kind)
+    }
+}
+
 struct StatisticFormattingTests {
     @Test
     func missingValueIsNotFormatted() {
-        let statistic = LastCompleted(date: nil, session: nil, calendar: .berlin())
+        let allTime = History(.all, among: [], calendar: .berlin()).allTime
 
-        #expect(statistic.date == nil)
-        #expect(statistic.reading?.formatted(.reading(units: .metric)) == nil)
-        #expect(LastCompleted.title == String(localized: .statisticLastCompletedTitle))
-        #expect(LastCompleted.pictogram == .date)
+        #expect(allTime.lastCompletion == nil)
+        #expect(StatisticKind.lastCompleted.reading(in: allTime) == nil)
+        #expect(StatisticKind.lastCompleted.definition.title == String(localized: .statisticLastCompletedTitle))
+        #expect(StatisticKind.lastCompleted.definition.pictogram == .date)
     }
 
     @Test
     func valueIsFormattedAsSubtitle() {
-        #expect(Completions(count: 3).reading?.formatted(.reading(units: .metric)) == "3")
+        #expect(StatisticKind.completions.reading(of: 3)?.formatted(.reading(units: .metric)) == "3")
     }
 
     @Test
     func weeklySessionsShowOneDecimal() {
-        #expect(WeeklySessions(value: 2).reading?.formatted(.reading(units: .metric)) == 2.0.formatted(.number.precision(.fractionLength(1))))
-        #expect(WeeklySessions(value: 1.46).reading?.formatted(.reading(units: .metric)) == 1.5.formatted(.number.precision(.fractionLength(1))))
+        #expect(StatisticKind.weeklySessions.reading(of: 2)?.formatted(.reading(units: .metric)) == 2.0.formatted(.number.precision(.fractionLength(1))))
+        #expect(StatisticKind.weeklySessions.reading(of: 1.46)?.formatted(.reading(units: .metric)) == 1.5.formatted(.number.precision(.fractionLength(1))))
     }
 
     @Test(arguments: [42.0, 2000, 3500])
     func typicalDurationUnderAnHourReadsLikeAnExercise(seconds: Double) {
         let exerciseStyle = Duration.UnitsFormatStyle.units(allowed: [.minutes, .seconds], width: .abbreviated, maximumUnitCount: 1)
 
-        #expect(TypicalDuration(value: seconds).reading?.formatted(.reading(units: .metric)) == Duration.seconds(seconds).formatted(exerciseStyle))
+        #expect(StatisticKind.typicalDuration.reading(of: seconds)?.formatted(.reading(units: .metric)) == Duration.seconds(seconds).formatted(exerciseStyle))
     }
 
     @Test(arguments: [(6120.0, 6120.0), (3590, 3600)])
     func typicalDurationFromAnHourReadsInHoursAndMinutes(seconds: Double, shown: Double) {
         // 59 min 50 sec rounds to the hour, so it reads as 1 hr rather than 60 min.
-        #expect(TypicalDuration(value: seconds).reading?.formatted(.reading(units: .metric)) == Duration.seconds(shown).formatted(.units(allowed: [.hours, .minutes], width: .abbreviated)))
+        #expect(StatisticKind.typicalDuration.reading(of: seconds)?.formatted(.reading(units: .metric)) == Duration.seconds(shown).formatted(.units(allowed: [.hours, .minutes], width: .abbreviated)))
     }
 
     @Test
-    func lastCompletedWithinAWeekIsRelative() throws {
+    func dayWithinAWeekIsRelative() throws {
         let date = try #require(Calendar.berlin().date(byAdding: .day, value: -2, to: .now))
         var style = Date.RelativeFormatStyle(presentation: .named, calendar: .berlin(), capitalizationContext: .beginningOfSentence)
         style.allowedFields = [.day]
 
-        #expect(LastCompleted(date: date, session: nil, calendar: .berlin()).reading?.formatted(.reading(units: .metric)) == date.formatted(style))
+        #expect(Reading.day(date, calendar: .berlin()).formatted(.reading(units: .metric)) == date.formatted(style))
     }
 
     @Test
-    func lastCompletedTodayIsTheDayAndNotTheHour() throws {
+    func dayTodayIsTheDayAndNotTheHour() throws {
         // Two times on the same day, so neither may be shown as hours or minutes ago.
         let calendar = Calendar.berlin()
         let midnight = calendar.startOfDay(for: .now)
         let later = try #require(calendar.date(byAdding: .minute, value: 1, to: midnight))
 
-        #expect(
-            LastCompleted(date: midnight, session: nil, calendar: calendar).reading?.formatted(.reading(units: .metric))
-                == LastCompleted(date: later, session: nil, calendar: calendar).reading?.formatted(.reading(units: .metric))
-        )
+        #expect(Reading.day(midnight, calendar: calendar).formatted(.reading(units: .metric)) == Reading.day(later, calendar: calendar).formatted(.reading(units: .metric)))
     }
 
     @Test
-    func lastCompletedEarlierIsItsDateInTheCalendar() throws {
+    func dayEarlierIsItsDateInTheCalendar() throws {
         // 23:30 on May 28 in New York is already May 29 in Berlin.
         let calendar = Calendar.berlin()
         var newYork = calendar
@@ -117,21 +124,20 @@ struct StatisticFormattingTests {
         let date = try newYork.date(28, month: 5, year: 2025, hour: 23, minute: 30)
         let style = Date.FormatStyle(calendar: calendar, timeZone: calendar.timeZone).day().month().year()
 
-        let statistic = LastCompleted(date: date, session: nil, calendar: newYork)
-
-        #expect(try statistic.reading?.formatted(.reading(units: .metric)) == calendar.date(28, month: 5, year: 2025).formatted(style))
+        #expect(try Reading.day(date, calendar: newYork).formatted(.reading(units: .metric)) == calendar.date(28, month: 5, year: 2025).formatted(style))
     }
 
     @Test
-    func typicalStartTimeIsFormattedInTheCalendarsTimeZone() throws {
+    func timeIsFormattedInTheCalendarsTimeZone() throws {
         var tokyo = Calendar.berlin(), newYork = Calendar.berlin()
         tokyo.timeZone = try #require(TimeZone(identifier: "Asia/Tokyo"))
         newYork.timeZone = try #require(TimeZone(identifier: "America/New_York"))
         let time = DateComponents(hour: 8, minute: 15)
 
-        let value = try #require(TypicalStartTime(time: time, calendar: tokyo).reading?.formatted(.reading(units: .metric)))
+        let inTokyo = try Reading.time(#require(tokyo.date(from: time)), calendar: tokyo)
+        let inNewYork = try Reading.time(#require(newYork.date(from: time)), calendar: newYork)
 
-        #expect(value == TypicalStartTime(time: time, calendar: newYork).reading?.formatted(.reading(units: .metric)))
+        #expect(inTokyo.formatted(.reading(units: .metric)) == inNewYork.formatted(.reading(units: .metric)))
     }
 
     @Test(arguments: [
@@ -141,7 +147,9 @@ struct StatisticFormattingTests {
         (ExerciseTarget.distance(meters: 5 * 1000), "5 km"),
     ])
     func personalBestShowsOnlyTheRank(target: ExerciseTarget, expected: String) {
-        #expect(PersonalBest(target: target).reading?.formatted(.reading(units: .metric)) == expected)
+        let exercise = Exercise(name: "Test", kind: target.exerciseKind, categories: [])
+
+        #expect(StatisticKind.personalBest.reading(of: target.rank, for: .exercise(exercise))?.formatted(.reading(units: .metric)) == expected)
     }
 }
 
@@ -365,9 +373,9 @@ struct OverallStatisticsTests {
     func withoutSessionsThereIsNoStreak() throws {
         let allTime = try history(at: calendar.date(16)).allTime
 
-        #expect(WeekStreak(allTime).weeks == 0)
-        #expect(LongestWeekStreak(allTime).weeks == 0)
-        #expect(LastCompleted(allTime).date == nil)
+        #expect(allTime.weekStreak.weeks == 0)
+        #expect(allTime.longestWeekStreak == 0)
+        #expect(allTime.lastCompletion?.date == nil)
     }
 
     @Test
@@ -377,11 +385,11 @@ struct OverallStatisticsTests {
         try store.session(1)
         try store.session(9)
 
-        #expect(try WeekStreak(history(at: calendar.date(16)).allTime).weeks == 3)
+        #expect(try history(at: calendar.date(16)).allTime.weekStreak.weeks == 3)
 
         try store.session(15)
 
-        #expect(try WeekStreak(history(at: calendar.date(16)).allTime).weeks == 4)
+        #expect(try history(at: calendar.date(16)).allTime.weekStreak.weeks == 4)
     }
 
     @Test
@@ -389,7 +397,7 @@ struct OverallStatisticsTests {
         try store.session(1)
         try store.session(3)
 
-        #expect(try WeekStreak(history(at: calendar.date(16)).allTime).weeks == 0)
+        #expect(try history(at: calendar.date(16)).allTime.weekStreak.weeks == 0)
     }
 
     @Test
@@ -398,7 +406,7 @@ struct OverallStatisticsTests {
             try store.session(day)
         }
 
-        #expect(try WeekStreak(history(at: calendar.date(16)).allTime).weeks == 2)
+        #expect(try history(at: calendar.date(16)).allTime.weekStreak.weeks == 2)
     }
 
     @Test
@@ -407,7 +415,7 @@ struct OverallStatisticsTests {
         let running = try store.startSession()
         running.startDate = try calendar.date(15, hour: 8)
 
-        #expect(try WeekStreak(history(at: calendar.date(16)).allTime).weeks == 1)
+        #expect(try history(at: calendar.date(16)).allTime.weekStreak.weeks == 1)
     }
 
     @Test(arguments: [(2, 2), (1, 1)])
@@ -419,7 +427,7 @@ struct OverallStatisticsTests {
 
         let calendar = Calendar.berlin(firstWeekday: firstWeekday)
 
-        #expect(try WeekStreak(history(at: calendar.date(13), calendar: calendar).allTime).weeks == streak)
+        #expect(try history(at: calendar.date(13), calendar: calendar).allTime.weekStreak.weeks == streak)
     }
 
     @Test
@@ -430,7 +438,7 @@ struct OverallStatisticsTests {
         try store.session(27, month: 10)
         try store.session(3, month: 11)
 
-        #expect(try WeekStreak(history(at: calendar.date(4, month: 11)).allTime).weeks == 3)
+        #expect(try history(at: calendar.date(4, month: 11)).allTime.weekStreak.weeks == 3)
     }
 
     @Test
@@ -439,7 +447,7 @@ struct OverallStatisticsTests {
         try store.session(13, hour: 23, zone: "America/New_York")
         try store.session(7)
 
-        #expect(try WeekStreak(history(at: calendar.date(16)).allTime).weeks == 1)
+        #expect(try history(at: calendar.date(16)).allTime.weekStreak.weeks == 1)
     }
 
     @Test
@@ -452,8 +460,8 @@ struct OverallStatisticsTests {
 
         let allTime = try history(at: newYork.date(15, hour: 5), calendar: newYork).allTime
 
-        #expect(WeekStreak(allTime).weeks == 1)
-        #expect(LastCompleted(allTime).date == session.endDate)
+        #expect(allTime.weekStreak.weeks == 1)
+        #expect(allTime.lastCompletion?.date == session.endDate)
     }
 
     @Test(arguments: [(8, 2), (9, 4)])
@@ -463,7 +471,7 @@ struct OverallStatisticsTests {
             try store.session(day, month: month)
         }
 
-        #expect(try WeekStreak(self.month(month, at: calendar.date(16))).weeks == streak)
+        #expect(try self.month(month, at: calendar.date(16)).weekStreak.weeks == streak)
     }
 
     @Test
@@ -475,9 +483,9 @@ struct OverallStatisticsTests {
 
         let may = try month(5, at: calendar.date(10, month: 6))
 
-        #expect(WeekStreak(may).weeks == 5)
-        #expect(LongestWeekStreak(may).weeks == 5)
-        #expect(try WeekStreak(history(at: calendar.date(10, month: 6)).allTime).weeks == 6)
+        #expect(may.weekStreak.weeks == 5)
+        #expect(may.longestWeekStreak == 5)
+        #expect(try history(at: calendar.date(10, month: 6)).allTime.weekStreak.weeks == 6)
     }
 
     @Test
@@ -487,7 +495,7 @@ struct OverallStatisticsTests {
             try store.session(day, month: month)
         }
 
-        #expect(try WeekStreak(month(5, at: calendar.date(10, month: 6))).weeks == 4)
+        #expect(try month(5, at: calendar.date(10, month: 6)).weekStreak.weeks == 4)
     }
 
     @Test
@@ -499,8 +507,8 @@ struct OverallStatisticsTests {
 
         let september = try month(9, at: calendar.date(16, month: 10))
 
-        #expect(WeekStreak(september).weeks == 4)
-        #expect(LongestWeekStreak(september).weeks == 5)
+        #expect(september.weekStreak.weeks == 4)
+        #expect(september.longestWeekStreak == 5)
     }
 
     @Test
@@ -510,8 +518,8 @@ struct OverallStatisticsTests {
 
         let october = try month(10, at: calendar.date(16))
 
-        #expect(WeekStreak(october).weeks == 0)
-        #expect(LongestWeekStreak(october).weeks == 0)
+        #expect(october.weekStreak.weeks == 0)
+        #expect(october.longestWeekStreak == 0)
     }
 
     @Test
@@ -524,8 +532,8 @@ struct OverallStatisticsTests {
 
         let september = try month(9, at: calendar.date(23))
 
-        #expect(LongestWeekStreak(september).weeks == 3)
-        #expect(WeekStreak(september).weeks == 1)
+        #expect(september.longestWeekStreak == 3)
+        #expect(september.weekStreak.weeks == 1)
     }
 
     @Test
@@ -535,7 +543,7 @@ struct OverallStatisticsTests {
             try store.session(day, month: month)
         }
 
-        #expect(try LongestWeekStreak(month(8, at: calendar.date(16))).weeks == 2)
+        #expect(try month(8, at: calendar.date(16)).longestWeekStreak == 2)
     }
 
     /// A finished session of another workout, so that there is something to be favourite over.
@@ -561,16 +569,16 @@ struct OverallStatisticsTests {
         try store.session(8)
         _ = try store.startSession()
 
-        #expect(try Completions(history(at: calendar.date(16)).allTime).value == 3)
-        #expect(try Completions(month(9, at: calendar.date(16))).value == 2)
+        #expect(try history(at: calendar.date(16)).allTime.completionCount == 3)
+        #expect(try month(9, at: calendar.date(16)).completionCount == 2)
     }
 
     @Test
     func withoutSessionsThereIsNoFavouriteWorkout() throws {
         let allTime = try history(at: calendar.date(16)).allTime
 
-        #expect(Completions(allTime).value == 0)
-        #expect(FavoriteWorkout(allTime).workout == nil)
+        #expect(allTime.completionCount == 0)
+        #expect(allTime.favoriteWorkout == nil)
     }
 
     @Test
@@ -580,10 +588,10 @@ struct OverallStatisticsTests {
         try store.session(8)
         try session(of: legs, day: 9)
 
-        let favorite = try FavoriteWorkout(history(at: calendar.date(16)).allTime)
+        let allTime = try history(at: calendar.date(16)).allTime
 
-        #expect(favorite.workout === store.workout)
-        #expect(favorite.reading?.formatted(.reading(units: .metric)) == store.workout.name)
+        #expect(allTime.favoriteWorkout === store.workout)
+        #expect(StatisticKind.favoriteWorkout.reading(in: allTime)?.formatted(.reading(units: .metric)) == store.workout.name)
     }
 
     @Test
@@ -592,14 +600,14 @@ struct OverallStatisticsTests {
         try store.session(7)
         try session(of: legs, day: 8)
 
-        #expect(try FavoriteWorkout(history(at: calendar.date(16)).allTime).workout === legs)
+        #expect(try history(at: calendar.date(16)).allTime.favoriteWorkout === legs)
 
         try store.session(9)
         try session(of: legs, day: 10)
         try store.session(11)
 
         // Three each now, and the full body one was the last of them.
-        #expect(try FavoriteWorkout(history(at: calendar.date(16)).allTime).workout === store.workout)
+        #expect(try history(at: calendar.date(16)).allTime.favoriteWorkout === store.workout)
     }
 
     @Test
@@ -609,8 +617,8 @@ struct OverallStatisticsTests {
         try session(of: legs, day: 26, month: 8)
         try store.session(7)
 
-        #expect(try FavoriteWorkout(month(9, at: calendar.date(16))).workout === store.workout)
-        #expect(try FavoriteWorkout(history(at: calendar.date(16)).allTime).workout === legs)
+        #expect(try month(9, at: calendar.date(16)).favoriteWorkout === store.workout)
+        #expect(try history(at: calendar.date(16)).allTime.favoriteWorkout === legs)
     }
 
     @Test
@@ -625,10 +633,10 @@ struct OverallStatisticsTests {
             session.skipAndAdvance()
         }
 
-        let favorite = try FavoriteExercise(history(at: calendar.date(16)).allTime)
+        let allTime = try history(at: calendar.date(16)).allTime
 
-        #expect(favorite.reading?.formatted(.reading(units: .metric)) == "Squat")
-        #expect(try FavoriteExercise(history(at: calendar.date(16)).recent).exercise === favorite.exercise)
+        #expect(StatisticKind.favoriteExercise.reading(in: allTime)?.formatted(.reading(units: .metric)) == "Squat")
+        #expect(try history(at: calendar.date(16)).recent.favoriteExercise === allTime.favoriteExercise)
     }
 
     @Test
@@ -639,15 +647,15 @@ struct OverallStatisticsTests {
         entries[0].status = .completed(date: session.startDate.addingTimeInterval(120))
 
         // Once each, and the squat was completed after the bench press.
-        #expect(try FavoriteExercise(history(at: calendar.date(16)).allTime).reading?.formatted(.reading(units: .metric)) == "Squat")
+        #expect(try StatisticKind.favoriteExercise.reading(in: history(at: calendar.date(16)).allTime)?.formatted(.reading(units: .metric)) == "Squat")
     }
 
     @Test
     func withoutSessionsThereIsNoTypicalSessionEither() throws {
         let allTime = try history(at: calendar.date(16)).allTime
 
-        #expect(TypicalDuration(allTime).value == nil)
-        #expect(TypicalStartTime(allTime).time == nil)
+        #expect(allTime.typicalDuration == nil)
+        #expect(allTime.typicalStartTime == nil)
     }
 
     @Test
@@ -659,8 +667,8 @@ struct OverallStatisticsTests {
         let allTime = try history(at: calendar.date(16)).allTime
 
         // The middle of 30, 60 and 120 minutes, started at the recorded time closest to all the others.
-        #expect(TypicalDuration(allTime).value == 3600)
-        #expect(TypicalStartTime(allTime).time == DateComponents(hour: 8, minute: 0))
+        #expect(allTime.typicalDuration == 3600)
+        #expect(allTime.typicalStartTime == 8 * 60)
     }
 
     @Test
@@ -670,13 +678,13 @@ struct OverallStatisticsTests {
 
         let september = try month(9, at: calendar.date(16))
 
-        #expect(TypicalDuration(september).value == 90.0 * 60)
-        #expect(TypicalStartTime(september).time == DateComponents(hour: 19, minute: 0))
+        #expect(september.typicalDuration == 90.0 * 60)
+        #expect(september.typicalStartTime == 19 * 60)
     }
 
     @Test
     func withoutSessionsThereAreNoWeeklySessions() throws {
-        #expect(try WeeklySessions(history(at: calendar.date(16)).allTime).value == nil)
+        #expect(try history(at: calendar.date(16)).allTime.weeklySessions == nil)
     }
 
     @Test
@@ -686,14 +694,14 @@ struct OverallStatisticsTests {
             try store.session(day)
         }
 
-        #expect(try WeeklySessions(history(at: calendar.date(14)).allTime).value == 2)
+        #expect(try history(at: calendar.date(14)).allTime.weeklySessions == 2)
     }
 
     @Test
     func weeklySessionsCoverAtLeastAWeek() throws {
         try store.session(15)
 
-        #expect(try WeeklySessions(history(at: calendar.date(16)).allTime).value == 1)
+        #expect(try history(at: calendar.date(16)).allTime.weeklySessions == 1)
     }
 
     @Test
@@ -702,7 +710,7 @@ struct OverallStatisticsTests {
         try store.session(8)
         try store.session(10)
 
-        #expect(try WeeklySessions(month(9, at: calendar.date(21))).value == 1)
+        #expect(try month(9, at: calendar.date(21)).weeklySessions == 1)
     }
 
     @Test
@@ -712,7 +720,7 @@ struct OverallStatisticsTests {
             try store.session(day, month: month)
         }
 
-        let rate = try #require(try WeeklySessions(month(8, at: calendar.date(16))).value)
+        let rate = try #require(try month(8, at: calendar.date(16)).weeklySessions)
 
         #expect(abs(rate - 2 / (31.0 / 7)) < 1e-9)
     }
@@ -722,14 +730,14 @@ struct OverallStatisticsTests {
         // Trained in June, then nothing: the last four weeks are on record, just empty.
         try store.session(10, month: 6)
 
-        #expect(try WeeklySessions(history(at: calendar.date(16)).recent).value == 0)
+        #expect(try history(at: calendar.date(16)).recent.weeklySessions == 0)
     }
 
     @Test
     func windowStillAheadHasNoWeeklySessions() throws {
         try store.session(7)
 
-        #expect(try WeeklySessions(month(10, at: calendar.date(16))).value == nil)
+        #expect(try month(10, at: calendar.date(16)).weeklySessions == nil)
     }
 
     @Test
@@ -739,8 +747,8 @@ struct OverallStatisticsTests {
 
         let now = try calendar.date(16, month: 10)
 
-        #expect(try LastCompleted(month(9, at: now)).date == nil)
-        #expect(try LastCompleted(month(10, at: now)).date != nil)
+        #expect(try month(9, at: now).lastCompletion?.date == nil)
+        #expect(try month(10, at: now).lastCompletion?.date != nil)
     }
 
     @Test
@@ -750,8 +758,8 @@ struct OverallStatisticsTests {
 
         let now = try calendar.date(16, month: 10)
 
-        #expect(try LastCompleted(month(9, at: now)).date != nil)
-        #expect(try LastCompleted(month(10, at: now)).date == nil)
+        #expect(try month(9, at: now).lastCompletion?.date != nil)
+        #expect(try month(10, at: now).lastCompletion?.date == nil)
     }
 }
 
@@ -775,12 +783,12 @@ struct WorkoutStatisticsTests {
     func workoutWithoutSessionsHasNoValues() throws {
         let allTime = try history().allTime
 
-        #expect(LastCompleted(allTime).date == nil)
-        #expect(Completions(allTime).value == 0)
-        #expect(CompletionRate(allTime).value == nil)
-        #expect(TypicalDuration(allTime).value == nil)
-        #expect(TypicalStartTime(allTime).time == nil)
-        #expect(MostSkippedExercise(allTime).exercise == nil)
+        #expect(allTime.lastCompletion?.date == nil)
+        #expect(allTime.completionCount == 0)
+        #expect(allTime.completionRate == nil)
+        #expect(allTime.typicalDuration == nil)
+        #expect(allTime.typicalStartTime == nil)
+        #expect(allTime.mostSkippedExercise == nil)
     }
 
     @Test
@@ -795,9 +803,9 @@ struct WorkoutStatisticsTests {
 
         let allTime = try history().allTime
 
-        #expect(Completions(allTime).value == 2)
-        #expect(MostSkippedExercise(allTime).reading?.formatted(.reading(units: .metric)) == "Bench Press")
-        #expect(try LastCompleted(allTime).date == calendar.date(8, hour: 9))
+        #expect(allTime.completionCount == 2)
+        #expect(StatisticKind.mostSkippedExercise.reading(in: allTime)?.formatted(.reading(units: .metric)) == "Bench Press")
+        #expect(try allTime.lastCompletion?.date == calendar.date(8, hour: 9))
     }
 
     @Test
@@ -815,7 +823,7 @@ struct WorkoutStatisticsTests {
         running.skipAndAdvance()
 
         // 3 of 3, then 1 of 3 with one skipped and one left pending. The running session doesn't count.
-        #expect(try CompletionRate(history().allTime).value == 4.0 / 6.0)
+        #expect(try history().allTime.completionRate == 4.0 / 6.0)
     }
 
     @Test
@@ -824,7 +832,7 @@ struct WorkoutStatisticsTests {
             try store.session(day, minutes: minutes)
         }
 
-        #expect(try TypicalDuration(history().allTime).value == 3600)
+        #expect(try history().allTime.typicalDuration == 3600)
     }
 
     @Test
@@ -833,7 +841,7 @@ struct WorkoutStatisticsTests {
             try store.session(day, hour: hour, minute: minute)
         }
 
-        #expect(try TypicalStartTime(history().allTime).time == DateComponents(hour: 8, minute: 15))
+        #expect(try history().allTime.typicalStartTime == 8 * 60 + 15)
     }
 
     @Test
@@ -842,7 +850,7 @@ struct WorkoutStatisticsTests {
         try store.session(7, hour: 7)
         try store.session(8, hour: 19, minute: 30)
 
-        #expect(try TypicalStartTime(history().allTime).time == DateComponents(hour: 7, minute: 0))
+        #expect(try history().allTime.typicalStartTime == 7 * 60)
     }
 
     @Test
@@ -852,7 +860,7 @@ struct WorkoutStatisticsTests {
         try store.session(9, hour: 0, minute: 30)
         try store.session(10, hour: 0, minute: 30)
 
-        #expect(try TypicalStartTime(history().allTime).time == DateComponents(hour: 0, minute: 30))
+        #expect(try history().allTime.typicalStartTime == 30)
     }
 
     @Test
@@ -861,17 +869,17 @@ struct WorkoutStatisticsTests {
         try store.session(7, hour: 8)
         try store.session(8, hour: 8, zone: "America/New_York")
 
-        #expect(try TypicalStartTime(history().allTime).time == DateComponents(hour: 8, minute: 0))
+        #expect(try history().allTime.typicalStartTime == 8 * 60)
     }
 
     @Test
     func lastCompletedShowsTheDayItStartedOnItsClock() throws {
         // Runs from 23:30 on May 28 to 00:30 on May 29 in New York. It started at 05:30 on May 29 in Berlin.
         try store.session(28, month: 5, hour: 23, minute: 30, zone: "America/New_York")
-        let value = try LastCompleted(history().allTime).reading?.formatted(.reading(units: .metric))
+        let value = try StatisticKind.lastCompleted.reading(in: history().allTime)?.formatted(.reading(units: .metric))
 
-        #expect(try value == LastCompleted(date: calendar.date(28, month: 5), session: nil, calendar: calendar).reading?.formatted(.reading(units: .metric)))
-        #expect(try value != LastCompleted(date: calendar.date(29, month: 5), session: nil, calendar: calendar).reading?.formatted(.reading(units: .metric)))
+        #expect(try value == Reading.day(calendar.date(28, month: 5), calendar: calendar).formatted(.reading(units: .metric)))
+        #expect(try value != Reading.day(calendar.date(29, month: 5), calendar: calendar).formatted(.reading(units: .metric)))
     }
 
     @Test
@@ -883,8 +891,8 @@ struct WorkoutStatisticsTests {
 
         let september = try history().month(containing: calendar.date(10))
 
-        #expect(Completions(september).value == 2)
-        #expect(try LastCompleted(september).date == calendar.date(14, hour: 9))
+        #expect(september.completionCount == 2)
+        #expect(try september.lastCompletion?.date == calendar.date(14, hour: 9))
     }
 }
 
@@ -911,11 +919,11 @@ struct ExerciseStatisticsTests {
     func exerciseWithoutSessionsHasNoValues() throws {
         let allTime = try history().allTime
 
-        #expect(LastCompleted(allTime).date == nil)
-        #expect(CompletionRate(allTime).value == nil)
-        #expect(PersonalBest(allTime).target == nil)
-        #expect(Completions(allTime).value == 0)
-        #expect(Completions(allTime).reading?.formatted(.reading(units: .metric)) == "0")
+        #expect(allTime.lastCompletion?.date == nil)
+        #expect(allTime.completionRate == nil)
+        #expect(allTime.personalBest == nil)
+        #expect(allTime.completionCount == 0)
+        #expect(StatisticKind.completions.reading(in: allTime)?.formatted(.reading(units: .metric)) == "0")
     }
 
     @Test
@@ -926,9 +934,9 @@ struct ExerciseStatisticsTests {
 
         let allTime = try history().allTime
 
-        #expect(Completions(allTime).value == 1)
-        #expect(CompletionRate(allTime).value == 1)
-        #expect(LastCompleted(allTime).date != nil)
+        #expect(allTime.completionCount == 1)
+        #expect(allTime.completionRate == 1)
+        #expect(allTime.lastCompletion?.date != nil)
     }
 
     @Test
@@ -938,8 +946,8 @@ struct ExerciseStatisticsTests {
 
         let allTime = try history().allTime
 
-        #expect(Completions(allTime).value == 1)
-        #expect(CompletionRate(allTime).value == 0.5)
+        #expect(allTime.completionCount == 1)
+        #expect(allTime.completionRate == 0.5)
     }
 
     @Test
@@ -948,7 +956,7 @@ struct ExerciseStatisticsTests {
         try store.session(8) { $0.skipAndAdvance() }
         let entry = try #require(completed.entries.sorted().first)
 
-        #expect(try LastCompleted(history().allTime).date == entry.status.resolvedDate)
+        #expect(try history().allTime.lastCompletion?.date == entry.status.resolvedDate)
     }
 
     @Test
@@ -958,20 +966,20 @@ struct ExerciseStatisticsTests {
 
         let september = try history().month(containing: calendar.date(10))
 
-        #expect(Completions(september).value == 0)
-        #expect(CompletionRate(september).value == 0)
-        #expect(PersonalBest(september).target == nil)
+        #expect(september.completionCount == 0)
+        #expect(september.completionRate == 0)
+        #expect(september.personalBest == nil)
     }
 
     @Test
     func personalBestIgnoresTargetsOfAnotherType() throws {
         try store.session(7) { $0.completeAndAdvance() }
 
-        #expect(try PersonalBest(history().allTime).target?.bodyweightTarget == .init(sets: 3, reps: 10))
+        #expect(try history().allTime.personalBest?.bodyweightTarget == .init(sets: 3, reps: 10))
 
         squat.kind = .weight
 
-        #expect(try PersonalBest(history().allTime).target == nil)
+        #expect(try history().allTime.personalBest == nil)
     }
 
     @Test
@@ -980,8 +988,8 @@ struct ExerciseStatisticsTests {
 
         let workout = try History(.workout(store.workout), among: store.sessions, at: calendar.date(16, month: 10), calendar: calendar).allTime
 
-        #expect(PersonalBest(workout).target == nil)
-        #expect(TypicalBest(workout).target == nil)
+        #expect(workout.personalBest == nil)
+        #expect(workout.typicalBest == nil)
     }
 }
 
@@ -1001,6 +1009,14 @@ struct TrendTests {
         History(.workout(store.workout), among: store.sessions, at: now, calendar: calendar)
     }
 
+    func trend(of kind: StatisticKind, at now: Date) -> Trend? {
+        guard case let .metric(_, tolerance, _, value) = kind.definition.value else {
+            return nil
+        }
+
+        return Trend(history(at: now), tolerance: tolerance, value: value)
+    }
+
     @Test
     func trendNeedsThreeSessionsInTheDaysBefore() throws {
         // Read on Sep 16, the recent days start on Aug 20 and the ones before on May 28.
@@ -1008,11 +1024,11 @@ struct TrendTests {
         try store.session(20, month: 7)
         try store.session(7)
 
-        #expect(try Trend<WeeklySessions>(history(at: calendar.date(16))).baseline == nil)
+        #expect(try #require(trend(of: .weeklySessions, at: calendar.date(16))).before == nil)
 
         try store.session(30, month: 7)
 
-        #expect(try Trend<WeeklySessions>(history(at: calendar.date(16))).baseline != nil)
+        #expect(try #require(trend(of: .weeklySessions, at: calendar.date(16))).before != nil)
     }
 
     @Test
@@ -1021,10 +1037,10 @@ struct TrendTests {
             try store.session(day, month: month)
         }
 
-        let trend = try Trend<Completions>(history(at: calendar.date(16)))
+        let trend = try #require(self.trend(of: .completions, at: calendar.date(16)))
 
-        #expect(trend.recent.value == 1)
-        #expect(trend.baseline == nil)
+        #expect(trend.recent == 1)
+        #expect(trend.before == nil)
         #expect(trend.direction == nil)
     }
 
@@ -1035,32 +1051,32 @@ struct TrendTests {
             try store.session(day, month: month)
         }
 
-        let trend = try Trend<WeeklySessions>(history(at: calendar.date(16)))
+        let trend = try #require(self.trend(of: .weeklySessions, at: calendar.date(16)))
 
-        #expect(trend.recent.value == 1)
+        #expect(trend.recent == 1)
         #expect(trend.direction == .up)
     }
 
-    @Test(arguments: [(1.0, 1.04, Direction.flat), (1, 0.96, .flat), (1, 1.2, .up), (1, 0.8, .down), (0, 0, .flat), (0, 1, .up)])
-    func directionIsFlatWithinTheTolerance(old: Double, new: Double, direction: Direction) {
-        #expect(Direction(from: old, to: new, tolerance: 0.05) == direction)
+    @Test(arguments: [(1.0, 1.04, Trend.Direction.flat), (1, 0.96, .flat), (1, 1.2, .up), (1, 0.8, .down), (0, 0, .flat), (0, 1, .up)])
+    func directionIsFlatWithinTheTolerance(old: Double, new: Double, direction: Trend.Direction) {
+        #expect(Trend.Direction(from: old, to: new, tolerance: 0.05) == direction)
     }
 
     @Test
     func directionNeedsBothValues() {
-        #expect(Direction(from: nil, to: 1, tolerance: 0.05) == nil)
-        #expect(Direction(from: 1, to: nil, tolerance: 0.05) == nil)
+        #expect(Trend.Direction(from: nil, to: 1, tolerance: 0.05) == nil)
+        #expect(Trend.Direction(from: 1, to: nil, tolerance: 0.05) == nil)
     }
 
     @Test
     func monthsWithoutADayOnRecordHaveNoBar() throws {
         try store.session(7, month: 3)
 
-        let series = try Series<Completions>(history(at: calendar.date(16)), year: 2026)
+        let series = try Series(history(at: calendar.date(16)), year: 2026, value: \.completionCount)
 
         // March, the first on record, through September, the current one.
         #expect(try series.bars.map(\.month) == (3 ... 9).map { try calendar.date(1, month: $0, hour: 0) })
-        #expect(series.bars.map(\.statistic.value) == [1, 0, 0, 0, 0, 0, 0])
+        #expect(series.bars.map(\.value) == [1, 0, 0, 0, 0, 0, 0])
         #expect(try series.period == DateInterval(start: calendar.date(1, month: 1, hour: 0), end: calendar.date(1, month: 1, year: 2027, hour: 0)))
     }
 }
@@ -1088,15 +1104,15 @@ struct SessionFigureTests {
     func unfinishedSessionHasNoDurationOrEndTime() throws {
         let unfinished = try store.startSession()
 
-        #expect(SessionDuration(unfinished).value == nil)
-        #expect(SessionEndTime(unfinished).time == nil)
-        #expect(SessionExerciseDuration(unfinished).value == nil)
-        #expect(SessionSkipRate(unfinished).value == 0)
+        #expect(unfinished.duration == nil)
+        #expect(SessionFigureKind.endTime.reading(of: unfinished) == nil)
+        #expect(unfinished.typicalExerciseDuration == nil)
+        #expect(unfinished.skipRate == 0)
     }
 
     @Test
     func durationIsTheTimeFromStartToFinish() throws {
-        #expect(try SessionDuration(store.session(7, minutes: 45)).value == 45 * 60)
+        #expect(try store.session(7, minutes: 45).duration == 45 * 60)
     }
 
     /// Gives the session's exercises weight targets, in workout order, and completes them.
@@ -1115,7 +1131,7 @@ struct SessionFigureTests {
         }
 
         // One completed, one skipped, one left pending.
-        #expect(SessionCompletedExercises(session).value == 1)
+        #expect(session.completedExerciseCount == 1)
     }
 
     @Test
@@ -1124,7 +1140,7 @@ struct SessionFigureTests {
         load(session, kilograms: [100, 50], sets: 3, reps: 10)
 
         // 100 x 3 x 10 plus 50 x 3 x 10, with the third exercise left pending.
-        #expect(SessionVolume(session).value == 4500)
+        #expect(session.volume == 4500)
     }
 
     @Test
@@ -1135,7 +1151,7 @@ struct SessionFigureTests {
         skipped.target = .weight(kilograms: 999, reps: 1, sets: 1)
         skipped.status = .skipped(date: session.startDate)
 
-        #expect(SessionVolume(session).value == 150)
+        #expect(session.volume == 150)
     }
 
     @Test
@@ -1147,9 +1163,9 @@ struct SessionFigureTests {
         }
 
         // The store's exercises are all bodyweight, which carries no load, so there is nothing to total.
-        #expect(SessionCompletedExercises(session).value == 3)
-        #expect(SessionVolume(session).value == nil)
-        #expect(SessionVolume(session).reading?.formatted(.reading(units: .metric)) == nil)
+        #expect(session.completedExerciseCount == 3)
+        #expect(session.volume == nil)
+        #expect(SessionFigureKind.volume.reading(of: session)?.formatted(.reading(units: .metric)) == nil)
     }
 
     @Test
@@ -1159,8 +1175,8 @@ struct SessionFigureTests {
         entry.target = .weight(kilograms: 100, reps: 5, sets: 2)
         entry.status = .completed(date: session.startDate)
 
-        #expect(SessionVolume(session).value == 1000)
-        #expect(SessionVolume(session).reading == .weight(kilograms: 1000))
+        #expect(session.volume == 1000)
+        #expect(SessionFigureKind.volume.reading(of: session) == .weight(kilograms: 1000))
     }
 
     @Test
@@ -1171,7 +1187,7 @@ struct SessionFigureTests {
         }
 
         // One skipped and one completed of three, with the last one left pending.
-        #expect(SessionSkipRate(session).value == 1.0 / 3.0)
+        #expect(session.skipRate == 1.0 / 3.0)
     }
 
     @Test
@@ -1210,7 +1226,7 @@ struct SessionFigureTests {
         resolve(session, after: [10, 20, 60])
 
         // 10, 10 and 40 minutes, so the middle one is what a typical exercise took.
-        #expect(SessionExerciseDuration(session).value == 10.0 * 60)
+        #expect(session.typicalExerciseDuration == 10.0 * 60)
     }
 
     @Test
@@ -1221,8 +1237,8 @@ struct SessionFigureTests {
         resolve(late, after: [40, 50, 60])
 
         // The late one spent 40 minutes before its first exercise, which a mean would have spread over all three.
-        #expect(SessionExerciseDuration(early).value == 10.0 * 60)
-        #expect(SessionExerciseDuration(late).value == SessionExerciseDuration(early).value)
+        #expect(early.typicalExerciseDuration == 10.0 * 60)
+        #expect(late.typicalExerciseDuration == early.typicalExerciseDuration)
     }
 
     @Test
@@ -1231,19 +1247,19 @@ struct SessionFigureTests {
         resolve(session, after: [10, 30])
 
         // 10 and 20 minutes, so it lands between them.
-        #expect(SessionExerciseDuration(session).value == 15.0 * 60)
+        #expect(session.typicalExerciseDuration == 15.0 * 60)
     }
 
     @Test
     func medianExerciseDurationNeedsAResolvedExercise() throws {
         let session = try store.session(7, minutes: 90)
 
-        #expect(SessionExerciseDuration(session).value == nil)
+        #expect(session.typicalExerciseDuration == nil)
 
         resolve(session, after: [15])
 
         // A single resolved exercise still counts, from the start of the session.
-        #expect(SessionExerciseDuration(session).value == 15.0 * 60)
+        #expect(session.typicalExerciseDuration == 15.0 * 60)
     }
 
     @Test
@@ -1254,7 +1270,7 @@ struct SessionFigureTests {
         quick.status = .completed(date: session.startDate.addingTimeInterval(40))
 
         #expect(quick.duration == 40)
-        #expect(SessionExerciseDuration(session).reading == .duration(seconds: 0))
+        #expect(SessionFigureKind.exerciseDuration.reading(of: session) == .duration(seconds: 0))
     }
 
     @Test
@@ -1267,8 +1283,8 @@ struct SessionFigureTests {
         let inNewYork = Date.FormatStyle(date: .omitted, time: .shortened, calendar: newYork, timeZone: newYork.timeZone)
         let inBerlin = Date.FormatStyle(date: .omitted, time: .shortened, calendar: calendar, timeZone: calendar.timeZone)
 
-        #expect(SessionEndTime(session).reading?.formatted(.reading(units: .metric)) == ended.formatted(inNewYork))
-        #expect(SessionEndTime(session).reading?.formatted(.reading(units: .metric)) != ended.formatted(inBerlin))
+        #expect(SessionFigureKind.endTime.reading(of: session)?.formatted(.reading(units: .metric)) == ended.formatted(inNewYork))
+        #expect(SessionFigureKind.endTime.reading(of: session)?.formatted(.reading(units: .metric)) != ended.formatted(inBerlin))
     }
 }
 
@@ -1725,8 +1741,8 @@ struct ProgressionTests {
 
         let allTime = try history().allTime
 
-        #expect(TypicalBest(allTime).target?.bodyweightTarget?.reps == 12)
-        #expect(PersonalBest(allTime).target?.bodyweightTarget?.reps == 20)
+        #expect(allTime.typicalBest?.bodyweightTarget?.reps == 12)
+        #expect(allTime.personalBest?.bodyweightTarget?.reps == 20)
     }
 
     @Test
@@ -1740,7 +1756,7 @@ struct ProgressionTests {
         let last = try #require(Progression(history.allTime).curve.last)
 
         #expect(try last.date == calendar.date(16, month: 10, hour: 0))
-        #expect(last.target.bodyweightTarget?.reps == TypicalBest(history.recent).target?.bodyweightTarget?.reps)
+        #expect(last.target.bodyweightTarget?.reps == history.recent.typicalBest?.bodyweightTarget?.reps)
         #expect(last.target.bodyweightTarget?.reps == 12)
     }
 
@@ -2163,11 +2179,11 @@ struct WorkoutEntryStatisticsTests {
         let main = try history(.entry(mainSlot)).allTime
         let exercise = try history(.exercise(squat)).allTime
 
-        #expect(Completions(main).value == 1)
-        #expect(PersonalBest(main).target?.bodyweightTarget?.reps == 12)
+        #expect(main.completionCount == 1)
+        #expect(main.personalBest?.bodyweightTarget?.reps == 12)
         // The exercise on its own counts both.
-        #expect(Completions(exercise).value == 2)
-        #expect(PersonalBest(exercise).target?.bodyweightTarget?.reps == 20)
+        #expect(exercise.completionCount == 2)
+        #expect(exercise.personalBest?.bodyweightTarget?.reps == 20)
     }
 
     @Test
@@ -2183,9 +2199,9 @@ struct WorkoutEntryStatisticsTests {
         skipped.status = .skipped(date: session.startDate)
 
         #expect(slots.count == 2)
-        #expect(try Completions(history(.entry(first)).allTime).value == 1)
-        #expect(try Completions(history(.entry(second)).allTime).value == 0)
-        #expect(try CompletionRate(history(.entry(second)).allTime).value == 0)
-        #expect(try LastCompleted(history(.entry(second)).allTime).date == nil)
+        #expect(try history(.entry(first)).allTime.completionCount == 1)
+        #expect(try history(.entry(second)).allTime.completionCount == 0)
+        #expect(try history(.entry(second)).allTime.completionRate == 0)
+        #expect(try history(.entry(second)).allTime.lastCompletion?.date == nil)
     }
 }

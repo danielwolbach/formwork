@@ -19,6 +19,18 @@ public enum Reading: Hashable, Sendable {
     case name(String)
     case day(Date, calendar: Calendar)
     case time(Date, calendar: Calendar)
+
+    /// How a plain number reads.
+    enum Unit {
+        case count
+        case percent
+        case rate
+        case weight
+        case duration
+        case days
+        /// A target's rank, read in an exercise's kind.
+        case rank
+    }
 }
 
 extension Reading {
@@ -29,6 +41,26 @@ extension Reading {
         case .duration: .duration(seconds: rank)
         case .distance: .distance(meters: rank)
         case nil: .count(Int(rank.rounded()))
+        }
+    }
+
+    init?(minuteOfDay minute: Int, in calendar: Calendar) {
+        guard let date = calendar.date(from: DateComponents(hour: minute / 60, minute: minute % 60)) else {
+            return nil
+        }
+
+        self = .time(date, calendar: calendar)
+    }
+
+    init(_ value: Double, as unit: Unit, of kind: Exercise.Kind? = nil) {
+        self = switch unit {
+        case .count: .count(Int(value.rounded()))
+        case .percent: .percent(value)
+        case .rate: .rate(value)
+        case .weight: .weight(kilograms: value)
+        case .duration: .duration(seconds: value)
+        case .days: .days(value)
+        case .rank: Reading(rank: value, of: kind)
         }
     }
 }

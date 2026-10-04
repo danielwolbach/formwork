@@ -19,7 +19,7 @@ public struct Categories {
     public let shares: [Share]
 }
 
-extension Categories: Statistic {
+extension Categories {
     public init(_ window: History.Window) {
         let counts = window.entries
             .filter(\.status.isCompleted)
@@ -38,18 +38,6 @@ extension Categories: Statistic {
             }
             .sorted { $0.share.count == $1.share.count ? $0.order < $1.order : $0.share.count > $1.share.count }
             .map(\.share)
-    }
-
-    public static var info: String {
-        String(localized: .statisticCategoriesInfo)
-    }
-
-    public static var pictogram: Pictogram {
-        .categories
-    }
-
-    public static var title: String {
-        String(localized: .statisticCategoriesTitle)
     }
 }
 

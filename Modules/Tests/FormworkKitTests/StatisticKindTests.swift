@@ -59,6 +59,40 @@ struct StatisticKindTests {
     }
 
     @Test
+    func everyStatisticHasACardAndASheet() throws {
+        // Charts and the week streak are special-cased in switches that trap on a kind they don't know.
+        let store = try TestStore()
+        let calendar = Calendar.berlin()
+        let entry = try #require(store.workout.entries.sorted().first)
+        let exercise = try #require(entry.exercise)
+        exercise.kind = .weight
+
+        for day in [1, 8, 15] {
+            try store.session(day, month: 8) { $0.completeAndAdvance() }
+        }
+
+        let subjects: [History.Subject] = [.all, .workout(store.workout), .exercise(exercise), .entry(entry)]
+
+        for subject in subjects {
+            let history = try History(subject, among: store.sessions, at: calendar.date(16), calendar: calendar)
+
+            for kind in subject.statistics {
+                if case .reading = kind.summary(of: history) {
+                    #expect(!kind.isChart, "\(kind)")
+                } else {
+                    #expect(kind.isChart, "\(kind)")
+                }
+
+                if let yearly = kind.details(of: history).yearly {
+                    for year in yearly.years {
+                        _ = yearly.chart(year)
+                    }
+                }
+            }
+        }
+    }
+
+    @Test
     func summariesReadRecordsOverAllTimeAndHabitsOverRecentDays() throws {
         let store = try TestStore()
         let calendar = Calendar.berlin()

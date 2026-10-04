@@ -19,8 +19,8 @@ struct SessionComparisonTests {
         self.store = try TestStore()
     }
 
-    func compare<S: SessionFigure>(_ session: Session, as _: S.Type = SessionDuration.self) -> SessionComparison<S> {
-        SessionComparison(session, among: store.sessions, calendar: calendar)
+    func compare(_ session: Session, as kind: SessionFigureKind = .duration) -> SessionComparison {
+        SessionComparison(kind, of: session, among: store.sessions, calendar: calendar)
     }
 
     @Test
@@ -34,8 +34,8 @@ struct SessionComparisonTests {
         let comparison = compare(session)
 
         // An earlier session on the same day would pull the median down to 25 minutes.
-        #expect(comparison.current.value == 60.0 * 60)
-        #expect(comparison.baseline?.value == 30.0 * 60)
+        #expect(comparison.current == .duration(seconds: 60 * 60))
+        #expect(comparison.baseline == .duration(seconds: 30 * 60))
         #expect(comparison.direction == .up)
     }
 
@@ -92,9 +92,10 @@ struct SessionComparisonTests {
         try store.session(3, hour: 8, minutes: 60)
         let session = try store.session(10, hour: 18, minutes: 60)
 
-        let comparison = compare(session, as: SessionEndTime.self)
+        let comparison = compare(session, as: .endTime)
 
-        #expect(comparison.current.time == DateComponents(hour: 19, minute: 0))
-        #expect(comparison.baseline?.time == DateComponents(hour: 9, minute: 0))
+        #expect(comparison.current == Reading(minuteOfDay: 19 * 60, in: calendar))
+        #expect(comparison.baseline == Reading(minuteOfDay: 9 * 60, in: calendar))
+        #expect(comparison.direction == nil)
     }
 }

@@ -22,9 +22,9 @@ struct ValueComparison: View {
 
     private let after: Value
 
-    private let direction: Direction?
+    private let direction: Trend.Direction?
 
-    init(recent: Reading?, before: Reading?, direction: Direction?) {
+    init(recent: Reading?, before: Reading?, direction: Trend.Direction?) {
         let before = Value(
             title: String(localized: .fieldBeforeTitle),
             reading: before,
@@ -38,31 +38,23 @@ struct ValueComparison: View {
         self.init(before: nil, after: Self.recent(recent), direction: nil)
     }
 
-    init(_ comparison: SessionComparison<some SessionMeasure>) {
-        self.init(comparison, direction: comparison.direction)
-    }
-
-    init(_ comparison: SessionComparison<SessionEndTime>) {
-        self.init(comparison, direction: nil)
-    }
-
-    private init(_ comparison: SessionComparison<some SessionFigure>, direction: Direction?) {
+    init(_ comparison: SessionComparison) {
         let session = comparison.session
         let before = Value(
             title: String(localized: .fieldBeforeTitle),
-            reading: comparison.baseline?.reading,
+            reading: comparison.baseline,
             footnote: String(localized: .fieldBeforeSubtitle(days: History.recentDays))
         )
         let after = Value(
             title: String(localized: .placeholder),
-            reading: comparison.current.reading,
+            reading: comparison.current,
             footnote: session.startDate.formatted(session.localCalendar(from: .current).formatStyle(date: .abbreviated))
         )
 
-        self.init(before: before, after: after, direction: direction)
+        self.init(before: before, after: after, direction: comparison.direction)
     }
 
-    private init(before: Value?, after: Value, direction: Direction?) {
+    private init(before: Value?, after: Value, direction: Trend.Direction?) {
         self.before = before
         self.after = after
         self.direction = direction
@@ -103,7 +95,7 @@ struct ValueComparison: View {
 }
 
 #Preview {
-    let comparison = SessionComparison<SessionDuration>(Samples.sessions.first!, among: Samples.sessions)
+    let comparison = SessionComparison(.duration, of: Samples.sessions.first!, among: Samples.sessions)
 
     VStack {
         GroupBox {

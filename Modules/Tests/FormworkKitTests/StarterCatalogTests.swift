@@ -101,20 +101,6 @@ struct StarterCatalogTests {
     }
 
     @Test
-    func seedingPinsOverallStatistics() throws {
-        let configuration = ModelConfiguration(schema: Storage.schema, isStoredInMemoryOnly: true)
-        let container = try ModelContainer(for: Storage.schema, configurations: [configuration])
-        let context = container.mainContext
-
-        try StarterCatalog.seed(into: context, units: .metric)
-
-        let pins = try context.fetch(FetchDescriptor<StatisticPin>(sortBy: [SortDescriptor(\.order)]))
-
-        #expect(pins.map(\.kind) == StarterCatalog.pins)
-        #expect(pins.allSatisfy { $0.subject == .all })
-    }
-
-    @Test
     func imperialReadersStartWithRoundPounds() throws {
         let configuration = ModelConfiguration(schema: Storage.schema, isStoredInMemoryOnly: true)
         let container = try ModelContainer(for: Storage.schema, configurations: [configuration])
@@ -134,6 +120,5 @@ struct StarterCatalogTests {
         try StarterCatalog.seed(into: store.context, units: .metric)
 
         #expect(try store.context.fetchCount(FetchDescriptor<Exercise>()) == 3)
-        #expect(try store.context.fetchCount(FetchDescriptor<StatisticPin>()) == 0)
     }
 }

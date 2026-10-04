@@ -24,7 +24,7 @@ struct ProgressionChart: View {
     }
 
     var body: some View {
-        let color = Progression.pictogram.color
+        let color = StatisticKind.progression.definition.pictogram.color
 
         Chart {
             ForEach(progression.curve) { point in

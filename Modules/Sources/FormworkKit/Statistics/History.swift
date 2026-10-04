@@ -126,6 +126,14 @@ extension History.Subject {
         }
     }
 
+    var exercise: Exercise? {
+        switch self {
+        case .all, .workout: nil
+        case let .exercise(exercise): exercise
+        case let .entry(slot): slot.exercise
+        }
+    }
+
     fileprivate func includes(_ session: Session) -> Bool {
         switch self {
         case .all: true
@@ -185,34 +193,5 @@ extension History {
         let end = calendar.date(byAdding: .day, value: 1, to: calendar.startOfDay(for: day)) ?? day
         let start = calendar.date(byAdding: .day, value: -count, to: end) ?? end
         return Window(self, period: DateInterval(start: start, end: end))
-    }
-}
-
-extension History.Window {
-    var lengthInWeeks: Double? {
-        guard let days = history.calendar.dateComponents([.day], from: interval.start, to: interval.end).day, days > 0 else {
-            return nil
-        }
-
-        return Double(max(days, 7)) / 7
-    }
-
-    var streakWeeks: (weeks: Set<Date>, current: Date)? {
-        let calendar = history.calendar
-
-        guard
-            interval.duration > 0,
-            let last = calendar.date(byAdding: .day, value: -1, to: interval.end),
-            let current = calendar.dateInterval(of: .weekOfYear, for: last)?.start
-        else {
-            return nil
-        }
-
-        let earlier = DateInterval(start: .distantPast, end: interval.end)
-        let weeks = history.sessions
-            .filter { $0.falls(into: earlier, in: calendar) }
-            .compactMap { $0.period(of: .weekOfYear, in: calendar)?.start }
-
-        return (Set(weeks), current)
     }
 }

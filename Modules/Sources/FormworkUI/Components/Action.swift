@@ -64,14 +64,6 @@ extension Action {
 
     public static let viewStatistics = Action(title: .actionViewStatisticsTitle, image: "chart.pie")
 
-    public static let pin = Action(title: .actionPinTitle, image: "pin")
-
-    public static let unpin = Action(title: .actionUnpinTitle, image: "pin.slash")
-
-    public static let moveBackward = Action(title: .actionMoveBackwardTitle, image: "chevron.left")
-
-    public static let moveForward = Action(title: .actionMoveForwardTitle, image: "chevron.right")
-
     public static let today = Action(title: .actionTodayTitle, image: "calendar.day")
 
     public static let debug = Action(title: .actionDebugTitle, image: "ladybug")

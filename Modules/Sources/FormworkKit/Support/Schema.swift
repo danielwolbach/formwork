@@ -24,6 +24,5 @@ public enum SchemaV1: VersionedSchema {
         WorkoutEntry.self,
         Session.self,
         SessionEntry.self,
-        StatisticPin.self,
     ]
 }

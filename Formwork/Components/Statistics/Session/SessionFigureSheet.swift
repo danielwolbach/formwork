@@ -5,6 +5,7 @@
 //  Created by Daniel Wolbach on 02.10.26.
 //
 
+import Charts
 import FormworkKit
 import FormworkUI
 import SwiftUI
@@ -23,31 +24,88 @@ struct SessionFigureSheet: View {
     }
 
     var body: some View {
-        let figure = kind.figure
+        let definition = kind.definition
+        let comparison = SessionComparison(kind, of: session, among: sessions)
+        let points = comparison.points()
 
-        DetailSheet(figure.pictogram, title: figure.title, subtitle: session.title, info: figure.info) {
-            content
-        }
-    }
+        DetailSheet(definition.pictogram, title: definition.title, subtitle: session.title, info: definition.info) {
+            GroupBox {
+                ValueComparison(comparison)
+            }
+            .groupBoxStyle(.card)
 
-    @ViewBuilder
-    private var content: some View {
-        switch kind {
-        case .duration: SessionMeasureDetails<SessionDuration>(session, among: sessions)
-        case .endTime: SessionEndTimeDetails(session, among: sessions)
-        case .skipRate: SessionMeasureDetails<SessionSkipRate>(session, among: sessions)
-        case .exerciseDuration: SessionMeasureDetails<SessionExerciseDuration>(session, among: sessions)
-        case .completedExercises: SessionMeasureDetails<SessionCompletedExercises>(session, among: sessions)
-        case .volume: SessionMeasureDetails<SessionVolume>(session, among: sessions)
+            if points.count > 1 {
+                SectionView(.init(localized: .placeholder)) {
+                    GroupBox {
+                        SessionChart(kind: kind, points: points)
+                    }
+                    .groupBoxStyle(.card)
+                }
+            }
         }
     }
 }
 
-#Preview {
+private struct SessionChart: View {
+    let kind: SessionFigureKind
+
+    let points: [SessionComparison.Point]
+
+    var body: some View {
+        let baseline = points.filter(\.isBaseline).map(\.id)
+
+        Chart {
+            if let first = baseline.min(), let last = baseline.max() {
+                RectangleMark(
+                    xStart: .value(.placeholder, Double(first) - 0.5),
+                    xEnd: .value(.placeholder, Double(last) + 0.5)
+                )
+                .foregroundStyle(.tint.opacity(0.12))
+            }
+
+            ForEach(points) { point in
+                if let value = point.value {
+                    LineMark(x: .value(.placeholder, Double(point.id)), y: .value(.placeholder, value))
+                        .foregroundStyle(.tint)
+
+                    PointMark(x: .value(.placeholder, Double(point.id)), y: .value(.placeholder, value))
+                        .foregroundStyle(.tint)
+                        .symbolSize(point.isCurrent ? 120 : 30)
+                }
+            }
+        }
+        .chartXScale(domain: -0.5 ... Double(points.count) - 0.5)
+        .chartXAxis {
+            AxisMarks(values: [0, Double(points.count - 1)]) { mark in
+                if let index = mark.as(Double.self).map(Int.init), points.indices.contains(index) {
+                    // Centered labels at the plot's edges overflow it and get dropped.
+                    AxisValueLabel(anchor: index == 0 ? .topLeading : .topTrailing) {
+                        Text(points[index].date, format: .dateTime.day().month(.abbreviated))
+                    }
+                }
+            }
+        }
+        .readingAxis(upTo: points.compactMap(\.value).max() ?? 0, reading: kind.reading(of:))
+        .frame(height: 192)
+    }
+}
+
+#Preview("Measure") {
     NavigationStack {}
         .sheet(isPresented: .constant(true)) {
             NavigationStack {
-                SessionFigureSheet(.duration, of: Samples.sessions.first!, among: Samples.sessions)
+                SessionFigureSheet(.volume, of: Samples.sessions.first!, among: Samples.sessions)
+            }
+            .presentationDetents([.medium, .large])
+        }
+        .sampleData()
+}
+
+#Preview("Clock") {
+    NavigationStack {}
+        .sheet(isPresented: .constant(true)) {
+            NavigationStack {
+                SessionFigureSheet(.endTime, of: Samples.sessions.first!, among: Samples.sessions)
             }
             .presentationDetents([.medium, .large])
         }
