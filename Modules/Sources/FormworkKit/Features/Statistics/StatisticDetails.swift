@@ -24,6 +24,28 @@ public struct StatisticDetails {
         case progression(Progression)
     }
 
+    /// Each session of the days the trend compares, recent and before, oldest first.
+    public struct Sessions {
+        public let period: DateInterval
+
+        public let points: [SessionComparison.Point]
+
+        public let reading: (Double) -> Reading
+
+        init(_ history: History, reading: @escaping (Double) -> Reading, value: (History.Window) -> Double?) {
+            let window = history.days(History.comparedWeeks * 7, endingOn: history.now)
+
+            self.period = window.period
+            self.points = window.sessions
+                .sorted { $0.startDate < $1.startDate }
+                .enumerated()
+                .map { index, session in
+                    SessionComparison.Point(id: index, date: session.startDate, value: value(history.session(session)), isCurrent: false)
+                }
+            self.reading = reading
+        }
+    }
+
     public struct Yearly {
         public let years: ClosedRange<Int>
 
@@ -40,16 +62,27 @@ public struct StatisticDetails {
 
     public let categories: (recent: Categories, overall: Categories)?
 
+    public let sessions: Sessions?
+
     public let yearly: Yearly?
 
-    init(values: [Value] = [], categories: (recent: Categories, overall: Categories)? = nil, yearly: Yearly? = nil) {
+    init(values: [Value] = [], categories: (recent: Categories, overall: Categories)? = nil, sessions: Sessions? = nil, yearly: Yearly? = nil) {
         self.values = values
         self.categories = categories
+        self.sessions = sessions
         self.yearly = yearly
     }
 }
 
 extension StatisticKind {
+    /// Whether each session has a value of its own; weekly sessions or completions only exist across several.
+    private var isPerSession: Bool {
+        switch self {
+        case .typicalDuration, .completionRate, .totalVolume, .personalBest, .oneRepMax: true
+        default: false
+        }
+    }
+
     public func details(of history: History) -> StatisticDetails {
         let allTime = history.allTime
 
@@ -99,6 +132,7 @@ extension StatisticKind {
 
             return StatisticDetails(
                 values: [comparison, .overall(reading(in: history.allTime))],
+                sessions: isPerSession ? StatisticDetails.Sessions(history, reading: read, value: value) : nil,
                 yearly: StatisticDetails.Yearly(history) { .monthly(Series(history, year: $0, value: value), reading: read) }
             )
         case .indicator(card: .recent, _):

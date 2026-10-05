@@ -16,8 +16,6 @@ public struct SessionComparison {
         public let value: Double?
 
         public let isCurrent: Bool
-
-        public let isBaseline: Bool
     }
 
     public let kind: SessionFigureKind
@@ -72,7 +70,7 @@ public struct SessionComparison {
 
 extension SessionComparison {
     /// The workout's sessions up to and including this one, oldest first. Empty for figures that don't chart.
-    public func points(count: Int = 20) -> [Point] {
+    public func points(count: Int = History.chartedSessions) -> [Point] {
         guard case let .measure(_, _, value) = kind.definition.value else {
             return []
         }
@@ -81,15 +79,13 @@ extension SessionComparison {
             .filter { $0.startDate <= session.startDate }
             .sorted { $0.startDate < $1.startDate }
             .suffix(count)
-        let baseline = window?.sessions ?? []
 
         return sessions.enumerated().map { index, other in
             Point(
                 id: index,
                 date: other.startDate,
                 value: value(other),
-                isCurrent: other === session,
-                isBaseline: baseline.contains { $0 === other }
+                isCurrent: other === session
             )
         }
     }

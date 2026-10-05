@@ -33,6 +33,38 @@ struct StatisticDetailsTests {
     }
 
     @Test
+    func sessionsChartEachSessionOnItsOwnEvenOnTheSameDay() throws {
+        try store.session(7, hour: 8, minutes: 60)
+        try store.session(7, hour: 18, minutes: 30)
+        try store.session(9, minutes: 45)
+
+        let details = try StatisticKind.typicalDuration.details(of: history(.workout(store.workout)))
+
+        #expect(details.sessions?.points.map(\.value) == [3600, 1800, 2700])
+    }
+
+    @Test
+    func sessionsChartCoversTheDaysTheTrendCompares() throws {
+        // 112 days before September 16 reach back to May 28.
+        try store.session(27, month: 5)
+        try store.session(28, month: 5)
+        try store.session(7)
+
+        let details = try StatisticKind.typicalDuration.details(of: history(.workout(store.workout)))
+
+        #expect(try details.sessions?.points.map(\.date) == [calendar.date(28, month: 5, hour: 8), calendar.date(7, hour: 8)])
+    }
+
+    @Test
+    func metricWithoutPerSessionValuesHasNoSessionsChart() throws {
+        try store.session(7)
+
+        let details = try StatisticKind.completions.details(of: history(.workout(store.workout)))
+
+        #expect(details.sessions == nil)
+    }
+
+    @Test
     func metricThatNeverComparesShowsItsRecentValueAlone() throws {
         try store.session(7)
 

@@ -48,10 +48,12 @@ public struct History: Hashable {
 
         let completions: [Completion]
 
-        fileprivate init(_ history: History, period: DateInterval) {
+        fileprivate init(_ history: History, period: DateInterval, only session: Session? = nil) {
             let start = max(period.start, history.interval.start)
             let interval = DateInterval(start: start, end: max(start, min(period.end, history.interval.end)))
-            let sessions = history.sessions.filter { $0.falls(into: interval, in: history.calendar) }
+            let sessions = history.sessions.filter { candidate in
+                candidate.falls(into: interval, in: history.calendar) && (session.map { $0 === candidate } ?? true)
+            }
             let entries = sessions.flatMap(\.entries).filter { entry in
                 switch history.subject {
                 case .all, .workout: true
@@ -145,12 +147,30 @@ extension History.Subject {
 }
 
 extension History {
+    /// Whole weeks, so the periods read as weeks and match the week-based schedules and streaks.
+    public static var recentWeeks: Int {
+        4
+    }
+
+    public static var baselineWeeks: Int {
+        12
+    }
+
+    /// Recent and the baseline before it together: the span a trend compares.
+    public static var comparedWeeks: Int {
+        recentWeeks + baselineWeeks
+    }
+
     public static var recentDays: Int {
-        28
+        recentWeeks * 7
     }
 
     public static var baselineDays: Int {
-        84
+        baselineWeeks * 7
+    }
+
+    public static var chartedSessions: Int {
+        20
     }
 
     static var minimumSessions: Int {
@@ -187,6 +207,12 @@ extension History {
     public func year(_ year: Int) -> Window {
         let first = calendar.date(from: DateComponents(year: year)) ?? now
         return Window(self, period: calendar.dateInterval(of: .year, for: first) ?? DateInterval(start: first, duration: 0))
+    }
+
+    /// Just this session, so a window's values read as that session's own.
+    public func session(_ session: Session) -> Window {
+        let day = session.period(of: .day, in: calendar) ?? DateInterval(start: session.startDate, duration: 0)
+        return Window(self, period: day, only: session)
     }
 
     public func days(_ count: Int, endingOn day: Date) -> Window {

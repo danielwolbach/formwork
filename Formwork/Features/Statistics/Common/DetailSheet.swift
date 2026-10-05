@@ -31,8 +31,10 @@ struct DetailSheet<Content: View>: View {
 
     var body: some View {
         ScrollView {
-            ContentStack(spacing: .groups) {
+            ContentStack {
                 PictogramRow(pictogram, title: title, subtitle: subtitle)
+                    // Serves as a header for the row below.
+                    .padding(.bottom, -1 * .groups)
 
                 content
 

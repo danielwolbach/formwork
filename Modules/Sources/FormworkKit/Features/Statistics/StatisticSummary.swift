@@ -16,11 +16,6 @@ public enum StatisticSummary {
 }
 
 extension StatisticKind {
-    /// Chart cards cover the span a trend compares, so a sheet's before and recent sum up the card's chart.
-    static var chartWeeks: Int {
-        (History.recentDays + History.baselineDays) / 7
-    }
-
     public func summary(of history: History) -> StatisticSummary {
         switch definition.value {
         case let .metric(unit, tolerance, .recent, value):
@@ -35,9 +30,9 @@ extension StatisticKind {
 
     private func chartSummary(of history: History) -> StatisticSummary {
         switch self {
-        case .activeDays: .activeDays(ActiveDays(history.weeks(Self.chartWeeks)))
+        case .activeDays: .activeDays(ActiveDays(history.weeks(History.comparedWeeks)))
         case .categories: .categories(Categories(history.recent))
-        case .progression: .progression(Progression(history.weeks(Self.chartWeeks)))
+        case .progression: .progression(Progression(history.weeks(History.comparedWeeks)))
         default: preconditionFailure("\(self) has no chart.")
         }
     }

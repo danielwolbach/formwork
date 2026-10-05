@@ -545,17 +545,6 @@
         }
       }
     },
-    "field.before.subtitle" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Previous %1$(days)lld days"
-          }
-        }
-      }
-    },
     "field.before.title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -677,6 +666,28 @@
         }
       }
     },
+    "field.lastWeeks.subtitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Last %1$(count)lld weeks"
+          }
+        }
+      }
+    },
+    "field.latest.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Latest"
+          }
+        }
+      }
+    },
     "field.link.placeholder" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -754,13 +765,13 @@
         }
       }
     },
-    "field.recent.subtitle" : {
+    "field.previousWeeks.subtitle" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Last %1$(days)lld days"
+            "value" : "Previous %1$(count)lld weeks"
           }
         }
       }

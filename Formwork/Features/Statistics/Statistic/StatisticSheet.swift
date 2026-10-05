@@ -40,7 +40,7 @@ struct StatisticSheet: View {
             }
 
             if let categories = details.categories {
-                SectionView(.fieldRecentTitle, subtitle: .init(localized: .fieldRecentSubtitle(days: History.recentDays))) {
+                SectionView(.fieldRecentTitle, subtitle: .init(localized: .fieldLastWeeksSubtitle(count: History.recentWeeks))) {
                     GroupBox {
                         CategoriesBreakdown(categories.recent)
                     }
@@ -50,6 +50,15 @@ struct StatisticSheet: View {
                 SectionView(.fieldOverallTitle) {
                     GroupBox {
                         CategoriesBreakdown(categories.overall)
+                    }
+                    .groupBoxStyle(.card)
+                }
+            }
+
+            if let sessions = details.sessions, sessions.points.count > 1 {
+                SectionView(.fieldLatestTitle, subtitle: String(localized: .fieldLastWeeksSubtitle(count: History.comparedWeeks))) {
+                    GroupBox {
+                        SessionsChart(sessions.points, period: sessions.period, title: definition.title, reading: sessions.reading)
                     }
                     .groupBoxStyle(.card)
                 }

@@ -28,7 +28,7 @@ struct ValueComparison: View {
         let before = Value(
             title: String(localized: .fieldBeforeTitle),
             reading: before,
-            footnote: String(localized: .fieldBeforeSubtitle(days: History.baselineDays))
+            footnote: String(localized: .fieldPreviousWeeksSubtitle(count: History.baselineWeeks))
         )
 
         self.init(before: before, after: Self.recent(recent), direction: direction)
@@ -43,7 +43,7 @@ struct ValueComparison: View {
         let before = Value(
             title: String(localized: .fieldBeforeTitle),
             reading: comparison.baseline,
-            footnote: String(localized: .fieldBeforeSubtitle(days: History.recentDays))
+            footnote: String(localized: .fieldPreviousWeeksSubtitle(count: History.recentWeeks))
         )
         let after = Value(
             title: String(localized: .fieldThisSessionTitle),
@@ -89,7 +89,7 @@ struct ValueComparison: View {
         Value(
             title: String(localized: .fieldRecentTitle),
             reading: reading,
-            footnote: String(localized: .fieldRecentSubtitle(days: History.recentDays))
+            footnote: String(localized: .fieldLastWeeksSubtitle(count: History.recentWeeks))
         )
     }
 }

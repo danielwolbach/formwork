@@ -66,7 +66,7 @@ struct SessionComparisonTests {
     }
 
     @Test
-    func pointsEndWithTheSessionAndMarkTheBaseline() throws {
+    func pointsEndWithTheSession() throws {
         try store.session(1, month: 8)
         try store.session(2, month: 8)
         try store.session(1)
@@ -77,11 +77,9 @@ struct SessionComparisonTests {
 
         let points = compare(session).points(count: 5)
 
-        // 28 days before September 10 reach back to August 13, so the August sessions are context only.
         #expect(try points.map(\.date) == [8, 9, 9, 9, 9].enumerated().map { index, month in
             try calendar.date([2, 1, 2, 3, 10][index], month: month, hour: 8)
         })
-        #expect(points.map(\.isBaseline) == [false, true, true, true, false])
         #expect(points.map(\.isCurrent) == [false, false, false, false, true])
     }
 

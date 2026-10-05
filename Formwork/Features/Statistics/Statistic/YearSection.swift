@@ -36,6 +36,7 @@ struct YearSection<Content: View>: View {
             }
             .groupBoxStyle(.card)
             .animation(.snappy, value: year)
+            .sensoryFeedback(.selection, trigger: year)
         } accessory: {
             Button(.backward) {
                 selection = year - 1

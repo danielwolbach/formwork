@@ -63,7 +63,7 @@ extension Pictogram {
 
     public static let progression = Pictogram(image: "chart.line.uptrend.xyaxis", tint: .blue)
 
-    public static let activity = Pictogram(image: "square.grid.3x3", tint: .orange)
+    public static let activity = Pictogram(image: "square.grid.3x3", tint: .red)
 
     public static let categories = Pictogram(image: "chart.pie", tint: .gray)
 

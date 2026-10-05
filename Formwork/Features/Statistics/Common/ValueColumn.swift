@@ -50,9 +50,9 @@ struct ValueColumn: View {
 #Preview {
     GroupBox {
         HStack {
-            ValueColumn(title: String(localized: .fieldBeforeTitle), reading: .duration(seconds: 2700), footnote: String(localized: .fieldBeforeSubtitle(days: History.baselineDays)))
+            ValueColumn(title: String(localized: .fieldBeforeTitle), reading: .duration(seconds: 2700), footnote: String(localized: .fieldPreviousWeeksSubtitle(count: History.baselineWeeks)))
 
-            ValueColumn(title: String(localized: .fieldRecentTitle), reading: nil, footnote: String(localized: .fieldRecentSubtitle(days: History.recentDays)))
+            ValueColumn(title: String(localized: .fieldRecentTitle), reading: nil, footnote: String(localized: .fieldLastWeeksSubtitle(count: History.recentWeeks)))
         }
     }
     .groupBoxStyle(.card)
