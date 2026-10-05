@@ -589,6 +589,28 @@
         }
       }
     },
+    "field.dailyReminder.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Daily Reminder"
+          }
+        }
+      }
+    },
+    "field.dailyReminderTime.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Time"
+          }
+        }
+      }
+    },
     "field.distanceUnit.title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -798,6 +820,28 @@
         }
       }
     },
+    "field.reminders.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reminders"
+          }
+        }
+      }
+    },
+    "field.remindersDenied.message" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notifications are turned off for this app."
+          }
+        }
+      }
+    },
     "field.reps.title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -993,6 +1037,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Units"
+          }
+        }
+      }
+    },
+    "field.upcomingReminder.subtitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reminds you %1$(minutes)lld minutes before you usually start, once a workout has a few sessions."
+          }
+        }
+      }
+    },
+    "field.upcomingReminder.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Before Usual Start"
           }
         }
       }
