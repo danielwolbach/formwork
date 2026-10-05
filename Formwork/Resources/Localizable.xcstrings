@@ -865,29 +865,6 @@
         }
       }
     },
-    "field.rhythm.weekly.iterval.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "variations" : {
-            "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Every Week"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Every %1$(count)lld Weeks"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "field.rhythm.weekly.title" : {
       "extractionState" : "manual",
       "localizations" : {

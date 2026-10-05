@@ -44,7 +44,7 @@ public enum Samples {
         Workout(
             name: "Full Body",
             pictogram: Pictogram(image: "figure.strengthtraining.traditional", tint: .blue),
-            schedule: .weekly(weekdays: Schedule.Weekdays([.monday, .thursday]), interval: 1, anchor: historyStart),
+            schedule: .weekly(weekdays: [Schedule.Weekdays(calendarWeekday: 2), Schedule.Weekdays(calendarWeekday: 5)], anchor: historyStart),
             entries: [
                 WorkoutEntry(exercise: exercises[0], target: .duration(seconds: 10 * 60)),
                 WorkoutEntry(exercise: exercises[1], target: .weight(kilograms: 85, reps: 10, sets: 3)),
@@ -60,7 +60,7 @@ public enum Samples {
         Workout(
             name: "Leg Day",
             pictogram: Pictogram(image: "figure.strengthtraining.functional", tint: .purple),
-            schedule: .weekly(weekdays: Schedule.Weekdays([.saturday]), interval: 1, anchor: historyStart),
+            schedule: .weekly(weekdays: Schedule.Weekdays(calendarWeekday: 7), anchor: historyStart),
             entries: [
                 WorkoutEntry(exercise: exercises[22], target: .duration(seconds: 5 * 60)),
                 WorkoutEntry(exercise: exercises[11], target: .weight(kilograms: 70, reps: 8, sets: 4)),
@@ -101,6 +101,7 @@ extension Samples {
     fileprivate static func seedHistory(days: Int = historyDays, calendar: Calendar = .current) -> [Session] {
         var random = SeededGenerator(seed: 42)
         var sessions: [Session] = []
+        var lastSessions: [Workout: Date] = [:]
         let today = calendar.startOfDay(for: .now)
 
         for offset in (1 ... days).reversed() {
@@ -110,7 +111,7 @@ extension Samples {
 
             let progress = 1 - Double(offset) / Double(days)
 
-            for workout in workouts where workout.schedule.isScheduled(on: day, in: calendar) {
+            for workout in workouts where workout.schedule.isScheduled(on: day, after: lastSessions[workout], now: day, in: calendar) {
                 guard Double.random(in: 0 ..< 1, using: &random) < 0.8 else {
                     continue
                 }
@@ -118,6 +119,7 @@ extension Samples {
                 let session = Session(workout: workout)
                 var clock = day.addingTimeInterval(TimeInterval.random(in: 17 ... 19.5, using: &random) * 3600)
                 session.startDate = clock
+                lastSessions[workout] = clock
 
                 for entry in session.entries.sorted() {
                     clock += TimeInterval.random(in: 180 ... 480, using: &random)

@@ -18,93 +18,168 @@ struct ScheduleTests {
         return calendar
     }
 
+    private static let monday = Schedule.Weekdays(calendarWeekday: 2)
+
+    private static let thursday = Schedule.Weekdays(calendarWeekday: 5)
+
+    private static let friday = Schedule.Weekdays(calendarWeekday: 6)
+
     /// A day in September 2026; the 7th is a Monday.
     private static func day(_ day: Int) -> Date {
         calendar().date(from: DateComponents(year: 2026, month: 9, day: day, hour: 12))!
     }
 
     @Test(arguments: [
-        (1, [Schedule.Weekday.sunday, .monday, .tuesday, .wednesday, .thursday, .friday, .saturday]),
-        (2, [Schedule.Weekday.monday, .tuesday, .wednesday, .thursday, .friday, .saturday, .sunday]),
-        (7, [Schedule.Weekday.saturday, .sunday, .monday, .tuesday, .wednesday, .thursday, .friday]),
+        (1, [1, 2, 3, 4, 5, 6, 7]),
+        (2, [2, 3, 4, 5, 6, 7, 1]),
+        (7, [7, 1, 2, 3, 4, 5, 6]),
     ])
-    func orderedStartsOnFirstWeekday(firstWeekday: Int, expected: [Schedule.Weekday]) {
-        #expect(Schedule.Weekday.ordered(in: Self.calendar(firstWeekday: firstWeekday)) == expected)
-    }
-
-    @Test(arguments: zip(
-        Schedule.Weekday.allCases,
-        ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
-    ))
-    func nameMatchesCalendar(weekday: Schedule.Weekday, name: String) {
-        #expect(weekday.name(in: Self.calendar()) == name)
-    }
-
-    @Test(arguments: zip(
-        Schedule.Weekday.allCases,
-        [2, 3, 4, 5, 6, 7, 1]
-    ))
-    func calendarNumberMatchesCalendar(weekday: Schedule.Weekday, number: Int) {
-        #expect(weekday.calendarNumber == number)
-        #expect(Schedule.Weekday(calendarNumber: number) == weekday)
-    }
-
-    @Test
-    func symbolMatchesCalendar() {
-        let calendar = Self.calendar()
-
-        #expect(Schedule.Weekday.monday.symbol(in: calendar) == "M")
-        #expect(Schedule.Weekday.sunday.symbol(in: calendar) == "S")
+    func orderedWeekdaysStartOnFirstWeekday(firstWeekday: Int, expected: [Int]) {
+        #expect(Self.calendar(firstWeekday: firstWeekday).orderedWeekdays == expected)
     }
 
     @Test(arguments: [
         (0, true),
-        (7, false),
+        (7, true),
         (14, true),
-        (28, true),
         (1, false),
-        (-14, false),
+        (-7, false),
     ])
-    func weeklyRepeatsEveryIntervalWeeks(offset: Int, expected: Bool) {
-        let schedule = Schedule.weekly(weekdays: Schedule.Weekdays([.monday]), interval: 2, anchor: Self.day(7))
+    func weeklyRepeatsEveryWeekFromTheAnchor(offset: Int, expected: Bool) {
+        let schedule = Schedule.weekly(weekdays: Self.monday, anchor: Self.day(7))
 
-        #expect(schedule.isScheduled(on: Self.day(7 + offset), in: Self.calendar()) == expected)
+        #expect(schedule.isScheduled(on: Self.day(7 + offset), after: nil, in: Self.calendar()) == expected)
     }
 
     @Test
     func weeklySkipsWeekdaysBeforeTheAnchorInItsWeek() {
-        let schedule = Schedule.weekly(weekdays: Schedule.Weekdays([.monday, .friday]), interval: 2, anchor: Self.day(9))
+        let schedule = Schedule.weekly(weekdays: [Self.monday, Self.friday], anchor: Self.day(9))
 
-        #expect(!schedule.isScheduled(on: Self.day(7), in: Self.calendar()))
-        #expect(schedule.isScheduled(on: Self.day(11), in: Self.calendar()))
-        #expect(schedule.isScheduled(on: Self.day(21), in: Self.calendar()))
+        #expect(!schedule.isScheduled(on: Self.day(7), after: nil, in: Self.calendar()))
+        #expect(schedule.isScheduled(on: Self.day(11), after: nil, in: Self.calendar()))
+        #expect(schedule.isScheduled(on: Self.day(14), after: nil, in: Self.calendar()))
     }
 
     @Test(arguments: [
+        (-1, false),
         (0, true),
-        (1, false),
-        (2, false),
-        (3, true),
-        (6, true),
-        (-3, false),
+        (1, true),
+        (5, true),
     ])
-    func dailyRepeatsEveryIntervalDays(offset: Int, expected: Bool) {
-        let schedule = Schedule.daily(interval: 3, anchor: Self.day(7))
+    func dailyStaysDueFromTheAnchorUntilItIsDone(offset: Int, expected: Bool) {
+        let schedule = Schedule.daily(days: 3, anchor: Self.day(7))
+        let day = Self.day(7 + offset)
 
-        #expect(schedule.isScheduled(on: Self.day(7 + offset), in: Self.calendar()) == expected)
+        #expect(schedule.isScheduled(on: day, after: nil, now: day, in: Self.calendar()) == expected)
+    }
+
+    @Test(arguments: [
+        (8, 8, false),
+        (8, 10, false),
+        (8, 11, true),
+        (8, 13, true),
+        (6, 8, false),
+        (6, 9, true),
+    ])
+    func dailyFloatsFromTheLastSession(last: Int, day: Int, expected: Bool) {
+        let schedule = Schedule.daily(days: 3, anchor: Self.day(7))
+
+        #expect(schedule.isScheduled(on: Self.day(day), after: Self.day(last), now: Self.day(day), in: Self.calendar()) == expected)
+    }
+
+    @Test
+    func dailyWaitsForAnAnchorAfterTheLastSession() {
+        let schedule = Schedule.daily(days: 3, anchor: Self.day(20))
+
+        #expect(!schedule.isScheduled(on: Self.day(19), after: Self.day(8), now: Self.day(19), in: Self.calendar()))
+        #expect(schedule.isScheduled(on: Self.day(20), after: Self.day(8), now: Self.day(20), in: Self.calendar()))
+    }
+
+    @Test(arguments: [
+        (14, true),
+        (15, false),
+        (16, false),
+        (17, true),
+        (20, true),
+    ])
+    func dailyProjectsLaterDaysFromAnOverdueToday(day: Int, expected: Bool) {
+        let schedule = Schedule.daily(days: 3, anchor: Self.day(7))
+
+        #expect(schedule.isScheduled(on: Self.day(day), after: Self.day(8), now: Self.day(14), in: Self.calendar()) == expected)
+    }
+
+    @Test(arguments: [
+        (9, false),
+        (10, false),
+        (11, true),
+        (12, false),
+        (14, true),
+    ])
+    func dailyProjectsLaterDaysFromTheNextDueDay(day: Int, expected: Bool) {
+        let schedule = Schedule.daily(days: 3, anchor: Self.day(7))
+
+        #expect(schedule.isScheduled(on: Self.day(day), after: Self.day(8), now: Self.day(9), in: Self.calendar()) == expected)
+    }
+
+    @Test
+    func weeklyIsNotDueOnTheDayOfTheLastSession() {
+        let schedule = Schedule.weekly(weekdays: Self.monday, anchor: Self.day(7))
+
+        #expect(schedule.isScheduled(on: Self.day(14), after: Self.day(14), in: Self.calendar()))
+        #expect(!schedule.isDue(on: Self.day(14), after: Self.day(14), in: Self.calendar()))
+        #expect(schedule.isDue(on: Self.day(14), after: Self.day(8), in: Self.calendar()))
     }
 
     @Test
     func inactiveIsNeverScheduled() {
         for day in 1 ... 14 {
-            #expect(!Schedule.inactive.isScheduled(on: Self.day(day), in: Self.calendar()))
+            #expect(!Schedule.inactive.isScheduled(on: Self.day(day), after: nil, in: Self.calendar()))
         }
     }
 
     @MainActor
+    @Test(arguments: [Schedule.today(), Schedule.daily()])
+    func aWorkoutDoneTodayIsNoLongerPending(schedule: Schedule) throws {
+        let store = try TestStore()
+        store.workout.schedule = schedule
+
+        #expect([store.workout].pending() == [store.workout])
+
+        let session = Session(workout: store.workout)
+        store.container.mainContext.insert(session)
+        session.startDate = .now
+
+        #expect([store.workout].pending() == [store.workout])
+
+        session.endDate = .now
+
+        #expect([store.workout].pending().isEmpty)
+        #expect(store.workout.isScheduled())
+    }
+
+    @MainActor
+    @Test
+    func aWorkoutDoneOnARestDayWasNotPlanned() throws {
+        let store = try TestStore()
+        let calendar = Calendar.current
+        let today = calendar.startOfDay(for: .now)
+        store.workout.schedule = .daily(days: 3, anchor: try #require(calendar.date(byAdding: .day, value: -7, to: today)))
+
+        for offset in [-1, 0] {
+            let session = Session(workout: store.workout)
+            store.container.mainContext.insert(session)
+            session.startDate = try #require(calendar.date(byAdding: .day, value: offset, to: today))
+            session.endDate = session.startDate
+        }
+
+        #expect(!store.workout.isDue())
+        #expect(!store.workout.isScheduled())
+    }
+
+    @MainActor
     @Test(arguments: [
-        Schedule.weekly(weekdays: Schedule.Weekdays([.monday, .thursday]), interval: 2, anchor: ScheduleTests.day(7)),
-        Schedule.daily(interval: 3, anchor: ScheduleTests.day(9)),
+        Schedule.weekly(weekdays: [ScheduleTests.monday, ScheduleTests.thursday], anchor: ScheduleTests.day(7)),
+        Schedule.daily(days: 3, anchor: ScheduleTests.day(9)),
     ])
     func persists(schedule: Schedule) throws {
         let store = try TestStore()

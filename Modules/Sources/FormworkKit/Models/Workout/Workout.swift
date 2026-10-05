@@ -60,6 +60,22 @@ extension Workout {
             .sorted { counts[$0, default: 0] > counts[$1, default: 0] }
     }
 
+    public func isScheduled(on date: Date = .now, now: Date = .now, in calendar: Calendar = .current) -> Bool {
+        schedule.isScheduled(on: date, after: lastSession(before: calendar.startOfDay(for: date), in: calendar), now: now, in: calendar)
+    }
+
+    public func isDue(on date: Date = .now, now: Date = .now, in calendar: Calendar = .current) -> Bool {
+        schedule.isDue(on: date, after: lastSession(in: calendar), now: now, in: calendar)
+    }
+
+    public func lastSession(before limit: Date? = nil, in calendar: Calendar = .current) -> Date? {
+        sessions
+            .filter { !$0.isActive }
+            .map { $0.localStartDate(in: calendar) }
+            .filter { $0 < limit ?? .distantFuture }
+            .max()
+    }
+
     public func append(exercise: Exercise, target: ExerciseTarget) {
         let entry = WorkoutEntry(exercise: exercise, target: target)
         entry.order = (entries.map(\.order).max() ?? -1) + 1
@@ -99,12 +115,7 @@ extension Workout {
 
 extension [Workout] {
     public func pending(on date: Date = .now, calendar: Calendar = .current) -> [Workout] {
-        guard let day = calendar.dateInterval(of: .day, for: date) else {
-            return []
-        }
-
-        return filter { $0.schedule.isScheduled(on: date, in: calendar) }
-            .filter { workout in !workout.sessions.contains { !$0.isActive && $0.falls(into: day, in: calendar) } }
+        filter { $0.isDue(on: date, now: date, in: calendar) }
             .map { workout in
                 let startMinute = workout.sessions
                     .filter { !$0.isActive }

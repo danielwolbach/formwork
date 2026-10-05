@@ -14,9 +14,7 @@ struct ScheduleEditor: View {
         case weekly, daily
     }
 
-    private static let weekIntervals = 1 ... 4
-
-    private static let dayIntervals = 1 ... 14
+    private static let dayIntervals = 1 ... 28
 
     private let saved: Schedule?
 
@@ -37,10 +35,13 @@ struct ScheduleEditor: View {
 
             Divider()
 
-            switch schedule {
-            case .weekly: weeklyScheduleEditor
-            case .daily: dailyScheduleEditor
+            Group {
+                switch schedule {
+                case .weekly: weeklyScheduleEditor
+                case .daily: dailyScheduleEditor
+                }
             }
+            .transition(.blurReplace)
         }
         .animation(.snappy, value: schedule)
         .labeledContentStyle(.row)
@@ -61,12 +62,9 @@ struct ScheduleEditor: View {
         VStack(spacing: .groups) {
             WeekdayPicker(weekdays, calendar: calendar)
 
-            // A weekly schedule without weekdays is inactive, so there's no rhythm to set yet.
+            // A weekly schedule without weekdays is inactive, so there's nothing to start yet.
             if !schedule.weekdays.isEmpty {
-                intervalStepper(
-                    Text(.fieldRhythmWeeklyItervalTitle(count: schedule.interval)),
-                    range: Self.weekIntervals
-                )
+                Divider()
 
                 anchorPicker
             }
@@ -75,10 +73,13 @@ struct ScheduleEditor: View {
 
     private var dailyScheduleEditor: some View {
         VStack(spacing: .groups) {
-            intervalStepper(
-                Text(.fieldRhythmDailyIntervalTitle(count: schedule.interval)),
+            stepper(
+                Text(.fieldRhythmDailyIntervalTitle(count: schedule.days)),
+                value: $schedule.days,
                 range: Self.dayIntervals
             )
+
+            Divider()
 
             anchorPicker
         }
@@ -104,10 +105,10 @@ struct ScheduleEditor: View {
                 }
 
                 switch (schedule, newValue) {
-                case let (.weekly(weekdays, interval, anchor), .daily):
-                    schedule = .daily(interval: min(interval, Self.dayIntervals.upperBound), anchor: weekdays.isEmpty ? .now : anchor)
-                case let (.daily(interval, anchor), .weekly):
-                    schedule = .weekly(interval: min(interval, Self.weekIntervals.upperBound), anchor: anchor)
+                case let (.weekly(_, anchor), .daily):
+                    schedule = .daily(anchor: schedule.weekdays.isEmpty ? .now : anchor)
+                case let (.daily(_, anchor), .weekly):
+                    schedule = .weekly(anchor: anchor)
                 default:
                     break
                 }
@@ -138,24 +139,26 @@ struct ScheduleEditor: View {
         }
     }
 
-    private func intervalStepper(_ title: Text, range: ClosedRange<Int>) -> some View {
+    private func stepper(_ title: Text, value: Binding<Int>, range: ClosedRange<Int>) -> some View {
         LabeledContent {
             Button(.decrease) {
-                schedule.interval -= 1
+                value.wrappedValue -= 1
             }
             .buttonStyle(.card)
             .labelStyle(.fixedIconOnly)
-            .disabled(schedule.interval <= range.lowerBound)
+            .disabled(value.wrappedValue <= range.lowerBound)
 
             Button(.increase) {
-                schedule.interval += 1
+                value.wrappedValue += 1
             }
             .buttonStyle(.card)
             .labelStyle(.fixedIconOnly)
-            .disabled(schedule.interval >= range.upperBound)
+            .disabled(value.wrappedValue >= range.upperBound)
         } label: {
             title
+                .contentTransition(.opacity)
         }
+        .sensoryFeedback(.selection, trigger: value.wrappedValue)
     }
 }
 
@@ -172,19 +175,19 @@ private struct WeekdayPicker: View {
 
     var body: some View {
         HStack {
-            ForEach(Schedule.Weekday.ordered(in: calendar)) { weekday in
-                let option = Schedule.Weekdays([weekday])
+            ForEach(calendar.orderedWeekdays, id: \.self) { weekday in
+                let option = Schedule.Weekdays(calendarWeekday: weekday)
 
                 Button {
                     weekdays.formSymmetricDifference(option)
                 } label: {
-                    Text(weekday.symbol(in: calendar))
+                    Text(calendar.veryShortWeekdaySymbols[weekday - 1])
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
                 .buttonStyle(CardButtonStyle(style: weekdays.contains(option) ? .selected : .bordered))
                 .buttonBorderShape(.circle)
                 .aspectRatio(1, contentMode: .fit)
-                .accessibilityLabel(weekday.name(in: calendar))
+                .accessibilityLabel(calendar.weekdaySymbols[weekday - 1])
             }
         }
         .sensoryFeedback(.selection, trigger: weekdays)
@@ -194,29 +197,30 @@ private struct WeekdayPicker: View {
 extension Schedule {
     fileprivate var weekdays: Weekdays {
         get {
-            if case let .weekly(weekdays, _, _) = self {
+            if case let .weekly(weekdays, _) = self {
                 weekdays
             } else {
                 []
             }
         }
         set {
-            if case let .weekly(_, interval, anchor) = self {
-                self = .weekly(weekdays: newValue, interval: interval, anchor: anchor)
+            if case let .weekly(_, anchor) = self {
+                self = .weekly(weekdays: newValue, anchor: anchor)
             }
         }
     }
 
-    fileprivate var interval: Int {
+    fileprivate var days: Int {
         get {
-            switch self {
-            case let .weekly(_, interval, _), let .daily(interval, _): interval
+            if case let .daily(days, _) = self {
+                days
+            } else {
+                1
             }
         }
         set {
-            switch self {
-            case let .weekly(weekdays, _, anchor): self = .weekly(weekdays: weekdays, interval: newValue, anchor: anchor)
-            case let .daily(_, anchor): self = .daily(interval: newValue, anchor: anchor)
+            if case let .daily(_, anchor) = self {
+                self = .daily(days: newValue, anchor: anchor)
             }
         }
     }
@@ -224,13 +228,13 @@ extension Schedule {
     fileprivate var anchor: Date {
         get {
             switch self {
-            case let .weekly(_, _, anchor), let .daily(_, anchor): anchor
+            case let .weekly(_, anchor), let .daily(_, anchor): anchor
             }
         }
         set {
             switch self {
-            case let .weekly(weekdays, interval, _): self = .weekly(weekdays: weekdays, interval: interval, anchor: newValue)
-            case let .daily(interval, _): self = .daily(interval: interval, anchor: newValue)
+            case let .weekly(weekdays, _): self = .weekly(weekdays: weekdays, anchor: newValue)
+            case let .daily(days, _): self = .daily(days: days, anchor: newValue)
             }
         }
     }

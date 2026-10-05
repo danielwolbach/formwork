@@ -43,7 +43,7 @@ extension ActiveDays {
 
     public var weekdaySymbols: [String] {
         let symbols = calendar.veryShortWeekdaySymbols
-        return (0 ..< 7).map { symbols[(calendar.firstWeekday - 1 + $0) % 7] }
+        return calendar.orderedWeekdays.map { symbols[$0 - 1] }
     }
 }
 

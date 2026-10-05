@@ -96,7 +96,7 @@ struct StarterCatalogTests {
 
         let workouts = try context.fetch(FetchDescriptor<Workout>())
 
-        #expect(workouts.allSatisfy { $0.schedule.isScheduled(on: .now) })
+        #expect(workouts.allSatisfy { $0.isScheduled() })
         #expect(workouts.pending().count == workouts.count)
     }
 

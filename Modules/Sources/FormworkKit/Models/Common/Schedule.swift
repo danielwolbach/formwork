@@ -8,90 +8,70 @@
 import Foundation
 
 public enum Schedule: Codable, Hashable, Sendable {
-    case weekly(weekdays: Weekdays = [], interval: Int = 1, anchor: Date = Date.now)
-    case daily(interval: Int = 1, anchor: Date = Date.now)
-
-    public enum Weekday: Int, Codable, CaseIterable, Sendable {
-        case monday, tuesday, wednesday, thursday, friday, saturday, sunday
-    }
-
-    public struct Weekdays: OptionSet, Codable, Hashable, Sendable {
+    public struct Weekdays: Codable, Hashable, OptionSet, Sendable {
         public let rawValue: Int
 
         public init(rawValue: Int) {
             self.rawValue = rawValue
         }
+
+        public init(calendarWeekday: Int) {
+            rawValue = 1 << (calendarWeekday - 1)
+        }
     }
+
+    case weekly(weekdays: Weekdays = [], anchor: Date = .now)
+    case daily(days: Int = 1, anchor: Date = .now)
 }
 
 extension Schedule {
     public static var inactive: Schedule {
-        .weekly(weekdays: [], interval: 1, anchor: .now)
+        .weekly()
     }
 
     public static func today(in calendar: Calendar = .current) -> Schedule {
-        .weekly(weekdays: Weekdays([Weekday(calendarNumber: calendar.component(.weekday, from: .now))]), interval: 1, anchor: .now)
+        .weekly(weekdays: Weekdays(calendarWeekday: calendar.component(.weekday, from: .now)))
     }
 
-    private static func isCycle(_ date: Date, every interval: Int, of component: Calendar.Component, from anchor: Date, in calendar: Calendar) -> Bool {
-        guard
-            calendar.startOfDay(for: date) >= calendar.startOfDay(for: anchor),
-            let start = calendar.dateInterval(of: component, for: anchor)?.start,
-            let end = calendar.dateInterval(of: component, for: date)?.start,
-            let distance = calendar.dateComponents([component], from: start, to: end).value(for: component)
-        else {
+    public func isScheduled(on date: Date, after lastSession: Date?, now: Date = .now, in calendar: Calendar = .current) -> Bool {
+        switch self {
+        case let .weekly(weekdays, anchor):
+            return calendar.startOfDay(for: date) >= calendar.startOfDay(for: anchor)
+                && weekdays.contains(Weekdays(calendarWeekday: calendar.component(.weekday, from: date)))
+        case let .daily(days, anchor):
+            let days = max(days, 1)
+            let day = calendar.startOfDay(for: date)
+            var due = calendar.startOfDay(for: anchor)
+
+            if let lastSession, let next = calendar.date(byAdding: .day, value: days, to: calendar.startOfDay(for: lastSession)) {
+                due = max(due, next)
+            }
+
+            // A missed day stays due until it's done. Later days assume every due day gets done.
+            let today = calendar.startOfDay(for: now)
+            guard day > today else {
+                return day >= due
+            }
+
+            guard let distance = calendar.dateComponents([.day], from: max(due, today), to: day).day else {
+                return false
+            }
+
+            return distance >= 0 && distance % days == 0
+        }
+    }
+
+    public func isDue(on date: Date, after lastSession: Date?, now: Date = .now, in calendar: Calendar = .current) -> Bool {
+        if let lastSession, calendar.isDate(lastSession, inSameDayAs: date) {
             return false
         }
 
-        return distance % max(interval, 1) == 0
-    }
-
-    public func isScheduled(on date: Date, in calendar: Calendar = .current) -> Bool {
-        switch self {
-        case let .weekly(weekdays, interval, anchor):
-            weekdays.contains(Weekday(calendarNumber: calendar.component(.weekday, from: date)))
-                && Self.isCycle(date, every: interval, of: .weekOfYear, from: anchor, in: calendar)
-        case let .daily(interval, anchor):
-            Self.isCycle(date, every: interval, of: .day, from: anchor, in: calendar)
-        }
+        return isScheduled(on: date, after: lastSession, now: now, in: calendar)
     }
 }
 
-extension Schedule.Weekdays {
-    public init(_ weekdays: some Sequence<Schedule.Weekday>) {
-        self.init(rawValue: weekdays.reduce(0) { $0 | 1 << $1.rawValue })
-    }
-
-    public func contains(_ weekday: Schedule.Weekday) -> Bool {
-        rawValue & 1 << weekday.rawValue != 0
-    }
-}
-
-extension Schedule.Weekday: Identifiable {
-    public var id: Self {
-        self
-    }
-}
-
-extension Schedule.Weekday {
-    init(calendarNumber: Int) {
-        self = Self.allCases[(calendarNumber + 5) % 7]
-    }
-
-    var calendarNumber: Int {
-        (rawValue + 1) % 7 + 1
-    }
-
-    public static func ordered(in calendar: Calendar = .autoupdatingCurrent) -> [Self] {
-        let offset = Self(calendarNumber: calendar.firstWeekday).rawValue
-        return Array(allCases[offset...] + allCases[..<offset])
-    }
-
-    public func name(in calendar: Calendar = .autoupdatingCurrent) -> String {
-        calendar.weekdaySymbols[calendarNumber - 1]
-    }
-
-    public func symbol(in calendar: Calendar = .autoupdatingCurrent) -> String {
-        calendar.veryShortWeekdaySymbols[calendarNumber - 1]
+extension Calendar {
+    public var orderedWeekdays: [Int] {
+        (0 ..< 7).map { (firstWeekday - 1 + $0) % 7 + 1 }
     }
 }

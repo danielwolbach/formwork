@@ -124,7 +124,7 @@ extension OverviewEntry {
         let sessions = (try? context.fetch(FetchDescriptor<Session>())) ?? []
         let workouts = (try? context.fetch(FetchDescriptor<Workout>(predicate: #Predicate<Workout> { !$0.isArchived }))) ?? []
         let streak = History(.all, among: sessions, at: date).allTime.weekStreak
-        let isScheduled = workouts.contains { $0.schedule.isScheduled(on: date) }
+        let isScheduled = workouts.contains { $0.isScheduled(on: date, now: date) }
         let workout = workouts.pending(on: date).first
 
         return OverviewEntry(

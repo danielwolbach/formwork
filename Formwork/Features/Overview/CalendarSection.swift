@@ -38,6 +38,7 @@ struct CalendarSection: View {
 
     var body: some View {
         let months = months
+        let lastSessions = lastSessions
         let shownMonth = month ?? startOfMonth(.now)
         let selectedDay = calendar.startOfDay(for: selection)
         let finished = sessionsByDay(inMonthOf: selection)[selectedDay] ?? []
@@ -45,8 +46,8 @@ struct CalendarSection: View {
         SectionView(.fieldCalendarTitle, subtitle: subtitle(for: shownMonth)) {
             GroupBox {
                 HStack(spacing: Self.spacing) {
-                    ForEach(Schedule.Weekday.ordered(in: calendar)) { weekday in
-                        Text(weekday.symbol(in: calendar))
+                    ForEach(calendar.orderedWeekdays, id: \.self) { weekday in
+                        Text(calendar.veryShortWeekdaySymbols[weekday - 1])
                             .font(.caption)
                             .foregroundStyle(.secondary)
                             .frame(maxWidth: .infinity)
@@ -59,7 +60,7 @@ struct CalendarSection: View {
                     .overlay {
                         TabView(selection: $month) {
                             ForEach(months, id: \.self) { month in
-                                monthGrid(month)
+                                monthGrid(month, lastSessions: lastSessions)
                                     .padding(.horizontal, Self.cardPadding)
                                     .tag(Optional(month))
                             }
@@ -74,7 +75,7 @@ struct CalendarSection: View {
 
                 // Stacked, so the outgoing and incoming day crossfade in place instead of sitting below each other.
                 ZStack(alignment: .top) {
-                    CalendarDayList(day: selection, sessions: finished, planned: planned(on: selection, besides: finished.compactMap(\.workout)))
+                    CalendarDayList(day: selection, sessions: finished, planned: planned(on: selection, after: lastSessions))
                         .id(selectedDay)
                         .transition(.blurReplace)
                 }
@@ -144,7 +145,7 @@ struct CalendarSection: View {
         return (0 ... count + Self.monthsAhead).compactMap { calendar.date(byAdding: .month, value: $0, to: first) }
     }
 
-    private func monthGrid(_ month: Date) -> some View {
+    private func monthGrid(_ month: Date, lastSessions: [Workout: Date]) -> some View {
         let sessionsByDay = sessionsByDay(inMonthOf: month)
         let selected = sameDay(as: selection, in: month)
 
@@ -162,7 +163,7 @@ struct CalendarSection: View {
                                     day: day,
                                     isSelected: calendar.isDate(day, inSameDayAs: selected),
                                     completed: completed,
-                                    planned: planned(on: day, besides: completed)
+                                    planned: planned(on: day, after: lastSessions)
                                 )
                             }
                             .buttonStyle(.plain)
@@ -207,13 +208,17 @@ struct CalendarSection: View {
         Set(sessions.compactMap(\.workout)).sorted(using: SortDescriptor(\.name, comparator: .localizedStandard))
     }
 
-    private func planned(on day: Date, besides completed: [Workout]) -> [Workout] {
+    private var lastSessions: [Workout: Date] {
+        workouts.reduce(into: [:]) { $0[$1] = $1.lastSession(in: calendar) }
+    }
+
+    private func planned(on day: Date, after lastSessions: [Workout: Date]) -> [Workout] {
         guard calendar.startOfDay(for: day) >= calendar.startOfDay(for: .now) else {
             return []
         }
 
         return workouts
-            .filter { $0.schedule.isScheduled(on: day, in: calendar) && !completed.contains($0) }
+            .filter { $0.schedule.isDue(on: day, after: lastSessions[$0], in: calendar) }
             .sorted(using: SortDescriptor(\.name, comparator: .localizedStandard))
     }
 

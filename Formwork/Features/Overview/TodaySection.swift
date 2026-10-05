@@ -28,7 +28,7 @@ struct TodaySection: View {
 
         SectionView(.fieldTodayTitle, subtitle: Date.now.formatted(date: .abbreviated, time: .omitted)) {
             if pending.isEmpty {
-                if workouts.contains(where: { $0.schedule.isScheduled(on: .now) }) {
+                if workouts.contains(where: { $0.isScheduled() }) {
                     StateCard(
                         title: .emptyAllDoneTitle,
                         description: .emptyAllDoneMessage,
