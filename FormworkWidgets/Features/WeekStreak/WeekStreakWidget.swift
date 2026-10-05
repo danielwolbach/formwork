@@ -22,6 +22,7 @@ struct WeekStreakWidget: Widget {
                         endPoint: .topTrailing
                     )
                 }
+                .widgetURL(DeepLink.overview)
         }
         .configurationDisplayName(.widgetWeekStreakTitle)
         .description(.widgetWeekStreakDescription)

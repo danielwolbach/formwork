@@ -27,6 +27,12 @@ struct DebugMenu: View {
                 }
 
                 Button {
+                    Samples.insert(into: modelContext)
+                } label: {
+                    VerbatimLabel(verbatim: "Insert Sample Data", systemImage: "tray.and.arrow.down")
+                }
+
+                Button {
                     unarchiveAll()
                 } label: {
                     VerbatimLabel(verbatim: "Unarchive All", systemImage: "archivebox")

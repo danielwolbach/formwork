@@ -10,73 +10,91 @@ import SwiftData
 
 @MainActor
 public enum Samples {
-    public static let exercises: [Exercise] = [
-        Exercise(name: "Cross Trainer", kind: .duration, categories: [.cardio, .legs]),
-        Exercise(name: "Leg Press", kind: .weight, categories: [.legs]),
-        Exercise(name: "Chest Press", kind: .weight, categories: [.chest, .arms]),
-        Exercise(name: "Lat Pulldown", kind: .weight, categories: [.back, .arms]),
-        Exercise(name: "Leg Curl", kind: .weight, categories: [.legs]),
-        Exercise(name: "Shoulder Press", kind: .weight, categories: [.shoulders, .arms]),
-        Exercise(name: "Rowing Machine", kind: .weight, categories: [.back, .arms]),
-        Exercise(name: "Abdominal Machine", kind: .weight, categories: [.core]),
-        Exercise(name: "Hyperextensions", kind: .bodyweight, categories: [.back]),
-        Exercise(name: "Bicep Curl", kind: .weight, categories: [.arms]),
-        Exercise(name: "Tricep Pushdown", kind: .weight, categories: [.arms]),
-        Exercise(name: "Squat", kind: .weight, categories: [.legs]),
-        Exercise(name: "Deadlift", kind: .weight, categories: [.legs, .back]),
-        Exercise(name: "Bench Press", kind: .weight, categories: [.chest]),
-        Exercise(name: "Incline Dumbbell Press", kind: .weight, categories: [.chest, .shoulders]),
-        Exercise(name: "Lateral Raise", kind: .weight, categories: [.shoulders]),
-        Exercise(name: "Pull-Up", kind: .bodyweight, categories: [.back, .arms]),
-        Exercise(name: "Push-Up", kind: .bodyweight, categories: [.chest, .arms]),
-        Exercise(name: "Plank", kind: .duration, categories: [.core]),
-        Exercise(name: "Russian Twist", kind: .bodyweight, categories: [.core]),
-        Exercise(name: "Treadmill Run", kind: .distance, categories: [.cardio, .legs]),
-        Exercise(name: "Cycling", kind: .distance, categories: [.cardio, .legs]),
-        Exercise(name: "Jump Rope", kind: .duration, categories: [.cardio, .legs]),
-        Exercise(name: "Sun Salutation", kind: .duration, categories: [.flexibility, .mindfulness]),
-        Exercise(name: "Hamstring Stretch", kind: .duration, categories: [.flexibility, .legs]),
-        Exercise(name: "Box Breathing", kind: .duration, categories: [.mindfulness]),
-        Exercise(name: "Farmer's Carry", kind: .weight, categories: [.arms, .core, .other]),
-    ]
+    public static let exercises = makeExercises()
 
-    public static let workouts: [Workout] = [
-        Workout(
-            name: "Full Body",
-            pictogram: Pictogram(image: "figure.strengthtraining.traditional", tint: .blue),
-            schedule: .weekly(weekdays: [Schedule.Weekdays(calendarWeekday: 2), Schedule.Weekdays(calendarWeekday: 5)], anchor: historyStart),
-            entries: [
-                WorkoutEntry(exercise: exercises[0], target: .duration(seconds: 10 * 60)),
-                WorkoutEntry(exercise: exercises[1], target: .weight(kilograms: 85, reps: 10, sets: 3)),
-                WorkoutEntry(exercise: exercises[2], target: .weight(kilograms: 40, reps: 10, sets: 3)),
-                WorkoutEntry(exercise: exercises[3], target: .weight(kilograms: 40, reps: 10, sets: 3)),
-                WorkoutEntry(exercise: exercises[4], target: .weight(kilograms: 40, reps: 12, sets: 3)),
-                WorkoutEntry(exercise: exercises[5], target: .weight(kilograms: 25, reps: 12, sets: 3)),
-                WorkoutEntry(exercise: exercises[6], target: .weight(kilograms: 45, reps: 12, sets: 3)),
-                WorkoutEntry(exercise: exercises[7], target: .weight(kilograms: 40, reps: 14, sets: 3)),
-                WorkoutEntry(exercise: exercises[8], target: .bodyweight(reps: 12, sets: 3)),
-            ]
-        ),
-        Workout(
-            name: "Leg Day",
-            pictogram: Pictogram(image: "figure.strengthtraining.functional", tint: .purple),
-            schedule: .weekly(weekdays: Schedule.Weekdays(calendarWeekday: 7), anchor: historyStart),
-            entries: [
-                WorkoutEntry(exercise: exercises[22], target: .duration(seconds: 5 * 60)),
-                WorkoutEntry(exercise: exercises[11], target: .weight(kilograms: 70, reps: 8, sets: 4)),
-                WorkoutEntry(exercise: exercises[12], target: .weight(kilograms: 80, reps: 6, sets: 3)),
-                WorkoutEntry(exercise: exercises[1], target: .weight(kilograms: 100, reps: 10, sets: 3)),
-                WorkoutEntry(exercise: exercises[4], target: .weight(kilograms: 35, reps: 12, sets: 3)),
-                WorkoutEntry(exercise: exercises[24], target: .duration(seconds: 5 * 60)),
-            ]
-        ),
-    ]
+    public static let workouts = makeWorkouts(with: exercises)
 
-    public static let sessions: [Session] = seedHistory()
+    public static let sessions = makeSessions(for: workouts)
 
     public static var activeSession: Session {
         // swiftlint:disable:next force_try
         try! Session.active(in: container.mainContext)!
+    }
+
+    public static func insert(into context: ModelContext) {
+        let exercises = makeExercises()
+        let workouts = makeWorkouts(with: exercises)
+        let sessions = makeSessions(for: workouts)
+
+        exercises.forEach(context.insert)
+        workouts.forEach(context.insert)
+        sessions.forEach(context.insert)
+    }
+
+    private static func makeExercises() -> [Exercise] {
+        [
+            Exercise(name: "Cross Trainer", kind: .duration, categories: [.cardio, .legs]),
+            Exercise(name: "Leg Press", kind: .weight, categories: [.legs]),
+            Exercise(name: "Chest Press", kind: .weight, categories: [.chest, .arms]),
+            Exercise(name: "Lat Pulldown", kind: .weight, categories: [.back, .arms]),
+            Exercise(name: "Leg Curl", kind: .weight, categories: [.legs]),
+            Exercise(name: "Shoulder Press", kind: .weight, categories: [.shoulders, .arms]),
+            Exercise(name: "Rowing Machine", kind: .weight, categories: [.back, .arms]),
+            Exercise(name: "Abdominal Machine", kind: .weight, categories: [.core]),
+            Exercise(name: "Hyperextensions", kind: .bodyweight, categories: [.back]),
+            Exercise(name: "Bicep Curl", kind: .weight, categories: [.arms]),
+            Exercise(name: "Tricep Pushdown", kind: .weight, categories: [.arms]),
+            Exercise(name: "Squat", kind: .weight, categories: [.legs]),
+            Exercise(name: "Deadlift", kind: .weight, categories: [.legs, .back]),
+            Exercise(name: "Bench Press", kind: .weight, categories: [.chest]),
+            Exercise(name: "Incline Dumbbell Press", kind: .weight, categories: [.chest, .shoulders]),
+            Exercise(name: "Lateral Raise", kind: .weight, categories: [.shoulders]),
+            Exercise(name: "Pull-Up", kind: .bodyweight, categories: [.back, .arms]),
+            Exercise(name: "Push-Up", kind: .bodyweight, categories: [.chest, .arms]),
+            Exercise(name: "Plank", kind: .duration, categories: [.core]),
+            Exercise(name: "Russian Twist", kind: .bodyweight, categories: [.core]),
+            Exercise(name: "Treadmill Run", kind: .distance, categories: [.cardio, .legs]),
+            Exercise(name: "Cycling", kind: .distance, categories: [.cardio, .legs]),
+            Exercise(name: "Jump Rope", kind: .duration, categories: [.cardio, .legs]),
+            Exercise(name: "Sun Salutation", kind: .duration, categories: [.flexibility, .mindfulness]),
+            Exercise(name: "Hamstring Stretch", kind: .duration, categories: [.flexibility, .legs]),
+            Exercise(name: "Box Breathing", kind: .duration, categories: [.mindfulness]),
+            Exercise(name: "Farmer's Carry", kind: .weight, categories: [.arms, .core, .other]),
+        ]
+    }
+
+    private static func makeWorkouts(with exercises: [Exercise]) -> [Workout] {
+        [
+            Workout(
+                name: "Full Body",
+                pictogram: Pictogram(image: "figure.strengthtraining.traditional", tint: .blue),
+                schedule: .weekly(weekdays: [Schedule.Weekdays(calendarWeekday: 2), Schedule.Weekdays(calendarWeekday: 5)], anchor: historyStart),
+                entries: [
+                    WorkoutEntry(exercise: exercises[0], target: .duration(seconds: 10 * 60)),
+                    WorkoutEntry(exercise: exercises[1], target: .weight(kilograms: 85, reps: 10, sets: 3)),
+                    WorkoutEntry(exercise: exercises[2], target: .weight(kilograms: 40, reps: 10, sets: 3)),
+                    WorkoutEntry(exercise: exercises[3], target: .weight(kilograms: 40, reps: 10, sets: 3)),
+                    WorkoutEntry(exercise: exercises[4], target: .weight(kilograms: 40, reps: 12, sets: 3)),
+                    WorkoutEntry(exercise: exercises[5], target: .weight(kilograms: 25, reps: 12, sets: 3)),
+                    WorkoutEntry(exercise: exercises[6], target: .weight(kilograms: 45, reps: 12, sets: 3)),
+                    WorkoutEntry(exercise: exercises[7], target: .weight(kilograms: 40, reps: 14, sets: 3)),
+                    WorkoutEntry(exercise: exercises[8], target: .bodyweight(reps: 12, sets: 3)),
+                ]
+            ),
+            Workout(
+                name: "Leg Day",
+                pictogram: Pictogram(image: "figure.strengthtraining.functional", tint: .purple),
+                schedule: .weekly(weekdays: Schedule.Weekdays(calendarWeekday: 7), anchor: historyStart),
+                entries: [
+                    WorkoutEntry(exercise: exercises[22], target: .duration(seconds: 5 * 60)),
+                    WorkoutEntry(exercise: exercises[11], target: .weight(kilograms: 70, reps: 8, sets: 4)),
+                    WorkoutEntry(exercise: exercises[12], target: .weight(kilograms: 80, reps: 6, sets: 3)),
+                    WorkoutEntry(exercise: exercises[1], target: .weight(kilograms: 100, reps: 10, sets: 3)),
+                    WorkoutEntry(exercise: exercises[4], target: .weight(kilograms: 35, reps: 12, sets: 3)),
+                    WorkoutEntry(exercise: exercises[24], target: .duration(seconds: 5 * 60)),
+                ]
+            ),
+        ]
     }
 }
 
@@ -98,7 +116,7 @@ extension Samples {
 
     private static let historyStart = Calendar.current.date(byAdding: .day, value: -historyDays, to: .now) ?? .now
 
-    fileprivate static func seedHistory(days: Int = historyDays, calendar: Calendar = .current) -> [Session] {
+    fileprivate static func makeSessions(for workouts: [Workout], days: Int = historyDays, calendar: Calendar = .current) -> [Session] {
         var random = SeededGenerator(seed: 42)
         var sessions: [Session] = []
         var lastSessions: [Workout: Date] = [:]

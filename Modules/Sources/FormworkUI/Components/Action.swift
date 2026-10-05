@@ -115,6 +115,8 @@ extension Action {
     public static let queue = Action(title: .actionQueueTitle, image: "line.3.horizontal.decrease")
 
     public static let viewWorkout = Action(title: .actionViewWorkoutTitle, image: "clipboard")
+
+    public static let openSettings = Action(title: .actionOpenSettingsTitle, image: "gear")
 }
 
 extension Label where Title == Text, Icon == Image {

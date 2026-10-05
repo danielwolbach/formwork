@@ -11,6 +11,8 @@ public enum DeepLink {
     public static let scheme = "formwork"
 
     public static let session = URL(string: "\(scheme)://session")!
+
+    public static let overview = URL(string: "\(scheme)://overview")!
 }
 
 public enum AppGroup {
@@ -27,6 +29,12 @@ public enum StorageKeys {
     public static let weightSystem = "unitsWeight"
 
     public static let distanceSystem = "unitsDistance"
+
+    public static let dailyReminder = "dailyReminder"
+
+    public static let dailyReminderMinute = "dailyReminderMinute"
+
+    public static let upcomingReminder = "upcomingReminder"
 }
 
 public enum WidgetKind {

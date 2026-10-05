@@ -22,6 +22,7 @@ struct OverviewWidget: Widget {
                         endPoint: .topTrailing
                     )
                 }
+                .widgetURL(DeepLink.overview)
         }
         .configurationDisplayName(.widgetOverviewTitle)
         .description(.widgetOverviewDescription)

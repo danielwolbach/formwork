@@ -87,7 +87,7 @@ struct ScheduleEditor: View {
 
     private var anchorPicker: some View {
         LabeledContent {
-            DateButton(.fieldStartDateTitle, date: $schedule.anchor)
+            DateButton(.fieldStartDateTitle, date: $schedule.anchor, components: .date)
         } label: {
             Text(.fieldStartDateTitle)
         }

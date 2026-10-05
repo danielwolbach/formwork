@@ -111,17 +111,20 @@ extension Workout {
 
         return session
     }
+
+    func typicalStartMinute(in calendar: Calendar) -> Int? {
+        sessions
+            .filter { !$0.isActive }
+            .compactMap { $0.startMinute(in: calendar) }
+            .clockMedoid
+    }
 }
 
 extension [Workout] {
     public func pending(on date: Date = .now, calendar: Calendar = .current) -> [Workout] {
         filter { $0.isDue(on: date, now: date, in: calendar) }
             .map { workout in
-                let startMinute = workout.sessions
-                    .filter { !$0.isActive }
-                    .compactMap { $0.startMinute(in: calendar) }
-                    .clockMedoid
-                return (workout, startMinute)
+                (workout, workout.typicalStartMinute(in: calendar))
             }
             .sorted { lhs, rhs in
                 switch (lhs.1, rhs.1) {

@@ -11,18 +11,18 @@ import SwiftData
 import Testing
 
 struct ScheduleTests {
+    private static let monday = Schedule.Weekdays(calendarWeekday: 2)
+
+    private static let thursday = Schedule.Weekdays(calendarWeekday: 5)
+
+    private static let friday = Schedule.Weekdays(calendarWeekday: 6)
+
     private static func calendar(firstWeekday: Int = 1) -> Calendar {
         var calendar = Calendar(identifier: .gregorian)
         calendar.locale = Locale(identifier: "en_US")
         calendar.firstWeekday = firstWeekday
         return calendar
     }
-
-    private static let monday = Schedule.Weekdays(calendarWeekday: 2)
-
-    private static let thursday = Schedule.Weekdays(calendarWeekday: 5)
-
-    private static let friday = Schedule.Weekdays(calendarWeekday: 6)
 
     /// A day in September 2026; the 7th is a Monday.
     private static func day(_ day: Int) -> Date {
@@ -163,7 +163,7 @@ struct ScheduleTests {
         let store = try TestStore()
         let calendar = Calendar.current
         let today = calendar.startOfDay(for: .now)
-        store.workout.schedule = .daily(days: 3, anchor: try #require(calendar.date(byAdding: .day, value: -7, to: today)))
+        store.workout.schedule = try .daily(days: 3, anchor: #require(calendar.date(byAdding: .day, value: -7, to: today)))
 
         for offset in [-1, 0] {
             let session = Session(workout: store.workout)

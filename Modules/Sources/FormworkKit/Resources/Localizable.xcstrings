@@ -322,6 +322,28 @@
         }
       }
     },
+    "reminder.daily.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Training Today"
+          }
+        }
+      }
+    },
+    "reminder.upcoming.message" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usually starts in %1$(minutes)lld minutes."
+          }
+        }
+      }
+    },
     "sessionFigure.completedExercises.info" : {
       "extractionState" : "manual"
     },

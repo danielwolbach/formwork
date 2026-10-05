@@ -8,6 +8,9 @@
 import Foundation
 
 public enum Schedule: Codable, Hashable, Sendable {
+    case weekly(weekdays: Weekdays = [], anchor: Date = .now)
+    case daily(days: Int = 1, anchor: Date = .now)
+
     public struct Weekdays: Codable, Hashable, OptionSet, Sendable {
         public let rawValue: Int
 
@@ -16,12 +19,9 @@ public enum Schedule: Codable, Hashable, Sendable {
         }
 
         public init(calendarWeekday: Int) {
-            rawValue = 1 << (calendarWeekday - 1)
+            self.rawValue = 1 << (calendarWeekday - 1)
         }
     }
-
-    case weekly(weekdays: Weekdays = [], anchor: Date = .now)
-    case daily(days: Int = 1, anchor: Date = .now)
 }
 
 extension Schedule {

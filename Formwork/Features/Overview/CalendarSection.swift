@@ -145,6 +145,10 @@ struct CalendarSection: View {
         return (0 ... count + Self.monthsAhead).compactMap { calendar.date(byAdding: .month, value: $0, to: first) }
     }
 
+    private var lastSessions: [Workout: Date] {
+        workouts.reduce(into: [:]) { $0[$1] = $1.lastSession(in: calendar) }
+    }
+
     private func monthGrid(_ month: Date, lastSessions: [Workout: Date]) -> some View {
         let sessionsByDay = sessionsByDay(inMonthOf: month)
         let selected = sameDay(as: selection, in: month)
@@ -206,10 +210,6 @@ struct CalendarSection: View {
 
     private func completed(among sessions: [Session]) -> [Workout] {
         Set(sessions.compactMap(\.workout)).sorted(using: SortDescriptor(\.name, comparator: .localizedStandard))
-    }
-
-    private var lastSessions: [Workout: Date] {
-        workouts.reduce(into: [:]) { $0[$1] = $1.lastSession(in: calendar) }
     }
 
     private func planned(on day: Date, after lastSessions: [Workout: Date]) -> [Workout] {

@@ -13,12 +13,18 @@ import WidgetKit
 
 @main
 struct App: SwiftUI.App {
+    private let notificationRouter = NotificationRouter()
+
     @State
     private var fullVersion = FullVersion()
 
+    init() {
+        UNUserNotificationCenter.current().delegate = notificationRouter
+    }
+
     var body: some Scene {
         WindowGroup {
-            AppContent()
+            AppContent(notificationRouter: notificationRouter)
                 .task {
                     await fullVersion.observe()
                 }
@@ -29,6 +35,12 @@ struct App: SwiftUI.App {
 }
 
 private struct AppContent: View {
+    private enum AppTab: Hashable {
+        case overview, workouts, catalog, statistics
+    }
+
+    let notificationRouter: NotificationRouter
+
     @Environment(\.modelContext)
     private var modelContext: ModelContext
 
@@ -56,6 +68,18 @@ private struct AppContent: View {
     @AppStorage(StorageKeys.distanceSystem, store: AppGroup.defaults)
     private var distanceSystem: Units.System = .current
 
+    @AppStorage(StorageKeys.dailyReminder)
+    private var isDailyReminderEnabled: Bool = true
+
+    @AppStorage(StorageKeys.dailyReminderMinute)
+    private var dailyReminderMinute: Int = ReminderOptions.defaultDailyMinute
+
+    @AppStorage(StorageKeys.upcomingReminder)
+    private var isUpcomingReminderEnabled: Bool = true
+
+    @State
+    private var selectedTab: AppTab = .overview
+
     @State
     private var presentedSession: Session? = nil
 
@@ -63,26 +87,26 @@ private struct AppContent: View {
     private var presentedSessionNamespace: Namespace.ID
 
     var body: some View {
-        TabView {
-            Tab(.screenOverviewTitle, systemImage: "text.rectangle.page") {
+        TabView(selection: $selectedTab) {
+            Tab(.screenOverviewTitle, systemImage: "text.rectangle.page", value: .overview) {
                 NavigationRoot {
                     OverviewScreen()
                 }
             }
 
-            Tab(.screenWorkoutsTitle, systemImage: "clipboard") {
+            Tab(.screenWorkoutsTitle, systemImage: "clipboard", value: .workouts) {
                 NavigationRoot {
                     WorkoutIndexScreen()
                 }
             }
 
-            Tab(.screenCatalogTitle, systemImage: "magazine") {
+            Tab(.screenCatalogTitle, systemImage: "magazine", value: .catalog) {
                 NavigationRoot {
                     CatalogScreen()
                 }
             }
 
-            Tab(.screenStatisticsTitle, systemImage: "flame") {
+            Tab(.screenStatisticsTitle, systemImage: "flame", value: .statistics) {
                 NavigationRoot {
                     StatisticsScreen()
                 }
@@ -118,18 +142,34 @@ private struct AppContent: View {
         .task(id: activityState) {
             await SessionActivity.sync(activityState)
         }
+        .onChange(of: scenePhase, initial: true) { _, phase in
+            switch phase {
+            case .active:
+                syncReminders()
+            case .background:
+                try? modelContext.save()
+                WidgetCenter.shared.reloadAllTimelines()
+            default:
+                break
+            }
+        }
         .onOpenURL { url in
-            guard url == DeepLink.session, let session = activeSessions.first else {
+            handleLink(url)
+        }
+        .onChange(of: notificationRouter.isTapPending, initial: true) { _, isPending in
+            guard isPending else {
                 return
             }
 
-            presentedSession = session
+            notificationRouter.isTapPending = false
+            selectedTab = .overview
         }
-        .onChange(of: scenePhase) { _, phase in
-            if phase == .background {
-                try? modelContext.save()
-                WidgetCenter.shared.reloadAllTimelines()
-            }
+        // Any saved change can move a planned day, so reminders rebuild after every save.
+        .onReceive(NotificationCenter.default.publisher(for: ModelContext.didSave)) { _ in
+            syncReminders()
+        }
+        .onChange(of: reminderOptions) {
+            syncReminders()
         }
         // Outermost, so the covers and the bottom accessory read the environment too.
         .environment(\.presentSession, PresentSessionAction(action: presentSession))
@@ -144,6 +184,10 @@ private struct AppContent: View {
         return workouts.count > FullVersion.workoutLimit || exercises.count > FullVersion.exerciseLimit
     }
 
+    private var reminderOptions: ReminderOptions {
+        ReminderOptions(dailyMinute: isDailyReminderEnabled ? dailyReminderMinute : nil, isUpcomingEnabled: isUpcomingReminderEnabled)
+    }
+
     private var activityState: SessionActivityAttributes.ContentState? {
         guard fullVersion.isUnlocked || !fullVersion.hasCheckedEntitlements else {
             return nil
@@ -152,12 +196,29 @@ private struct AppContent: View {
         return activeSessions.first.flatMap(SessionActivityAttributes.ContentState.init(session:))
     }
 
+    private func syncReminders() {
+        Reminders.sync((try? modelContext.fetch(FetchDescriptor<Workout>())) ?? [], options: reminderOptions)
+    }
+
     private func presentSession(session: Session) {
         presentedSession = session
+    }
+
+    private func handleLink(_ url: URL) {
+        switch url {
+        case DeepLink.overview:
+            selectedTab = .overview
+        case DeepLink.session:
+            if let session = activeSessions.first {
+                presentedSession = session
+            }
+        default:
+            break
+        }
     }
 }
 
 #Preview {
-    AppContent()
+    AppContent(notificationRouter: NotificationRouter())
         .sampleData()
 }

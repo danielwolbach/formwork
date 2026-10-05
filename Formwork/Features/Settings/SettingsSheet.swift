@@ -9,6 +9,7 @@ import FormworkKit
 import FormworkUI
 import SwiftData
 import SwiftUI
+import UserNotifications
 
 struct SettingsSheet: View {
     @Environment(\.dismiss)
@@ -19,6 +20,12 @@ struct SettingsSheet: View {
 
     @Environment(\.fullVersion)
     private var fullVersion: FullVersion
+
+    @Environment(\.openURL)
+    private var openURL: OpenURLAction
+
+    @Environment(\.scenePhase)
+    private var scenePhase: ScenePhase
 
     @Query(filter: #Predicate<Workout> { $0.isArchived })
     private var archivedWorkouts: [Workout]
@@ -32,6 +39,18 @@ struct SettingsSheet: View {
     @AppStorage(StorageKeys.distanceSystem, store: AppGroup.defaults)
     private var distanceSystem: Units.System = .current
 
+    @AppStorage(StorageKeys.dailyReminder)
+    private var isDailyReminderEnabled: Bool = true
+
+    @AppStorage(StorageKeys.dailyReminderMinute)
+    private var dailyReminderMinute: Int = ReminderOptions.defaultDailyMinute
+
+    @AppStorage(StorageKeys.upcomingReminder)
+    private var isUpcomingReminderEnabled: Bool = true
+
+    @State
+    private var notificationStatus: UNAuthorizationStatus?
+
     @State
     private var easterEggTaps = 0
 
@@ -41,6 +60,8 @@ struct SettingsSheet: View {
                 aboutSection
 
                 unitsSection
+
+                remindersSection
 
                 archiveSection
             }
@@ -56,6 +77,10 @@ struct SettingsSheet: View {
                     dismiss()
                 }
             }
+        }
+        // Rechecked on return, since notifications get turned on or off in the system's settings.
+        .task(id: scenePhase) {
+            notificationStatus = await UNUserNotificationCenter.current().notificationSettings().authorizationStatus
         }
         .sheet(isPresented: Binding<Bool>(get: { easterEggTaps >= 5 }, set: { _ in easterEggTaps = 0 })) {
             EasterEgg()
@@ -114,12 +139,17 @@ struct SettingsSheet: View {
             GroupBox {
                 VStack(spacing: .groups) {
                     LabeledContent {
-                        Picker(.fieldWeightUnitTitle, selection: $weightSystem) {
-                            ForEach(Units.System.allCases) { system in
-                                Text(system.title)
-                                    .id(system)
+                        Menu {
+                            Picker(.fieldWeightUnitTitle, selection: $weightSystem) {
+                                ForEach(Units.System.allCases) { system in
+                                    Text(system.title)
+                                        .id(system)
+                                }
                             }
+                        } label: {
+                            Text(weightSystem.title)
                         }
+                        .buttonStyle(.cardProminent)
                     } label: {
                         Text(.fieldWeightUnitTitle)
                     }
@@ -127,17 +157,70 @@ struct SettingsSheet: View {
                     Divider()
 
                     LabeledContent {
-                        Picker(.fieldDistanceUnitTitle, selection: $distanceSystem) {
-                            ForEach(Units.System.allCases) { system in
-                                Text(system.title)
-                                    .id(system)
+                        Menu {
+                            Picker(.fieldDistanceUnitTitle, selection: $distanceSystem) {
+                                ForEach(Units.System.allCases) { system in
+                                    Text(system.title)
+                                        .id(system)
+                                }
                             }
+                        } label: {
+                            Text(distanceSystem.title)
                         }
+                        .buttonStyle(.cardProminent)
                     } label: {
                         Text(.fieldDistanceUnitTitle)
                     }
                 }
             }
+        }
+    }
+
+    private var remindersSection: some View {
+        SectionView(.fieldRemindersTitle) {
+            GroupBox {
+                VStack(spacing: .groups) {
+                    if notificationStatus == .denied {
+                        VStack {
+                            Text(.fieldRemindersDeniedMessage)
+                                .font(.body)
+                                .foregroundStyle(.secondary)
+
+                            Button(.openSettings) {
+                                if let url = URL(string: UIApplication.openNotificationSettingsURLString) {
+                                    openURL(url)
+                                }
+                            }
+                            .labelStyle(.fixedTitleAndIcon)
+                            .buttonStyle(.cardProminent)
+                        }
+                        .frame(maxWidth: .infinity)
+                    } else {
+                        Toggle(isOn: $isDailyReminderEnabled) {
+                            Text(.fieldDailyReminderTitle)
+                        }
+
+                        if isDailyReminderEnabled {
+                            Divider()
+
+                            LabeledContent {
+                                DateButton(.fieldDailyReminderTimeTitle, date: dailyReminderTime, components: .hourAndMinute)
+                            } label: {
+                                Text(.fieldDailyReminderTimeTitle)
+                            }
+                        }
+
+                        Divider()
+
+                        Toggle(isOn: $isUpcomingReminderEnabled) {
+                            Text(.fieldUpcomingReminderTitle)
+
+                            Text(.fieldUpcomingReminderSubtitle(minutes: ReminderOptions.lead))
+                        }
+                    }
+                }
+            }
+            .animation(.snappy, value: isDailyReminderEnabled)
         }
     }
 
@@ -161,6 +244,18 @@ struct SettingsSheet: View {
                 .buttonStyle(.plain)
             }
         }
+    }
+
+    private var dailyReminderTime: Binding<Date> {
+        Binding(
+            get: {
+                Calendar.current.date(bySettingHour: dailyReminderMinute / 60, minute: dailyReminderMinute % 60, second: 0, of: .now) ?? .now
+            },
+            set: { newValue in
+                let time = Calendar.current.dateComponents([.hour, .minute], from: newValue)
+                dailyReminderMinute = (time.hour ?? 0) * 60 + (time.minute ?? 0)
+            }
+        )
     }
 
     private var archivedCount: Int {
