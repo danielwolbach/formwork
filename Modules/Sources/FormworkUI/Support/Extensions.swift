@@ -45,3 +45,11 @@ extension Locale {
         current.decimalSeparator ?? "."
     }
 }
+
+extension CGFloat {
+    public static let sections: CGFloat = 32
+
+    public static let groups: CGFloat = 16
+
+    public static let items: CGFloat = 8
+}

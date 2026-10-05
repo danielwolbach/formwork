@@ -8,7 +8,9 @@
 import Foundation
 
 public struct DotListFormat: FormatStyle {
-    public init() {}
+    public init() {
+        // Nothing to initialize.
+    }
 
     public func format(_ parts: [String]) -> String {
         parts.filter { !$0.isEmpty }.joined(separator: " · ")

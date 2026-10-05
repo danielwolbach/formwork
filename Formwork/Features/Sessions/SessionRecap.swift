@@ -5,6 +5,7 @@
 //  Created by Daniel Wolbach on 21.09.26.
 //
 
+import Flow
 import FormworkKit
 import FormworkUI
 import SwiftUI
@@ -28,9 +29,6 @@ struct SessionRecap: View {
                         .padding(.vertical, 8)
                 }
             }
-        }
-        .navigationDestination(for: Exercise.self) { exercise in
-            ExerciseScreen(exercise)
         }
     }
 }
@@ -76,7 +74,7 @@ private struct SessionEntryRow: View {
             }
 
             if !details.isEmpty {
-                FlowLayout(alignment: .leading) {
+                HFlow {
                     ForEach(details, id: \.pictogram) { detail in
                         Label(detail.text, systemImage: detail.pictogram.image)
                             .monospacedDigit()
@@ -114,7 +112,7 @@ private struct SessionEntryRow: View {
 }
 
 #Preview {
-    NavigationStack {
+    NavigationRoot {
         ScrollView {
             SessionRecap(Samples.sessions.first!)
         }

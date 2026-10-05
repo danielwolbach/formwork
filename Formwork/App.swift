@@ -13,9 +13,16 @@ import WidgetKit
 
 @main
 struct App: SwiftUI.App {
+    @State
+    private var fullVersion = FullVersion()
+
     var body: some Scene {
         WindowGroup {
             AppContent()
+                .task {
+                    await fullVersion.observe()
+                }
+                .environment(\.fullVersion, fullVersion)
         }
         .modelContainer(Storage.container)
     }
@@ -27,6 +34,9 @@ private struct AppContent: View {
 
     @Environment(\.scenePhase)
     private var scenePhase: ScenePhase
+
+    @Environment(\.fullVersion)
+    private var fullVersion: FullVersion
 
     @Query(Session.activeDescriptor)
     private var activeSessions: [Session]
@@ -47,9 +57,6 @@ private struct AppContent: View {
     private var distanceSystem: Units.System = .current
 
     @State
-    private var fullVersion = FullVersion()
-
-    @State
     private var presentedSession: Session? = nil
 
     @Namespace
@@ -58,25 +65,25 @@ private struct AppContent: View {
     var body: some View {
         TabView {
             Tab(.screenOverviewTitle, systemImage: "text.rectangle.page") {
-                NavigationStack {
+                NavigationRoot {
                     OverviewScreen()
                 }
             }
 
             Tab(.screenWorkoutsTitle, systemImage: "clipboard") {
-                NavigationStack {
+                NavigationRoot {
                     WorkoutIndexScreen()
                 }
             }
 
             Tab(.screenCatalogTitle, systemImage: "magazine") {
-                NavigationStack {
+                NavigationRoot {
                     CatalogScreen()
                 }
             }
 
             Tab(.screenStatisticsTitle, systemImage: "flame") {
-                NavigationStack {
+                NavigationRoot {
                     StatisticsScreen()
                 }
             }
@@ -84,18 +91,18 @@ private struct AppContent: View {
         .paywallPresenter()
         // Closes by itself once archiving or unlocking makes the condition false.
         .fullScreenCover(isPresented: Binding<Bool>(get: { needsDowngrade }, set: { _ in })) {
-            NavigationStack {
+            NavigationRoot {
                 DowngradeScreen()
             }
             .paywallPresenter()
         }
         .fullScreenCover(isPresented: $onboardingPending) {
-            NavigationStack {
+            NavigationRoot {
                 OnboardingScreen()
             }
         }
         .fullScreenCover(item: $presentedSession) { session in
-            NavigationStack {
+            NavigationRoot {
                 SessionPlayerScreen(session)
             }
             .navigationTransition(.zoom(sourceID: session.persistentModelID, in: presentedSessionNamespace))
@@ -107,9 +114,6 @@ private struct AppContent: View {
                 SessionMiniPlayer(session, namespace: presentedSessionNamespace)
                     .id(session.persistentModelID)
             }
-        }
-        .task {
-            await fullVersion.observe()
         }
         .task(id: activityState) {
             await SessionActivity.sync(activityState)
@@ -129,7 +133,6 @@ private struct AppContent: View {
         }
         // Outermost, so the covers and the bottom accessory read the environment too.
         .environment(\.presentSession, PresentSessionAction(action: presentSession))
-        .environment(\.fullVersion, fullVersion)
         .environment(\.units, Units(weight: weightSystem, distance: distanceSystem))
     }
 

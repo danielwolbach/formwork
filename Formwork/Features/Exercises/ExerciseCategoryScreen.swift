@@ -1,0 +1,140 @@
+//
+//  ExerciseCategoryScreen.swift
+//  Formwork
+//
+//  Created by Daniel Wolbach on 04.09.26.
+//
+
+import FormworkKit
+import FormworkUI
+import SwiftData
+import SwiftUI
+
+struct ExerciseCategoryScreen: View {
+    private let category: Exercise.Category
+
+    @Environment(\.modelContext)
+    private var context: ModelContext
+
+    @Environment(\.fullVersion)
+    private var fullVersion: FullVersion
+
+    @Environment(\.presentPaywall)
+    private var presentPaywall: PresentPaywallAction
+
+    @Query(filter: #Predicate<Exercise> { !$0.isArchived }, sort: \Exercise.name)
+    private var exercises: [Exercise]
+
+    @State
+    private var searchText = ""
+
+    @State
+    private var sortOrder = [SortDescriptor(\Exercise.name)]
+
+    @State
+    private var sheet: Sheet?
+
+    init(_ category: Exercise.Category) {
+        self.category = category
+    }
+
+    var body: some View {
+        let categoryExercises = categoryExercises
+        let matching = matchingExercises(in: categoryExercises)
+
+        Group {
+            if categoryExercises.isEmpty {
+                emptyState
+            } else {
+                ScrollView {
+                    LazyVStack(spacing: 0) {
+                        ForEach(matching) { exercise in
+                            ExerciseRow(exercise)
+                        }
+                    }
+                    .swipeActionsContainer()
+                    .animation(.snappy, value: matching.count)
+                }
+                .contentMargins(.bottom, .sections, for: .scrollContent)
+                .overlay {
+                    if !trimmedSearchText.isEmpty, matching.isEmpty {
+                        ContentUnavailableView.search(text: trimmedSearchText)
+                    }
+                }
+                .searchable(text: $searchText)
+            }
+        }
+        .navigationTitle(category.title)
+        .toolbar {
+            Menu(.more) {
+                Section {
+                    Button(.createExercise) {
+                        if fullVersion.canAddExercise(in: context) {
+                            sheet = .createExerciseInCategories([category])
+                        } else {
+                            presentPaywall()
+                        }
+                    }
+                }
+
+                Section {
+                    Menu(.sort) {
+                        Picker(.fieldSortTitle, selection: $sortOrder) {
+                            Label(.fieldSortNameTitle, systemImage: "character")
+                                .tag([SortDescriptor(\Exercise.name)])
+
+                            Label(.fieldSortNewestTitle, systemImage: "clock")
+                                .tag([SortDescriptor(\Exercise.creationDate, order: .reverse)])
+                        }
+                    }
+                }
+            }
+        }
+        .sheet(item: $sheet) { sheet in
+            sheet
+        }
+        .animation(.snappy, value: searchText)
+        .animation(.snappy, value: sortOrder)
+    }
+
+    private var emptyState: some View {
+        ContentUnavailableView {
+            Label(.emptyExercisesTitle, systemImage: category.pictogram.image)
+        } description: {
+            Text(.emptyExercisesMessage)
+        } actions: {
+            Button(.createExercise) {
+                if fullVersion.canAddExercise(in: context) {
+                    sheet = .createExerciseInCategories([category])
+                } else {
+                    presentPaywall()
+                }
+            }
+            .labelStyle(.fixedTitleAndIcon)
+            .buttonStyle(.cardProminent)
+        }
+    }
+
+    private var trimmedSearchText: String {
+        searchText.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    private var categoryExercises: [Exercise] {
+        exercises.filter { $0.categories.contains(category) }
+    }
+
+    private func matchingExercises(in exercises: [Exercise]) -> [Exercise] {
+        let searchText = trimmedSearchText
+
+        return exercises
+            .filter { searchText.isEmpty || $0.name.localizedCaseInsensitiveContains(searchText) }
+            .sorted(using: sortOrder)
+    }
+}
+
+#Preview {
+    NavigationRoot {
+        ExerciseCategoryScreen(.mindfulness)
+    }
+    .sampleData()
+}

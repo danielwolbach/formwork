@@ -31,7 +31,7 @@ struct PresentationTests {
 
         entry.exercise = nil
 
-        #expect(entry.title == String(localized: .placeholder))
+        #expect(entry.title == String(localized: .exerciseDeletedTitle))
         #expect(entry.pictogram == .unknown)
     }
 }

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CAA749AC3073B80400A28D48 /* Flow in Frameworks */ = {isa = PBXBuildFile; productRef = CAA749AB3073B80400A28D48 /* Flow */; };
 		CAF7F80C305D29BC003DEA83 /* FormworkKit in Frameworks */ = {isa = PBXBuildFile; productRef = CAF7F80B305D29BC003DEA83 /* FormworkKit */; };
 		CAF7F827305D5BD1003DEA83 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = CAF7F826305D5BD1003DEA83 /* README.md */; };
 		CAF7F829305D5BE7003DEA83 /* CONTRIBUTING.md in Resources */ = {isa = PBXBuildFile; fileRef = CAF7F828305D5BE7003DEA83 /* CONTRIBUTING.md */; };
@@ -92,6 +93,7 @@
 			files = (
 				CAF7F80C305D29BC003DEA83 /* FormworkKit in Frameworks */,
 				CAF7F829C09738E49B84629D /* FormworkUI in Frameworks */,
+				CAA749AC3073B80400A28D48 /* Flow in Frameworks */,
 			);
 		};
 		CAF7F82B305D66F2003DEA83 /* Frameworks */ = {
@@ -160,6 +162,7 @@
 			packageProductDependencies = (
 				CAF7F80B305D29BC003DEA83 /* FormworkKit */,
 				CAF7F8782404104B5FB16C51 /* FormworkUI */,
+				CAA749AB3073B80400A28D48 /* Flow */,
 			);
 			productName = MyApp;
 			productReference = 000000000000000000000120 /* Formwork.app */;
@@ -216,6 +219,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				CAF7F80A305D29BC003DEA83 /* XCLocalSwiftPackageReference "Modules" */,
+				CAA749AA3073B80400A28D48 /* XCRemoteSwiftPackageReference "SwiftUI-Flow" */,
 			);
 			preferredProjectObjectVersion = 90;
 			productRefGroup = 000000000000000000000020 /* Products */;
@@ -602,7 +606,23 @@
 		};
 /* End XCLocalSwiftPackageReference section */
 
+/* Begin XCRemoteSwiftPackageReference section */
+		CAA749AA3073B80400A28D48 /* XCRemoteSwiftPackageReference "SwiftUI-Flow" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/tevelee/SwiftUI-Flow";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.5.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
+		CAA749AB3073B80400A28D48 /* Flow */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CAA749AA3073B80400A28D48 /* XCRemoteSwiftPackageReference "SwiftUI-Flow" */;
+			productName = Flow;
+		};
 		CAF7F80B305D29BC003DEA83 /* FormworkKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = FormworkKit;

@@ -55,7 +55,7 @@ extension Session {
     }
 
     public var title: String {
-        workout?.title ?? .init(localized: .placeholder)
+        workout?.title ?? .init(localized: .workoutDeletedTitle)
     }
 
     public var endedRecently: Bool {

@@ -44,7 +44,6 @@ public struct ReadingFormat: FormatStyle {
             .formatted(.measurement(width: .abbreviated, usage: .asProvided, numberFormatStyle: .number.precision(.fractionLength(0 ... 2))))
     }
 
-    /// Within a week the day reads relative, like "Yesterday", so it's never shown as hours ago.
     private func day(_ date: Date, in calendar: Calendar) -> String {
         guard let weekAgo = calendar.date(byAdding: .day, value: -7, to: .now), date < weekAgo else {
             var style = Date.RelativeFormatStyle(presentation: .named, calendar: calendar, capitalizationContext: .beginningOfSentence)

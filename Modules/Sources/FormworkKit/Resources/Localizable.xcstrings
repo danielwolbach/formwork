@@ -111,25 +111,13 @@
         }
       }
     },
-    "exercise.count" : {
+    "exercise.deleted.title" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
-          "variations" : {
-            "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%1$(count)lld Exercise"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%1$(count)lld Exercises"
-                }
-              }
-            }
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deleted Exercise"
           }
         }
       }
@@ -241,6 +229,40 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$(sets)lld × %2$(reps)lld"
+          }
+        }
+      }
+    },
+    "format.exerciseCount.scheme" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%1$(count)lld Exercise"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%1$(count)lld Exercises"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "format.plusMore.scheme" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%1$(count)lld more"
           }
         }
       }
@@ -622,8 +644,30 @@
         }
       }
     },
+    "statistic.weekStreak.fulfilled.subtitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This week completed"
+          }
+        }
+      }
+    },
     "statistic.weekStreak.info" : {
       "extractionState" : "manual"
+    },
+    "statistic.weekStreak.pending.subtitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This week not completed yet"
+          }
+        }
+      }
     },
     "statistic.weekStreak.title" : {
       "extractionState" : "manual",
@@ -654,6 +698,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Metric"
+          }
+        }
+      }
+    },
+    "workout.deleted.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deleted Workout"
           }
         }
       }

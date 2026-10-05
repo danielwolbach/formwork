@@ -29,10 +29,10 @@ struct ArchiveScreen: View {
                 ScrollView {
                     ContentStack {
                         if !archivedWorkouts.isEmpty {
-                            SectionView(String(localized: .fieldWorkoutsTitle)) {
+                            SectionView(.fieldWorkoutsTitle) {
                                 LazyVStack(spacing: 0) {
                                     ForEach(archivedWorkouts) { workout in
-                                        WorkoutRow(workout)
+                                        WorkoutCard(workout, style: .row)
                                     }
                                 }
                                 .swipeActionsContainer()
@@ -41,7 +41,7 @@ struct ArchiveScreen: View {
                         }
 
                         if !archivedExercises.isEmpty {
-                            SectionView(String(localized: .fieldExercisesTitle)) {
+                            SectionView(.fieldExercisesTitle) {
                                 LazyVStack(spacing: 0) {
                                     ForEach(archivedExercises) { exercise in
                                         ExerciseRow(exercise)
@@ -59,12 +59,6 @@ struct ArchiveScreen: View {
         .animation(.snappy, value: archivedWorkouts.count)
         .animation(.snappy, value: archivedExercises.count)
         .navigationTitle(.screenArchiveTitle)
-        .navigationDestination(for: Workout.self) { workout in
-            WorkoutScreen(workout)
-        }
-        .navigationDestination(for: Exercise.self) { exercise in
-            ExerciseScreen(exercise)
-        }
     }
 }
 
@@ -72,7 +66,7 @@ struct ArchiveScreen: View {
     let _ = Samples.workouts.suffix(2).forEach { $0.isArchived = true }
     let _ = Samples.exercises.suffix(4).forEach { $0.isArchived = true }
 
-    NavigationStack {
+    NavigationRoot {
         ArchiveScreen()
     }
     .sampleData()

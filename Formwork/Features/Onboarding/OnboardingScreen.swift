@@ -146,16 +146,14 @@ private struct PageView: View {
     let page: Page
 
     var body: some View {
-        VStack(spacing: 64) {
-            Spacer(minLength: 0)
-
+        VStack(spacing: 0) {
             preview
-                .frame(maxWidth: .infinity)
-                .padding(.horizontal, 32)
+                .frame(maxHeight: .infinity)
 
             VStack(spacing: 16) {
                 Text(page.title)
-                    .font(.system(.largeTitle, design: .rounded, weight: .bold))
+                    .font(.title)
+                    .fontWeight(.bold)
 
                 Text(page.message)
                     .font(.body)
@@ -163,9 +161,10 @@ private struct PageView: View {
             }
             .multilineTextAlignment(.center)
             .padding(.horizontal, 16)
-
-            Spacer(minLength: 0)
+            .frame(maxHeight: .infinity)
         }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 64)
     }
 
     @ViewBuilder
@@ -182,7 +181,8 @@ private struct PageView: View {
 
 private struct WelcomePreview: View {
     var body: some View {
-        PictogramView(.workout)
+        Image(.imageAppIcon)
+            .resizable()
             .frame(width: 192, height: 192)
     }
 }
@@ -278,5 +278,7 @@ private struct StatisticsPreview: View {
 }
 
 #Preview {
-    OnboardingScreen()
+    NavigationRoot {
+        OnboardingScreen()
+    }
 }

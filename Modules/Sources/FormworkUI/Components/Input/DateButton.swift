@@ -22,6 +22,10 @@ public struct DateButton: View {
         self._date = date
     }
 
+    public init(_ title: LocalizedStringResource, date: Binding<Date>) {
+        self.init(String(localized: title), date: date)
+    }
+
     public var body: some View {
         Button(date.formatted(date: .abbreviated, time: .omitted)) {
             isPresented = true

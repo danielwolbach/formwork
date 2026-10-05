@@ -101,14 +101,6 @@ struct WorkoutEntryRow: View {
                     removeAlert = true
                 }
             }
-        } preview: {
-            ContentStack(spacing: .groups) {
-                PictogramRow(entry.pictogram, title: entry.title, subtitle: entry.target.formatted(.exerciseTarget(units: units)), badge: badge)
-
-                StatisticPreview(.entry(entry))
-            }
-            .frame(width: 360)
-            .padding(.vertical)
         }
         .alert(.alertRemoveWorkoutEntryTitle, isPresented: $removeAlert) {
             Button(.cancel) {
@@ -151,7 +143,7 @@ struct WorkoutEntryRow: View {
 }
 
 #Preview {
-    NavigationStack {
+    NavigationRoot {
         WorkoutEntryRow(Samples.workouts.first!.entries.first!)
     }
     .sampleData()

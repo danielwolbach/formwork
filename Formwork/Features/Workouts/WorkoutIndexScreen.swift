@@ -24,9 +24,17 @@ struct WorkoutIndexScreen: View {
     private var workouts: [Workout]
 
     @State
+    private var searchText = ""
+
+    @State
+    private var sortOrder = [SortDescriptor(\Workout.name)]
+
+    @State
     private var sheet: Sheet? = nil
 
     var body: some View {
+        let matching = matchingWorkouts
+
         Group {
             if workouts.isEmpty {
                 emptyState
@@ -34,21 +42,25 @@ struct WorkoutIndexScreen: View {
                 ScrollView {
                     ContentStack {
                         LazyVStack(spacing: .items) {
-                            ForEach(workouts) { workout in
+                            ForEach(matching) { workout in
                                 WorkoutCard(workout)
                             }
                         }
                         .swipeActionsContainer()
-                        .animation(.snappy, value: workouts.count)
+                        .animation(.snappy, value: matching.count)
+                        .edgeToEdge()
                     }
                 }
                 .contentMargins(.bottom, .sections, for: .scrollContent)
+                .overlay {
+                    if !trimmedSearchText.isEmpty, matching.isEmpty {
+                        ContentUnavailableView.search(text: trimmedSearchText)
+                    }
+                }
+                .searchable(text: $searchText)
             }
         }
         .navigationTitle(.screenWorkoutsTitle)
-        .navigationDestination(for: Workout.self) { workout in
-            WorkoutScreen(workout)
-        }
         .toolbar {
             Menu(.more) {
                 Section {
@@ -60,11 +72,25 @@ struct WorkoutIndexScreen: View {
                         }
                     }
                 }
+
+                Section {
+                    Menu(.sort) {
+                        Picker(.fieldSortTitle, selection: $sortOrder) {
+                            Label(.fieldSortNameTitle, systemImage: "character")
+                                .tag([SortDescriptor(\Workout.name)])
+
+                            Label(.fieldSortNewestTitle, systemImage: "clock")
+                                .tag([SortDescriptor(\Workout.creationDate, order: .reverse)])
+                        }
+                    }
+                }
             }
         }
         .sheet(item: $sheet) { sheet in
             sheet
         }
+        .animation(.snappy, value: searchText)
+        .animation(.snappy, value: sortOrder)
     }
 
     private var emptyState: some View {
@@ -80,10 +106,22 @@ struct WorkoutIndexScreen: View {
             .buttonStyle(.cardProminent)
         }
     }
+
+    private var trimmedSearchText: String {
+        searchText.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    private var matchingWorkouts: [Workout] {
+        let searchText = trimmedSearchText
+
+        return workouts
+            .filter { searchText.isEmpty || $0.name.localizedCaseInsensitiveContains(searchText) }
+            .sorted(using: sortOrder)
+    }
 }
 
 #Preview {
-    NavigationStack {
+    NavigationRoot {
         WorkoutIndexScreen()
     }
     .sampleData()

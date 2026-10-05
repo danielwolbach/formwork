@@ -96,11 +96,10 @@ struct WorkoutAddEntriesForm: View {
         .safeAreaInset(edge: .bottom) {
             ExerciseCategoryFilterBar(selection: $selectedCategories)
         }
+        .interactiveDismissDisabled(hasChanges)
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
-                Button(.cancel) {
-                    dismiss()
-                }
+                CancelButton(hasChanges: hasChanges)
             }
 
             ToolbarItem(placement: .confirmationAction) {
@@ -128,11 +127,7 @@ struct WorkoutAddEntriesForm: View {
 
             ToolbarItem(placement: .bottomBar) {
                 Button(.createExercise) {
-                    if fullVersion.canAddExercise(in: context) {
-                        sheet = .createExerciseInCategories(selectedCategories)
-                    } else {
-                        presentPaywall()
-                    }
+                    createExercise()
                 }
             }
         }
@@ -148,11 +143,15 @@ struct WorkoutAddEntriesForm: View {
             Text(.emptyExercisesMessage)
         } actions: {
             Button(.createExercise) {
-                sheet = .createExerciseInCategories(selectedCategories)
+                createExercise()
             }
             .labelStyle(.fixedTitleAndIcon)
             .buttonStyle(.cardProminent)
         }
+    }
+
+    private var hasChanges: Bool {
+        !selection.isEmpty
     }
 
     private var trimmedSearchText: String {
@@ -182,11 +181,8 @@ struct WorkoutAddEntriesForm: View {
                 Image(systemName: selected ? "checkmark.circle.fill" : "circle")
                     .font(.title2)
                     .foregroundStyle(selected ? AnyShapeStyle(.tint) : AnyShapeStyle(.tertiary))
-                    .transaction {
-                        $0.animation = nil
-                    }
+                    .animation(.snappy(duration: 0.1), value: selected)
             }
-            .animation(.snappy(duration: 0.2), value: selected)
             .padding(.horizontal)
             .padding(.vertical, 8)
         }
@@ -200,6 +196,7 @@ struct WorkoutAddEntriesForm: View {
             .groupBoxStyle(.card)
             .padding(.horizontal)
             .padding(.vertical, 8)
+            .transition(.blurReplace)
         }
     }
 
@@ -238,6 +235,14 @@ struct WorkoutAddEntriesForm: View {
         exercise.currentHighestTarget ?? .initial(for: exercise.kind, in: units)
     }
 
+    private func createExercise() {
+        if fullVersion.canAddExercise(in: context) {
+            sheet = .createExerciseInCategories(selectedCategories)
+        } else {
+            presentPaywall()
+        }
+    }
+
     private func commit() {
         let firstOrder = (entries.map(\.order).max() ?? -1) + 1
 
@@ -271,6 +276,7 @@ private struct ExerciseCategoryFilterBar: View {
                         .labelStyle(.fixedTitleAndIcon)
                         .buttonStyle(.glassProminent)
                         .tint(isSelected(category) ? category.pictogram.color : .clear)
+                        .foregroundStyle(isSelected(category) ? .white : .secondary)
                     }
                 }
             }
@@ -291,7 +297,7 @@ private struct ExerciseCategoryFilterBar: View {
     @Previewable @State
     var entries: [WorkoutEntry] = []
 
-    NavigationStack {
+    NavigationRoot {
         WorkoutAddEntriesForm(entries: $entries)
     }
     .sampleData()

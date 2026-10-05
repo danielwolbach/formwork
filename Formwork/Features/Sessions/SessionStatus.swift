@@ -70,7 +70,7 @@ struct SessionStatus: View {
 }
 
 #Preview {
-    NavigationStack {
+    NavigationRoot {
         Color.clear
             .toolbar {
                 ToolbarItem(placement: .principal) {

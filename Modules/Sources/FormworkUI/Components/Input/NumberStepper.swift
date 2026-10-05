@@ -58,6 +58,16 @@ public struct NumberStepper: View {
         )
     }
 
+    public init(
+        _ title: LocalizedStringResource,
+        value: Binding<Int>,
+        suffix: String? = nil,
+        stepSize: Int? = nil,
+        range: ClosedRange<Int> = 0 ... 1000
+    ) {
+        self.init(String(localized: title), value: value, suffix: suffix, stepSize: stepSize, range: range)
+    }
+
     public var body: some View {
         VStack(spacing: 4) {
             titleLabel

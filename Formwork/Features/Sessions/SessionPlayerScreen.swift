@@ -273,7 +273,7 @@ private struct SessionEntryPage: View {
 }
 
 #Preview {
-    NavigationStack {
+    NavigationRoot {
         SessionPlayerScreen(Samples.activeSession)
     }
     .sampleData()

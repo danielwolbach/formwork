@@ -126,7 +126,7 @@ struct WorkoutEntryScreen: View {
 }
 
 #Preview {
-    NavigationStack {
+    NavigationRoot {
         WorkoutEntryScreen(Samples.workouts.first!.entries.first!)
     }
 }

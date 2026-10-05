@@ -74,6 +74,10 @@ extension Action {
 
     public static let unlockFullVersion = Action(title: .actionUnlockFullVersionTitle, image: "lock.open.fill")
 
+    public static let discardChanges = Action(title: .actionDiscardChangesTitle, image: "trash", role: .destructive)
+
+    public static let keepEditing = Action(title: .actionKeepEditingTitle, image: "pencil", role: .cancel)
+
     // Exercise
 
     public static let createExercise = Action(title: .actionCreateExerciseTitle, image: "plus")

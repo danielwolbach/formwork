@@ -11,6 +11,16 @@ import SwiftData
 import SwiftUI
 
 struct CalendarSection: View {
+    private static let spacing: CGFloat = 8
+
+    /// Matches the default padding of the card group box style.
+    private static let cardPadding: CGFloat = 16
+
+    private static let monthsAhead = 12
+
+    @Environment(\.calendar)
+    private var calendar: Calendar
+
     @Query(Session.finishedDescriptor)
     private var sessions: [Session]
 
@@ -18,216 +28,329 @@ struct CalendarSection: View {
     private var workouts: [Workout]
 
     @State
-    private var month: Date = .now
+    private var selection: Date = .now
 
     @State
-    private var selectedDay: Int = Calendar.current.component(.day, from: .now)
+    private var month: Date?
+
+    @State
+    private var isTurningPage: Bool = false
 
     var body: some View {
-        let sessionsInMonth = sessionsInMonth
+        let months = months
+        let shownMonth = month ?? startOfMonth(.now)
+        let selectedDay = calendar.startOfDay(for: selection)
+        let finished = sessionsByDay(inMonthOf: selection)[selectedDay] ?? []
 
-        SectionView(.init(localized: .fieldCalendarTitle), subtitle: subtitle) {
+        SectionView(.fieldCalendarTitle, subtitle: subtitle(for: shownMonth)) {
             GroupBox {
-                VStack(spacing: .groups) {
-                    LazyVGrid(columns: GridItem.ntile(n: 7, spacing: 0)) {
-                        ForEach(Schedule.Weekday.ordered()) { weekday in
-                            Text(weekday.symbol())
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                        }
+                HStack(spacing: Self.spacing) {
+                    ForEach(Schedule.Weekday.ordered(in: calendar)) { weekday in
+                        Text(weekday.symbol(in: calendar))
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .frame(maxWidth: .infinity)
                     }
+                }
 
-                    LazyVGrid(columns: GridItem.ntile(n: 7, spacing: 0), spacing: 12) {
-                        ForEach(Array(days.enumerated()), id: \.offset) { _, day in
-                            if let day {
-                                let completed = completed(on: day, among: sessionsInMonth)
-
-                                Button {
-                                    selectedDay = Calendar.current.component(.day, from: day)
-                                } label: {
-                                    CalendarDay(
-                                        day: day,
-                                        isSelected: Calendar.current.isDate(day, inSameDayAs: selection),
-                                        completed: completed,
-                                        planned: planned(on: day, besides: completed)
-                                    )
-                                }
-                                .buttonStyle(.plain)
-                            } else {
-                                Color.clear
+                // A paging tab view doesn't size itself, so an empty six-week grid sets the height.
+                sizingGrid
+                    .hidden()
+                    .overlay {
+                        TabView(selection: $month) {
+                            ForEach(months, id: \.self) { month in
+                                monthGrid(month)
+                                    .padding(.horizontal, Self.cardPadding)
+                                    .tag(Optional(month))
                             }
                         }
+                        .tabViewStyle(.page(indexDisplayMode: .never))
+                        // Reaches out to the card's edges, so months slide out there instead of at the content's inset.
+                        .padding(.horizontal, -Self.cardPadding)
                     }
-                    .sensoryFeedback(.selection, trigger: selectedDay)
-                    .padding(.bottom, 8)
+                    .sensoryFeedback(.selection, trigger: selection)
 
-                    Divider()
+                Divider()
 
-                    let finished = sessions(on: selection, among: sessionsInMonth)
+                // Stacked, so the outgoing and incoming day crossfade in place instead of sitting below each other.
+                ZStack(alignment: .top) {
                     CalendarDayList(day: selection, sessions: finished, planned: planned(on: selection, besides: finished.compactMap(\.workout)))
+                        .id(selectedDay)
+                        .transition(.blurReplace)
                 }
+                .animation(.snappy, value: selectedDay)
             }
             .groupBoxStyle(.card)
         } accessory: {
-            if !isShowingToday {
-                Button(.today) {
-                    showToday()
+            HStack {
+                if !calendar.isDateInToday(selection) {
+                    Button(.today) {
+                        turnPage(to: startOfMonth(.now), selecting: .now)
+                    }
+                    .labelStyle(.fixedTitleAndIcon)
+                    .buttonStyle(.glass)
+                    .transition(.blurReplace)
                 }
-                .labelStyle(.fixedTitleAndIcon)
+
+                Button(.backward) {
+                    showMonth(by: -1, from: shownMonth)
+                }
+                .labelStyle(.fixedIconOnly)
                 .buttonStyle(.glass)
+                .buttonBorderShape(.circle)
+                .disabled(shownMonth <= months.first ?? shownMonth)
+
+                Button(.forward) {
+                    showMonth(by: 1, from: shownMonth)
+                }
+                .labelStyle(.fixedIconOnly)
+                .buttonStyle(.glass)
+                .buttonBorderShape(.circle)
+                .disabled(shownMonth >= months.last ?? shownMonth)
+            }
+            .animation(.snappy, value: calendar.isDateInToday(selection))
+        }
+        .onAppear {
+            month = month ?? startOfMonth(.now)
+        }
+        .onChange(of: month) { _, month in
+            guard let month, !isTurningPage else {
+                return
             }
 
-            Button(.backward) {
-                showMonth(by: -1)
+            // Every page already shows this day as selected, so nothing swaps once a swipe settles.
+            selection = sameDay(as: selection, in: month)
+        }
+    }
+
+    private var sizingGrid: some View {
+        Grid(horizontalSpacing: Self.spacing, verticalSpacing: Self.spacing) {
+            ForEach(0 ..< 6, id: \.self) { _ in
+                GridRow {
+                    ForEach(0 ..< 7, id: \.self) { _ in
+                        CalendarCell()
+                    }
+                }
             }
-            .labelStyle(.fixedIconOnly)
-            .buttonStyle(.glass)
-            .buttonBorderShape(.circle)
+        }
+    }
 
-            Button(.forward) {
-                showMonth(by: 1)
+    /// From the first session, or this month if there's none yet, to a year ahead for planned workouts.
+    private var months: [Date] {
+        let current = startOfMonth(.now)
+        let first = sessions.map(\.startDate).min().map(startOfMonth).map { min($0, current) } ?? current
+        let count = calendar.dateComponents([.month], from: first, to: current).month ?? 0
+
+        return (0 ... count + Self.monthsAhead).compactMap { calendar.date(byAdding: .month, value: $0, to: first) }
+    }
+
+    private func monthGrid(_ month: Date) -> some View {
+        let sessionsByDay = sessionsByDay(inMonthOf: month)
+        let selected = sameDay(as: selection, in: month)
+
+        return Grid(horizontalSpacing: Self.spacing, verticalSpacing: Self.spacing) {
+            ForEach(weeks(of: month), id: \.first) { week in
+                GridRow {
+                    ForEach(week, id: \.self) { day in
+                        if calendar.isDate(day, equalTo: month, toGranularity: .month) {
+                            let completed = completed(among: sessionsByDay[day] ?? [])
+
+                            Button {
+                                selection = day
+                            } label: {
+                                CalendarDay(
+                                    day: day,
+                                    isSelected: calendar.isDate(day, inSameDayAs: selected),
+                                    completed: completed,
+                                    planned: planned(on: day, besides: completed)
+                                )
+                            }
+                            .buttonStyle(.plain)
+                        } else {
+                            CalendarDay(day: day, isOutsideMonth: true)
+                        }
+                    }
+                }
             }
-            .labelStyle(.fixedIconOnly)
-            .buttonStyle(.glass)
-            .buttonBorderShape(.circle)
         }
     }
 
-    private var subtitle: String {
-        let calendar = Calendar.current
-        let sameYear = calendar.isDate(month, equalTo: .now, toGranularity: .year)
-        return month.formatted(sameYear ? .dateTime.month(.wide) : .dateTime.month(.wide).year())
+    private func subtitle(for month: Date) -> String {
+        let isThisYear = calendar.isDate(month, equalTo: .now, toGranularity: .year)
+        return month.formatted(isThisYear ? .dateTime.month(.wide) : .dateTime.month(.wide).year())
     }
 
-    private var days: [Date?] {
-        let calendar = Calendar.current
-        guard let interval = calendar.dateInterval(of: .month, for: month) else {
-            return []
+    private func startOfMonth(_ date: Date) -> Date {
+        calendar.dateInterval(of: .month, for: date)?.start ?? calendar.startOfDay(for: date)
+    }
+
+    /// Always six weeks, padded with the neighbouring months' days, so every month is the same height while paging.
+    private func weeks(of month: Date) -> [[Date]] {
+        let leading = (calendar.component(.weekday, from: month) - calendar.firstWeekday + 7) % 7
+        let days = (0 ..< 42).compactMap { calendar.date(byAdding: .day, value: $0 - leading, to: month) }
+        return stride(from: 0, to: days.count, by: 7).map { Array(days[$0 ..< min($0 + 7, days.count)]) }
+    }
+
+    /// Keyed by the start of each day, in the session's own wall-clock time.
+    private func sessionsByDay(inMonthOf date: Date) -> [Date: [Session]] {
+        guard let interval = calendar.dateInterval(of: .month, for: date) else {
+            return [:]
         }
 
-        let leading = (calendar.component(.weekday, from: interval.start) - calendar.firstWeekday + 7) % 7
-        let count = calendar.range(of: .day, in: .month, for: month)?.count ?? 0
-        let days = (0 ..< count).compactMap { calendar.date(byAdding: .day, value: $0, to: interval.start) }
-        return Array(repeating: nil, count: leading) + days
-    }
-
-    private var selection: Date {
-        let calendar = Calendar.current
-        guard let start = calendar.dateInterval(of: .month, for: month)?.start else {
-            return month
-        }
-
-        let count = calendar.range(of: .day, in: .month, for: month)?.count ?? 1
-        return calendar.date(byAdding: .day, value: min(selectedDay, count) - 1, to: start) ?? start
-    }
-
-    private var isShowingToday: Bool {
-        let calendar = Calendar.current
-        return calendar.isDate(month, equalTo: .now, toGranularity: .month) && selectedDay == calendar.component(.day, from: .now)
-    }
-
-    private var sessionsInMonth: [Session] {
-        let calendar = Calendar.current
-        guard let interval = calendar.dateInterval(of: .month, for: month) else {
-            return []
-        }
-
-        return sessions.filter { $0.falls(into: interval, in: calendar) }
-    }
-
-    private func sessions(on day: Date, among sessions: [Session]) -> [Session] {
-        let calendar = Calendar.current
-        guard let interval = calendar.dateInterval(of: .day, for: day) else {
-            return []
-        }
-
-        return sessions
+        let sessions = sessions
             .filter { $0.falls(into: interval, in: calendar) }
             .sorted { $0.startDate < $1.startDate }
+        return Dictionary(grouping: sessions) { calendar.startOfDay(for: $0.localStartDate(in: calendar)) }
     }
 
-    private func completed(on day: Date, among sessions: [Session]) -> [Workout] {
-        let workouts = self.sessions(on: day, among: sessions).compactMap(\.workout)
-        return Set(workouts).sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending }
+    private func completed(among sessions: [Session]) -> [Workout] {
+        Set(sessions.compactMap(\.workout)).sorted(using: SortDescriptor(\.name, comparator: .localizedStandard))
     }
 
     private func planned(on day: Date, besides completed: [Workout]) -> [Workout] {
-        let calendar = Calendar.current
         guard calendar.startOfDay(for: day) >= calendar.startOfDay(for: .now) else {
             return []
         }
 
         return workouts
-            .filter { $0.schedule.isScheduled(on: day) && !completed.contains($0) }
-            .sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending }
+            .filter { $0.schedule.isScheduled(on: day, in: calendar) && !completed.contains($0) }
+            .sorted(using: SortDescriptor(\.name, comparator: .localizedStandard))
     }
 
-    private func showToday() {
-        month = .now
-        selectedDay = Calendar.current.component(.day, from: .now)
-    }
-
-    private func showMonth(by offset: Int) {
-        guard let month = Calendar.current.date(byAdding: .month, value: offset, to: month) else {
+    private func showMonth(by offset: Int, from month: Date) {
+        guard let target = calendar.date(byAdding: .month, value: offset, to: month) else {
             return
         }
 
-        self.month = month
+        turnPage(to: target, selecting: sameDay(as: selection, in: target))
+    }
+
+    private func turnPage(to target: Date, selecting day: Date) {
+        guard target != month else {
+            selection = day
+            return
+        }
+
+        isTurningPage = true
+        withAnimation {
+            month = target
+        } completion: {
+            isTurningPage = false
+            selection = day
+        }
+    }
+
+    /// The same day of the month, clamped to the month's length.
+    private func sameDay(as date: Date, in month: Date) -> Date {
+        guard !calendar.isDate(date, equalTo: month, toGranularity: .month) else {
+            return date
+        }
+
+        let day = calendar.component(.day, from: date)
+        let count = calendar.range(of: .day, in: .month, for: month)?.count ?? 1
+        return calendar.date(byAdding: .day, value: min(day, count) - 1, to: month) ?? month
+    }
+}
+
+private struct CalendarCell: View {
+    var body: some View {
+        Color.clear
+            .aspectRatio(0.8, contentMode: .fit)
     }
 }
 
 private struct CalendarDay: View {
     let day: Date
 
-    let isSelected: Bool
+    var isSelected: Bool = false
 
-    let completed: [Workout]
+    var isOutsideMonth: Bool = false
 
-    let planned: [Workout]
+    var completed: [Workout] = []
+
+    var planned: [Workout] = []
+
+    @Environment(\.calendar)
+    private var calendar: Calendar
 
     var body: some View {
-        let isToday = Calendar.current.isDateInToday(day)
+        CalendarCell()
+            .overlay(alignment: .top) {
+                VStack(spacing: 4) {
+                    // Each layer keeps a fixed style and only fades, since styles of different kinds can't be interpolated.
+                    Circle()
+                        .fill(isToday ? AnyShapeStyle(.tint) : AnyShapeStyle(.gray))
+                        .opacity(isSelected ? 1 : 0)
+                        .overlay {
+                            ZStack {
+                                number
+                                    .fontWeight(isToday ? .semibold : .regular)
+                                    .foregroundStyle(foreground)
+                                    .opacity(isSelected ? 0 : 1)
 
-        VStack(spacing: 4) {
-            Text(day, format: .dateTime.day())
-                .font(.subheadline.monospacedDigit())
-                .fontWeight(isToday || isSelected ? .semibold : .regular)
-                .foregroundStyle(foreground(isToday: isToday))
-                .frame(width: 32, height: 32)
-                .background {
-                    if isSelected {
-                        Circle()
-                            .fill(isToday ? AnyShapeStyle(.tint) : AnyShapeStyle(.primary))
+                                number
+                                    .fontWeight(.semibold)
+                                    .foregroundStyle(Color(.systemBackground))
+                                    .opacity(isSelected ? 1 : 0)
+                            }
+                        }
+
+                    HStack(spacing: 4) {
+                        ForEach(markers, id: \.workout.id) { marker in
+                            CalendarMarker(color: marker.workout.pictogram.color, isCompleted: marker.isCompleted)
+                        }
                     }
                 }
-
-            HStack(spacing: 2) {
-                ForEach(markers, id: \.workout.id) { workout, isCompleted in
-                    CalendarMarker(color: workout.pictogram.color, isCompleted: isCompleted)
-                        .frame(width: 7, height: 7)
-                }
+                .padding(.horizontal, 4)
             }
-            .frame(height: 7)
-        }
-        .frame(maxWidth: .infinity)
-        .contentShape(.rect)
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel(Text(day, format: .dateTime.weekday(.wide).day().month(.wide)))
-        .accessibilityAddTraits(isSelected ? .isSelected : [])
+            .contentShape(.rect)
+            .animation(.snappy(duration: 0.1), value: isSelected)
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(Text(day, format: .dateTime.weekday(.wide).day().month(.wide)))
+            .accessibilityAddTraits(isSelected ? .isSelected : [])
+            .accessibilityHidden(isOutsideMonth)
+    }
+
+    private var number: some View {
+        Text(day, format: .dateTime.day())
+            .font(.subheadline.monospacedDigit())
     }
 
     private var markers: [(workout: Workout, isCompleted: Bool)] {
         Array((completed.map { ($0, true) } + planned.map { ($0, false) }).prefix(3))
     }
 
-    private func foreground(isToday: Bool) -> AnyShapeStyle {
-        if isSelected {
-            AnyShapeStyle(Color(.systemBackground))
+    private var isToday: Bool {
+        calendar.isDateInToday(day) && !isOutsideMonth
+    }
+
+    private var foreground: AnyShapeStyle {
+        if isOutsideMonth {
+            AnyShapeStyle(.tertiary)
         } else if isToday {
             AnyShapeStyle(.tint)
         } else {
             AnyShapeStyle(.primary)
         }
+    }
+}
+
+private struct CalendarMarker: View {
+    let color: Color
+
+    let isCompleted: Bool
+
+    var body: some View {
+        Group {
+            if isCompleted {
+                Circle()
+                    .fill(color)
+            } else {
+                Circle()
+                    .strokeBorder(color, lineWidth: 1.5)
+            }
+        }
+        .frame(width: 8, height: 8)
     }
 }
 
@@ -239,7 +362,7 @@ private struct CalendarDayList: View {
     let planned: [Workout]
 
     var body: some View {
-        LazyVStack(alignment: .leading, spacing: 0) {
+        VStack(alignment: .leading, spacing: 0) {
             Text(day, format: .dateTime.weekday(.wide).day().month(.wide))
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
@@ -254,7 +377,7 @@ private struct CalendarDayList: View {
             }
 
             ForEach(sessions) { session in
-                link(to: session) {
+                row(linkingTo: session) {
                     PictogramRow(
                         session.pictogram,
                         title: session.title,
@@ -265,14 +388,14 @@ private struct CalendarDayList: View {
             }
 
             ForEach(planned) { workout in
-                link(to: workout) {
+                row(linkingTo: workout) {
                     PictogramRow(workout.pictogram, title: workout.title, subtitle: workout.formatted(.workoutDetails), badge: .pendingBadge)
                 }
             }
         }
     }
 
-    private func link(to value: some Hashable, @ViewBuilder label: () -> some View) -> some View {
+    private func row(linkingTo value: some Hashable, @ViewBuilder label: () -> some View) -> some View {
         NavigationLink(value: value) {
             label()
 
@@ -284,32 +407,10 @@ private struct CalendarDayList: View {
     }
 }
 
-private struct CalendarMarker: View {
-    let color: Color
-
-    let isCompleted: Bool
-
-    var body: some View {
-        if isCompleted {
-            Circle()
-                .fill(color)
-        } else {
-            Circle()
-                .strokeBorder(color, lineWidth: 1.5)
-        }
-    }
-}
-
 #Preview {
-    NavigationStack {
+    NavigationRoot {
         ScrollView {
             CalendarSection()
-        }
-        .navigationDestination(for: Workout.self) { workout in
-            WorkoutScreen(workout)
-        }
-        .navigationDestination(for: Session.self) { session in
-            SessionScreen(session)
         }
     }
     .sampleData()

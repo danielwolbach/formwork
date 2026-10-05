@@ -50,9 +50,6 @@ struct SettingsSheet: View {
         .labeledContentStyle(.row)
         .navigationTitle(.screenSettingsTitle)
         .navigationBarTitleDisplayMode(.inline)
-        .navigationDestination(for: Route.self) {
-            $0
-        }
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
                 Button(.cancel) {
@@ -68,7 +65,7 @@ struct SettingsSheet: View {
     }
 
     private var aboutSection: some View {
-        SectionView(.init(localized: .fieldAboutTitle)) {
+        SectionView(.fieldAboutTitle) {
             GroupBox {
                 VStack(spacing: .groups) {
                     HStack {
@@ -113,7 +110,7 @@ struct SettingsSheet: View {
     }
 
     private var unitsSection: some View {
-        SectionView(.init(localized: .fieldUnitsTitle)) {
+        SectionView(.fieldUnitsTitle) {
             GroupBox {
                 VStack(spacing: .groups) {
                     LabeledContent {
@@ -145,7 +142,7 @@ struct SettingsSheet: View {
     }
 
     private var archiveSection: some View {
-        SectionView(.init(localized: .fieldArchiveTitle)) {
+        SectionView(.fieldArchiveTitle) {
             GroupBox {
                 NavigationLink(value: Route.archive) {
                     LabeledContent {
@@ -172,7 +169,7 @@ struct SettingsSheet: View {
 }
 
 #Preview {
-    NavigationStack {
+    NavigationRoot {
         SettingsSheet()
     }
     .sampleData()

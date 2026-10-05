@@ -22,7 +22,7 @@ private struct PaywallPresenter: ViewModifier {
         content
             .environment(\.presentPaywall, PresentPaywallAction { isPresented = true })
             .fullScreenCover(isPresented: $isPresented) {
-                NavigationStack {
+                NavigationRoot {
                     PaywallScreen()
                 }
             }

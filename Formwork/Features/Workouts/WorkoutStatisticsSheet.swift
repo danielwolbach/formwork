@@ -56,7 +56,7 @@ struct WorkoutStatisticsSheet: View {
 }
 
 #Preview {
-    NavigationStack {
+    NavigationRoot {
         WorkoutStatisticsSheet(Samples.workouts.first!)
     }
     .sampleData()

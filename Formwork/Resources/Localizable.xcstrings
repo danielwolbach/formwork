@@ -2,34 +2,136 @@
   "sourceLanguage" : "en",
   "strings" : {
     "alert.deleteExercise.message" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This exercise will be deleted and removed from your statistics. To keep it in your statistics, archive it instead. This action cannot be undone."
+          }
+        }
+      }
     },
     "alert.deleteExercise.title" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete Exercise?"
+          }
+        }
+      }
     },
     "alert.deleteSession.message" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This session will be deleted from your history, which affects your statistics. This action cannot be undone."
+          }
+        }
+      }
     },
     "alert.deleteSession.title" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete Session?"
+          }
+        }
+      }
     },
     "alert.deleteWorkout.message" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This workout will be deleted and removed from your statistics. To keep it in your statistics, archive it instead. This action cannot be undone."
+          }
+        }
+      }
     },
     "alert.deleteWorkout.title" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete Workout?"
+          }
+        }
+      }
+    },
+    "alert.discardChanges.message" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your changes will be lost."
+          }
+        }
+      }
+    },
+    "alert.discardChanges.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Discard Changes?"
+          }
+        }
+      }
     },
     "alert.discardSession.message" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The running session will be discarded and all data will be lost."
+          }
+        }
+      }
     },
     "alert.discardSession.title" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Discard Session?"
+          }
+        }
+      }
     },
     "alert.finishSession.message" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The running session will be completed. Remaining exercises will be marked as skipped and your targets will be updated."
+          }
+        }
+      }
     },
     "alert.finishSession.title" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finish Session?"
+          }
+        }
+      }
     },
     "alert.nothingToRestore.message" : {
       "extractionState" : "manual"
@@ -47,19 +149,95 @@
       "extractionState" : "manual"
     },
     "alert.removeWorkoutEntry.message" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The exercise will be removed from this workout but stays in your catalog."
+          }
+        }
+      }
     },
     "alert.removeWorkoutEntry.title" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove Exercise?"
+          }
+        }
+      }
     },
     "alert.replaceSession.message" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A session is already running. Starting a new one will discard it."
+          }
+        }
+      }
     },
     "alert.replaceSession.title" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Replace Session?"
+          }
+        }
+      }
     },
     "alert.restoreFailed.title" : {
       "extractionState" : "manual"
+    },
+    "chart.date" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Date"
+          }
+        }
+      }
+    },
+    "chart.month" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Month"
+          }
+        }
+      }
+    },
+    "chart.session" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Session"
+          }
+        }
+      }
+    },
+    "chart.target" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Target"
+          }
+        }
+      }
     },
     "downgrade.message" : {
       "extractionState" : "manual",
@@ -126,58 +304,202 @@
       }
     },
     "empty.allDone.message" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You completed every workout for today."
+          }
+        }
+      }
     },
     "empty.allDone.title" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All Done"
+          }
+        }
+      }
     },
     "empty.archive.message" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Archived workouts and exercises appear here."
+          }
+        }
+      }
     },
     "empty.archive.title" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nothing Archived"
+          }
+        }
+      }
     },
     "empty.exercises.message" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Create some exercises to plan a workout."
+          }
+        }
+      }
     },
     "empty.exercises.title" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No Exercises"
+          }
+        }
+      }
     },
     "empty.products.message" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "There are no products available at the moment. Check your connection and try again."
+          }
+        }
+      }
     },
     "empty.products.title" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No Products"
+          }
+        }
+      }
     },
     "empty.restDay.message" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You have no workouts planned for today."
+          }
+        }
+      }
     },
     "empty.restDay.title" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rest Day"
+          }
+        }
+      }
     },
     "empty.sessions.message" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Complete a session to see it here."
+          }
+        }
+      }
     },
     "empty.sessions.title" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No Sessions"
+          }
+        }
+      }
     },
     "empty.statistics.message" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Complete a session to see your statistics."
+          }
+        }
+      }
     },
     "empty.statistics.title" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No Statistics"
+          }
+        }
+      }
     },
     "empty.workoutEntries.message" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add some exercises to start a session."
+          }
+        }
+      }
     },
     "empty.workoutEntries.title" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No Exercises"
+          }
+        }
+      }
     },
     "empty.workouts.message" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Create a workout to plan your exercises."
+          }
+        }
+      }
     },
     "empty.workouts.title" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No Workouts"
+          }
+        }
+      }
     },
     "field.about.title" : {
       "extractionState" : "manual",
@@ -300,6 +622,17 @@
         }
       }
     },
+    "field.history.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "History"
+          }
+        }
+      }
+    },
     "field.image.title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -329,6 +662,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kind"
+          }
+        }
+      }
+    },
+    "field.lastSessions.subtitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Last %1$(count)lld sessions"
           }
         }
       }
@@ -428,6 +772,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Recent"
+          }
+        }
+      }
+    },
+    "field.recentSessions.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recent Sessions"
           }
         }
       }
@@ -621,6 +976,17 @@
         }
       }
     },
+    "field.thisSession.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This Session"
+          }
+        }
+      }
+    },
     "field.today.title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -699,34 +1065,114 @@
       }
     },
     "onboarding.catalog.message" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Organize your exercises in the catalog and add notes and guides."
+          }
+        }
+      }
     },
     "onboarding.catalog.title" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Manage Your Exercises"
+          }
+        }
+      }
     },
     "onboarding.sessions.message" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Follow your workout set by set while you train."
+          }
+        }
+      }
     },
     "onboarding.sessions.title" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Train Live"
+          }
+        }
+      }
     },
     "onboarding.statistics.message" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Track your progress and insights from your past sessions."
+          }
+        }
+      }
     },
     "onboarding.statistics.title" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "See Your Progress"
+          }
+        }
+      }
     },
     "onboarding.welcome.message" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your companion for every workout."
+          }
+        }
+      }
     },
     "onboarding.welcome.title" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Welcome to Formwork"
+          }
+        }
+      }
     },
     "onboarding.workouts.message" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Create workouts to plan exercises and set goals."
+          }
+        }
+      }
     },
     "onboarding.workouts.title" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plan Your Workouts"
+          }
+        }
+      }
     },
     "paywall.activeExercises.title" : {
       "extractionState" : "manual",
@@ -1021,6 +1467,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Workouts"
+          }
+        }
+      }
+    },
+    "share.message" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tracked with Formwork"
+          }
+        }
+      }
+    },
+    "share.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Workout Complete!"
           }
         }
       }

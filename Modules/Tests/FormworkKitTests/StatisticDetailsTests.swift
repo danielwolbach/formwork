@@ -54,9 +54,14 @@ struct StatisticDetailsTests {
     func streakShowsTheCurrentAndTheLongest() throws {
         try store.session(7)
 
-        let details = try StatisticKind.weekStreak.details(of: history(.all))
+        let history = try history(.all)
+        let details = StatisticKind.weekStreak.details(of: history)
+        let footnote = String(localized: history.allTime.weekStreak.isCurrentWeekFulfilled ? .statisticWeekStreakFulfilledSubtitle : .statisticWeekStreakPendingSubtitle)
 
-        #expect(details.values == [.named(StatisticKind.weekStreak.definition.title, .count(1)), .named(String(localized: .statisticLongestWeekStreakTitle), .count(1))])
+        #expect(details.values == [
+            .named(StatisticKind.weekStreak.definition.title, .count(1), footnote: footnote),
+            .named(String(localized: .statisticLongestWeekStreakTitle), .count(1)),
+        ])
         #expect(details.yearly == nil)
     }
 

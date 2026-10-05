@@ -33,8 +33,7 @@ public struct PresentPaywallAction {
 }
 
 extension FullVersion {
-    /// Shared, so reading the entry without an injected one doesn't allocate a new one each time.
-    fileprivate nonisolated static let fallback = FullVersion()
+    fileprivate nonisolated static let fallback = FullVersion(isUnlocked: true)
 }
 
 extension EnvironmentValues {

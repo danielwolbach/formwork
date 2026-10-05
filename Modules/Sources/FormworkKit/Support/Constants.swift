@@ -35,6 +35,12 @@ public enum WidgetKind {
     public static let weekStreak = "WeekStreakWidget"
 }
 
+public enum LegalLinks {
+    public static let terms = URL(string: "https://formworkfitness.com/terms-of-service")!
+
+    public static let privacy = URL(string: "https://formworkfitness.com/privacy-policy")!
+}
+
 public enum AppMetadata {
     public static var appName: String {
         Bundle.main.object(forInfoDictionaryKey: "CFBundleDisplayName") as? String

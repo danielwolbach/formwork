@@ -84,7 +84,7 @@ struct SessionScreen: View {
 #Preview {
     let sessions = (try? Samples.container.mainContext.fetch(Session.finishedDescriptor)) ?? []
 
-    NavigationStack {
+    NavigationRoot {
         if let session = sessions.first {
             SessionScreen(session)
         }

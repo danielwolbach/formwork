@@ -40,11 +40,8 @@ struct SessionListScreen: View {
 }
 
 #Preview {
-    NavigationStack {
+    NavigationRoot {
         SessionListScreen()
-            .navigationDestination(for: Session.self) { session in
-                SessionScreen(session)
-            }
     }
     .sampleData()
 }

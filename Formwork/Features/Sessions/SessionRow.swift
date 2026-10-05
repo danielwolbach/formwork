@@ -78,7 +78,7 @@ struct SessionRow: View {
 }
 
 #Preview {
-    NavigationStack {
+    NavigationRoot {
         SessionRow(Samples.sessions.first!)
     }
     .sampleData()

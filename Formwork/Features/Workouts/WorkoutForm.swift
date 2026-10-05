@@ -11,7 +11,16 @@ import SwiftData
 import SwiftUI
 
 struct WorkoutForm: View {
+    private struct Draft: Equatable {
+        var name: String
+        var pictogram: Pictogram
+        var schedule: Schedule
+        var entries: [WorkoutEntry]
+    }
+
     private let workout: Workout?
+
+    private let original: Draft
 
     @Environment(\.modelContext)
     private var context: ModelContext
@@ -23,51 +32,47 @@ struct WorkoutForm: View {
     private var units: Units
 
     @State
-    private var name: String = ""
-
-    @State
-    private var pictogram: Pictogram = .workout
-
-    @State
-    private var schedule: Schedule = .weekly()
-
-    @State
-    private var entries: [WorkoutEntry] = []
+    private var draft: Draft
 
     @State
     private var showEntriesPicker: Bool = false
 
     init(_ workout: Workout? = nil) {
+        let draft = Draft(
+            name: workout?.name ?? "",
+            pictogram: workout?.pictogram ?? .workout,
+            schedule: workout?.schedule ?? .weekly(),
+            entries: workout?.entries.sorted() ?? []
+        )
+
         self.workout = workout
-        self._name = .init(initialValue: workout?.name ?? "")
-        self._pictogram = .init(initialValue: workout?.pictogram ?? .workout)
-        self._schedule = .init(initialValue: workout?.schedule ?? .weekly())
-        self._entries = .init(initialValue: workout?.entries.sorted() ?? [])
+        self.original = draft
+        self._draft = .init(initialValue: draft)
     }
 
     var body: some View {
         ScrollView {
             ContentStack {
-                PictogramEditor($pictogram)
+                PictogramEditor($draft.pictogram)
                     .frame(width: 192)
 
-                SectionView(.init(localized: .fieldNameTitle)) {
+                SectionView(.fieldNameTitle) {
                     GroupBox {
-                        TextField(.fieldNamePlaceholder, text: $name)
+                        TextField(.fieldNamePlaceholder, text: $draft.name)
                     }
                 }
 
-                SectionView(.init(localized: .fieldScheduleTitle)) {
+                SectionView(.fieldScheduleTitle) {
                     GroupBox {
-                        ScheduleEditor($schedule, saved: workout?.schedule)
+                        ScheduleEditor($draft.schedule, saved: workout?.schedule)
                     }
                 }
 
-                SectionView(.init(localized: .fieldExercisesTitle)) {
+                SectionView(.fieldExercisesTitle) {
                     entriesEditor
-                        .animation(.default, value: entries)
+                        .animation(.default, value: draft.entries)
                 } accessory: {
-                    if !entries.isEmpty {
+                    if !draft.entries.isEmpty {
                         Button(.addExercise) {
                             showEntriesPicker = true
                         }
@@ -82,11 +87,10 @@ struct WorkoutForm: View {
         .navigationTitle(workout == nil ? .screenCreateWorkoutTitle : .screenEditWorkoutTitle)
         .navigationBarTitleDisplayMode(.inline)
         .scrollDismissesKeyboard(.immediately)
+        .interactiveDismissDisabled(hasChanges)
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
-                Button(.cancel) {
-                    dismiss()
-                }
+                CancelButton(hasChanges: hasChanges)
             }
 
             ToolbarItem(placement: .confirmationAction) {
@@ -97,8 +101,8 @@ struct WorkoutForm: View {
             }
         }
         .sheet(isPresented: $showEntriesPicker) {
-            NavigationStack {
-                WorkoutAddEntriesForm(entries: $entries)
+            NavigationRoot {
+                WorkoutAddEntriesForm(entries: $draft.entries)
             }
             .paywallPresenter()
         }
@@ -106,7 +110,7 @@ struct WorkoutForm: View {
 
     @ViewBuilder
     private var entriesEditor: some View {
-        if entries.isEmpty {
+        if draft.entries.isEmpty {
             GroupBox {
                 ContentUnavailableView {
                     Label(.emptyWorkoutEntriesTitle, systemImage: "dumbbell")
@@ -122,7 +126,7 @@ struct WorkoutForm: View {
             }
         } else {
             LazyVStack(spacing: 0) {
-                ForEach(entries) { entry in
+                ForEach(draft.entries) { entry in
                     HStack {
                         PictogramRow(entry.pictogram, title: entry.title, subtitle: entry.target.formatted(.exerciseTarget(units: units)))
 
@@ -133,7 +137,7 @@ struct WorkoutForm: View {
                     .padding(.vertical, 8)
                     .swipeActions {
                         Button(.remove) {
-                            entries.removeAll { $0.id == entry.id }
+                            draft.entries.removeAll { $0.id == entry.id }
                         }
                         .labelStyle(.fixedIconOnly)
                     }
@@ -141,7 +145,7 @@ struct WorkoutForm: View {
                 .reorderable()
             }
             .reorderContainer(for: WorkoutEntry.self) { difference in
-                entries.apply(difference: difference)
+                draft.entries.apply(difference: difference)
             }
             .swipeActionsContainer()
             .padding(.vertical, 8)
@@ -150,30 +154,34 @@ struct WorkoutForm: View {
         }
     }
 
+    private var hasChanges: Bool {
+        draft != original
+    }
+
     private var valid: Bool {
-        let name = name.trimmingCharacters(in: .whitespacesAndNewlines)
+        let name = draft.name.trimmingCharacters(in: .whitespacesAndNewlines)
         return !name.isEmpty
     }
 
     private func commit() {
-        let name = name.trimmingCharacters(in: .whitespacesAndNewlines)
+        let name = draft.name.trimmingCharacters(in: .whitespacesAndNewlines)
 
-        for (index, entry) in entries.enumerated() {
+        for (index, entry) in draft.entries.enumerated() {
             entry.order = index
         }
 
         if let workout {
             // Taken out of the workout, an entry would linger without one.
-            for removed in workout.entries where !entries.contains(removed) {
+            for removed in workout.entries where !draft.entries.contains(removed) {
                 context.delete(removed)
             }
 
             workout.name = name
-            workout.pictogram = pictogram
-            workout.schedule = schedule
-            workout.entries = entries
+            workout.pictogram = draft.pictogram
+            workout.schedule = draft.schedule
+            workout.entries = draft.entries
         } else {
-            let workout = Workout(name: name, pictogram: pictogram, schedule: schedule, entries: entries)
+            let workout = Workout(name: name, pictogram: draft.pictogram, schedule: draft.schedule, entries: draft.entries)
             context.insert(workout)
         }
 
@@ -199,14 +207,14 @@ extension Array where Element: Identifiable, Element.ID: Sendable {
 }
 
 #Preview("Create") {
-    NavigationStack {
+    NavigationRoot {
         WorkoutForm()
     }
     .sampleData()
 }
 
 #Preview("Edit") {
-    NavigationStack {
+    NavigationRoot {
         WorkoutForm(Samples.workouts.first!)
     }
     .sampleData()

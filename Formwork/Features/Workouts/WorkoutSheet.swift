@@ -32,7 +32,7 @@ struct WorkoutSheet: View {
 }
 
 #Preview {
-    NavigationStack {
+    NavigationRoot {
         WorkoutSheet(Samples.workouts.first!)
     }
 }

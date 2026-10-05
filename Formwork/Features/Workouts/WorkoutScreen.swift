@@ -107,21 +107,18 @@ struct WorkoutScreen: View {
             }
         }
         .contentMargins(.bottom, .sections, for: .scrollContent)
-        .navigationDestination(for: WorkoutEntry.self) { entry in
-            WorkoutEntryScreen(entry)
-        }
         .toolbar {
             Menu(.more) {
                 Section {
-                    Button(.startSession) {
-                        startSession()
-                    }
-                    .disabled(!workout.isStartable)
-                }
+                    if !workout.isArchived {
+                        Button(.startSession) {
+                            startSession()
+                        }
+                        .disabled(!workout.isStartable)
 
-                Section {
-                    Button(.addExercise) {
-                        sheet = .workoutAddEntries(workout)
+                        Button(.addExercise) {
+                            sheet = .workoutAddEntries(workout)
+                        }
                     }
 
                     Button(.viewStatistics) {
@@ -153,12 +150,16 @@ struct WorkoutScreen: View {
             }
         }
         .alert(.alertDeleteWorkoutTitle, isPresented: $deleteAlert) {
-            Button(.cancel) {
-                // Works automatically.
-            }
-
             Button(.delete) {
                 delete()
+            }
+
+            Button(.archive) {
+                archive()
+            }
+
+            Button(.cancel) {
+                // Works automatically.
             }
         } message: {
             Text(.alertDeleteWorkoutMessage)
@@ -221,7 +222,7 @@ struct WorkoutScreen: View {
 }
 
 #Preview {
-    NavigationStack {
+    NavigationRoot {
         WorkoutScreen(Samples.workouts[1])
     }
     .sampleData()

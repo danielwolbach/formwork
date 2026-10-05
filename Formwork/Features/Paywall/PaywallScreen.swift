@@ -17,6 +17,9 @@ struct PaywallScreen: View {
     @Environment(\.purchase)
     private var purchase: PurchaseAction
 
+    @Environment(\.openURL)
+    private var openURL: OpenURLAction
+
     @Environment(\.fullVersion)
     private var fullVersion: FullVersion
 
@@ -134,7 +137,6 @@ struct PaywallScreen: View {
                             let result = try await purchase(selection)
                             await fullVersion.handle(result)
 
-                            // Ask to Buy or extra bank verification: access arrives later through the transaction updates.
                             if case .pending = result {
                                 pendingAlert = true
                             }
@@ -183,7 +185,7 @@ struct PaywallScreen: View {
 
             HStack {
                 footerButton(.paywallTermsTitle) {
-                    // TODO:
+                    openURL(LegalLinks.terms)
                 }
 
                 footerButton(.paywallRestoreTitle) {
@@ -210,7 +212,7 @@ struct PaywallScreen: View {
                 .disabled(isBusy)
 
                 footerButton(.paywallPrivacyTitle) {
-                    // TODO:
+                    openURL(LegalLinks.privacy)
                 }
             }
             .buttonStyle(.plain)
@@ -327,7 +329,7 @@ private struct PlanComparison: View {
 }
 
 #Preview {
-    NavigationStack {
+    NavigationRoot {
         PaywallScreen()
     }
 }

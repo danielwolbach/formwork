@@ -37,15 +37,7 @@ extension View {
     }
 }
 
-extension CGFloat {
-    public static let sections: CGFloat = 32
-
-    public static let groups: CGFloat = 16
-
-    public static let items: CGFloat = 8
-}
-
-#Preview("Screen") {
+#Preview {
     ScrollView {
         ContentStack {
             TileGrid {
@@ -75,7 +67,7 @@ extension CGFloat {
             LazyVStack(spacing: 0) {
                 ForEach(1 ... 3, id: \.self) { index in
                     HStack {
-                        Text("Row \(index)")
+                        Text("Edge-to-Edge Row \(index)")
 
                         Spacer(minLength: 0)
 
@@ -83,52 +75,10 @@ extension CGFloat {
                             .foregroundStyle(.tertiary)
                     }
                     .padding(8)
-                    .background(.fill.quaternary)
+                    .background(.ultraThinMaterial)
                 }
             }
             .edgeToEdge()
-        }
-    }
-    .groupBoxStyle(.card)
-}
-
-#Preview("Nested") {
-    ScrollView {
-        ContentStack {
-            GroupBox {
-                Text("A card keeps the margin.")
-            }
-
-            // What a section containing a list would do internally.
-            ContentStack(spacing: .items) {
-                Text("Section")
-                    .font(.headline)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-
-                LazyVStack(spacing: 0) {
-                    ForEach(1 ... 3, id: \.self) { index in
-                        Text("Row \(index)")
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .padding()
-                            .background(.fill.quaternary)
-                    }
-                }
-                .edgeToEdge()
-            }
-            .edgeToEdge()
-        }
-    }
-    .groupBoxStyle(.card)
-}
-
-#Preview("Sheet") {
-    ScrollView {
-        ContentStack(spacing: .groups) {
-            ForEach(1 ... 3, id: \.self) { index in
-                GroupBox {
-                    Text("Card \(index)")
-                }
-            }
         }
     }
     .groupBoxStyle(.card)

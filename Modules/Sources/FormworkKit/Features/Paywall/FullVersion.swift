@@ -29,11 +29,11 @@ public final class FullVersion {
 
     public private(set) var isLoadingProducts = false
 
-    public nonisolated init() {}
+    public nonisolated init(isUnlocked: Bool = false) {
+        _isUnlocked = isUnlocked
+    }
 
-    /// Runs for the app's lifetime: checks entitlements, loads products, then follows renewals, refunds, Ask to Buy, other devices.
     public func observe() async {
-        // Entitlements first: they're answered locally, while loading products can wait on a slow network.
         await refresh()
         await loadProducts()
 
@@ -50,7 +50,6 @@ public final class FullVersion {
         isLoadingProducts = true
         defer { isLoadingProducts = false }
 
-        // A failed load keeps what's already there, so a retry can't wipe loaded products.
         if let products = try? await Product.products(for: Self.productIDs) {
             self.products = products.sorted { $0.price < $1.price }
         }
@@ -67,8 +66,6 @@ public final class FullVersion {
         await refresh()
     }
 
-    /// Counted on demand, so callers like rows don't each need a query over every exercise or workout.
-    /// A failed count allows it: a free user shouldn't be blocked by a storage hiccup.
     public func canAddExercise(in context: ModelContext) -> Bool {
         isUnlocked || (try? context.fetchCount(FetchDescriptor<Exercise>(predicate: #Predicate { !$0.isArchived }))) ?? 0 < Self.exerciseLimit
     }
@@ -78,7 +75,6 @@ public final class FullVersion {
     }
 
     private func handle(_ verification: VerificationResult<Transaction>) async {
-        // An unverified transaction is left unfinished, so StoreKit delivers it again and a later verification can still unlock it.
         guard case let .verified(transaction) = verification else {
             return
         }

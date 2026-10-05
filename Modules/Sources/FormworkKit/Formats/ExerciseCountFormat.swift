@@ -8,10 +8,12 @@
 import Foundation
 
 public struct ExerciseCountFormat: FormatStyle {
-    public init() {}
+    public init() {
+        // Nothing to initialize.
+    }
 
     public func format(_ count: Int) -> String {
-        String(localized: .exerciseCount(count: count))
+        String(localized: .formatExerciseCountScheme(count: count))
     }
 }
 

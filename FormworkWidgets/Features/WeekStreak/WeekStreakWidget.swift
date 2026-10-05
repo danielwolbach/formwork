@@ -92,7 +92,6 @@ private struct WeekRow: View {
         HStack(spacing: 4) {
             ForEach(week.days) { day in
                 let trained = day.sessionCount > 0
-                let isToday = week.calendar.isDate(day.date, inSameDayAs: today)
 
                 Circle()
                     .fill(.white.opacity(trained ? 1 : day.isAhead ? 0.1 : 0.25))
@@ -101,9 +100,6 @@ private struct WeekRow: View {
                             Image(systemName: "checkmark")
                                 .font(.system(size: 8, weight: .black))
                                 .foregroundStyle(tint)
-                        } else if isToday {
-                            Circle()
-                                .strokeBorder(.white, lineWidth: 1.5)
                         }
                     }
                     .aspectRatio(1, contentMode: .fit)

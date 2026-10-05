@@ -5,6 +5,7 @@
 //  Created by Daniel Wolbach on 04.10.26.
 //
 
+import Flow
 import FormworkKit
 import FormworkUI
 import SwiftData
@@ -22,10 +23,9 @@ struct StatisticChips: View {
     var body: some View {
         let history = History(.all, among: sessions)
 
-        FlowLayout(alignment: .leading) {
+        HFlow {
             ForEach(Self.kinds) { kind in
                 Button {
-                    // A tap above an open sheet also reaches the chips behind it, so it may only close the sheet.
                     guard selection == nil else {
                         return
                     }
@@ -37,8 +37,9 @@ struct StatisticChips: View {
                 .buttonStyle(.plain)
             }
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
         .sheet(item: $selection) { kind in
-            NavigationStack {
+            NavigationRoot {
                 StatisticSheet(kind, of: history)
             }
             .presentationDetents([.medium, .large])
@@ -80,7 +81,7 @@ private struct StatisticChip: View {
 }
 
 #Preview {
-    NavigationStack {
+    NavigationRoot {
         ScrollView {
             ContentStack {
                 StatisticChips()

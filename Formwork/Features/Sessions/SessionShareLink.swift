@@ -30,7 +30,7 @@ struct SessionShareLink: View {
                 ShareLink(
                     item: shareImage,
                     subject: Text(verbatim: shareImage.name),
-                    message: Text(.placeholder),
+                    message: Text(.shareMessage),
                     preview: SharePreview(shareImage.name, image: Image(uiImage: shareImage.image))
                 ) {
                     label
@@ -82,7 +82,7 @@ private struct SessionShareCard: View {
     private var header: some View {
         HStack {
             VStack {
-                Text(.placeholder)
+                Text(.shareTitle)
                     .font(.system(.title2, weight: .bold))
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .minimumScaleFactor(0.8)
@@ -136,7 +136,7 @@ private struct SessionShareCard: View {
                     .frame(width: 48, height: 48)
 
                 VStack(alignment: .leading) {
-                    Text(.placeholder)
+                    Text(StatisticKind.personalBest.definition.title)
                         .font(.subheadline)
                         .lineLimit(1)
                         .foregroundStyle(.secondary)

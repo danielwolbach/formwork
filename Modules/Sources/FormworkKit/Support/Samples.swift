@@ -74,6 +74,13 @@ public enum Samples {
 
     public static let sessions: [Session] = seedHistory()
 
+    public static var activeSession: Session {
+        // swiftlint:disable:next force_try
+        try! Session.active(in: container.mainContext)!
+    }
+}
+
+extension Samples {
     public static let container: ModelContainer = {
         let configuration = ModelConfiguration(schema: Storage.schema, isStoredInMemoryOnly: true)
 
@@ -84,8 +91,6 @@ public enum Samples {
         Samples.workouts.forEach(container.mainContext.insert)
         Samples.sessions.forEach(container.mainContext.insert)
 
-        _ = Samples.workouts[0].startSession()
-
         return container
     }()
 
@@ -93,13 +98,6 @@ public enum Samples {
 
     private static let historyStart = Calendar.current.date(byAdding: .day, value: -historyDays, to: .now) ?? .now
 
-    public static var activeSession: Session {
-        // swiftlint:disable:next force_try
-        try! Session.active(in: container.mainContext)!
-    }
-}
-
-extension Samples {
     fileprivate static func seedHistory(days: Int = historyDays, calendar: Calendar = .current) -> [Session] {
         var random = SeededGenerator(seed: 42)
         var sessions: [Session] = []

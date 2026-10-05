@@ -93,7 +93,7 @@ struct WorkoutEntryStatisticsSheet: View {
 }
 
 #Preview {
-    NavigationStack {
+    NavigationRoot {
         WorkoutEntryStatisticsSheet(Samples.workouts[0].entries.sorted()[1])
     }
     .sampleData()

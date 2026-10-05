@@ -42,7 +42,7 @@ extension WorkoutEntry {
     }
 
     public var title: String {
-        exercise?.title ?? .init(localized: .placeholder)
+        exercise?.title ?? .init(localized: .exerciseDeletedTitle)
     }
 
     public var isArchived: Bool {

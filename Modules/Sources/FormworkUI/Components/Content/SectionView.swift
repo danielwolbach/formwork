@@ -23,6 +23,10 @@ public struct SectionView<Content: View, Accessory: View>: View {
         self.accessory = accessory()
     }
 
+    public init(_ title: LocalizedStringResource, subtitle: String? = nil, @ViewBuilder content: () -> Content, @ViewBuilder accessory: () -> Accessory) {
+        self.init(String(localized: title), subtitle: subtitle, content: content, accessory: accessory)
+    }
+
     public var body: some View {
         ContentStack(spacing: .items) {
             HStack {
@@ -36,6 +40,8 @@ public struct SectionView<Content: View, Accessory: View>: View {
                             .lineLimit(1)
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
+                            .contentTransition(.opacity)
+                            .animation(.snappy, value: subtitle)
                     }
                 }
 
@@ -56,6 +62,10 @@ public struct SectionView<Content: View, Accessory: View>: View {
 extension SectionView where Accessory == EmptyView {
     public init(_ title: String, subtitle: String? = nil, @ViewBuilder content: () -> Content) {
         self.init(title, subtitle: subtitle, content: content, accessory: { EmptyView() })
+    }
+
+    public init(_ title: LocalizedStringResource, subtitle: String? = nil, @ViewBuilder content: () -> Content) {
+        self.init(String(localized: title), subtitle: subtitle, content: content, accessory: { EmptyView() })
     }
 }
 

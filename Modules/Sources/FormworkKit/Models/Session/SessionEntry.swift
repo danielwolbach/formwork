@@ -49,7 +49,7 @@ extension SessionEntry {
     }
 
     public var title: String {
-        exercise?.title ?? .init(localized: .placeholder)
+        exercise?.title ?? .init(localized: .exerciseDeletedTitle)
     }
 
     public var duration: TimeInterval? {
@@ -145,9 +145,5 @@ extension SessionEntry.Status {
         case .completed: Pictogram(image: "checkmark.circle.fill", tint: .green)
         case .skipped: Pictogram(image: "arrowtriangle.forward.circle.fill", tint: .orange)
         }
-    }
-
-    public var title: String {
-        .init(localized: .placeholder)
     }
 }

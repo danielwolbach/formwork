@@ -7,9 +7,10 @@
 
 import Foundation
 
-/// Lists categories in catalog order, since a set has none.
 public struct ExerciseCategoriesFormat: FormatStyle {
-    public init() {}
+    public init() {
+        // Nothing to initialize.
+    }
 
     public func format(_ categories: Set<Exercise.Category>) -> String {
         Exercise.Category.allCases

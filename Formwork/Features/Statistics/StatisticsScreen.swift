@@ -17,10 +17,6 @@ struct StatisticsScreen: View {
     var body: some View {
         content
             .navigationTitle(.screenStatisticsTitle)
-            .navigationDestination(for: Session.self) { session in
-                SessionScreen(session)
-            }
-            .navigationDestination(for: Route.self) { $0 }
     }
 
     @ViewBuilder
@@ -43,7 +39,7 @@ struct StatisticsScreen: View {
             ContentStack {
                 StatisticGrid(history)
 
-                SectionView(.init(localized: .placeholder)) {
+                SectionView(.fieldRecentSessionsTitle) {
                     LazyVStack(spacing: 0) {
                         ForEach(sessions.prefix(5)) { session in
                             SessionRow(session)
@@ -66,7 +62,7 @@ struct StatisticsScreen: View {
 }
 
 #Preview {
-    NavigationStack {
+    NavigationRoot {
         StatisticsScreen()
     }
     .sampleData()
