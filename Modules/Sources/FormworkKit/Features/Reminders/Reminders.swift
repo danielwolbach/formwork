@@ -22,11 +22,11 @@ public struct Reminder: Hashable, Sendable {
 public struct ReminderOptions: Equatable, Sendable {
     public static let lead = 30
 
+    public static let defaultDailyMinute = 8 * 60
+
     static let minimumSessions = 3
 
     static let limit = 64
-
-    public static let defaultDailyMinute = 8 * 60
 
     public var dailyMinute: Int?
 

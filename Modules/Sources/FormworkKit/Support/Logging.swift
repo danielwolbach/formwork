@@ -8,7 +8,7 @@
 import OSLog
 
 extension Logger {
-    private static let subsystem = "de.danielwolbach.Formwork"
-
     public static let health = Logger(subsystem: subsystem, category: "Health")
+
+    private static let subsystem = "de.danielwolbach.Formwork"
 }

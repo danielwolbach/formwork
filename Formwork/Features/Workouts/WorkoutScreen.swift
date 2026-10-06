@@ -57,7 +57,7 @@ struct WorkoutScreen: View {
                 )
 
                 HStack {
-                    Button(.addExercise) {
+                    Button(.addExercises) {
                         sheet = .workoutAddEntries(workout)
                     }
                     .labelStyle(.fixedIconOnly)
@@ -88,7 +88,7 @@ struct WorkoutScreen: View {
                     } description: {
                         Text(.emptyWorkoutEntriesMessage)
                     } actions: {
-                        Button(.addExercise) {
+                        Button(.addExercises) {
                             sheet = .workoutAddEntries(workout)
                         }
                         .labelStyle(.fixedTitleAndIcon)
@@ -116,7 +116,7 @@ struct WorkoutScreen: View {
                         }
                         .disabled(!workout.isStartable)
 
-                        Button(.addExercise) {
+                        Button(.addExercises) {
                             sheet = .workoutAddEntries(workout)
                         }
                     }

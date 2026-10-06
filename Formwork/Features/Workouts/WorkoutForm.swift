@@ -73,7 +73,7 @@ struct WorkoutForm: View {
                         .animation(.default, value: draft.entries)
                 } accessory: {
                     if !draft.entries.isEmpty {
-                        Button(.addExercise) {
+                        Button(.addExercises) {
                             showEntriesPicker = true
                         }
                         .labelStyle(.fixedTitleAndIcon)
@@ -117,7 +117,7 @@ struct WorkoutForm: View {
                 } description: {
                     Text(.emptyWorkoutEntriesMessage)
                 } actions: {
-                    Button(.addExercise) {
+                    Button(.addExercises) {
                         showEntriesPicker = true
                     }
                     .labelStyle(.fixedTitleAndIcon)
@@ -186,23 +186,6 @@ struct WorkoutForm: View {
         }
 
         dismiss()
-    }
-}
-
-extension Array where Element: Identifiable, Element.ID: Sendable {
-    fileprivate mutating func apply(difference: ReorderDifference<Element.ID, some Hashable & Sendable>) {
-        let moved = filter { difference.sources.contains($0.id) }
-        removeAll { difference.sources.contains($0.id) }
-
-        switch difference.destination.position {
-        case let .before(id):
-            guard let index = firstIndex(where: { $0.id == id }) else {
-                return
-            }
-            insert(contentsOf: moved, at: index)
-        case .end:
-            append(contentsOf: moved)
-        }
     }
 }
 

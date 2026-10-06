@@ -12,17 +12,17 @@ import SwiftData
 public class Session {
     public struct HealthSummary: Codable {
         public var averageHeartRate: Double? = nil
-        
+
         public var activeEnergy: Double? = nil
     }
-    
+
     public var workout: Workout?
 
     public var startDate: Date = Date.distantPast
 
     public var endDate: Date?
-    
-    public var health: HealthSummary? = nil
+
+    public var health: HealthSummary?
 
     @Relationship(deleteRule: .cascade, inverse: \SessionEntry.session)
     public var entries: [SessionEntry] = []
@@ -191,12 +191,60 @@ extension Session {
     }
 
     public func undoCurrentStatus() {
-        guard let entry = currentEntry, !entry.status.isPending else {
+        currentEntry.map(undo)
+    }
+
+    public func skip(_ entry: SessionEntry) {
+        guard entry.status.isPending else {
+            return
+        }
+
+        guard entry !== currentEntry else {
+            return skipAndAdvance()
+        }
+
+        entry.status = .skipped(date: .now)
+    }
+
+    /// The undone entry becomes current and goes first, so it's played next.
+    public func undo(_ entry: SessionEntry) {
+        guard !entry.status.isPending else {
             return
         }
 
         entry.status = .pending
+        currentEntry = entry
         renumber([entry] + pendingEntries.filter { $0 !== entry })
+    }
+
+    public func remove(_ entry: SessionEntry) {
+        guard entry.isAddedWithoutWorkout, entry.status.isPending else {
+            return
+        }
+
+        if entry === currentEntry {
+            currentEntry = pendingEntries.first { $0 !== entry } ?? resolvedEntries.last
+        }
+
+        entries.removeAll { $0 === entry }
+        modelContext?.delete(entry)
+    }
+
+    public func reorderPending(_ entries: [SessionEntry]) {
+        renumber(entries)
+    }
+
+    public func add(_ exercises: [(exercise: Exercise, target: ExerciseTarget)]) {
+        let firstOrder = (pendingEntries.last?.order ?? -1) + 1
+        let added = exercises.enumerated().map { offset, item in
+            SessionEntry(exercise: item.exercise, target: item.target, order: firstOrder + offset)
+        }
+
+        entries.append(contentsOf: added)
+
+        if currentEntry?.status.isPending != true {
+            currentEntry = added.first
+        }
     }
 
     public func localCalendar(from calendar: Calendar) -> Calendar {

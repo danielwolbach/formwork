@@ -1,13 +1,13 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "action.addExercise.title" : {
+    "action.addExercises.title" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Add Exercise"
+            "value" : "Add Exercises"
           }
         }
       }

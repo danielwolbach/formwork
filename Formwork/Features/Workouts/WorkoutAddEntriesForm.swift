@@ -11,6 +11,8 @@ import SwiftData
 import SwiftUI
 
 struct WorkoutAddEntriesForm: View {
+    private let add: ([(exercise: Exercise, target: ExerciseTarget)]) -> Void
+
     @Environment(\.dismiss)
     private var dismiss: DismissAction
 
@@ -28,9 +30,6 @@ struct WorkoutAddEntriesForm: View {
 
     @Query(filter: #Predicate<Exercise> { !$0.isArchived })
     private var exercises: [Exercise]
-
-    @Binding
-    private var entries: [WorkoutEntry]
 
     @State
     private var selection: [(exercise: Exercise, target: ExerciseTarget)] = []
@@ -51,11 +50,23 @@ struct WorkoutAddEntriesForm: View {
     private var sheet: Sheet?
 
     init(entries: Binding<[WorkoutEntry]>) {
-        self._entries = entries
+        self.add = { selection in
+            entries.wrappedValue.append(contentsOf: Self.workoutEntries(from: selection, after: entries.wrappedValue))
+        }
     }
 
     init(workout: Workout) {
-        self._entries = Bindable(workout).entries
+        self.add = { selection in
+            workout.entries.append(contentsOf: Self.workoutEntries(from: selection, after: workout.entries))
+        }
+    }
+
+    init(session: Session) {
+        self.add = { selection in
+            withAnimation(.snappy) {
+                session.add(selection)
+            }
+        }
     }
 
     var body: some View {
@@ -167,6 +178,19 @@ struct WorkoutAddEntriesForm: View {
             .sorted(using: sortOrder)
     }
 
+    private static func workoutEntries(
+        from selection: [(exercise: Exercise, target: ExerciseTarget)],
+        after entries: [WorkoutEntry]
+    ) -> [WorkoutEntry] {
+        let firstOrder = (entries.map(\.order).max() ?? -1) + 1
+
+        return selection.enumerated().map { offset, item in
+            let entry = WorkoutEntry(exercise: item.exercise, target: item.target)
+            entry.order = firstOrder + offset
+            return entry
+        }
+    }
+
     @ViewBuilder
     private func row(for exercise: Exercise) -> some View {
         let selected = isSelected(exercise)
@@ -244,15 +268,7 @@ struct WorkoutAddEntriesForm: View {
     }
 
     private func commit() {
-        let firstOrder = (entries.map(\.order).max() ?? -1) + 1
-
-        let newEntries = selection.enumerated().map { offset, item in
-            let entry = WorkoutEntry(exercise: item.exercise, target: item.target)
-            entry.order = firstOrder + offset
-            return entry
-        }
-
-        entries.append(contentsOf: newEntries)
+        add(selection)
         dismiss()
     }
 }

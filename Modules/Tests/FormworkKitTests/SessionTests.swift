@@ -242,6 +242,102 @@ struct SessionOrderTests {
         #expect(session.currentEntry?.title == "Squat")
         #expect(session.orderedEntries.map(\.order) == [0, 1, 2])
     }
+
+    @Test
+    func skippingOtherEntryKeepsCurrent() throws {
+        let session = try store.startSession()
+
+        session.skip(session.pendingEntries[2])
+
+        #expect(session.currentEntry?.title == "Squat")
+        #expect(session.pendingEntries.map(\.title) == ["Squat", "Bench Press"])
+    }
+
+    @Test
+    func skippingCurrentEntryAdvances() throws {
+        let session = try store.startSession()
+
+        session.skip(session.pendingEntries[0])
+
+        #expect(session.currentEntry?.title == "Bench Press")
+        #expect(session.resolvedEntries.map(\.title) == ["Squat"])
+    }
+
+    @Test
+    func undoingEntryMakesItCurrentAndNext() throws {
+        let session = try store.startSession()
+        session.completeAndAdvance()
+        session.completeAndAdvance()
+
+        session.undo(session.resolvedEntries[0])
+
+        #expect(session.currentEntry?.title == "Squat")
+        #expect(session.pendingEntries.map(\.title) == ["Squat", "Deadlift"])
+    }
+
+    @Test
+    func reorderingPendingEntriesRenumbers() throws {
+        let session = try store.startSession()
+        let pending = session.pendingEntries
+
+        session.reorderPending([pending[2], pending[0], pending[1]])
+
+        #expect(session.pendingEntries.map(\.title) == ["Deadlift", "Squat", "Bench Press"])
+        #expect(session.currentEntry?.title == "Squat")
+    }
+
+    @Test
+    func addedEntriesQueueLastWithoutWorkoutEntry() throws {
+        let session = try store.startSession()
+        let exercise = Exercise(name: "Plank", kind: .bodyweight, categories: [])
+        store.context.insert(exercise)
+
+        session.add([(exercise, .bodyweight(reps: 1, sets: 1))])
+
+        #expect(session.pendingEntries.map(\.title) == ["Squat", "Bench Press", "Deadlift", "Plank"])
+        #expect(session.pendingEntries.last?.workoutEntry == nil)
+        #expect(session.currentEntry?.title == "Squat")
+        #expect(store.workout.entries.count == 3)
+    }
+
+    @Test
+    func addingToCompleteSessionMakesAddedEntryCurrent() throws {
+        let session = try store.startSession()
+        session.completeAndAdvance()
+        session.completeAndAdvance()
+        session.completeAndAdvance()
+        let exercise = Exercise(name: "Plank", kind: .bodyweight, categories: [])
+        store.context.insert(exercise)
+
+        session.add([(exercise, .bodyweight(reps: 1, sets: 1))])
+
+        #expect(session.currentEntry?.title == "Plank")
+        #expect(!session.isComplete)
+    }
+
+    @Test
+    func removingAddedCurrentEntryAdvances() throws {
+        let session = try store.startSession()
+        let exercise = Exercise(name: "Plank", kind: .bodyweight, categories: [])
+        store.context.insert(exercise)
+        session.add([(exercise, .bodyweight(reps: 1, sets: 1))])
+        let added = try #require(session.pendingEntries.last)
+        session.currentEntry = added
+
+        session.remove(added)
+
+        #expect(session.currentEntry?.title == "Squat")
+        #expect(session.entries.map(\.title).sorted() == ["Bench Press", "Deadlift", "Squat"])
+    }
+
+    @Test
+    func removingPlannedEntryDoesNothing() throws {
+        let session = try store.startSession()
+
+        session.remove(session.pendingEntries[0])
+
+        #expect(session.pendingEntries.count == 3)
+    }
 }
 
 struct SessionEntryStatusTests {

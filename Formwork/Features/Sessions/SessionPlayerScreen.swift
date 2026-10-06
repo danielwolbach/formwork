@@ -140,7 +140,7 @@ struct SessionPlayerScreen: View {
     private var controls: some View {
         VStack(spacing: .sections) {
             healthData
-            
+
             HStack(spacing: 24) {
                 Button(.backward) {
                     Haptics.impact(.soft)
@@ -152,7 +152,6 @@ struct SessionPlayerScreen: View {
                 .buttonStyle(.plain)
                 .buttonBorderShape(.circle)
                 .labelStyle(.fixedIconOnly)
-                
 
                 primaryAction
                     .fontWeight(.semibold)
@@ -185,7 +184,7 @@ struct SessionPlayerScreen: View {
                     .frame(maxWidth: .infinity)
 
                 Button(.queue) {
-                    // TODO:
+                    sheet = .sessionQueue(session)
                 }
                 .frame(maxWidth: .infinity)
             }
@@ -217,8 +216,12 @@ struct SessionPlayerScreen: View {
 
     @ViewBuilder
     private var secondaryAction: some View {
-        if let status = session.currentEntry?.status {
-            if status.isPending {
+        if let entry = session.currentEntry {
+            if entry.status.isPending, entry.isAddedWithoutWorkout {
+                Button(.remove) {
+                    navigator.remove()
+                }
+            } else if entry.status.isPending {
                 Button(.skip) {
                     navigator.skip()
                 }
@@ -229,8 +232,7 @@ struct SessionPlayerScreen: View {
             }
         }
     }
-    
-    @ViewBuilder
+
     private var healthData: some View {
         HStack(spacing: .groups) {
             if let heartRate = Health.shared.heartRate {
@@ -240,7 +242,7 @@ struct SessionPlayerScreen: View {
                     Image(systemName: Pictogram.heartRate.image)
                 }
             }
-            
+
             if let activeEnergy = Health.shared.activeEnergy {
                 Label {
                     Text(activeEnergy, format: .energy)

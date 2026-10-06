@@ -229,7 +229,7 @@ extension Health {
 }
 
 extension Health: HKWorkoutSessionDelegate {
-    public nonisolated func workoutSession(_ workoutSession: HKWorkoutSession, didChangeTo toState: HKWorkoutSessionState, from fromState: HKWorkoutSessionState, date: Date) {
+    public nonisolated func workoutSession(_: HKWorkoutSession, didChangeTo toState: HKWorkoutSessionState, from fromState: HKWorkoutSessionState, date _: Date) {
         Logger.health.info("Workout session changed from state \(fromState.rawValue) to \(toState.rawValue)")
     }
 
@@ -249,9 +249,9 @@ extension Health: HKWorkoutSessionDelegate {
 }
 
 extension Health: HKLiveWorkoutBuilderDelegate {
-    public nonisolated func workoutBuilderDidCollectEvent(_ workoutBuilder: HKLiveWorkoutBuilder) {}
+    public nonisolated func workoutBuilderDidCollectEvent(_: HKLiveWorkoutBuilder) {}
 
-    public nonisolated func workoutBuilder(_ workoutBuilder: HKLiveWorkoutBuilder, didCollectDataOf collectedTypes: Set<HKSampleType>) {
+    public nonisolated func workoutBuilder(_ workoutBuilder: HKLiveWorkoutBuilder, didCollectDataOf _: Set<HKSampleType>) {
         let id = ObjectIdentifier(workoutBuilder)
         let statistics = Self.statistics(of: workoutBuilder)
 

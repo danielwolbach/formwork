@@ -55,7 +55,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "Formwork logs completed sessions to your health data."
+            "value" : "Formwork saves your sessions as workouts and logs the body weight you enter."
           }
         }
       }

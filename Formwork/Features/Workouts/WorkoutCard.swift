@@ -66,7 +66,7 @@ struct WorkoutCard: View {
                     }
                     .disabled(!workout.isStartable)
 
-                    Button(.addExercise) {
+                    Button(.addExercises) {
                         sheet = .workoutAddEntries(workout)
                     }
                 }

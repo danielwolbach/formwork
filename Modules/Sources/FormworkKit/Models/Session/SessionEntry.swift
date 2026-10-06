@@ -41,6 +41,16 @@ public class SessionEntry {
         self.workoutEntry = entry
         self.creationDate = .now
     }
+
+    /// Added for one session only, so there's no workout entry to keep its target or history.
+    init(exercise: Exercise, target: ExerciseTarget, order: Int) {
+        self.identifier = UUID()
+        self.order = order
+        self.exercise = exercise
+        self.target = target
+        self.status = .pending
+        self.creationDate = .now
+    }
 }
 
 extension SessionEntry {
@@ -50,6 +60,11 @@ extension SessionEntry {
 
     public var title: String {
         exercise?.title ?? .init(localized: .exerciseDeletedTitle)
+    }
+
+    /// Added during the session rather than planned by the workout, so it's removed instead of skipped.
+    public var isAddedWithoutWorkout: Bool {
+        workoutEntry == nil
     }
 
     public var duration: TimeInterval? {

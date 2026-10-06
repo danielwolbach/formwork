@@ -31,7 +31,6 @@ struct SessionFigureCard: View {
         if comparison.current != nil {
             Button(action: action) {
                 ReadingCard(kind, reading: comparison.current, direction: comparison.direction)
-                
             }
             .buttonStyle(.plain)
         }

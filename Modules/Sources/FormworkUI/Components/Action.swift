@@ -77,7 +77,7 @@ extension Action {
     public static let discardChanges = Action(title: .actionDiscardChangesTitle, image: "trash", role: .destructive)
 
     public static let keepEditing = Action(title: .actionKeepEditingTitle, image: "pencil", role: .cancel)
-    
+
     public static let openSettings = Action(title: .actionOpenSettingsTitle, image: "gear")
 
     public static let connectToHealth = Action(title: .actionConnectToHealthTitle, image: "heart")
@@ -96,7 +96,7 @@ extension Action {
 
     public static let createWorkout = Action(title: .actionCreateWorkoutTitle, image: "plus")
 
-    public static let addExercise = Action(title: .actionAddExerciseTitle, image: "text.badge.plus")
+    public static let addExercises = Action(title: .actionAddExercisesTitle, image: "text.badge.plus")
 
     public static let startSession = Action(title: .actionStartSessionTitle, image: "play.fill")
 

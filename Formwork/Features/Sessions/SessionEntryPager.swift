@@ -38,6 +38,16 @@ final class SessionNavigator {
         navigate(by: 1) { session.skipAndAdvance() }
     }
 
+    func remove() {
+        guard let entry = session.currentEntry else {
+            return
+        }
+
+        // Without anything left to play, the player falls back to the last resolved entry, which sits before it.
+        let step = session.pendingEntries.contains { $0 !== entry } ? 1 : -1
+        navigate(by: step) { session.remove(entry) }
+    }
+
     func undo() {
         withAnimation(.snappy) {
             session.undoCurrentStatus()

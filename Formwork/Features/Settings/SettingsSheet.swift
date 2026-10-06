@@ -50,7 +50,7 @@ struct SettingsSheet: View {
 
     @State
     private var notificationStatus: UNAuthorizationStatus? = nil
-    
+
     @State
     private var healthStatus: Health.Status? = nil
 
@@ -65,7 +65,7 @@ struct SettingsSheet: View {
                 unitsSection
 
                 remindersSection
-                
+
                 healthSection
 
                 archiveSection
@@ -230,7 +230,7 @@ struct SettingsSheet: View {
             .animation(.snappy, value: isDailyReminderEnabled)
         }
     }
-    
+
     @ViewBuilder
     private var healthSection: some View {
         if let healthStatus, healthStatus != .unavailable {

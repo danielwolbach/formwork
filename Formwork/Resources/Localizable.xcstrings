@@ -831,6 +831,17 @@
         }
       }
     },
+    "field.pending.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pending"
+          }
+        }
+      }
+    },
     "field.previousWeeks.subtitle" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -904,6 +915,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "reps"
+          }
+        }
+      }
+    },
+    "field.resolved.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resolved"
           }
         }
       }
