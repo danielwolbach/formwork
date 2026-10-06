@@ -49,7 +49,10 @@ struct SettingsSheet: View {
     private var isUpcomingReminderEnabled: Bool = true
 
     @State
-    private var notificationStatus: UNAuthorizationStatus?
+    private var notificationStatus: UNAuthorizationStatus? = nil
+    
+    @State
+    private var healthStatus: Health.Status? = nil
 
     @State
     private var easterEggTaps = 0
@@ -62,6 +65,8 @@ struct SettingsSheet: View {
                 unitsSection
 
                 remindersSection
+                
+                healthSection
 
                 archiveSection
             }
@@ -81,6 +86,7 @@ struct SettingsSheet: View {
         // Rechecked on return, since notifications get turned on or off in the system's settings.
         .task(id: scenePhase) {
             notificationStatus = await UNUserNotificationCenter.current().notificationSettings().authorizationStatus
+            healthStatus = await Health.status()
         }
         .sheet(isPresented: Binding<Bool>(get: { easterEggTaps >= 5 }, set: { _ in easterEggTaps = 0 })) {
             EasterEgg()
@@ -195,6 +201,7 @@ struct SettingsSheet: View {
                             .buttonStyle(.cardProminent)
                         }
                         .frame(maxWidth: .infinity)
+                        .multilineTextAlignment(.center)
                     } else {
                         Toggle(isOn: $isDailyReminderEnabled) {
                             Text(.fieldDailyReminderTitle)
@@ -221,6 +228,47 @@ struct SettingsSheet: View {
                 }
             }
             .animation(.snappy, value: isDailyReminderEnabled)
+        }
+    }
+    
+    @ViewBuilder
+    private var healthSection: some View {
+        if let healthStatus, healthStatus != .unavailable {
+            SectionView(.fieldHealthTitle) {
+                GroupBox {
+                    if healthStatus == .disconnected {
+                        VStack {
+                            Text(.fieldHealthDisconnectedMesage)
+                                .font(.body)
+                                .foregroundStyle(.secondary)
+
+                            Button(.connectToHealth) {
+                                Task {
+                                    try? await Health.connect()
+                                    self.healthStatus = await Health.status()
+                                }
+                            }
+                            .labelStyle(.fixedTitleAndIcon)
+                            .buttonStyle(.cardProminent)
+                        }
+                        .frame(maxWidth: .infinity)
+                        .multilineTextAlignment(.center)
+                    } else {
+                        LabeledContent {
+                            if healthStatus == .connected {
+                                Label(.fieldConnectedTitle, systemImage: "checkmark")
+                                    .labelStyle(.chip(tint: .green))
+                            } else {
+                                Label(.fieldDeniedTitle, systemImage: "xmark")
+                                    .labelStyle(.chip(tint: .red))
+                            }
+                        } label: {
+                            Text(.fieldStateTitle)
+                        }
+                    }
+                }
+                .groupBoxStyle(.card)
+            }
         }
     }
 

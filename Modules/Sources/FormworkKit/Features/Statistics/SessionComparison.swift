@@ -24,7 +24,7 @@ public struct SessionComparison {
 
     public let current: Reading?
 
-    /// The usual value of the workout's sessions before; nil with fewer than three of them.
+    /// The usual value of the workout's sessions before; nil with fewer than three values among them.
     public let baseline: Reading?
 
     public let direction: Trend.Direction?
@@ -51,16 +51,17 @@ public struct SessionComparison {
 
         let history = History(.workout(workout), among: sessions, at: day, calendar: calendar)
         let window = history.days(History.recentDays, endingOn: before)
-        let usual = window.sessions.count < History.minimumSessions ? [] : window.sessions
-
         switch kind.definition.value {
         case let .measure(unit, tolerance, value):
-            let typical = usual.compactMap(value).median
+            let values = window.sessions.compactMap(value)
+            let typical = values.count < History.minimumValues ? nil : values.median
 
             self.baseline = typical.map { Reading($0, as: unit) }
             self.direction = Trend.Direction(from: typical, to: value(session), tolerance: tolerance)
         case let .clock(minute):
-            self.baseline = usual.compactMap { minute($0, calendar) }.clockMedoid.flatMap { Reading(minuteOfDay: $0, in: calendar) }
+            let minutes = window.sessions.compactMap { minute($0, calendar) }
+
+            self.baseline = minutes.count < History.minimumValues ? nil : minutes.clockMedoid.flatMap { Reading(minuteOfDay: $0, in: calendar) }
             self.direction = nil
         }
 

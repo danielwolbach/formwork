@@ -1014,7 +1014,7 @@ struct TrendTests {
             return nil
         }
 
-        return Trend(history(at: now), tolerance: tolerance, value: value)
+        return Trend(history(at: now), tolerance: tolerance, perSession: kind.isPerSession, value: value)
     }
 
     @Test
@@ -1029,6 +1029,22 @@ struct TrendTests {
         try store.session(30, month: 7)
 
         #expect(try #require(trend(of: .weeklySessions, at: calendar.date(16))).before != nil)
+    }
+
+    @Test
+    func trendNeedsThreeValuesInTheDaysBefore() throws {
+        // Three sessions before the recent days, but only two of them were recorded with a heart rate.
+        for (day, heartRate) in [(10, 120.0), (20, 130), (30, nil)] {
+            try store.session(day, month: 7).health = Session.HealthSummary(averageHeartRate: heartRate)
+        }
+
+        try store.session(7).health = Session.HealthSummary(averageHeartRate: 110)
+
+        #expect(try #require(trend(of: .typicalHeartRate, at: calendar.date(16))).before == nil)
+
+        try store.session(30, month: 6).health = Session.HealthSummary(averageHeartRate: 125)
+
+        #expect(try #require(trend(of: .typicalHeartRate, at: calendar.date(16))).before == 125)
     }
 
     @Test

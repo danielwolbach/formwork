@@ -59,6 +59,10 @@ extension Pictogram {
 
     public static let volume = Pictogram(image: "scalemass", tint: .indigo)
 
+    public static let heartRate = Pictogram(image: "heart", tint: .red)
+
+    public static let energy = Pictogram(image: "bolt", tint: .yellow)
+
     public static let strength = Pictogram(image: "chevron.up.2", tint: .brown)
 
     public static let progression = Pictogram(image: "chart.line.uptrend.xyaxis", tint: .blue)

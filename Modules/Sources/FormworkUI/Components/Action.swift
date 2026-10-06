@@ -77,6 +77,10 @@ extension Action {
     public static let discardChanges = Action(title: .actionDiscardChangesTitle, image: "trash", role: .destructive)
 
     public static let keepEditing = Action(title: .actionKeepEditingTitle, image: "pencil", role: .cancel)
+    
+    public static let openSettings = Action(title: .actionOpenSettingsTitle, image: "gear")
+
+    public static let connectToHealth = Action(title: .actionConnectToHealthTitle, image: "heart")
 
     // Exercise
 
@@ -115,8 +119,6 @@ extension Action {
     public static let queue = Action(title: .actionQueueTitle, image: "line.3.horizontal.decrease")
 
     public static let viewWorkout = Action(title: .actionViewWorkoutTitle, image: "clipboard")
-
-    public static let openSettings = Action(title: .actionOpenSettingsTitle, image: "gear")
 }
 
 extension Label where Title == Text, Icon == Image {

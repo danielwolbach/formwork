@@ -19,7 +19,7 @@ extension StatisticKind {
     public func summary(of history: History) -> StatisticSummary {
         switch definition.value {
         case let .metric(unit, tolerance, .recent, value):
-            let trend = Trend(history, tolerance: tolerance, value: value)
+            let trend = Trend(history, tolerance: tolerance, perSession: isPerSession, value: value)
             return .reading(trend.recent.map { Reading($0, as: unit, of: history.subject.exercise?.kind) }, direction: trend.direction)
         case let .metric(_, _, card, _), let .indicator(card, _):
             return .reading(reading(in: card.window(of: history)), direction: nil)

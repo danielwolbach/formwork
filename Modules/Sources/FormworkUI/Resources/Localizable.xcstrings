@@ -78,6 +78,17 @@
         }
       }
     },
+    "action.connectToHealth.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connect to Health"
+          }
+        }
+      }
+    },
     "action.continue.title" : {
       "extractionState" : "manual",
       "localizations" : {

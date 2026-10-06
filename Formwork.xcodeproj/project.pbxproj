@@ -419,6 +419,8 @@
 				INFOPLIST_KEY_CFBundleDisplayName = Formwork;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Formwork uses the camera to scan QR codes on gym equipment and link exercises to their instructions.";
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "Formwork shows your heart rate and burned calories during and after a session, and charts your body weight over time.";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "Formwork saves your sessions as workouts and logs the body weight you enter.";
 				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
@@ -465,6 +467,8 @@
 				INFOPLIST_KEY_CFBundleDisplayName = Formwork;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Formwork uses the camera to scan QR codes on gym equipment and link exercises to their instructions.";
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "Formwork shows your heart rate and burned calories during and after a session, and charts your body weight over time.";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "Formwork saves your sessions as workouts and logs the body weight you enter.";
 				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;

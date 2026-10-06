@@ -138,7 +138,9 @@ struct SessionPlayerScreen: View {
     }
 
     private var controls: some View {
-        VStack(spacing: 32) {
+        VStack(spacing: .sections) {
+            healthData
+            
             HStack(spacing: 24) {
                 Button(.backward) {
                     Haptics.impact(.soft)
@@ -150,6 +152,7 @@ struct SessionPlayerScreen: View {
                 .buttonStyle(.plain)
                 .buttonBorderShape(.circle)
                 .labelStyle(.fixedIconOnly)
+                
 
                 primaryAction
                     .fontWeight(.semibold)
@@ -225,6 +228,29 @@ struct SessionPlayerScreen: View {
                 }
             }
         }
+    }
+    
+    @ViewBuilder
+    private var healthData: some View {
+        HStack(spacing: .groups) {
+            if let heartRate = Health.shared.heartRate {
+                Label {
+                    Text(heartRate, format: .heartRate)
+                } icon: {
+                    Image(systemName: Pictogram.heartRate.image)
+                }
+            }
+            
+            if let activeEnergy = Health.shared.activeEnergy {
+                Label {
+                    Text(activeEnergy, format: .energy)
+                } icon: {
+                    Image(systemName: Pictogram.energy.image)
+                }
+            }
+        }
+        .foregroundStyle(.secondary)
+        .font(.footnote)
     }
 
     private func finish() {

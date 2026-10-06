@@ -26,6 +26,8 @@ public enum StatisticKind: String, Codable, CaseIterable, Sendable {
     case totalVolume
     case oneRepMax
     case typicalInterval
+    case typicalHeartRate
+    case typicalActiveEnergy
 
     /// Everything a statistic brings of its own. Cards and sheets follow from its `value`.
     public struct Definition {
@@ -212,6 +214,20 @@ extension StatisticKind {
                 pictogram: .frequency,
                 value: .metric(.days, tolerance: 0.1, card: .recent) { $0.typicalInterval }
             )
+        case .typicalHeartRate:
+            Definition(
+                title: .statisticTypicalHeartRateTitle,
+                info: .statisticTypicalHeartRateInfo,
+                pictogram: .heartRate,
+                value: .metric(.heartRate, tolerance: 0.05, card: .recent) { $0.typicalHeartRate }
+            )
+        case .typicalActiveEnergy:
+            Definition(
+                title: .statisticTypicalActiveEnergyTitle,
+                info: .statisticTypicalActiveEnergyInfo,
+                pictogram: .energy,
+                value: .metric(.energy, tolerance: 0.05, card: .recent) { $0.typicalActiveEnergy }
+            )
         }
     }
 
@@ -260,6 +276,8 @@ extension History.Subject {
                 .completions,
                 .typicalInterval,
                 .totalVolume,
+                .typicalHeartRate,
+                .typicalActiveEnergy,
                 .categories,
             ]
         case let .exercise(exercise):

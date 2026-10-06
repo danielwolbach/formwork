@@ -23,6 +23,8 @@ public struct ReadingFormat: FormatStyle {
         case let .distance(meters): distance(meters)
         case let .duration(seconds): DurationFormat().format(seconds)
         case let .days(days): IntervalFormat().format(days)
+        case let .heartRate(beatsPerMinute): HeartRateFormat().format(beatsPerMinute)
+        case let .energy(kilocalories): EnergyFormat().format(kilocalories)
         case let .reps(reps): String(localized: .exerciseTargetBodyweightRank(count: reps))
         case let .name(name): name
         case let .day(date, calendar): day(date, in: calendar)

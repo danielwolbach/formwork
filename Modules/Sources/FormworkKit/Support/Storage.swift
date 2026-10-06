@@ -25,6 +25,7 @@ public enum Storage {
         do {
             for session in try modelContext.fetch(FetchDescriptor<Session>()) {
                 modelContext.delete(session)
+                Health.delete(session)
             }
 
             for workout in try modelContext.fetch(FetchDescriptor<Workout>()) {

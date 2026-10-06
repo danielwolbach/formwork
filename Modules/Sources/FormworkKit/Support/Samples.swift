@@ -109,6 +109,8 @@ extension Samples {
         Samples.workouts.forEach(container.mainContext.insert)
         Samples.sessions.forEach(container.mainContext.insert)
 
+        _ = Samples.workouts[0].startSession()
+
         return container
     }()
 
@@ -118,6 +120,8 @@ extension Samples {
 
     fileprivate static func makeSessions(for workouts: [Workout], days: Int = historyDays, calendar: Calendar = .current) -> [Session] {
         var random = SeededGenerator(seed: 42)
+        // Separate, so adding health values leaves the generated history as it was.
+        var healthRandom = SeededGenerator(seed: 7)
         var sessions: [Session] = []
         var lastSessions: [Workout: Date] = [:]
         let today = calendar.startOfDay(for: .now)
@@ -146,6 +150,10 @@ extension Samples {
                 }
 
                 session.endDate = clock
+                session.health = Session.HealthSummary(
+                    averageHeartRate: Double.random(in: 118 ... 132, using: &healthRandom) - 8 * progress,
+                    activeEnergy: clock.timeIntervalSince(session.startDate) / 60 * Double.random(in: 5.5 ... 7.5, using: &healthRandom)
+                )
                 sessions.append(session)
             }
         }

@@ -15,6 +15,8 @@ public enum SessionFigureKind: CaseIterable, Sendable {
     case exerciseDuration
     case completedExercises
     case volume
+    case averageHeartRate
+    case activeEnergy
 
     /// Everything a session figure brings of its own. Its card, comparison and chart follow from its `value`.
     public struct Definition {
@@ -102,6 +104,20 @@ extension SessionFigureKind {
                 info: .sessionFigureVolumeInfo,
                 pictogram: .volume,
                 value: .measure(.weight, tolerance: 0.05) { $0.volume }
+            )
+        case .averageHeartRate:
+            Definition(
+                title: .sessionFigureAverageHeartRateTitle,
+                info: .sessionFigureAverageHeartRateInfo,
+                pictogram: .heartRate,
+                value: .measure(.heartRate, tolerance: 0.05) { $0.health?.averageHeartRate }
+            )
+        case .activeEnergy:
+            Definition(
+                title: .sessionFigureActiveEnergyTitle,
+                info: .sessionFigureActiveEnergyInfo,
+                pictogram: .energy,
+                value: .measure(.energy, tolerance: 0.05) { $0.health?.activeEnergy }
             )
         }
     }

@@ -26,16 +26,15 @@ struct SessionFigureCard: View {
     }
 
     var body: some View {
-        Button(action: action) {
-            label
-        }
-        .buttonStyle(.plain)
-    }
-
-    private var label: some View {
         let comparison = SessionComparison(kind, of: session, among: sessions)
 
-        return ReadingCard(kind, reading: comparison.current, direction: comparison.direction)
+        if comparison.current != nil {
+            Button(action: action) {
+                ReadingCard(kind, reading: comparison.current, direction: comparison.direction)
+                
+            }
+            .buttonStyle(.plain)
+        }
     }
 }
 

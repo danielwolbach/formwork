@@ -50,6 +50,22 @@ struct SessionComparisonTests {
     }
 
     @Test
+    func baselineNeedsThreeValues() throws {
+        for (day, heartRate) in [(1, 120.0), (2, 130), (3, nil)] {
+            try store.session(day).health = Session.HealthSummary(averageHeartRate: heartRate)
+        }
+
+        let session = try store.session(10)
+        session.health = Session.HealthSummary(averageHeartRate: 140)
+
+        #expect(compare(session, as: .averageHeartRate).baseline == nil)
+
+        try store.session(4).health = Session.HealthSummary(averageHeartRate: 125)
+
+        #expect(compare(session, as: .averageHeartRate).baseline == .heartRate(beatsPerMinute: 125))
+    }
+
+    @Test
     func baselineLeavesOutOtherWorkouts() throws {
         let legs = Workout(name: "Legs", pictogram: .workout, schedule: .inactive, entries: [])
         store.context.insert(legs)

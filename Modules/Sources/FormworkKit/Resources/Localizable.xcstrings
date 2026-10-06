@@ -256,6 +256,17 @@
         }
       }
     },
+    "format.heartRate.scheme" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$(bpm)lld bpm"
+          }
+        }
+      }
+    },
     "format.plusMore.scheme" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -340,6 +351,34 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Usually starts in %1$(minutes)lld minutes."
+          }
+        }
+      }
+    },
+    "sessionFigure.activeEnergy.info" : {
+      "extractionState" : "manual"
+    },
+    "sessionFigure.activeEnergy.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Active Energy"
+          }
+        }
+      }
+    },
+    "sessionFigure.averageHeartRate.info" : {
+      "extractionState" : "manual"
+    },
+    "sessionFigure.averageHeartRate.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Average Heart Rate"
           }
         }
       }
@@ -607,6 +646,20 @@
         }
       }
     },
+    "statistic.typicalActiveEnergy.info" : {
+      "extractionState" : "manual"
+    },
+    "statistic.typicalActiveEnergy.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Typical Active Energy"
+          }
+        }
+      }
+    },
     "statistic.typicalDuration.info" : {
       "extractionState" : "manual"
     },
@@ -617,6 +670,20 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Typical Duration"
+          }
+        }
+      }
+    },
+    "statistic.typicalHeartRate.info" : {
+      "extractionState" : "manual"
+    },
+    "statistic.typicalHeartRate.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Typical Heart Rate"
           }
         }
       }

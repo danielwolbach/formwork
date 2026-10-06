@@ -142,6 +142,10 @@ private struct AppContent: View {
         .task(id: activityState) {
             await SessionActivity.sync(activityState)
         }
+        // Not tied to activityState, which is nil without the full version.
+        .task(id: activeSessions.first?.persistentModelID) {
+            await Health.shared.sync(activeSessions.first)
+        }
         .onChange(of: scenePhase, initial: true) { _, phase in
             switch phase {
             case .active:

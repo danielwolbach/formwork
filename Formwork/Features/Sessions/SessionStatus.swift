@@ -27,19 +27,16 @@ struct SessionStatus: View {
 
             HStack {
                 Text(verbatim: "\(session.resolvedCount) / \(session.entries.count)")
-                    .font(.caption2)
-                    .monospacedDigit()
-                    .foregroundStyle(.secondary)
                     .contentTransition(.numericText(value: Double(session.resolvedCount)))
 
                 Divider()
                     .frame(height: 12)
 
                 elapsed
-                    .font(.caption2)
-                    .monospacedDigit()
-                    .foregroundStyle(.secondary)
             }
+            .font(.caption2)
+            .monospacedDigit()
+            .foregroundStyle(.secondary)
         }
     }
 

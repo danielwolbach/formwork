@@ -76,9 +76,9 @@ public struct StatisticDetails {
 
 extension StatisticKind {
     /// Whether each session has a value of its own; weekly sessions or completions only exist across several.
-    private var isPerSession: Bool {
+    var isPerSession: Bool {
         switch self {
-        case .typicalDuration, .completionRate, .totalVolume, .personalBest, .oneRepMax: true
+        case .typicalDuration, .completionRate, .totalVolume, .personalBest, .oneRepMax, .typicalHeartRate, .typicalActiveEnergy: true
         default: false
         }
     }
@@ -105,7 +105,7 @@ extension StatisticKind {
             )
         case .progression:
             let read = { Reading(rank: $0, of: history.subject.exercise?.kind) }
-            let trend = Trend(history, tolerance: 0.02) { $0.typicalBest?.rank }
+            let trend = Trend(history, tolerance: 0.02, perSession: false) { $0.typicalBest?.rank }
 
             return StatisticDetails(
                 values: [
@@ -123,7 +123,7 @@ extension StatisticKind {
         switch definition.value {
         case let .metric(unit, tolerance, _, value):
             let read = { Reading($0, as: unit, of: history.subject.exercise?.kind) }
-            let trend = Trend(history, tolerance: tolerance, value: value)
+            let trend = Trend(history, tolerance: tolerance, perSession: isPerSession, value: value)
             let comparison: StatisticDetails.Value = if tolerance == nil {
                 .recent(trend.recent.map(read))
             } else {

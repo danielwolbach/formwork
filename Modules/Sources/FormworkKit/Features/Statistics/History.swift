@@ -173,7 +173,7 @@ extension History {
         20
     }
 
-    static var minimumSessions: Int {
+    static var minimumValues: Int {
         3
     }
 

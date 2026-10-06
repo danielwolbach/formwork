@@ -76,4 +76,5 @@ private func updateActiveSession(_ change: (Session) -> Void) async {
     }
 
     await SessionActivity.sync(.init(session: session))
+    await Health.shared.sync(session)
 }

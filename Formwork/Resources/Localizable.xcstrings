@@ -589,6 +589,17 @@
         }
       }
     },
+    "field.connected.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connected"
+          }
+        }
+      }
+    },
     "field.dailyReminder.title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -611,6 +622,17 @@
         }
       }
     },
+    "field.denied.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Denied"
+          }
+        }
+      }
+    },
     "field.distanceUnit.title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -629,6 +651,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Exercises"
+          }
+        }
+      }
+    },
+    "field.health.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Health"
+          }
+        }
+      }
+    },
+    "field.healthDisconnected.mesage" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connect to Apple Health to sync your workouts and get more statistics insights."
           }
         }
       }
@@ -993,6 +1037,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Start Date"
+          }
+        }
+      }
+    },
+    "field.state.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "State"
           }
         }
       }

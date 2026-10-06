@@ -74,6 +74,7 @@ struct SessionRow: View {
 
     private func delete() {
         context.delete(session)
+        Health.delete(session)
     }
 }
 
