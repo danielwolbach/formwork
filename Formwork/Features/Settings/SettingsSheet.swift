@@ -263,7 +263,9 @@ struct SettingsSheet: View {
                                     .labelStyle(.chip(tint: .red))
                             }
                         } label: {
-                            Text(.fieldStateTitle)
+                            Text(.fieldStatusTitle)
+                            
+                            Text(.fieldHealthStatusMessage)
                         }
                     }
                 }

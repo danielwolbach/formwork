@@ -677,6 +677,17 @@
         }
       }
     },
+    "field.healthStatus.message" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You can manage access in the Health app."
+          }
+        }
+      }
+    },
     "field.history.title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1063,13 +1074,13 @@
         }
       }
     },
-    "field.state.title" : {
+    "field.status.title" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "State"
+            "value" : "Status"
           }
         }
       }

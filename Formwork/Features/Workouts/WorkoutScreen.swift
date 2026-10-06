@@ -154,8 +154,10 @@ struct WorkoutScreen: View {
                 delete()
             }
 
-            Button(.archive) {
-                archive()
+            if !workout.isArchived {
+                Button(.archive) {
+                    archive()
+                }
             }
 
             Button(.cancel) {

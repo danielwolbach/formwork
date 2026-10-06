@@ -8,7 +8,9 @@
 import SwiftUI
 
 public struct CardGroupBoxStyle: GroupBoxStyle {
-    public init() {}
+    public init() {
+        // Nothing to construct.
+    }
 
     public func makeBody(configuration: Configuration) -> some View {
         VStack(alignment: .leading, spacing: .items) {

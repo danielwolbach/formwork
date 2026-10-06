@@ -97,8 +97,10 @@ struct ExerciseScreen: View {
                 delete()
             }
 
-            Button(.archive) {
-                archive()
+            if !exercise.isArchived {
+                Button(.archive) {
+                    archive()
+                }
             }
 
             Button(.cancel) {
