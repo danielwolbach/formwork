@@ -24,6 +24,9 @@ struct SessionMiniPlayer: View {
     @State
     private var navigator: SessionNavigator
 
+    @State
+    private var completions = 0
+
     init(_ session: Session, namespace: Namespace.ID) {
         self.session = session
         self.namespace = namespace
@@ -59,6 +62,7 @@ struct SessionMiniPlayer: View {
                 .padding(.trailing)
         }
         .matchedTransitionSource(id: session.persistentModelID, in: namespace)
+        .sensoryFeedback(.impact(weight: .medium), trigger: completions)
         .onTapGesture {
             presentSession(session)
         }
@@ -84,7 +88,7 @@ struct SessionMiniPlayer: View {
         switch session.currentEntry?.status {
         case .pending:
             Button(.complete) {
-                Haptics.impact(.medium)
+                completions += 1
                 navigator.complete()
             }
             .fontWeight(.bold)

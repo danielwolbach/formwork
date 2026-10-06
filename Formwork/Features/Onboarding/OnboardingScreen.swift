@@ -39,6 +39,10 @@ struct OnboardingScreen: View {
         .scrollTargetBehavior(.viewAligned)
         .scrollPosition(id: $page)
         .scrollIndicators(.hidden)
+        .sensoryFeedback(.impact(flexibility: .soft), trigger: page) {
+            _, new in new != nil
+        }
+        .sensoryFeedback(.success, trigger: page == nil)
         .safeAreaBar(edge: .bottom) {
             controls
         }
@@ -85,10 +89,9 @@ struct OnboardingScreen: View {
     private func navigate(to rawValue: Int) {
         guard let next = Page(rawValue: rawValue) else {
             finish()
+            page = nil
             return
         }
-
-        Haptics.impact(.soft)
 
         withAnimation(.snappy) {
             page = next.rawValue
@@ -102,7 +105,6 @@ struct OnboardingScreen: View {
             // TODO: Log error
         }
 
-        Haptics.notification(.success)
         onboardingPending = false
         dismiss()
     }

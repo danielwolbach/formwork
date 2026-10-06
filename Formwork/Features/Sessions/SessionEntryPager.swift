@@ -99,6 +99,7 @@ struct SessionEntryPager<Page: View>: View {
             ))
         }
         .clipped()
+        .sensoryFeedback(.impact(flexibility: .soft), trigger: navigator.index)
     }
 
     private var slots: [Slot] {
@@ -139,17 +140,11 @@ struct SessionEntryPager<Page: View>: View {
 
         if predicted < -width / 2 {
             if session.nextEntry != nil {
-                Haptics.impact(.soft)
                 navigator.forward()
-            } else {
-                Haptics.impact(.rigid, intensity: 0.5)
             }
         } else if predicted > width / 2 {
             if session.previousEntry != nil {
-                Haptics.impact(.soft)
                 navigator.backward()
-            } else {
-                Haptics.impact(.rigid, intensity: 0.5)
             }
         }
 

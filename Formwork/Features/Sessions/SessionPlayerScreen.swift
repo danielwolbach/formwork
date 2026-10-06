@@ -27,6 +27,9 @@ struct SessionPlayerScreen: View {
     @State
     private var sheet: Sheet? = nil
 
+    @State
+    private var completions = 0
+
     init(_ session: Session) {
         self.session = session
         self._navigator = State(initialValue: SessionNavigator(session: session))
@@ -58,6 +61,8 @@ struct SessionPlayerScreen: View {
         .scrollDisabled(session.isActive)
         .animation(.smooth, value: session.isActive)
         .navigationBarTitleDisplayMode(.inline)
+        .sensoryFeedback(.impact(weight: .medium), trigger: completions)
+        .sensoryFeedback(.success, trigger: session.isActive) { _, new in !new }
         .safeAreaBar(edge: .bottom) {
             if session.isActive {
                 controls
@@ -143,7 +148,6 @@ struct SessionPlayerScreen: View {
 
             HStack(spacing: 24) {
                 Button(.backward) {
-                    Haptics.impact(.soft)
                     navigator.backward()
                 }
                 .font(.system(size: 24))
@@ -159,7 +163,6 @@ struct SessionPlayerScreen: View {
                     .labelStyle(.fixedTitleAndIcon)
 
                 Button(.forward) {
-                    Haptics.impact(.soft)
                     navigator.forward()
                 }
                 .font(.system(size: 24))
@@ -204,7 +207,7 @@ struct SessionPlayerScreen: View {
                 }
             } else if let status = session.currentEntry?.status {
                 Button(.complete) {
-                    Haptics.impact(.medium)
+                    completions += 1
                     navigator.complete()
                 }
                 .tint(.green)
@@ -256,8 +259,6 @@ struct SessionPlayerScreen: View {
     }
 
     private func finish() {
-        Haptics.notification(.success)
-
         withAnimation(.smooth) {
             session.finish()
         }

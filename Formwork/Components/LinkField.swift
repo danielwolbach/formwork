@@ -15,6 +15,9 @@ struct LinkField: View {
 
     @Binding
     private var text: String
+    
+    @State
+    private var scanned: URL?
 
     @State
     private var showScanner: Bool = false
@@ -39,11 +42,14 @@ struct LinkField: View {
                 .labelStyle(.fixedIconOnly)
             }
         }
+        .sensoryFeedback(.success, trigger: scanned) { _, new in
+            new != nil
+        }
         .sheet(isPresented: $showScanner) {
             NavigationRoot {
-                QRCodeScanner { scanned in
-                    Haptics.notification(.success)
-                    text = scanned.absoluteString
+                QRCodeScanner { url in
+                    scanned = url
+                    text = url.absoluteString
                     showScanner = false
                 }
                 .aspectRatio(1, contentMode: .fit)
