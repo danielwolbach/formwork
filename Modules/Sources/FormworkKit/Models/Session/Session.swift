@@ -25,7 +25,7 @@ public class Session {
     public var health: HealthSummary?
 
     @Relationship(deleteRule: .cascade, inverse: \SessionEntry.session)
-    public var entries: [SessionEntry] = []
+    public var entries: [SessionEntry]? = []
 
     var timeZoneIdentifier: String = TimeZone.current.identifier
 
@@ -35,8 +35,8 @@ public class Session {
         self.workout = workout
         self.startDate = .now
         // Archived exercises are inactive, so their entries don't play.
-        self.entries = workout.entries.filter { !$0.isArchived }.map { .init(entry: $0) }
-        self.currentEntryIdentifier = entries.min { $0.order < $1.order }?.identifier
+        self.entries = (workout.entries ?? []).filter { !$0.isArchived }.map { .init(entry: $0) }
+        self.currentEntryIdentifier = self.entries?.min { $0.order < $1.order }?.identifier
         self.timeZoneIdentifier = TimeZone.current.identifier
     }
 }
@@ -75,13 +75,13 @@ extension Session {
     }
 
     public var pendingEntries: [SessionEntry] {
-        entries
+        (entries ?? [])
             .filter(\.status.isPending)
             .sorted()
     }
 
     public var resolvedEntries: [SessionEntry] {
-        entries
+        (entries ?? [])
             .filter { !$0.status.isPending }
             .sorted { lhs, rhs in
                 let left = lhs.status.resolvedDate ?? .distantPast
@@ -95,7 +95,7 @@ extension Session {
     }
 
     public var resolvedCount: Int {
-        entries.count { !$0.status.isPending }
+        (entries ?? []).count { !$0.status.isPending }
     }
 
     public var isActive: Bool {
@@ -108,7 +108,7 @@ extension Session {
 
     public var currentEntry: SessionEntry? {
         get {
-            entries.first { $0.identifier == currentEntryIdentifier }
+            entries?.first { $0.identifier == currentEntryIdentifier }
                 ?? pendingEntries.first
                 ?? orderedEntries.first
         }
@@ -147,7 +147,7 @@ extension Session {
             return
         }
 
-        for entry in entries {
+        for entry in entries ?? [] {
             if entry.status.isPending {
                 entry.status = .skipped(date: .now)
             }
@@ -226,7 +226,7 @@ extension Session {
             currentEntry = pendingEntries.first { $0 !== entry } ?? resolvedEntries.last
         }
 
-        entries.removeAll { $0 === entry }
+        entries?.removeAll { $0 === entry }
         modelContext?.delete(entry)
     }
 
@@ -240,7 +240,7 @@ extension Session {
             SessionEntry(exercise: item.exercise, target: item.target, order: firstOrder + offset)
         }
 
-        entries.append(contentsOf: added)
+        entries = (entries ?? []) + added
 
         if currentEntry?.status.isPending != true {
             currentEntry = added.first

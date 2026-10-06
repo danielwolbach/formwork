@@ -139,7 +139,7 @@ struct ExerciseAddToWorkoutForm: View {
     }
 
     private func lastActivity(of workout: Workout) -> Date {
-        workout.sessions.map(\.startDate).reduce(workout.creationDate, max)
+        (workout.sessions ?? []).map(\.startDate).reduce(workout.creationDate, max)
     }
 
     private func commit(to workout: Workout?) {

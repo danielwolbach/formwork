@@ -26,7 +26,7 @@ struct SessionStatus: View {
             }
 
             HStack {
-                Text(verbatim: "\(session.resolvedCount) / \(session.entries.count)")
+                Text(verbatim: "\(session.resolvedCount) / \((session.entries ?? []).count)")
                     .contentTransition(.numericText(value: Double(session.resolvedCount)))
 
                 Divider()

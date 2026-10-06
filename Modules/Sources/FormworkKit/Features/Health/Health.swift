@@ -224,7 +224,7 @@ extension Health {
 
     private func isFinished(_ session: Session) -> Bool {
         !session.isDeleted && session.modelContext != nil && session.endDate != nil
-            && session.entries.contains(where: \.status.isCompleted)
+            && (session.entries ?? []).contains(where: \.status.isCompleted)
     }
 }
 

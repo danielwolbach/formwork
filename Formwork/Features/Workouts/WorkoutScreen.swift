@@ -82,7 +82,7 @@ struct WorkoutScreen: View {
                 }
                 .controlSize(.large)
 
-                if workout.entries.isEmpty {
+                if (workout.entries ?? []).isEmpty {
                     ContentUnavailableView {
                         Label(.emptyWorkoutEntriesTitle, systemImage: "dumbbell")
                     } description: {
@@ -96,12 +96,12 @@ struct WorkoutScreen: View {
                     }
                 } else {
                     LazyVStack(spacing: 0) {
-                        ForEach(workout.entries.sorted()) { entry in
+                        ForEach((workout.entries ?? []).sorted()) { entry in
                             WorkoutEntryRow(entry)
                         }
                     }
                     .swipeActionsContainer()
-                    .animation(.snappy, value: workout.entries.count)
+                    .animation(.snappy, value: (workout.entries ?? []).count)
                     .edgeToEdge()
                 }
             }

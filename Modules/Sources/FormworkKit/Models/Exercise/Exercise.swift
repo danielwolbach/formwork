@@ -29,10 +29,10 @@ public class Exercise {
     public var notes: String = ""
 
     @Relationship(deleteRule: .cascade, inverse: \WorkoutEntry.exercise)
-    public var workoutEntries: [WorkoutEntry] = []
+    public var workoutEntries: [WorkoutEntry]? = []
 
     @Relationship(deleteRule: .nullify, inverse: \SessionEntry.exercise)
-    public var sessionEntries: [SessionEntry] = []
+    public var sessionEntries: [SessionEntry]? = []
 
     public var isArchived: Bool = false
 
@@ -58,7 +58,7 @@ extension Exercise {
     }
 
     public var currentHighestTarget: ExerciseTarget? {
-        workoutEntries
+        (workoutEntries ?? [])
             .filter { $0.target.exerciseKind == kind }
             .max { $0.target.rank < $1.target.rank }?
             .target

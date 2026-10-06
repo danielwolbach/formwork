@@ -23,8 +23,8 @@ struct WorkoutTests {
 
         store.workout.append(exercise: exercise, target: .duration(seconds: 1 * 60))
 
-        #expect(store.workout.entries.sorted().map(\.title) == ["Squat", "Bench Press", "Deadlift", "Plank"])
-        #expect(store.workout.entries.sorted().last?.order == 3)
+        #expect((store.workout.entries ?? []).sorted().map(\.title) == ["Squat", "Bench Press", "Deadlift", "Plank"])
+        #expect((store.workout.entries ?? []).sorted().last?.order == 3)
     }
 
     @Test
@@ -72,7 +72,7 @@ struct WorkoutTests {
 
     @Test
     func isStartableNeedsAnExerciseThatIsNotArchived() {
-        let exercises = store.workout.entries.compactMap(\.exercise)
+        let exercises = (store.workout.entries ?? []).compactMap(\.exercise)
 
         for exercise in exercises.dropLast() {
             exercise.isArchived = true
@@ -89,10 +89,10 @@ struct WorkoutTests {
     func appendContinuesAfterHighestOrder() {
         let exercise = Exercise(name: "Plank", kind: .duration, categories: [.core])
         store.context.insert(exercise)
-        store.workout.entries.sorted().last?.order = 7
+        (store.workout.entries ?? []).sorted().last?.order = 7
 
         store.workout.append(exercise: exercise, target: .duration(seconds: 1 * 60))
 
-        #expect(store.workout.entries.sorted().last?.order == 8)
+        #expect((store.workout.entries ?? []).sorted().last?.order == 8)
     }
 }

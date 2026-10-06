@@ -42,7 +42,7 @@ struct WorkoutForm: View {
             name: workout?.name ?? "",
             pictogram: workout?.pictogram ?? .workout,
             schedule: workout?.schedule ?? .weekly(),
-            entries: workout?.entries.sorted() ?? []
+            entries: (workout?.entries ?? []).sorted()
         )
 
         self.workout = workout
@@ -172,7 +172,7 @@ struct WorkoutForm: View {
 
         if let workout {
             // Taken out of the workout, an entry would linger without one.
-            for removed in workout.entries where !draft.entries.contains(removed) {
+            for removed in workout.entries ?? [] where !draft.entries.contains(removed) {
                 context.delete(removed)
             }
 

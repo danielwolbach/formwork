@@ -57,7 +57,7 @@ struct WorkoutAddEntriesForm: View {
 
     init(workout: Workout) {
         self.add = { selection in
-            workout.entries.append(contentsOf: Self.workoutEntries(from: selection, after: workout.entries))
+            workout.entries = (workout.entries ?? []) + Self.workoutEntries(from: selection, after: workout.entries ?? [])
         }
     }
 

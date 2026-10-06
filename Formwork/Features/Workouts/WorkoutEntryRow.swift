@@ -144,7 +144,7 @@ struct WorkoutEntryRow: View {
 
 #Preview {
     NavigationRoot {
-        WorkoutEntryRow(Samples.workouts.first!.entries.first!)
+        WorkoutEntryRow((Samples.workouts.first!.entries ?? []).first!)
     }
     .sampleData()
 }

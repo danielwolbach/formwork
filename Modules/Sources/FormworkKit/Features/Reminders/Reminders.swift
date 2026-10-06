@@ -88,7 +88,7 @@ extension [Workout] {
         let workouts = filter { !$0.isArchived }
         let lastSessions = workouts.reduce(into: [:]) { $0[$1] = $1.lastSession(in: calendar) }
         let startMinutes = workouts.reduce(into: [Workout: Int]()) { result, workout in
-            if workout.sessions.count(where: { !$0.isActive }) >= ReminderOptions.minimumSessions {
+            if (workout.sessions ?? []).count(where: { !$0.isActive }) >= ReminderOptions.minimumSessions {
                 result[workout] = workout.typicalStartMinute(in: calendar)
             }
         }

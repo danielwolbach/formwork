@@ -79,9 +79,9 @@ struct StarterCatalogTests {
         #expect(workouts.count == StarterCatalog.workouts(in: .metric).count)
 
         for workout in workouts {
-            let linked = workout.entries.sorted().compactMap(\.exercise)
+            let linked = (workout.entries ?? []).sorted().compactMap(\.exercise)
 
-            #expect(linked.count == workout.entries.count)
+            #expect(linked.count == (workout.entries ?? []).count)
             #expect(linked.allSatisfy { exercise in exercises.contains { $0 === exercise } })
         }
     }

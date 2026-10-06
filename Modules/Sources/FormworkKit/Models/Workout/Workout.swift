@@ -17,10 +17,10 @@ public class Workout {
     public var schedule: Schedule = Schedule.weekly()
 
     @Relationship(deleteRule: .cascade, inverse: \WorkoutEntry.workout)
-    public var entries: [WorkoutEntry] = []
+    public var entries: [WorkoutEntry]? = []
 
     @Relationship(deleteRule: .nullify, inverse: \Session.workout)
-    public var sessions: [Session] = []
+    public var sessions: [Session]? = []
 
     public var isArchived: Bool = false
 
@@ -45,11 +45,11 @@ extension Workout {
     }
 
     public var isStartable: Bool {
-        !isArchived && entries.contains { !$0.isArchived }
+        !isArchived && (entries ?? []).contains { !$0.isArchived }
     }
 
     public var exerciseCategories: [Exercise.Category] {
-        let counts = entries
+        let counts = (entries ?? [])
             .filter { !$0.isArchived }
             .compactMap(\.exercise)
             .flatMap(\.categories)
@@ -69,7 +69,7 @@ extension Workout {
     }
 
     public func lastSession(before limit: Date? = nil, in calendar: Calendar = .current) -> Date? {
-        sessions
+        (sessions ?? [])
             .filter { !$0.isActive }
             .map { $0.localStartDate(in: calendar) }
             .filter { $0 < limit ?? .distantFuture }
@@ -78,8 +78,8 @@ extension Workout {
 
     public func append(exercise: Exercise, target: ExerciseTarget) {
         let entry = WorkoutEntry(exercise: exercise, target: target)
-        entry.order = (entries.map(\.order).max() ?? -1) + 1
-        entries.append(entry)
+        entry.order = ((entries ?? []).map(\.order).max() ?? -1) + 1
+        entries = (entries ?? []) + [entry]
     }
 
     public func startSession() -> Session? {
@@ -113,7 +113,7 @@ extension Workout {
     }
 
     func typicalStartMinute(in calendar: Calendar) -> Int? {
-        sessions
+        (sessions ?? [])
             .filter { !$0.isActive }
             .compactMap { $0.startMinute(in: calendar) }
             .clockMedoid

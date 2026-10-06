@@ -21,7 +21,7 @@ struct StatisticKindTests {
     @Test
     func weightStatisticsNeedAWeightExercise() throws {
         let store = try TestStore()
-        let entry = try #require(store.workout.entries.first)
+        let entry = try #require((store.workout.entries ?? []).first)
         let exercise = try #require(entry.exercise)
 
         #expect(!History.Subject.exercise(exercise).statistics.contains(.oneRepMax))
@@ -36,7 +36,7 @@ struct StatisticKindTests {
     @Test
     func subjectsListEachStatisticOnce() throws {
         let store = try TestStore()
-        let entry = try #require(store.workout.entries.first)
+        let entry = try #require((store.workout.entries ?? []).first)
         let exercise = try #require(entry.exercise)
         exercise.kind = .weight
 
@@ -50,7 +50,7 @@ struct StatisticKindTests {
     @Test
     func everyKindBelongsToASubject() throws {
         let store = try TestStore()
-        let exercise = try #require(store.workout.entries.first?.exercise)
+        let exercise = try #require((store.workout.entries ?? []).first?.exercise)
         exercise.kind = .weight
 
         let subjects: [History.Subject] = [.all, .workout(store.workout), .exercise(exercise)]
@@ -63,7 +63,7 @@ struct StatisticKindTests {
         // Charts and the week streak are special-cased in switches that trap on a kind they don't know.
         let store = try TestStore()
         let calendar = Calendar.berlin()
-        let entry = try #require(store.workout.entries.sorted().first)
+        let entry = try #require((store.workout.entries ?? []).sorted().first)
         let exercise = try #require(entry.exercise)
         exercise.kind = .weight
 

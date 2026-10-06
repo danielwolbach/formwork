@@ -54,7 +54,7 @@ public struct History: Hashable {
             let sessions = history.sessions.filter { candidate in
                 candidate.falls(into: interval, in: history.calendar) && (session.map { $0 === candidate } ?? true)
             }
-            let entries = sessions.flatMap(\.entries).filter { entry in
+            let entries = sessions.flatMap { $0.entries ?? [] }.filter { entry in
                 switch history.subject {
                 case .all, .workout: true
                 case let .exercise(exercise): entry.exercise == exercise
@@ -140,8 +140,8 @@ extension History.Subject {
         switch self {
         case .all: true
         case let .workout(workout): session.workout == workout
-        case let .exercise(exercise): session.entries.contains { $0.exercise == exercise }
-        case let .entry(slot): session.entries.contains { $0.workoutEntry == slot }
+        case let .exercise(exercise): (session.entries ?? []).contains { $0.exercise == exercise }
+        case let .entry(slot): (session.entries ?? []).contains { $0.workoutEntry == slot }
         }
     }
 }

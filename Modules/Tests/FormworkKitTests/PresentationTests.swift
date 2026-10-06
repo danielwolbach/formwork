@@ -27,7 +27,7 @@ struct PresentationTests {
     @Test
     func entryWithoutExerciseHasFallbackTitle() throws {
         let store = try TestStore()
-        let entry = try #require(store.workout.entries.first)
+        let entry = try #require((store.workout.entries ?? []).first)
 
         entry.exercise = nil
 

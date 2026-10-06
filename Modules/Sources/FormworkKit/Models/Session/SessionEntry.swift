@@ -74,7 +74,7 @@ extension SessionEntry {
 
         var previous = session.startDate
 
-        for other in session.entries {
+        for other in session.entries ?? [] {
             if let other = other.status.resolvedDate, other < resolved, other > previous {
                 previous = other
             }

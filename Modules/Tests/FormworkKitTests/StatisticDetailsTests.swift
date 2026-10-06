@@ -100,7 +100,7 @@ struct StatisticDetailsTests {
     @Test
     func progressionComparesTypicalBestsAndShowsThePersonalBestOverall() throws {
         try store.session(7) { $0.completeAndAdvance() }
-        let squat = try #require(store.workout.entries.sorted().first?.exercise)
+        let squat = try #require((store.workout.entries ?? []).sorted().first?.exercise)
 
         let details = try StatisticKind.progression.details(of: history(.exercise(squat)))
         let chart = try #require(details.yearly?.chart(2026))

@@ -143,7 +143,7 @@ extension Samples {
                 session.startDate = clock
                 lastSessions[workout] = clock
 
-                for entry in session.entries.sorted() {
+                for entry in (session.entries ?? []).sorted() {
                     clock += TimeInterval.random(in: 180 ... 480, using: &random)
                     entry.target = entry.target.scaled(by: 0.85 + 0.15 * progress)
                     entry.status = Double.random(in: 0 ..< 1, using: &random) < 0.1 ? .skipped(date: clock) : .completed(date: clock)

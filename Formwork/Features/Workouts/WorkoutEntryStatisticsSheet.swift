@@ -88,13 +88,13 @@ struct WorkoutEntryStatisticsSheet: View {
     }
 
     private var isDoneElsewhere: Bool {
-        entry.exercise?.sessionEntries.contains { $0.workoutEntry !== entry && $0.session.map { !$0.isActive } ?? false } ?? false
+        (entry.exercise?.sessionEntries ?? []).contains { $0.workoutEntry !== entry && $0.session.map { !$0.isActive } ?? false }
     }
 }
 
 #Preview {
     NavigationRoot {
-        WorkoutEntryStatisticsSheet(Samples.workouts[0].entries.sorted()[1])
+        WorkoutEntryStatisticsSheet((Samples.workouts[0].entries ?? []).sorted()[1])
     }
     .sampleData()
 }

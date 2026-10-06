@@ -262,7 +262,7 @@ struct HistoryTests {
 
     @Test
     func subjectsKeepTheirOwnSessionsOfThePool() throws {
-        let slot = try #require(store.workout.entries.sorted().first)
+        let slot = try #require((store.workout.entries ?? []).sorted().first)
         let squat = try #require(slot.exercise)
         let legs = Workout(name: "Legs", pictogram: .workout, schedule: .inactive, entries: [])
         store.context.insert(legs)
@@ -288,7 +288,7 @@ struct HistoryTests {
         // The squat is completed on the seventh and only skipped on the eighth.
         let completed = try store.session(7) { $0.completeAndAdvance() }
         try store.session(8) { $0.skipAndAdvance() }
-        let squat = try #require(store.workout.entries.sorted().first?.exercise)
+        let squat = try #require((store.workout.entries ?? []).sorted().first?.exercise)
 
         func completions(_ subject: History.Subject) throws -> [ObjectIdentifier] {
             try History(subject, among: store.sessions, at: calendar.date(16), calendar: calendar).allTime.completions.map { ObjectIdentifier($0.session) }
@@ -642,7 +642,7 @@ struct OverallStatisticsTests {
     @Test
     func exercisesLevelOnCountGoToTheOneCompletedLast() throws {
         let session = try store.session(7)
-        let entries = session.entries.sorted()
+        let entries = (session.entries ?? []).sorted()
         entries[1].status = .completed(date: session.startDate.addingTimeInterval(60))
         entries[0].status = .completed(date: session.startDate.addingTimeInterval(120))
 
@@ -908,7 +908,7 @@ struct ExerciseStatisticsTests {
 
     init() throws {
         self.store = try TestStore()
-        self.squat = try #require(store.workout.entries.sorted().first?.exercise)
+        self.squat = try #require((store.workout.entries ?? []).sorted().first?.exercise)
     }
 
     func history() throws -> History {
@@ -954,7 +954,7 @@ struct ExerciseStatisticsTests {
     func lastCompletedIsTheLastTimeItWasCompletedAndNotSkipped() throws {
         let completed = try store.session(7) { $0.completeAndAdvance() }
         try store.session(8) { $0.skipAndAdvance() }
-        let entry = try #require(completed.entries.sorted().first)
+        let entry = try #require((completed.entries ?? []).sorted().first)
 
         #expect(try history().allTime.lastCompletion?.date == entry.status.resolvedDate)
     }
@@ -1111,7 +1111,7 @@ struct SessionFigureTests {
 
     /// Completes the session's exercises in order, at the given offsets in minutes from when it started.
     func resolve(_ session: Session, after offsets: [Int]) {
-        for (entry, offset) in zip(session.entries.sorted(), offsets) {
+        for (entry, offset) in zip((session.entries ?? []).sorted(), offsets) {
             entry.status = .completed(date: session.startDate.addingTimeInterval(TimeInterval(offset * 60)))
         }
     }
@@ -1133,7 +1133,7 @@ struct SessionFigureTests {
 
     /// Gives the session's exercises weight targets, in workout order, and completes them.
     func load(_ session: Session, kilograms: [Double], sets: Int = 3, reps: Int = 10) {
-        for (entry, weight) in zip(session.entries.sorted(), kilograms) {
+        for (entry, weight) in zip((session.entries ?? []).sorted(), kilograms) {
             entry.target = .weight(kilograms: weight, reps: reps, sets: sets)
             entry.status = .completed(date: session.startDate)
         }
@@ -1163,7 +1163,7 @@ struct SessionFigureTests {
     func totalVolumeLeavesOutSkippedExercises() throws {
         let session = try store.session(7)
         load(session, kilograms: [100, 50], sets: 1, reps: 1)
-        let skipped = try #require(session.entries.sorted().last)
+        let skipped = try #require((session.entries ?? []).sorted().last)
         skipped.target = .weight(kilograms: 999, reps: 1, sets: 1)
         skipped.status = .skipped(date: session.startDate)
 
@@ -1187,7 +1187,7 @@ struct SessionFigureTests {
     @Test
     func totalVolumeReadsAsAWeight() throws {
         let session = try store.session(7)
-        let entry = try #require(session.entries.sorted().first)
+        let entry = try #require((session.entries ?? []).sorted().first)
         entry.target = .weight(kilograms: 100, reps: 5, sets: 2)
         entry.status = .completed(date: session.startDate)
 
@@ -1230,7 +1230,7 @@ struct SessionFigureTests {
     func exerciseDurationRunsFromTheLastResolutionAndNotTheEntryBeforeIt() throws {
         let session = try store.session(7, minutes: 90)
         resolve(session, after: [60, 10, 20])
-        let durations: [TimeInterval] = session.entries.sorted().compactMap(\.duration)
+        let durations: [TimeInterval] = (session.entries ?? []).sorted().compactMap(\.duration)
 
         // In workout order: the first was resolved last, so it took the 40 minutes since the one before it.
         #expect(durations == [2400, 600, 600])
@@ -1282,7 +1282,7 @@ struct SessionFigureTests {
     func shortExercisesAreReadInSecondsAndNotAsNoTimeAtAll() throws {
         let session = try store.session(7, minutes: 90)
         resolve(session, after: [0, 0, 0])
-        let quick = try #require(session.entries.sorted().first)
+        let quick = try #require((session.entries ?? []).sorted().first)
         quick.status = .completed(date: session.startDate.addingTimeInterval(40))
 
         #expect(quick.duration == 40)
@@ -1314,14 +1314,14 @@ struct SessionEntryComparisonTests {
 
     init() throws {
         self.store = try TestStore()
-        self.squat = try #require(store.workout.entries.sorted().first?.exercise)
+        self.squat = try #require((store.workout.entries ?? []).sorted().first?.exercise)
     }
 
     /// The squat entry of a session completed on the given day, at the given number of reps.
     @discardableResult
     func squatSession(_ day: Int, reps: Int) throws -> SessionEntry {
         let session = try store.session(day)
-        let entry = try #require(session.entries.sorted().first)
+        let entry = try #require((session.entries ?? []).sorted().first)
         entry.target = .bodyweight(reps: reps, sets: 3)
         entry.status = .completed(date: session.startDate)
         return entry
@@ -1361,7 +1361,7 @@ struct SessionEntryComparisonTests {
     @Test
     func skippedExerciseIsNeverAPersonalBest() throws {
         let session = try store.session(7)
-        let entry = try #require(session.entries.sorted().first)
+        let entry = try #require((session.entries ?? []).sorted().first)
         entry.target = .bodyweight(reps: 20, sets: 3)
         entry.status = .skipped(date: session.startDate)
 
@@ -1390,7 +1390,7 @@ struct SessionEntryComparisonTests {
         let running = try store.startSession()
         running.completeAndAdvance()
 
-        #expect(try #require(running.entries.sorted().first).isBest == false)
+        #expect(try #require((running.entries ?? []).sorted().first).isBest == false)
     }
 
     @Test
@@ -1434,12 +1434,12 @@ struct SessionEntryComparisonTests {
         let later = try store.session(8)
 
         for (session, kilograms) in [(earlier, 100.0), (later, 102.5)] {
-            let entry = try #require(session.entries.sorted().first)
+            let entry = try #require((session.entries ?? []).sorted().first)
             entry.target = .weight(kilograms: kilograms, reps: 5, sets: 3)
             entry.status = .completed(date: session.startDate)
         }
 
-        let entry = try #require(later.entries.sorted().first)
+        let entry = try #require((later.entries ?? []).sorted().first)
         let previous = try #require(entry.previous)
 
         #expect(Reading(rank: entry.target.rank - previous.rank, of: entry.target.exerciseKind) == .weight(kilograms: 2.5))
@@ -1468,7 +1468,7 @@ struct SessionEntryScopeTests {
 
     init() throws {
         self.store = try TestStore()
-        self.squat = try #require(store.workout.entries.sorted().first?.exercise)
+        self.squat = try #require((store.workout.entries ?? []).sorted().first?.exercise)
         squat.kind = .weight
     }
 
@@ -1476,7 +1476,7 @@ struct SessionEntryScopeTests {
     @discardableResult
     func lift(_ slot: WorkoutEntry, of workout: Workout, day: Int, kilograms: Double) throws -> SessionEntry {
         let session = try #require(workout.startSession())
-        let entry = try #require(session.entries.first { $0.workoutEntry === slot })
+        let entry = try #require((session.entries ?? []).first { $0.workoutEntry === slot })
         entry.target = .weight(kilograms: kilograms, reps: 5, sets: 3)
         entry.status = try .completed(date: Calendar.berlin().date(day))
         session.startDate = try Calendar.berlin().date(day)
@@ -1491,8 +1491,8 @@ struct SessionEntryScopeTests {
         store.context.insert(warmups)
         warmups.append(exercise: squat, target: .weight(kilograms: 40, reps: 5, sets: 1))
 
-        let warmupSlot = try #require(warmups.entries.sorted().first)
-        let mainSlot = try #require(store.workout.entries.sorted().first)
+        let warmupSlot = try #require((warmups.entries ?? []).sorted().first)
+        let mainSlot = try #require((store.workout.entries ?? []).sorted().first)
 
         try lift(mainSlot, of: store.workout, day: 7, kilograms: 100)
         try lift(warmupSlot, of: warmups, day: 8, kilograms: 40)
@@ -1507,7 +1507,7 @@ struct SessionEntryScopeTests {
         // The same exercise twice in one workout: a light opener and a heavy set.
         store.workout.append(exercise: squat, target: .weight(kilograms: 60, reps: 5, sets: 1))
 
-        let slots = store.workout.entries.filter { $0.exercise === squat }.sorted()
+        let slots = (store.workout.entries ?? []).filter { $0.exercise === squat }.sorted()
         let heavy = try #require(slots.first)
         let light = try #require(slots.last)
 
@@ -1526,8 +1526,8 @@ struct SessionEntryScopeTests {
         store.context.insert(warmups)
         warmups.append(exercise: squat, target: .weight(kilograms: 40, reps: 5, sets: 1))
 
-        let warmupSlot = try #require(warmups.entries.sorted().first)
-        let mainSlot = try #require(store.workout.entries.sorted().first)
+        let warmupSlot = try #require((warmups.entries ?? []).sorted().first)
+        let mainSlot = try #require((store.workout.entries ?? []).sorted().first)
 
         try lift(mainSlot, of: store.workout, day: 7, kilograms: 100)
         let first = try lift(warmupSlot, of: warmups, day: 8, kilograms: 40)
@@ -1560,7 +1560,7 @@ struct ExerciseCurrentHighestTargetTests {
 
     init() throws {
         self.store = try TestStore()
-        self.squat = try #require(store.workout.entries.sorted().first?.exercise)
+        self.squat = try #require((store.workout.entries ?? []).sorted().first?.exercise)
     }
 
     /// A second workout holding the squat at the given number of reps.
@@ -1600,7 +1600,7 @@ struct ExerciseCurrentHighestTargetTests {
     @Test
     func finishingASessionPutsWhatWasDoneOnOffer() throws {
         let session = try store.startSession()
-        let entry = try #require(session.entries.first { $0.exercise === squat })
+        let entry = try #require((session.entries ?? []).first { $0.exercise === squat })
         entry.target = .bodyweight(reps: 20, sets: 3)
         entry.status = .completed(date: .now)
         session.finish()
@@ -1645,7 +1645,7 @@ struct ProgressionTests {
 
     init() throws {
         self.store = try TestStore()
-        self.squat = try #require(store.workout.entries.sorted().first?.exercise)
+        self.squat = try #require((store.workout.entries ?? []).sorted().first?.exercise)
     }
 
     func history() throws -> History {
@@ -1660,7 +1660,7 @@ struct ProgressionTests {
     @discardableResult
     func squatSession(_ day: Int, month: Int = 9, hour: Int = 8, reps: Int) throws -> Session {
         let session = try store.session(day, month: month, hour: hour)
-        let entry = try #require(session.entries.sorted().first)
+        let entry = try #require((session.entries ?? []).sorted().first)
         entry.target = .bodyweight(reps: reps, sets: 3)
         entry.status = .completed(date: session.startDate)
         return session
@@ -1742,7 +1742,7 @@ struct ProgressionTests {
     func pointsAreDatedByTheClockTheyWereRecordedOn() throws {
         // Sunday 23:00 in New York is already Monday in Berlin, but the user trained on Sunday.
         let session = try store.session(13, hour: 23, zone: "America/New_York")
-        let entry = try #require(session.entries.sorted().first)
+        let entry = try #require((session.entries ?? []).sorted().first)
         entry.status = .completed(date: session.startDate)
 
         #expect(try progression().points.map(\.date) == [calendar.date(13, hour: 0)])
@@ -1804,7 +1804,7 @@ struct ProgressionTests {
     func labelsReadInTheReadersUnits() throws {
         squat.kind = .weight
         let session = try store.session(7)
-        let entry = try #require(session.entries.sorted().first)
+        let entry = try #require((session.entries ?? []).sorted().first)
         entry.target = .weight(kilograms: 100, reps: 5, sets: 3)
         entry.status = .completed(date: session.startDate)
 
@@ -1836,7 +1836,7 @@ struct ActiveDaysTests {
     }
 
     func history(at now: Date, calendar: Calendar? = nil) -> History {
-        History(.all, among: store.workout.sessions, at: now, calendar: calendar ?? self.calendar)
+        History(.all, among: store.workout.sessions ?? [], at: now, calendar: calendar ?? self.calendar)
     }
 
     /// The twelve weeks up to the one `now` falls in.
@@ -2003,7 +2003,7 @@ struct ActiveDaysTests {
         }
         try store.session(8) { $0.skipAndAdvance() }
 
-        let squat = try #require(store.workout.entries.sorted().first?.exercise)
+        let squat = try #require((store.workout.entries ?? []).sorted().first?.exercise)
         let history = try History(.exercise(squat), among: store.sessions, at: calendar.date(16), calendar: calendar)
         let activeDays = ActiveDays(history.weeks(12))
 
@@ -2014,10 +2014,10 @@ struct ActiveDaysTests {
 
     @Test
     func exerciseDoneTwiceCountsTheSessionOnce() throws {
-        let squat = try #require(store.workout.entries.sorted().first?.exercise)
+        let squat = try #require((store.workout.entries ?? []).sorted().first?.exercise)
         store.workout.append(exercise: squat, target: .bodyweight(reps: 10, sets: 3))
         try store.session(7) { session in
-            for _ in session.entries {
+            for _ in session.entries ?? [] {
                 session.completeAndAdvance()
             }
         }
@@ -2040,7 +2040,7 @@ struct CategoriesTests {
 
     init() throws {
         self.store = try TestStore()
-        self.exercises = store.workout.entries.sorted().compactMap(\.exercise)
+        self.exercises = (store.workout.entries ?? []).sorted().compactMap(\.exercise)
     }
 
     func history() throws -> History {
@@ -2162,7 +2162,7 @@ struct WorkoutEntryStatisticsTests {
 
     init() throws {
         self.store = try TestStore()
-        self.squat = try #require(store.workout.entries.sorted().first?.exercise)
+        self.squat = try #require((store.workout.entries ?? []).sorted().first?.exercise)
     }
 
     func history(_ subject: History.Subject) throws -> History {
@@ -2173,7 +2173,7 @@ struct WorkoutEntryStatisticsTests {
     @discardableResult
     func complete(_ slot: WorkoutEntry, of workout: Workout, day: Int, reps: Int) throws -> Session {
         let session = try #require(workout.startSession())
-        let entry = try #require(session.entries.first { $0.workoutEntry === slot })
+        let entry = try #require((session.entries ?? []).first { $0.workoutEntry === slot })
         session.startDate = try calendar.date(day, hour: 8)
         session.endDate = session.startDate.addingTimeInterval(3600)
         entry.target = .bodyweight(reps: reps, sets: 3)
@@ -2186,8 +2186,8 @@ struct WorkoutEntryStatisticsTests {
         let warmups = Workout(name: "Warmup", pictogram: .workout, schedule: .inactive, entries: [])
         store.context.insert(warmups)
         warmups.append(exercise: squat, target: .bodyweight(reps: 5, sets: 1))
-        let warmupSlot = try #require(warmups.entries.sorted().first)
-        let mainSlot = try #require(store.workout.entries.sorted().first)
+        let warmupSlot = try #require((warmups.entries ?? []).sorted().first)
+        let mainSlot = try #require((store.workout.entries ?? []).sorted().first)
 
         try complete(mainSlot, of: store.workout, day: 7, reps: 12)
         try complete(warmupSlot, of: warmups, day: 8, reps: 20)
@@ -2205,13 +2205,13 @@ struct WorkoutEntryStatisticsTests {
     @Test
     func twoSlotsOfOneWorkoutStayApart() throws {
         store.workout.append(exercise: squat, target: .bodyweight(reps: 5, sets: 1))
-        let slots = store.workout.entries.filter { $0.exercise === squat }.sorted()
+        let slots = (store.workout.entries ?? []).filter { $0.exercise === squat }.sorted()
         let first = try #require(slots.first)
         let second = try #require(slots.last)
 
         // The first slot is completed, the second skipped in the same session.
         let session = try complete(first, of: store.workout, day: 7, reps: 12)
-        let skipped = try #require(session.entries.first { $0.workoutEntry === second })
+        let skipped = try #require((session.entries ?? []).first { $0.workoutEntry === second })
         skipped.status = .skipped(date: session.startDate)
 
         #expect(slots.count == 2)

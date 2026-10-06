@@ -9,19 +9,20 @@ import Foundation
 
 extension Session {
     var skipRate: Double? {
-        entries.isEmpty ? nil : Double(entries.count(where: \.status.isSkipped)) / Double(entries.count)
+        let entries = entries ?? []
+        return entries.isEmpty ? nil : Double(entries.count(where: \.status.isSkipped)) / Double(entries.count)
     }
 
     var typicalExerciseDuration: Double? {
-        entries.compactMap(\.duration).median
+        (entries ?? []).compactMap(\.duration).median
     }
 
     var completedExerciseCount: Int {
-        entries.count(where: \.status.isCompleted)
+        (entries ?? []).count(where: \.status.isCompleted)
     }
 
     var volume: Double? {
-        let volumes = entries.filter(\.status.isCompleted).compactMap(\.target.volume)
+        let volumes = (entries ?? []).filter(\.status.isCompleted).compactMap(\.target.volume)
         return volumes.isEmpty ? nil : volumes.reduce(0, +)
     }
 }

@@ -19,7 +19,7 @@ public class WorkoutEntry {
     public var workout: Workout?
 
     @Relationship(deleteRule: .nullify, inverse: \SessionEntry.workoutEntry)
-    public var sessionEntries: [SessionEntry] = []
+    public var sessionEntries: [SessionEntry]? = []
 
     public var creationDate: Date = Date.distantPast
 

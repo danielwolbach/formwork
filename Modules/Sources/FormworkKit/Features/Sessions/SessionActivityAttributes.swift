@@ -72,7 +72,7 @@ extension SessionActivityAttributes.ContentState {
             status: current.status.isPending ? nil : current.status.pictogram,
             startDate: session.startDate,
             resolved: session.resolvedCount,
-            total: session.entries.count,
+            total: (session.entries ?? []).count,
             canMoveForward: session.nextEntry != nil,
             canMoveBackward: session.previousEntry != nil
         )

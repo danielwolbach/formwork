@@ -22,7 +22,7 @@ struct SessionLifecycleTests {
     func startCopiesWorkoutEntriesInOrder() throws {
         let session = try store.startSession()
         let active = try Session.active(in: store.context)
-        let allPending = session.entries.allSatisfy(\.status.isPending)
+        let allPending = (session.entries ?? []).allSatisfy(\.status.isPending)
 
         #expect(session.isActive)
         #expect(session.workout === store.workout)
@@ -33,7 +33,7 @@ struct SessionLifecycleTests {
 
     @Test
     func startSkipsArchivedExercises() throws {
-        store.workout.entries.sorted().first?.exercise?.isArchived = true
+        (store.workout.entries ?? []).sorted().first?.exercise?.isArchived = true
 
         let session = try store.startSession()
 
@@ -66,7 +66,7 @@ struct SessionLifecycleTests {
 
         #expect(!session.isActive)
         #expect(session.duration != nil)
-        #expect(store.workout.entries.sorted().first?.target.bodyweightTarget == .init(sets: 5, reps: 12))
+        #expect((store.workout.entries ?? []).sorted().first?.target.bodyweightTarget == .init(sets: 5, reps: 12))
         #expect(try Session.active(in: store.context) == nil)
     }
 
@@ -297,7 +297,7 @@ struct SessionOrderTests {
         #expect(session.pendingEntries.map(\.title) == ["Squat", "Bench Press", "Deadlift", "Plank"])
         #expect(session.pendingEntries.last?.workoutEntry == nil)
         #expect(session.currentEntry?.title == "Squat")
-        #expect(store.workout.entries.count == 3)
+        #expect((store.workout.entries ?? []).count == 3)
     }
 
     @Test
@@ -327,7 +327,7 @@ struct SessionOrderTests {
         session.remove(added)
 
         #expect(session.currentEntry?.title == "Squat")
-        #expect(session.entries.map(\.title).sorted() == ["Bench Press", "Deadlift", "Squat"])
+        #expect((session.entries ?? []).map(\.title).sorted() == ["Bench Press", "Deadlift", "Squat"])
     }
 
     @Test

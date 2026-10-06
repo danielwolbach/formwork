@@ -107,7 +107,7 @@ struct SessionMiniPlayer: View {
     }
 
     private var sessionProgress: some View {
-        Text(verbatim: "\(session.resolvedCount) / \(session.entries.count)")
+        Text(verbatim: "\(session.resolvedCount) / \((session.entries ?? []).count)")
             .font(.caption2)
             .monospacedDigit()
             .foregroundStyle(.secondary)
