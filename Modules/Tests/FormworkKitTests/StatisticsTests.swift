@@ -1123,7 +1123,7 @@ struct SessionFigureTests {
         #expect(unfinished.duration == nil)
         #expect(SessionFigureKind.endTime.reading(of: unfinished) == nil)
         #expect(unfinished.typicalExerciseDuration == nil)
-        #expect(unfinished.skipRate == 0)
+        #expect(unfinished.completionRate == 0)
     }
 
     @Test
@@ -1196,14 +1196,14 @@ struct SessionFigureTests {
     }
 
     @Test
-    func skipRateCountsEveryExerciseOfTheSession() throws {
+    func completionRateCountsEveryExerciseOfTheSession() throws {
         let session = try store.session(7) { session in
             session.skipAndAdvance()
             session.completeAndAdvance()
         }
 
         // One skipped and one completed of three, with the last one left pending.
-        #expect(session.skipRate == 1.0 / 3.0)
+        #expect(session.completionRate == 1.0 / 3.0)
     }
 
     @Test

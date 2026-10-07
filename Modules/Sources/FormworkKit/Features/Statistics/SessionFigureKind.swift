@@ -11,7 +11,7 @@ import Foundation
 public enum SessionFigureKind: CaseIterable, Sendable {
     case duration
     case endTime
-    case skipRate
+    case completionRate
     case exerciseDuration
     case completedExercises
     case volume
@@ -77,12 +77,12 @@ extension SessionFigureKind {
                 pictogram: .time,
                 value: .clock { $0.endMinute(in: $1) }
             )
-        case .skipRate:
+        case .completionRate:
             Definition(
-                title: .sessionFigureSkipRateTitle,
-                info: .sessionFigureSkipRateInfo,
-                pictogram: .skipped,
-                value: .measure(.percent, tolerance: 0.05) { $0.skipRate }
+                title: .sessionFigureCompletionRateTitle,
+                info: .sessionFigureCompletionRateInfo,
+                pictogram: .completed,
+                value: .measure(.percent, tolerance: 0.05) { $0.completionRate }
             )
         case .exerciseDuration:
             Definition(
@@ -95,7 +95,7 @@ extension SessionFigureKind {
             Definition(
                 title: .sessionFigureCompletedExercisesTitle,
                 info: .sessionFigureCompletedExercisesInfo,
-                pictogram: .completed,
+                pictogram: .tally,
                 value: .measure(.count, tolerance: 0.05) { Double($0.completedExerciseCount) }
             )
         case .volume:

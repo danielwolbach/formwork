@@ -556,6 +556,20 @@
         }
       }
     },
+    "sessionFigure.completionRate.info" : {
+      "extractionState" : "manual"
+    },
+    "sessionFigure.completionRate.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Completion Rate"
+          }
+        }
+      }
+    },
     "sessionFigure.duration.info" : {
       "extractionState" : "manual"
     },
@@ -594,20 +608,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Time per Exercise"
-          }
-        }
-      }
-    },
-    "sessionFigure.skipRate.info" : {
-      "extractionState" : "manual"
-    },
-    "sessionFigure.skipRate.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Skip Rate"
           }
         }
       }

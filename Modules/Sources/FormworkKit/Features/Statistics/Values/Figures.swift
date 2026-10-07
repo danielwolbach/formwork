@@ -8,9 +8,9 @@
 import Foundation
 
 extension Session {
-    var skipRate: Double? {
+    var completionRate: Double? {
         let entries = entries ?? []
-        return entries.isEmpty ? nil : Double(entries.count(where: \.status.isSkipped)) / Double(entries.count)
+        return entries.isEmpty ? nil : Double(entries.count(where: \.status.isCompleted)) / Double(entries.count)
     }
 
     var typicalExerciseDuration: Double? {
