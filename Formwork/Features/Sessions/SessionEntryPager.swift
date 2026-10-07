@@ -55,12 +55,12 @@ final class SessionNavigator {
     }
 
     private func navigate(by step: Int, _ change: () -> Void) {
-        let previous = session.currentEntry?.identifier
+        let previous = session.currentEntry?.id
 
         withAnimation(.snappy) {
             change()
 
-            if session.currentEntry?.identifier != previous {
+            if session.currentEntry?.id != previous {
                 index += step
                 direction = step
             }
@@ -205,6 +205,6 @@ private struct Slot {
 
 extension Slot: Identifiable {
     var id: String {
-        "\(key):\(entry.identifier)"
+        "\(key):\(entry.id)"
     }
 }

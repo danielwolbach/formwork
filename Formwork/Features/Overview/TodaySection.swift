@@ -11,17 +11,11 @@ import SwiftData
 import SwiftUI
 
 struct TodaySection: View {
-    @Environment(\.presentSession)
-    private var presentSession: PresentSessionAction
+    @Environment(\.startSession)
+    private var startSession: StartSessionAction
 
     @Query(filter: #Predicate<Workout> { !$0.isArchived })
     private var workouts: [Workout]
-
-    @Query(Session.activeDescriptor)
-    private var activeSessions: [Session]
-
-    @State
-    private var sessionActiveAlert: Bool = false
 
     var body: some View {
         let pending = workouts.pending()
@@ -55,47 +49,13 @@ struct TodaySection: View {
         } accessory: {
             if let workout = pending.first {
                 Button(.startSession) {
-                    startSession(workout: workout)
+                    startSession(workout)
                 }
                 .labelStyle(.fixedTitleAndIcon)
                 .buttonStyle(.glassProminent)
                 .tint(.green)
                 .disabled(!workout.isStartable)
             }
-        }
-        .alert(.alertReplaceSessionTitle, isPresented: $sessionActiveAlert) {
-            if let workout = workouts.pending().first {
-                Button(.replaceSession) {
-                    replaceSession(workout: workout)
-                }
-            }
-
-            if let activeSession = activeSessions.first {
-                Button(.resumeSession) {
-                    presentSession(activeSession)
-                }
-            }
-
-            Button(.cancel) {
-                // Works automatically.
-            }
-        } message: {
-            Text(.alertReplaceSessionMessage)
-        }
-    }
-
-    private func startSession(workout: Workout) {
-        guard activeSessions.isEmpty else {
-            sessionActiveAlert = true
-            return
-        }
-
-        replaceSession(workout: workout)
-    }
-
-    private func replaceSession(workout: Workout) {
-        if let session = workout.startSession() {
-            presentSession(session)
         }
     }
 }

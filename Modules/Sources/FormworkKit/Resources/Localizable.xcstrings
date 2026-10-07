@@ -278,50 +278,6 @@
         }
       }
     },
-    "intent.backward.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Backward"
-          }
-        }
-      }
-    },
-    "intent.complete.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Complete"
-          }
-        }
-      }
-    },
-    "intent.forward.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Forward"
-          }
-        }
-      }
-    },
-    "intent.undo.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Undo"
-          }
-        }
-      }
-    },
     "pictogram.tint.blue.title" : {
       "extractionState" : "manual",
       "localizations" : {

@@ -31,6 +31,7 @@ enum Sheet: Identifiable, Hashable, View {
             content
         }
         .paywallPresenter()
+        .sessionStarter()
     }
 
     @ViewBuilder

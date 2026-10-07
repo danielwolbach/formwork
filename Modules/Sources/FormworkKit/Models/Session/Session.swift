@@ -29,14 +29,13 @@ public class Session {
 
     var timeZoneIdentifier: String = TimeZone.current.identifier
 
-    private var currentEntryIdentifier: UUID?
+    private var currentEntryID: UUID?
 
     init(workout: Workout) {
         self.workout = workout
         self.startDate = .now
-        // Archived exercises are inactive, so their entries don't play.
         self.entries = (workout.entries ?? []).filter { !$0.isArchived }.map { .init(entry: $0) }
-        self.currentEntryIdentifier = entries?.min { $0.order < $1.order }?.identifier
+        self.currentEntryID = entries?.min { $0.order < $1.order }?.id
         self.timeZoneIdentifier = TimeZone.current.identifier
     }
 }
@@ -108,13 +107,13 @@ extension Session {
 
     public var currentEntry: SessionEntry? {
         get {
-            entries?.first { $0.identifier == currentEntryIdentifier }
+            entries?.first { $0.id == currentEntryID }
                 ?? pendingEntries.first
                 ?? orderedEntries.first
         }
 
         set {
-            currentEntryIdentifier = newValue?.identifier
+            currentEntryID = newValue?.id
         }
     }
 

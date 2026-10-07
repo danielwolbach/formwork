@@ -5,6 +5,7 @@
 //  Created by Daniel Wolbach on 04.09.26.
 //
 
+import AppIntents
 import FormworkKit
 import FormworkUI
 import SwiftData
@@ -149,7 +150,9 @@ private struct AppContent: View {
         .onChange(of: scenePhase, initial: true) { _, phase in
             switch phase {
             case .active:
+                AppShortcuts.updateAppShortcutParameters()
                 syncReminders()
+                syncSpotlight()
             case .background:
                 try? modelContext.save()
                 WidgetCenter.shared.reloadAllTimelines()
@@ -170,11 +173,16 @@ private struct AppContent: View {
         }
         // Any saved change can move a planned day, so reminders rebuild after every save.
         .onReceive(NotificationCenter.default.publisher(for: ModelContext.didSave)) { _ in
+            AppShortcuts.updateAppShortcutParameters()
             syncReminders()
+            syncSpotlight()
         }
         .onChange(of: reminderOptions) {
             syncReminders()
         }
+        .intentHandler()
+        // Outside the intent handler, which starts sessions through it.
+        .sessionStarter()
         // Outermost, so the covers and the bottom accessory read the environment too.
         .environment(\.presentSession, PresentSessionAction(action: presentSession))
         .environment(\.units, Units(weight: weightSystem, distance: distanceSystem))
@@ -203,8 +211,12 @@ private struct AppContent: View {
     private func syncReminders() {
         Reminders.sync((try? modelContext.fetch(FetchDescriptor<Workout>())) ?? [], options: reminderOptions)
     }
+    
+    private func syncSpotlight() {
+        Spotlight.sync((try? modelContext.fetch(FetchDescriptor<Workout>())) ?? [])
+    }
 
-    private func presentSession(session: Session) {
+    private func presentSession(_ session: Session) {
         presentedSession = session
     }
 

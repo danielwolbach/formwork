@@ -8,6 +8,7 @@
 import AppIntents
 import WidgetKit
 
+// Titles resolve from the app's and the widgets' catalogs: the system reads intent strings from the main bundle, never this package's.
 public struct SessionCompleteIntent: LiveActivityIntent {
     public static let title: LocalizedStringResource = "intent.complete.title"
 

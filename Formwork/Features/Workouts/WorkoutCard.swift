@@ -23,8 +23,8 @@ struct WorkoutCard: View {
     @Environment(\.modelContext)
     private var context: ModelContext
 
-    @Environment(\.presentSession)
-    private var presentSession: PresentSessionAction
+    @Environment(\.startSession)
+    private var startSession: StartSessionAction
 
     @Environment(\.fullVersion)
     private var fullVersion: FullVersion
@@ -32,17 +32,11 @@ struct WorkoutCard: View {
     @Environment(\.presentPaywall)
     private var presentPaywall: PresentPaywallAction
 
-    @Query(Session.activeDescriptor)
-    private var activeSessions: [Session]
-
     @State
     private var sheet: Sheet? = nil
 
     @State
     private var deleteAlert: Bool = false
-
-    @State
-    private var replaceSessionAlert: Bool = false
 
     init(_ workout: Workout, style: Style = .card) {
         self.workout = workout
@@ -62,7 +56,7 @@ struct WorkoutCard: View {
             Section {
                 if !workout.isArchived {
                     Button(.startSession) {
-                        startSession()
+                        startSession(workout)
                     }
                     .disabled(!workout.isStartable)
 
@@ -106,7 +100,7 @@ struct WorkoutCard: View {
                 .labelStyle(.fixedIconOnly)
             } else if workout.isStartable {
                 Button(.startSession) {
-                    startSession()
+                    startSession(workout)
                 }
                 .tint(.green)
                 .labelStyle(.fixedIconOnly)
@@ -143,23 +137,6 @@ struct WorkoutCard: View {
             }
         } message: {
             Text(.alertDeleteWorkoutMessage)
-        }
-        .alert(.alertReplaceSessionTitle, isPresented: $replaceSessionAlert) {
-            Button(.replaceSession) {
-                replaceSession()
-            }
-
-            if let session = activeSessions.first {
-                Button(.resumeSession) {
-                    presentSession(session)
-                }
-            }
-
-            Button(.cancel) {
-                // Works automatically.
-            }
-        } message: {
-            Text(.alertReplaceSessionMessage)
         }
         .sheet(item: $sheet) { sheet in
             sheet
@@ -233,21 +210,6 @@ struct WorkoutCard: View {
 
     private func delete() {
         context.delete(workout)
-    }
-
-    private func startSession() {
-        guard activeSessions.isEmpty else {
-            replaceSessionAlert = true
-            return
-        }
-
-        replaceSession()
-    }
-
-    private func replaceSession() {
-        if let session = workout.startSession() {
-            presentSession(session)
-        }
     }
 }
 

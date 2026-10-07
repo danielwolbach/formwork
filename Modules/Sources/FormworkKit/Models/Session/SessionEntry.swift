@@ -16,7 +16,7 @@ public class SessionEntry {
         case skipped(date: Date)
     }
 
-    public var identifier: UUID = UUID()
+    public var id: UUID = UUID()
 
     public var order: Int = 0
 
@@ -33,7 +33,7 @@ public class SessionEntry {
     public var creationDate: Date = Date.distantPast
 
     init(entry: WorkoutEntry) {
-        self.identifier = UUID()
+        self.id = UUID()
         self.order = entry.order
         self.exercise = entry.exercise
         self.target = entry.target
@@ -42,9 +42,8 @@ public class SessionEntry {
         self.creationDate = .now
     }
 
-    /// Added for one session only, so there's no workout entry to keep its target or history.
     init(exercise: Exercise, target: ExerciseTarget, order: Int) {
-        self.identifier = UUID()
+        self.id = UUID()
         self.order = order
         self.exercise = exercise
         self.target = target

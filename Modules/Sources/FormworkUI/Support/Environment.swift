@@ -20,6 +20,18 @@ public struct PresentSessionAction {
     }
 }
 
+public struct StartSessionAction {
+    private let action: (Workout) -> Void
+
+    public init(action: @escaping (Workout) -> Void) {
+        self.action = action
+    }
+
+    public func callAsFunction(_ workout: Workout) {
+        action(workout)
+    }
+}
+
 public struct PresentPaywallAction {
     private let action: () -> Void
 
@@ -39,6 +51,9 @@ extension FullVersion {
 extension EnvironmentValues {
     @Entry
     public var presentSession = PresentSessionAction { _ in }
+
+    @Entry
+    public var startSession = StartSessionAction { _ in }
 
     @Entry
     public var presentPaywall = PresentPaywallAction {}

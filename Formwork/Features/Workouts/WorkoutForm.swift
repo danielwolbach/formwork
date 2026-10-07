@@ -18,7 +18,6 @@ struct WorkoutForm: View {
         var entries: [DraftEntry]
     }
 
-    /// Plain values until commit: a new WorkoutEntry pointing at a saved exercise would be inserted right away, and linger without a workout if the form is cancelled.
     private struct DraftEntry: Identifiable, Hashable {
         let id = UUID()
         let saved: WorkoutEntry?
