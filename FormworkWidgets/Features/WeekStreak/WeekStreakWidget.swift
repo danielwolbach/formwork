@@ -67,7 +67,7 @@ struct WeekStreakWidgetView: View {
 
                 Image(systemName: entry.symbol)
                     .font(.system(size: side))
-                    .foregroundStyle(entry.tint)
+                    .foregroundStyle(entry.tint.opacity(0.5))
                     .offset(x: side * 0.25, y: -side * (1.0 / 3.0))
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
                     .accessibilityHidden(true)
