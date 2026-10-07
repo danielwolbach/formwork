@@ -267,6 +267,29 @@
         }
       }
     },
+    "format.pendingCount.scheme" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%1$(count)lld Pending"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%1$(count)lld Pending"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "format.plusMore.scheme" : {
       "extractionState" : "manual",
       "localizations" : {

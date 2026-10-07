@@ -89,7 +89,7 @@ extension Action {
 
     public static let scanQRCode = Action(title: .actionScanQRCodeTitle, image: "qrcode.viewfinder")
 
-    public static let guide = Action(title: .actionGuideTitle, image: "info.circle")
+    public static let guide = Action(title: .actionGuideTitle, image: "info")
 
     public static let addToWorkout = Action(title: .actionAddToWorkoutTitle, image: "text.badge.plus")
 
@@ -117,7 +117,7 @@ extension Action {
 
     public static let undo = Action(title: .actionUndoTitle, image: "arrow.uturn.backward")
 
-    public static let queue = Action(title: .actionQueueTitle, image: "line.3.horizontal.decrease")
+    public static let progress = Action(title: .actionProgressTitle, image: "line.3.horizontal.decrease")
 
     public static let viewWorkout = Action(title: .actionViewWorkoutTitle, image: "clipboard")
 }

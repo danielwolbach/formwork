@@ -52,7 +52,7 @@ struct WorkoutIndexScreen: View {
             } else {
                 ScrollView {
                     ContentStack {
-                        LazyVStack(spacing: .items) {
+                        LazyVStack(spacing: 0) {
                             ForEach(matching) { workout in
                                 WorkoutCard(workout)
                             }

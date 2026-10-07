@@ -21,7 +21,7 @@ enum Sheet: Identifiable, Hashable, View {
     case workoutStatistics(_ workout: Workout)
     case workoutEntryStatistics(_ entry: WorkoutEntry)
     case exerciseGuide(_ exercise: Exercise)
-    case sessionQueue(_ session: Session)
+    case sessionProgress(_ session: Session)
     case sessionAddEntries(_ session: Session)
     case settings
 
@@ -49,7 +49,7 @@ enum Sheet: Identifiable, Hashable, View {
         case let .workoutStatistics(workout): WorkoutStatisticsSheet(workout)
         case let .workoutEntryStatistics(entry): WorkoutEntryStatisticsSheet(entry)
         case let .exerciseGuide(exercise): ExerciseGuideSheet(exercise)
-        case let .sessionQueue(session): SessionQueueSheet(session)
+        case let .sessionProgress(session): SessionProgressSheet(session)
         case let .sessionAddEntries(session): WorkoutAddEntriesForm(session: session)
         case .settings: SettingsSheet()
         }

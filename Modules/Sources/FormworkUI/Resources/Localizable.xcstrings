@@ -287,13 +287,13 @@
         }
       }
     },
-    "action.queue.title" : {
+    "action.progress.title" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Queue"
+            "value" : "Progress"
           }
         }
       }

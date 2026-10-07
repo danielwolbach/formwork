@@ -143,8 +143,6 @@ struct SessionPlayerScreen: View {
 
     private var controls: some View {
         VStack(spacing: .sections) {
-            healthData
-
             HStack(spacing: 24) {
                 stepButton(.backward, isEnabled: session.previousEntry != nil) {
                     navigator.backward()
@@ -168,22 +166,24 @@ struct SessionPlayerScreen: View {
                     }
                 }
                 .disabled(session.currentEntry?.exercise == nil)
-                .frame(maxWidth: .infinity)
+                .labelStyle(.fixedIconOnly)
+                .buttonBorderShape(.circle)
 
                 secondaryAction
                     .frame(maxWidth: .infinity)
+                    .labelStyle(.fixedTitleAndIcon)
 
-                Button(.queue) {
-                    sheet = .sessionQueue(session)
+                Button(.progress) {
+                    sheet = .sessionProgress(session)
                 }
-                .frame(maxWidth: .infinity)
+                .labelStyle(.fixedIconOnly)
+                .buttonBorderShape(.circle)
             }
-            .buttonStyle(.borderless)
-            .labelStyle(.fixedTitleAndIcon)
+            .buttonStyle(.card)
             .foregroundStyle(.secondary)
             .controlSize(.small)
         }
-        .padding(.horizontal)
+        .padding(.horizontal, 32)
     }
 
     private var primaryAction: some View {
@@ -221,28 +221,6 @@ struct SessionPlayerScreen: View {
                 }
             }
         }
-    }
-
-    private var healthData: some View {
-        HStack(spacing: .groups) {
-            if let heartRate = Health.shared.heartRate {
-                Label {
-                    Text(heartRate, format: .heartRate)
-                } icon: {
-                    Image(systemName: Pictogram.heartRate.image)
-                }
-            }
-
-            if let activeEnergy = Health.shared.activeEnergy {
-                Label {
-                    Text(activeEnergy, format: .energy)
-                } icon: {
-                    Image(systemName: Pictogram.energy.image)
-                }
-            }
-        }
-        .foregroundStyle(.secondary)
-        .font(.footnote)
     }
 
     private func stepButton(_ descriptor: Action, isEnabled: Bool, action: @escaping () -> Void) -> some View {

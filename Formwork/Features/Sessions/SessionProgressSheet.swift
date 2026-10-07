@@ -1,5 +1,5 @@
 //
-//  SessionQueueSheet.swift
+//  SessionProgressSheet.swift
 //  Formwork
 //
 //  Created by Daniel Wolbach on 06.10.26.
@@ -9,7 +9,7 @@ import FormworkKit
 import FormworkUI
 import SwiftUI
 
-struct SessionQueueSheet: View {
+struct SessionProgressSheet: View {
     private let session: Session
 
     @Environment(\.dismiss)
@@ -30,6 +30,30 @@ struct SessionQueueSheet: View {
 
         ScrollView {
             ContentStack {
+                HStack {
+                    if let workout = session.workout {
+                        PictogramRow(
+                            workout.pictogram,
+                            title: workout.name,
+                            subtitle: session.formatted(.sessionProgress)
+                        )
+                    }
+
+                    Spacer()
+
+                    elapsed
+                }
+                // Serves as a header for the row below.
+                .padding(.bottom, -1 * .groups)
+
+                Group(subviews: healthRows) { rows in
+                    if !rows.isEmpty {
+                        GroupBox {
+                            rows
+                        }
+                    }
+                }
+
                 SectionView(.fieldPendingTitle) {
                     if !pendingEntries.isEmpty {
                         LazyVStack(spacing: 0) {
@@ -143,6 +167,57 @@ struct SessionQueueSheet: View {
         }
     }
 
+    @ViewBuilder
+    private var healthRows: some View {
+        if let heartRate = Health.shared.heartRate {
+            ValueRow(title: .init(localized: .fieldHeartRateTitle), reading: .heartRate(beatsPerMinute: heartRate))
+        }
+
+        if let activeEnergy = Health.shared.activeEnergy {
+            ValueRow(title: .init(localized: .fieldActiveEnergyTitle), reading: .energy(kilocalories: activeEnergy))
+        }
+    }
+
+    @ViewBuilder
+    private var elapsed: some View {
+        if let ended = session.endDate {
+            Text(formatted(ended.timeIntervalSince(session.startDate)))
+                .monospacedDigit()
+                .foregroundStyle(.secondary)
+                .accessibilityLabel(spoken(ended.timeIntervalSince(session.startDate)))
+        } else {
+            TimelineView(.periodic(from: session.startDate, by: 1)) { context in
+                let interval = context.date.timeIntervalSince(session.startDate)
+                let text = formatted(interval)
+
+                Label {
+                    Text(text)
+                        .contentTransition(.numericText(countsDown: false))
+                        .animation(.default, value: text)
+                        .monospacedDigit()
+                } icon: {
+                    Image(systemName: "timer")
+                }
+                .foregroundStyle(.secondary)
+                .accessibilityLabel(spoken(interval))
+            }
+        }
+    }
+
+    private func formatted(_ interval: TimeInterval) -> String {
+        let duration = Duration.seconds(interval)
+
+        return if duration < .seconds(3600) {
+            duration.formatted(.time(pattern: .minuteSecond))
+        } else {
+            duration.formatted(.time(pattern: .hourMinute(padHourToLength: 1, roundSeconds: .down)))
+        }
+    }
+
+    private func spoken(_ interval: TimeInterval) -> String {
+        Duration.seconds(interval).formatted(.units(width: .wide))
+    }
+
     private func undo(_ entry: SessionEntry) {
         session.undo(entry)
     }
@@ -150,7 +225,7 @@ struct SessionQueueSheet: View {
 
 #Preview {
     NavigationRoot {
-        SessionQueueSheet(Samples.activeSession)
+        SessionProgressSheet(Samples.activeSession)
     }
     .sampleData()
 }
