@@ -12,41 +12,63 @@ import SwiftUI
 import WidgetKit
 
 struct SessionActivityWidget: Widget {
-    var body: some WidgetConfiguration {
-        ActivityConfiguration(for: SessionActivityAttributes.self) { context in
+    private struct Content: View {
+        let context: ActivityViewContext<SessionActivityAttributes>
+
+        @Environment(\.activityFamily)
+        private var family: ActivityFamily
+
+        var body: some View {
             VStack {
                 HStack {
-                    pictogram(for: context)
+                    if family != .small {
+                        pictogram(for: context)
+                    }
+
                     Spacer()
+
                     progress(for: context)
                 }
 
                 HStack {
                     description(for: context)
+
                     Spacer()
-                    controls(for: context)
+
+                    if family != .small {
+                        controls(for: context)
+                    }
                 }
             }
             .padding()
-            .widgetURL(DeepLink.session)
+        }
+    }
+
+    var body: some WidgetConfiguration {
+        ActivityConfiguration(for: SessionActivityAttributes.self) { context in
+            Content(context: context)
+                .widgetURL(DeepLink.session)
+                .activityBackgroundTint(context.state.workout.color.mix(with: .black, by: 0.5).opacity(0.9))
         } dynamicIsland: { context in
             DynamicIsland {
                 DynamicIslandExpandedRegion(.leading) {
-                    pictogram(for: context)
+                    Self.pictogram(for: context)
                         .padding(.leading)
                 }
 
                 DynamicIslandExpandedRegion(.trailing) {
-                    progress(for: context)
+                    Self.progress(for: context)
                         .padding(.trailing)
                         .frame(height: 40)
                 }
 
                 DynamicIslandExpandedRegion(.bottom) {
                     HStack {
-                        description(for: context)
+                        Self.description(for: context)
+
                         Spacer()
-                        controls(for: context)
+
+                        Self.controls(for: context)
                     }
                     .padding(.horizontal)
                 }
@@ -54,21 +76,22 @@ struct SessionActivityWidget: Widget {
                 Image(systemName: context.state.workout.image)
                     .foregroundStyle(context.state.workout.color)
             } compactTrailing: {
-                remaining(for: context)
+                Self.remaining(for: context)
             } minimal: {
                 Image(systemName: context.state.workout.image)
                     .foregroundStyle(context.state.workout.color)
             }
             .widgetURL(DeepLink.session)
         }
+        .supplementalActivityFamilies([.small])
     }
 
-    private func pictogram(for context: ActivityViewContext<SessionActivityAttributes>) -> some View {
+    private static func pictogram(for context: ActivityViewContext<SessionActivityAttributes>) -> some View {
         PictogramView(context.state.pictogram, badge: context.state.status)
             .frame(width: 40)
     }
 
-    private func description(for context: ActivityViewContext<SessionActivityAttributes>) -> some View {
+    private static func description(for context: ActivityViewContext<SessionActivityAttributes>) -> some View {
         VStack(alignment: .leading) {
             Text(context.state.title)
                 .lineLimit(1)
@@ -81,7 +104,7 @@ struct SessionActivityWidget: Widget {
         }
     }
 
-    private func progress(for context: ActivityViewContext<SessionActivityAttributes>) -> some View {
+    private static func progress(for context: ActivityViewContext<SessionActivityAttributes>) -> some View {
         HStack {
             Text(context.state.startDate, style: .timer)
                 .monospacedDigit()
@@ -96,7 +119,7 @@ struct SessionActivityWidget: Widget {
         }
     }
 
-    private func remaining(for context: ActivityViewContext<SessionActivityAttributes>) -> some View {
+    private static func remaining(for context: ActivityViewContext<SessionActivityAttributes>) -> some View {
         HStack(alignment: .bottom, spacing: 0) {
             Text(verbatim: "\(context.state.resolved)")
                 .font(.footnote)
@@ -110,7 +133,7 @@ struct SessionActivityWidget: Widget {
         .monospacedDigit()
     }
 
-    private func controls(for context: ActivityViewContext<SessionActivityAttributes>) -> some View {
+    private static func controls(for context: ActivityViewContext<SessionActivityAttributes>) -> some View {
         HStack {
             Button(.backward, intent: SessionBackwardIntent())
                 .tint(.gray)
@@ -118,15 +141,7 @@ struct SessionActivityWidget: Widget {
                 .opacity(context.state.canMoveBackward ? 1 : 0.5)
                 .accessibilityHidden(!context.state.canMoveBackward)
 
-            if context.state.status == nil {
-                Button(.complete, intent: SessionCompleteIntent())
-                    .tint(.green)
-                    .buttonBorderShape(.circle)
-            } else {
-                Button(.undo, intent: SessionUndoIntent())
-                    .tint(.gray)
-                    .buttonBorderShape(.circle)
-            }
+            primaryAction(for: context)
 
             Button(.forward, intent: SessionForwardIntent())
                 .tint(.gray)
@@ -135,6 +150,26 @@ struct SessionActivityWidget: Widget {
                 .accessibilityHidden(!context.state.canMoveForward)
         }
         .labelStyle(.fixedIconOnly)
+    }
+
+    @ViewBuilder
+    private static func primaryAction(for context: ActivityViewContext<SessionActivityAttributes>) -> some View {
+        if context.state.resolved == context.state.total {
+            Link(destination: DeepLink.session) {
+                Label(.finishSession)
+            }
+            .fontWeight(.bold)
+            .buttonStyle(.borderedProminent)
+            .buttonBorderShape(.circle)
+        } else if context.state.status == nil {
+            Button(.complete, intent: SessionCompleteIntent())
+                .tint(.green)
+                .buttonBorderShape(.circle)
+        } else {
+            Button(.undo, intent: SessionUndoIntent())
+                .tint(.gray)
+                .buttonBorderShape(.circle)
+        }
     }
 }
 

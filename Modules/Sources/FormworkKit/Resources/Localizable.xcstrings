@@ -278,6 +278,21 @@
         }
       }
     },
+    "intent.backward.title" : {
+
+    },
+    "intent.complete.title" : {
+
+    },
+    "intent.forward.title" : {
+
+    },
+    "intent.undo.title" : {
+
+    },
+    "intent.workout.title" : {
+
+    },
     "pictogram.tint.blue.title" : {
       "extractionState" : "manual",
       "localizations" : {
