@@ -62,20 +62,10 @@ struct WorkoutEntryRow: View {
                 }
             }
 
-            Section {
-                if let exercise = entry.exercise {
+            if let exercise = entry.exercise {
+                Section {
                     Button(.edit) {
                         sheet = .editExercise(exercise)
-                    }
-                }
-
-                if entry.isArchived {
-                    Button(.unarchive) {
-                        unarchive()
-                    }
-                } else {
-                    Button(.archive) {
-                        archive()
                     }
                 }
             }
@@ -87,17 +77,10 @@ struct WorkoutEntryRow: View {
             }
         }
         .swipeActions(edge: .leading) {
-            if entry.isArchived {
-                Button(.unarchive) {
-                    unarchive()
-                }
-                .labelStyle(.fixedIconOnly)
-            } else {
-                Button(.viewStatistics) {
-                    sheet = .workoutEntryStatistics(entry)
-                }
-                .labelStyle(.fixedIconOnly)
+            Button(.viewStatistics) {
+                sheet = .workoutEntryStatistics(entry)
             }
+            .labelStyle(.fixedIconOnly)
         }
         .swipeActions(edge: .trailing) {
             // No destructive role: it makes SwiftUI expect the row to disappear, so cancelling the alert leaves the button stuck.
@@ -127,20 +110,6 @@ struct WorkoutEntryRow: View {
 
     private var badge: Pictogram? {
         entry.isArchived ? .archivedBadge : nil
-    }
-
-    /// Archiving acts on the exercise, so it applies to every workout using it and to the catalog.
-    private func archive() {
-        entry.exercise?.isArchived = true
-    }
-
-    private func unarchive() {
-        guard paywall.canAddExercise(in: context) else {
-            presentPaywall()
-            return
-        }
-
-        entry.exercise?.isArchived = false
     }
 
     private func remove() {

@@ -70,16 +70,6 @@ struct WorkoutEntryScreen: View {
                         Button(.edit) {
                             sheet = .editExercise(exercise)
                         }
-
-                        if exercise.isArchived {
-                            Button(.unarchive) {
-                                unarchive()
-                            }
-                        } else {
-                            Button(.archive) {
-                                archive()
-                            }
-                        }
                     }
                 }
 
@@ -104,19 +94,6 @@ struct WorkoutEntryScreen: View {
         } message: {
             Text(.alertRemoveWorkoutEntryMessage)
         }
-    }
-
-    private func archive() {
-        entry.exercise?.isArchived = true
-    }
-
-    private func unarchive() {
-        guard paywall.canAddExercise(in: context) else {
-            presentPaywall()
-            return
-        }
-
-        entry.exercise?.isArchived = false
     }
 
     private func remove() {
