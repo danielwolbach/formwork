@@ -148,13 +148,13 @@ struct WorkoutCard: View {
             Button(.replaceSession) {
                 replaceSession()
             }
-            
+
             if let session = activeSessions.first {
                 Button(.resumeSession) {
                     presentSession(session)
                 }
             }
-            
+
             Button(.cancel) {
                 // Works automatically.
             }

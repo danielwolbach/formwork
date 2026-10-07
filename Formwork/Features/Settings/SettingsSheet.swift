@@ -20,7 +20,7 @@ struct SettingsSheet: View {
 
     @Environment(\.fullVersion)
     private var fullVersion: FullVersion
-    
+
     @Environment(\.calendar)
     private var calendar: Calendar
 
@@ -271,7 +271,23 @@ struct SettingsSheet: View {
             }
         }
     }
-    
+
+    private var dailyReminderTime: Binding<Date> {
+        Binding(
+            get: {
+                calendar.date(bySettingHour: dailyReminderMinute / 60, minute: dailyReminderMinute % 60, second: 0, of: .now) ?? .now
+            },
+            set: { newValue in
+                let time = Calendar.current.dateComponents([.hour, .minute], from: newValue)
+                dailyReminderMinute = (time.hour ?? 0) * 60 + (time.minute ?? 0)
+            }
+        )
+    }
+
+    private var archivedCount: Int {
+        archivedWorkouts.count + archivedExercises.count
+    }
+
     private func unitRow(_ title: LocalizedStringResource, selection: Binding<Units.System>) -> some View {
         LabeledContent {
             Menu {
@@ -290,22 +306,6 @@ struct SettingsSheet: View {
         } label: {
             Text(title)
         }
-    }
-
-    private var dailyReminderTime: Binding<Date> {
-        Binding(
-            get: {
-                calendar.date(bySettingHour: dailyReminderMinute / 60, minute: dailyReminderMinute % 60, second: 0, of: .now) ?? .now
-            },
-            set: { newValue in
-                let time = Calendar.current.dateComponents([.hour, .minute], from: newValue)
-                dailyReminderMinute = (time.hour ?? 0) * 60 + (time.minute ?? 0)
-            }
-        )
-    }
-
-    private var archivedCount: Int {
-        archivedWorkouts.count + archivedExercises.count
     }
 }
 

@@ -21,7 +21,7 @@ struct WorkoutIndexScreen: View {
             }
         }
     }
-    
+
     @Environment(\.modelContext)
     private var context: ModelContext
 
@@ -125,7 +125,7 @@ struct WorkoutIndexScreen: View {
             .filter { searchText.isEmpty || $0.name.localizedCaseInsensitiveContains(searchText) }
             .sorted(using: sort.descriptor)
     }
-    
+
     private func createWorkout() {
         if fullVersion.canAddWorkout(in: context) {
             sheet = .createWorkout

@@ -63,7 +63,7 @@ struct SessionScreen: View {
             Button(.delete) {
                 delete()
             }
-            
+
             Button(.cancel) {
                 // Works automatically.
             }

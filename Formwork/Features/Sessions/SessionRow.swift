@@ -27,7 +27,7 @@ struct SessionRow: View {
         NavigationLink(value: session) {
             HStack {
                 summary
-                
+
                 Image(systemName: "chevron.forward")
                     .foregroundStyle(.tertiary)
                     .accessibilityHidden(true)
@@ -53,7 +53,7 @@ struct SessionRow: View {
         } preview: {
             ContentStack(spacing: .groups) {
                 summary
-                
+
                 SessionFigureGrid(session)
             }
             .frame(width: 360)
@@ -80,7 +80,7 @@ struct SessionRow: View {
             subtitle: session.startDate.formatted(session.wallClockTime(date: .numeric))
         )
     }
-    
+
     private func delete() {
         Health.delete(session)
         context.delete(session)

@@ -149,7 +149,7 @@ struct SessionPlayerScreen: View {
                 stepButton(.backward, isEnabled: session.previousEntry != nil) {
                     navigator.backward()
                 }
-                
+
                 primaryAction
                     .fontWeight(.semibold)
                     .buttonStyle(.glassProminent)
@@ -244,7 +244,7 @@ struct SessionPlayerScreen: View {
         .foregroundStyle(.secondary)
         .font(.footnote)
     }
-    
+
     private func stepButton(_ descriptor: Action, isEnabled: Bool, action: @escaping () -> Void) -> some View {
         Button(descriptor, action: action)
             .font(.title2)
@@ -264,7 +264,6 @@ struct SessionPlayerScreen: View {
         session.discard()
         dismiss()
     }
-    
 }
 
 private struct SessionEntryPage: View {

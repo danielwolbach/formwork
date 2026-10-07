@@ -109,15 +109,6 @@ private struct SessionShareCard: View {
         }
     }
 
-    private var tint: Color {
-        session.workout?.pictogram.color ?? Pictogram.workout.color
-    }
-
-    private var bestEntry: SessionEntry? {
-        let ratio = { (entry: SessionEntry) in entry.previousBest.map { entry.target.rank / $0.rank } ?? 0 }
-        return session.orderedEntries.filter(\.isBest).max { ratio($0) < ratio($1) }
-    }
-
     @ViewBuilder
     private var personalBest: some View {
         if let bestEntry {
@@ -168,9 +159,18 @@ private struct SessionShareCard: View {
             .background(Pictogram.record.color.quinary, in: .rect(cornerRadius: 16, style: .continuous))
         }
     }
+
+    private var tint: Color {
+        session.workout?.pictogram.color ?? Pictogram.workout.color
+    }
+
+    private var bestEntry: SessionEntry? {
+        let ratio = { (entry: SessionEntry) in entry.previousBest.map { entry.target.rank / $0.rank } ?? 0 }
+        return session.orderedEntries.filter(\.isBest).max { ratio($0) < ratio($1) }
+    }
 }
 
-// Renders only when actually shared, so the session is fetched again on the main actor by its identifier.
+/// Renders only when actually shared, so the session is fetched again on the main actor by its identifier.
 private struct SessionShareImage: Transferable {
     let name: String
 

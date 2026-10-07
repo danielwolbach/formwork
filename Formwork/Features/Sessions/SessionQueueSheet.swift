@@ -27,7 +27,7 @@ struct SessionQueueSheet: View {
 
     var body: some View {
         let pendingEntries = session.pendingEntries
-        
+
         ScrollView {
             ContentStack {
                 SectionView(.fieldPendingTitle) {

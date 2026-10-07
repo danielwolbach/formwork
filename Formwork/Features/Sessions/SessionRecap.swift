@@ -40,9 +40,9 @@ struct SessionRecap: View {
 private struct SessionEntryRow: View {
     private struct Detail {
         let pictogram: Pictogram
-        
+
         let text: String
-        
+
         let label: String
     }
 

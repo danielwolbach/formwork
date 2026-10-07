@@ -111,7 +111,7 @@ struct WorkoutEntryRow: View {
             Button(.remove) {
                 remove()
             }
-            
+
             Button(.cancel) {
                 // Works automatically.
             }
