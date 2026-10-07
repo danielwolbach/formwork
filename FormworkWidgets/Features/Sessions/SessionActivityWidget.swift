@@ -23,24 +23,32 @@ struct SessionActivityWidget: Widget {
                 HStack {
                     if family != .small {
                         pictogram(for: context)
+                    } else {
+                        Image(systemName: context.state.pictogram.image)
+                            .foregroundStyle(context.state.pictogram.color)
+                            .font(.caption)
+                            .fontWeight(.semibold)
                     }
 
                     Spacer()
 
-                    progress(for: context)
+                    progress(for: context, compact: family == .small)
                 }
 
                 HStack {
-                    description(for: context)
+                    description(for: context, compact: family == .small)
 
                     Spacer()
 
                     if family != .small {
                         controls(for: context)
+                    } else {
+                        primaryAction(for: context)
+                            .controlSize(.small)
                     }
                 }
             }
-            .padding()
+            .padding(family == .small ? 12 : 16)
         }
     }
 
@@ -91,42 +99,43 @@ struct SessionActivityWidget: Widget {
             .frame(width: 40)
     }
 
-    private static func description(for context: ActivityViewContext<SessionActivityAttributes>) -> some View {
+    private static func description(for context: ActivityViewContext<SessionActivityAttributes>, compact: Bool = false) -> some View {
         VStack(alignment: .leading) {
             Text(context.state.title)
                 .lineLimit(1)
-                .font(.headline)
+                .font(compact ? .footnote.bold() : .headline)
 
             TargetSubtitle(target: context.state.target)
                 .lineLimit(1)
-                .font(.subheadline)
+                .font(compact ? .caption : .subheadline)
                 .foregroundStyle(.secondary)
         }
     }
 
-    private static func progress(for context: ActivityViewContext<SessionActivityAttributes>) -> some View {
+    private static func progress(for context: ActivityViewContext<SessionActivityAttributes>, compact: Bool = false) -> some View {
         HStack {
             Text(context.state.startDate, style: .timer)
                 .monospacedDigit()
-                .font(.footnote)
+                .font(compact ? .caption2 : .footnote)
                 .fontWeight(.semibold)
                 .multilineTextAlignment(.trailing)
+                .foregroundStyle(.secondary)
 
             Divider()
                 .frame(height: 16)
 
-            remaining(for: context)
+            remaining(for: context, compact: compact)
         }
     }
 
-    private static func remaining(for context: ActivityViewContext<SessionActivityAttributes>) -> some View {
+    private static func remaining(for context: ActivityViewContext<SessionActivityAttributes>, compact: Bool = false) -> some View {
         HStack(alignment: .bottom, spacing: 0) {
             Text(verbatim: "\(context.state.resolved)")
-                .font(.footnote)
+                .font(compact ? .caption2 : .footnote)
                 .fontWeight(.semibold)
 
             Text(verbatim: "/\(context.state.total)")
-                .font(.footnote)
+                .font(compact ? .caption2 : .footnote)
                 .fontWeight(.semibold)
                 .foregroundStyle(.secondary)
         }
