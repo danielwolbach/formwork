@@ -185,12 +185,14 @@ private struct ExerciseCategoryTile: View {
                     Text(category.title)
                         .lineLimit(1)
                         .font(.headline)
+                        .shadow(color: .black.opacity(0.5), radius: 4)
 
                     Text(exerciseCount.formatted(.exerciseCount))
                         .lineLimit(1)
                         .font(.subheadline)
                         .fontWeight(.semibold)
                         .foregroundStyle(.secondary)
+                        .shadow(color: .black.opacity(0.5), radius: 4)
                 }
 
                 Spacer()
@@ -198,7 +200,7 @@ private struct ExerciseCategoryTile: View {
             .padding()
         }
         .foregroundStyle(.white)
-        .background(category.pictogram.color, in: .rect(cornerRadius: 16, style: .continuous))
+        .glassEffect(.regular.tint(category.pictogram.color), in: .rect(cornerRadius: 16, style: .continuous))
     }
 }
 
