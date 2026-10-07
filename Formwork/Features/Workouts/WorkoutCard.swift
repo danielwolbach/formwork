@@ -145,18 +145,18 @@ struct WorkoutCard: View {
             Text(.alertDeleteWorkoutMessage)
         }
         .alert(.alertReplaceSessionTitle, isPresented: $replaceSessionAlert) {
-            Button(.cancel) {
-                // Works automatically.
-            }
-
             Button(.replaceSession) {
                 replaceSession()
             }
-
+            
             if let session = activeSessions.first {
                 Button(.resumeSession) {
                     presentSession(session)
                 }
+            }
+            
+            Button(.cancel) {
+                // Works automatically.
             }
         } message: {
             Text(.alertReplaceSessionMessage)
@@ -176,6 +176,7 @@ struct WorkoutCard: View {
                 .frame(height: 64)
                 .padding()
                 .background(workout.pictogram.color.quinary)
+                .accessibilityHidden(true)
 
             VStack(alignment: .leading, spacing: .groups) {
                 VStack(alignment: .leading) {
@@ -213,6 +214,7 @@ struct WorkoutCard: View {
 
             Image(systemName: "chevron.forward")
                 .foregroundStyle(.tertiary)
+                .accessibilityHidden(true)
         }
     }
 
@@ -234,7 +236,7 @@ struct WorkoutCard: View {
     }
 
     private func startSession() {
-        guard activeSessions.first == nil else {
+        guard activeSessions.isEmpty else {
             replaceSessionAlert = true
             return
         }
@@ -253,4 +255,5 @@ struct WorkoutCard: View {
     NavigationRoot {
         WorkoutCard(Samples.workouts.first!)
     }
+    .sampleData()
 }

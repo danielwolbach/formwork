@@ -31,17 +31,19 @@ public struct PictogramHeader: View {
 
             VStack {
                 Text(title)
-                    .lineLimit(1)
                     .font(.headline)
+                    .lineLimit(1)
 
                 if let subtitle, !subtitle.isEmpty {
                     Text(subtitle)
-                        .lineLimit(1)
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
+                        .lineLimit(1)
                 }
             }
         }
+        .accessibilityElement(children: .combine)
+        .accessibilityAddTraits(.isHeader)
     }
 }
 

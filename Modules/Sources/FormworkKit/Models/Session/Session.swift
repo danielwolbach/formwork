@@ -36,7 +36,7 @@ public class Session {
         self.startDate = .now
         // Archived exercises are inactive, so their entries don't play.
         self.entries = (workout.entries ?? []).filter { !$0.isArchived }.map { .init(entry: $0) }
-        self.currentEntryIdentifier = self.entries?.min { $0.order < $1.order }?.identifier
+        self.currentEntryIdentifier = entries?.min { $0.order < $1.order }?.identifier
         self.timeZoneIdentifier = TimeZone.current.identifier
     }
 }

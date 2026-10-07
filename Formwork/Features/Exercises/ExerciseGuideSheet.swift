@@ -12,9 +12,6 @@ import SwiftUI
 struct ExerciseGuideSheet: View {
     private let exercise: Exercise
 
-    @Environment(\.dismiss)
-    private var dismiss: DismissAction
-
     init(_ exercise: Exercise) {
         self.exercise = exercise
     }

@@ -39,14 +39,15 @@ struct ExerciseRow: View {
 
                 Image(systemName: "chevron.forward")
                     .foregroundStyle(.tertiary)
+                    .accessibilityHidden(true)
             }
             .contentShape(.rect)
         }
         .buttonStyle(.plain)
         .padding(8)
         .contextMenu {
-            Section {
-                if !exercise.isArchived {
+            if !exercise.isArchived {
+                Section {
                     Button(.addToWorkout) {
                         sheet = .exerciseAddToWorkout(exercise)
                     }
@@ -101,7 +102,7 @@ struct ExerciseRow: View {
             Button(.delete) {
                 delete()
             }
-            
+
             if !exercise.isArchived {
                 Button(.archive) {
                     archive()

@@ -13,7 +13,6 @@ import SwiftUI
 struct CalendarSection: View {
     private static let spacing: CGFloat = 8
 
-    /// Matches the default padding of the card group box style.
     private static let cardPadding: CGFloat = 16
 
     private static let monthsAhead = 12
@@ -136,7 +135,6 @@ struct CalendarSection: View {
         }
     }
 
-    /// From the first session, or this month if there's none yet, to a year ahead for planned workouts.
     private var months: [Date] {
         let current = startOfMonth(.now)
         let first = sessions.map(\.startDate).min().map(startOfMonth).map { min($0, current) } ?? current
@@ -189,14 +187,12 @@ struct CalendarSection: View {
         calendar.dateInterval(of: .month, for: date)?.start ?? calendar.startOfDay(for: date)
     }
 
-    /// Always six weeks, padded with the neighbouring months' days, so every month is the same height while paging.
     private func weeks(of month: Date) -> [[Date]] {
         let leading = (calendar.component(.weekday, from: month) - calendar.firstWeekday + 7) % 7
         let days = (0 ..< 42).compactMap { calendar.date(byAdding: .day, value: $0 - leading, to: month) }
         return stride(from: 0, to: days.count, by: 7).map { Array(days[$0 ..< min($0 + 7, days.count)]) }
     }
 
-    /// Keyed by the start of each day, in the session's own wall-clock time.
     private func sessionsByDay(inMonthOf date: Date) -> [Date: [Session]] {
         guard let interval = calendar.dateInterval(of: .month, for: date) else {
             return [:]
@@ -245,7 +241,6 @@ struct CalendarSection: View {
         }
     }
 
-    /// The same day of the month, clamped to the month's length.
     private func sameDay(as date: Date, in month: Date) -> Date {
         guard !calendar.isDate(date, equalTo: month, toGranularity: .month) else {
             return date

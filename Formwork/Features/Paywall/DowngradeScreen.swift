@@ -39,7 +39,7 @@ struct DowngradeScreen: View {
                 header
 
                 KeepSection(
-                    String(localized: .fieldWorkoutsTitle),
+                    .fieldWorkoutsTitle,
                     items: sortedWorkouts,
                     selection: $keptWorkouts,
                     limit: FullVersion.workoutLimit
@@ -52,7 +52,7 @@ struct DowngradeScreen: View {
                 }
 
                 KeepSection(
-                    String(localized: .fieldExercisesTitle),
+                    .fieldExercisesTitle,
                     items: sortedExercises,
                     selection: $keptExercises,
                     limit: FullVersion.exerciseLimit
@@ -97,6 +97,10 @@ struct DowngradeScreen: View {
             }
         }
         .onAppear {
+            guard keptWorkouts.isEmpty, keptExercises.isEmpty else {
+                return
+            }
+
             keptWorkouts = Set(workouts.prefix(FullVersion.workoutLimit))
             keptExercises = Set(exercises.prefix(FullVersion.exerciseLimit))
         }
@@ -108,10 +112,12 @@ struct DowngradeScreen: View {
                 .font(.system(size: 48))
                 .frame(width: 64, height: 64)
                 .foregroundStyle(.tint)
+                .accessibilityHidden(true)
 
             Text(.downgradeTitle)
                 .font(.title)
                 .fontWeight(.bold)
+                .accessibilityAddTraits(.isHeader)
 
             Text(.downgradeMessage(workoutLimit: FullVersion.workoutLimit, exerciseLimit: FullVersion.exerciseLimit))
                 .font(.body)
@@ -146,7 +152,7 @@ struct DowngradeScreen: View {
 }
 
 private struct KeepSection<Item: PersistentModel, Row: View>: View {
-    private let title: String
+    private let title: LocalizedStringResource
 
     private let items: [Item]
 
@@ -158,7 +164,7 @@ private struct KeepSection<Item: PersistentModel, Row: View>: View {
     private var selection: Set<Item>
 
     init(
-        _ title: String,
+        _ title: LocalizedStringResource,
         items: [Item],
         selection: Binding<Set<Item>>,
         limit: Int,
@@ -175,11 +181,12 @@ private struct KeepSection<Item: PersistentModel, Row: View>: View {
         SectionView(title, subtitle: "\(selection.count)/\(limit)") {
             LazyVStack(spacing: 0) {
                 ForEach(items) { item in
-                    KeepRow(isKept: selection.contains(item), isSelectable: canToggle(item)) {
+                    SelectableRow(isSelected: selection.contains(item)) {
                         toggle(item)
                     } content: {
                         row(item)
                     }
+                    .disabled(!canToggle(item))
                 }
             }
             .edgeToEdge()
@@ -212,40 +219,6 @@ private struct KeepSection<Item: PersistentModel, Row: View>: View {
         } else if selection.count < limit {
             selection.insert(item)
         }
-    }
-}
-
-private struct KeepRow<Content: View>: View {
-    private let isKept: Bool
-
-    private let isSelectable: Bool
-
-    private let action: () -> Void
-
-    private let content: Content
-
-    init(isKept: Bool, isSelectable: Bool, action: @escaping () -> Void, @ViewBuilder content: () -> Content) {
-        self.isKept = isKept
-        self.isSelectable = isSelectable
-        self.action = action
-        self.content = content()
-    }
-
-    var body: some View {
-        Button(action: action) {
-            HStack {
-                content
-
-                Image(systemName: isKept ? "checkmark.circle.fill" : "circle")
-                    .font(.title2)
-                    .foregroundStyle(isKept ? AnyShapeStyle(.tint) : AnyShapeStyle(.tertiary))
-            }
-            .padding(8)
-            .contentShape(.rect)
-        }
-        .buttonStyle(.plain)
-        .disabled(!isSelectable)
-        .padding(.horizontal, 8)
     }
 }
 

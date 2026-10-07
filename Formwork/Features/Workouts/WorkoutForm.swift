@@ -15,7 +15,23 @@ struct WorkoutForm: View {
         var name: String
         var pictogram: Pictogram
         var schedule: Schedule
-        var entries: [WorkoutEntry]
+        var entries: [DraftEntry]
+    }
+
+    // Plain values until commit: a new WorkoutEntry pointing at a saved exercise would be inserted right away, and linger without a workout if the form is cancelled.
+    private struct DraftEntry: Identifiable, Hashable {
+        let id = UUID()
+        let saved: WorkoutEntry?
+        let exercise: Exercise?
+        let target: ExerciseTarget
+
+        var pictogram: Pictogram {
+            saved?.pictogram ?? exercise?.pictogram ?? .unknown
+        }
+
+        var title: String {
+            saved?.title ?? exercise?.title ?? ""
+        }
     }
 
     private let workout: Workout?
@@ -42,12 +58,12 @@ struct WorkoutForm: View {
             name: workout?.name ?? "",
             pictogram: workout?.pictogram ?? .workout,
             schedule: workout?.schedule ?? .weekly(),
-            entries: (workout?.entries ?? []).sorted()
+            entries: (workout?.entries ?? []).sorted().map { DraftEntry(saved: $0, exercise: $0.exercise, target: $0.target) }
         )
 
         self.workout = workout
         self.original = draft
-        self._draft = .init(initialValue: draft)
+        self._draft = State(initialValue: draft)
     }
 
     var body: some View {
@@ -102,7 +118,9 @@ struct WorkoutForm: View {
         }
         .sheet(isPresented: $showEntriesPicker) {
             NavigationRoot {
-                WorkoutAddEntriesForm(entries: $draft.entries)
+                WorkoutAddEntriesForm { selection in
+                    draft.entries += selection.map { DraftEntry(saved: nil, exercise: $0.exercise, target: $0.target) }
+                }
             }
             .paywallPresenter()
         }
@@ -132,6 +150,7 @@ struct WorkoutForm: View {
 
                         Image(systemName: "line.3.horizontal")
                             .foregroundStyle(.tertiary)
+                            .accessibilityHidden(true)
                     }
                     .padding(.horizontal)
                     .padding(.vertical, 8)
@@ -144,7 +163,7 @@ struct WorkoutForm: View {
                 }
                 .reorderable()
             }
-            .reorderContainer(for: WorkoutEntry.self) { difference in
+            .reorderContainer(for: DraftEntry.self) { difference in
                 draft.entries.apply(difference: difference)
             }
             .swipeActionsContainer()
@@ -158,30 +177,35 @@ struct WorkoutForm: View {
         draft != original
     }
 
+    private var trimmedName: String {
+        draft.name.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
     private var valid: Bool {
-        let name = draft.name.trimmingCharacters(in: .whitespacesAndNewlines)
-        return !name.isEmpty
+        !trimmedName.isEmpty
     }
 
     private func commit() {
-        let name = draft.name.trimmingCharacters(in: .whitespacesAndNewlines)
+        let kept = Set(draft.entries.compactMap(\.saved))
 
-        for (index, entry) in draft.entries.enumerated() {
+        let entries = draft.entries.enumerated().map { index, item in
+            let entry = item.saved ?? WorkoutEntry(exercise: item.exercise, target: item.target)
             entry.order = index
+            return entry
         }
 
         if let workout {
             // Taken out of the workout, an entry would linger without one.
-            for removed in workout.entries ?? [] where !draft.entries.contains(removed) {
+            for removed in workout.entries ?? [] where !kept.contains(removed) {
                 context.delete(removed)
             }
 
-            workout.name = name
+            workout.name = trimmedName
             workout.pictogram = draft.pictogram
             workout.schedule = draft.schedule
-            workout.entries = draft.entries
+            workout.entries = entries
         } else {
-            let workout = Workout(name: name, pictogram: draft.pictogram, schedule: draft.schedule, entries: draft.entries)
+            let workout = Workout(name: trimmedName, pictogram: draft.pictogram, schedule: draft.schedule, entries: entries)
             context.insert(workout)
         }
 

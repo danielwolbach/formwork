@@ -9,18 +9,18 @@ import FormworkKit
 import SwiftUI
 
 public struct NumberStepper: View {
-    let title: String
+    private let title: String
 
-    let suffix: String?
+    private let suffix: String?
 
-    let stepSize: Double?
+    private let stepSize: Double?
 
-    let fractionLength: Int
+    private let fractionLength: Int
 
-    let range: ClosedRange<Double>
+    private let range: ClosedRange<Double>
 
     @Binding
-    var value: Double
+    private var value: Double
 
     @State
     private var showKeypad = false
@@ -96,6 +96,23 @@ public struct NumberStepper: View {
         .sensoryFeedback(trigger: value) { oldValue, newValue in
             newValue > oldValue ? .increase : .decrease
         }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(title)
+        .accessibilityValue([text, suffix].compactMap(\.self).joined(separator: " "))
+        .accessibilityAdjustableAction { direction in
+            guard let stepSize else {
+                return
+            }
+
+            switch direction {
+            case .increment: value = clamped(value + stepSize)
+            case .decrement: value = clamped(value - stepSize)
+            @unknown default: break
+            }
+        }
+        .accessibilityAction {
+            showKeypad = true
+        }
     }
 
     private var titleLabel: some View {
@@ -126,6 +143,7 @@ public struct NumberStepper: View {
         .labelStyle(.fixedIconOnly)
         .buttonStyle(.glass)
         .buttonBorderShape(.circle)
+        .disabled(delta < 0 ? value <= range.lowerBound : value >= range.upperBound)
     }
 
     private func clamped(_ raw: Double) -> Double {
@@ -189,14 +207,10 @@ private struct NumberEntrySheet: View {
     }
 
     private func confirm() {
-        let parsed = Double(draft.replacingOccurrences(of: Locale.currentDecimalSeparator, with: "."))
-
-        guard let parsed else {
-            dismiss()
-            return
+        if let parsed = try? Double(draft, format: .number) {
+            value = min(max(parsed, range.lowerBound), range.upperBound)
         }
 
-        value = min(max(parsed, range.lowerBound), range.upperBound)
         dismiss()
     }
 }

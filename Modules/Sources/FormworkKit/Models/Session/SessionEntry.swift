@@ -161,4 +161,12 @@ extension SessionEntry.Status {
         case .skipped: Pictogram(image: "arrowtriangle.forward.circle.fill", tint: .orange)
         }
     }
+
+    public var title: String {
+        switch self {
+        case .pending: .init(localized: .sessionEntryStatusPendingTitle)
+        case .completed: .init(localized: .sessionEntryStatusCompletedTitle)
+        case .skipped: .init(localized: .sessionEntryStatusSkippedTitle)
+        }
+    }
 }

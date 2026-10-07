@@ -20,28 +20,20 @@ struct DebugMenu: View {
     var body: some View {
         #if DEBUG
             Menu(.debug) {
-                Button {
+                Button(String("Restart Onboarding"), systemImage: "arrow.counterclockwise") {
                     onboardingPending = true
-                } label: {
-                    VerbatimLabel(verbatim: "Restart Onboarding", systemImage: "arrow.counterclockwise")
                 }
 
-                Button {
+                Button(String("Insert Sample Data"), systemImage: "tray.and.arrow.down") {
                     Samples.insert(into: modelContext)
-                } label: {
-                    VerbatimLabel(verbatim: "Insert Sample Data", systemImage: "tray.and.arrow.down")
                 }
 
-                Button {
+                Button(String("Unarchive All"), systemImage: "archivebox") {
                     unarchiveAll()
-                } label: {
-                    VerbatimLabel(verbatim: "Unarchive All", systemImage: "archivebox")
                 }
 
-                Button(role: .destructive) {
+                Button(String("Delete Everything"), systemImage: "trash", role: .destructive) {
                     Storage.deleteEverything(in: modelContext)
-                } label: {
-                    VerbatimLabel(verbatim: "Delete Everything", systemImage: "trash")
                 }
             }
         #else
@@ -49,30 +41,18 @@ struct DebugMenu: View {
         #endif
     }
 
-    private func unarchiveAll() {
-        let exercises = (try? modelContext.fetch(FetchDescriptor<Exercise>(predicate: #Predicate { $0.isArchived }))) ?? []
-        let workouts = (try? modelContext.fetch(FetchDescriptor<Workout>(predicate: #Predicate { $0.isArchived }))) ?? []
+    #if DEBUG
+        private func unarchiveAll() {
+            let exercises = (try? modelContext.fetch(FetchDescriptor<Exercise>(predicate: #Predicate { $0.isArchived }))) ?? []
+            let workouts = (try? modelContext.fetch(FetchDescriptor<Workout>(predicate: #Predicate { $0.isArchived }))) ?? []
 
-        for exercise in exercises {
-            exercise.isArchived = false
+            for exercise in exercises {
+                exercise.isArchived = false
+            }
+
+            for workout in workouts {
+                workout.isArchived = false
+            }
         }
-
-        for workout in workouts {
-            workout.isArchived = false
-        }
-    }
-}
-
-private struct VerbatimLabel: View {
-    let verbatim: String
-
-    let systemImage: String
-
-    var body: some View {
-        Label {
-            Text(verbatim: verbatim)
-        } icon: {
-            Image(systemName: systemImage)
-        }
-    }
+    #endif
 }

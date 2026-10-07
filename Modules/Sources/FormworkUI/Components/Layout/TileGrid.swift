@@ -8,7 +8,7 @@
 import SwiftUI
 
 public struct TileGrid: Layout {
-    struct Span: Equatable {
+    fileprivate struct Span: Equatable {
         let rows: Int
 
         let columns: Int
@@ -23,16 +23,16 @@ public struct TileGrid: Layout {
         }
     }
 
-    struct Slot {
+    fileprivate struct SpanKey: LayoutValueKey {
+        static let defaultValue = Span(rows: 1, columns: 1)
+    }
+
+    private struct Slot {
         let row: Int
 
         let column: Int
 
         let span: Span
-    }
-
-    struct SpanKey: LayoutValueKey {
-        static let defaultValue = Span(rows: 1, columns: 1)
     }
 
     private let columns: Int

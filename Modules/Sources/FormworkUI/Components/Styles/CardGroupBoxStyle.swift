@@ -1,6 +1,6 @@
 //
 //  CardGroupBoxStyle.swift
-//  FormworkModules
+//  FormworkUI
 //
 //  Created by Daniel Wolbach on 05.10.26.
 //

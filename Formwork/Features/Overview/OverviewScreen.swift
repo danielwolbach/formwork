@@ -7,7 +7,6 @@
 
 import FormworkKit
 import FormworkUI
-import SwiftData
 import SwiftUI
 
 struct OverviewScreen: View {

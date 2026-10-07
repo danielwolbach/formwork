@@ -28,7 +28,7 @@ public struct ContentStack<Content: View>: View {
 
 extension ContainerValues {
     @Entry
-    var isEdgeToEdge = false
+    var isEdgeToEdge: Bool = false
 }
 
 extension View {

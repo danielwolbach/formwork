@@ -11,7 +11,8 @@ import SwiftData
 import SwiftUI
 
 struct WorkoutEntryScreen: View {
-    private let entry: WorkoutEntry
+    @Bindable
+    private var entry: WorkoutEntry
 
     @Environment(\.modelContext)
     private var context: ModelContext
@@ -29,7 +30,7 @@ struct WorkoutEntryScreen: View {
     private var sheet: Sheet? = nil
 
     @State
-    private var deleteAlert: Bool = false
+    private var removeAlert: Bool = false
 
     init(_ entry: WorkoutEntry) {
         self.entry = entry
@@ -48,7 +49,7 @@ struct WorkoutEntryScreen: View {
                     badge: badge
                 )
 
-                ExerciseTargetEditor(target: Bindable(entry).target)
+                ExerciseTargetEditor(target: $entry.target)
 
                 if let exercise = entry.exercise {
                     ExerciseGuide(exercise)
@@ -64,8 +65,8 @@ struct WorkoutEntryScreen: View {
                     }
                 }
 
-                Section {
-                    if let exercise = entry.exercise {
+                if let exercise = entry.exercise {
+                    Section {
                         Button(.edit) {
                             sheet = .editExercise(exercise)
                         }
@@ -84,7 +85,7 @@ struct WorkoutEntryScreen: View {
 
                 Section {
                     Button(.remove) {
-                        deleteAlert = true
+                        removeAlert = true
                     }
                 }
             }
@@ -92,7 +93,7 @@ struct WorkoutEntryScreen: View {
         .sheet(item: $sheet) { sheet in
             sheet
         }
-        .alert(.alertRemoveWorkoutEntryTitle, isPresented: $deleteAlert) {
+        .alert(.alertRemoveWorkoutEntryTitle, isPresented: $removeAlert) {
             Button(.cancel) {
                 // Works automatically.
             }
@@ -105,7 +106,6 @@ struct WorkoutEntryScreen: View {
         }
     }
 
-    /// Archiving acts on the exercise, so it applies to every workout using it and to the catalog.
     private func archive() {
         entry.exercise?.isArchived = true
     }
@@ -129,4 +129,5 @@ struct WorkoutEntryScreen: View {
     NavigationRoot {
         WorkoutEntryScreen((Samples.workouts.first!.entries ?? []).first!)
     }
+    .sampleData()
 }

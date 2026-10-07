@@ -11,11 +11,11 @@ import SwiftData
 import SwiftUI
 
 struct TodaySection: View {
-    @Query(filter: #Predicate<Workout> { !$0.isArchived })
-    private var workouts: [Workout]
-
     @Environment(\.presentSession)
     private var presentSession: PresentSessionAction
+
+    @Query(filter: #Predicate<Workout> { !$0.isArchived })
+    private var workouts: [Workout]
 
     @Query(Session.activeDescriptor)
     private var activeSessions: [Session]
@@ -85,7 +85,7 @@ struct TodaySection: View {
     }
 
     private func startSession(workout: Workout) {
-        guard activeSessions.first == nil else {
+        guard activeSessions.isEmpty else {
             sessionActiveAlert = true
             return
         }
@@ -114,6 +114,7 @@ private struct StateCard: View {
             Image(systemName: image)
                 .font(.system(size: 48))
                 .foregroundStyle(tint)
+                .accessibilityHidden(true)
 
             VStack {
                 Text(title)
@@ -129,7 +130,7 @@ private struct StateCard: View {
         .padding()
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .aspectRatio(1.8, contentMode: .fit)
-        .background(tint.quinary)
-        .clipShape(.rect(cornerRadius: 16, style: .continuous))
+        .background(tint.quinary, in: .rect(cornerRadius: 16, style: .continuous))
+        .accessibilityElement(children: .combine)
     }
 }

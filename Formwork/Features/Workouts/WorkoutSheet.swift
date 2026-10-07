@@ -35,4 +35,5 @@ struct WorkoutSheet: View {
     NavigationRoot {
         WorkoutSheet(Samples.workouts.first!)
     }
+    .sampleData()
 }

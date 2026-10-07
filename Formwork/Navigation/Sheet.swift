@@ -39,7 +39,7 @@ enum Sheet: Identifiable, Hashable, View {
         case .createExercise: ExerciseForm()
         case let .createExerciseInCategories(categories): ExerciseForm(categories: categories)
         case let .editExercise(exercise): ExerciseForm(exercise)
-        case let .editExerciseNotes(exercise): ExerciseNotesSheet(exercise)
+        case let .editExerciseNotes(exercise): ExerciseNotesSheet(notes: Bindable(exercise).notes, title: exercise.title)
         case let .exerciseAddToWorkout(exercise): ExerciseAddToWorkoutForm(exercise)
         case .createWorkout: WorkoutForm()
         case let .editWorkout(workout): WorkoutForm(workout)

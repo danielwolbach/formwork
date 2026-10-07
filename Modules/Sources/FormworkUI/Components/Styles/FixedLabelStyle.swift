@@ -1,6 +1,6 @@
 //
 //  FixedLabelStyle.swift
-//  FormworkModules
+//  FormworkUI
 //
 //  Created by Daniel Wolbach on 05.10.26.
 //
@@ -8,18 +8,18 @@
 import SwiftUI
 
 public struct FixedLabelStyle: LabelStyle {
-    public var showsTitle: Bool = true
+    private let showsTitle: Bool
 
     @ScaledMetric
     private var iconSize: CGFloat = 20
 
-    public init(showsTitle: Bool) {
+    public init(showsTitle: Bool = true) {
         self.showsTitle = showsTitle
     }
 
     public func makeBody(configuration: Configuration) -> some View {
         HStack(spacing: 6) {
-            icon(configuration)
+            configuration.icon.frame(width: iconSize, height: iconSize)
 
             if showsTitle {
                 configuration.title
@@ -27,10 +27,6 @@ public struct FixedLabelStyle: LabelStyle {
         }
         .accessibilityElement(children: .ignore)
         .accessibilityLabel { _ in configuration.title }
-    }
-
-    private func icon(_ configuration: Configuration) -> some View {
-        configuration.icon.frame(width: iconSize, height: iconSize)
     }
 }
 

@@ -17,50 +17,32 @@ struct SessionShareLink: View {
     @Environment(\.units)
     private var units: Units
 
-    @State
-    private var shareImage: SessionShareImage?
-
     init(_ session: Session) {
         self.session = session
     }
 
     var body: some View {
-        Group {
-            if let shareImage {
-                ShareLink(
-                    item: shareImage,
-                    subject: Text(verbatim: shareImage.name),
-                    message: Text(.shareMessage),
-                    preview: SharePreview(shareImage.name, image: Image(uiImage: shareImage.image))
-                ) {
-                    label
-                }
-            } else {
-                Button {} label: { label }
-                    .disabled(true)
-            }
-        }
-        .task(id: session.persistentModelID) {
-            shareImage = SessionShareImage(session: session, units: units)
-        }
-    }
+        let shareImage = SessionShareImage(session: session, units: units)
 
-    private var label: some View {
-        Label(.share)
+        ShareLink(
+            item: shareImage,
+            subject: Text(verbatim: shareImage.name),
+            message: Text(.shareMessage),
+            preview: SharePreview(shareImage.name, image: Image(.imageAppIcon))
+        ) {
+            Label(.share)
+        }
     }
 }
 
 private struct SessionShareCard: View {
-    let session: Session
-
-    let tint: Color
+    private let session: Session
 
     @Environment(\.units)
     private var units: Units
 
-    init(session: Session) {
+    init(_ session: Session) {
         self.session = session
-        self.tint = session.workout?.pictogram.color ?? Pictogram.workout.color
     }
 
     var body: some View {
@@ -89,7 +71,11 @@ private struct SessionShareCard: View {
                     .padding(.leading, 4)
                     .lineLimit(3)
 
-                PictogramRow(session.pictogram, title: session.title, subtitle: session.startDate.formatted(session.wallClockTime(date: .numeric)))
+                PictogramRow(
+                    session.pictogram,
+                    title: session.title,
+                    subtitle: session.startDate.formatted(session.wallClockTime(date: .numeric))
+                )
             }
 
             Image(systemName: "checkmark.seal.fill")
@@ -123,12 +109,18 @@ private struct SessionShareCard: View {
         }
     }
 
+    private var tint: Color {
+        session.workout?.pictogram.color ?? Pictogram.workout.color
+    }
+
+    private var bestEntry: SessionEntry? {
+        let ratio = { (entry: SessionEntry) in entry.previousBest.map { entry.target.rank / $0.rank } ?? 0 }
+        return session.orderedEntries.filter(\.isBest).max { ratio($0) < ratio($1) }
+    }
+
     @ViewBuilder
     private var personalBest: some View {
-        let ratio = { (entry: SessionEntry) in entry.previousBest.map { entry.target.rank / $0.rank } ?? 0 }
-        let personalBest = session.orderedEntries.filter(\.isBest).max { ratio($0) < ratio($1) }
-
-        if let personalBest {
+        if let bestEntry {
             HStack {
                 Image(systemName: Pictogram.record.image)
                     .font(.system(size: 32))
@@ -141,7 +133,7 @@ private struct SessionShareCard: View {
                         .lineLimit(1)
                         .foregroundStyle(.secondary)
 
-                    Text(personalBest.title)
+                    Text(bestEntry.title)
                         .font(.system(.title3, design: .rounded, weight: .semibold))
                         .lineLimit(1)
                 }
@@ -150,8 +142,10 @@ private struct SessionShareCard: View {
 
                 VStack(alignment: .trailing) {
                     HStack(spacing: 2) {
-                        if let previous = personalBest.previousBest {
-                            Text(verbatim: Reading(rank: previous.rank, of: previous.exerciseKind).formatted(.reading(units: units)))
+                        if let previous = bestEntry.previousBest {
+                            let reading = Reading(rank: previous.rank, of: previous.exerciseKind)
+
+                            Text(verbatim: reading.formatted(.reading(units: units)))
                                 .font(.footnote)
                         }
 
@@ -161,7 +155,9 @@ private struct SessionShareCard: View {
                     .foregroundStyle(.secondary)
                     .baselineOffset(2)
 
-                    Text(verbatim: Reading(rank: personalBest.target.rank, of: personalBest.target.exerciseKind).formatted(.reading(units: units)))
+                    let reading = Reading(rank: bestEntry.target.rank, of: bestEntry.target.exerciseKind)
+
+                    Text(verbatim: reading.formatted(.reading(units: units)))
                         .font(.system(.title3, design: .rounded, weight: .semibold))
                         .lineLimit(1)
                         .minimumScaleFactor(0.5)
@@ -174,34 +170,36 @@ private struct SessionShareCard: View {
     }
 }
 
+// Renders only when actually shared, so the session is fetched again on the main actor by its identifier.
 private struct SessionShareImage: Transferable {
-    let image: UIImage
-
     let name: String
 
-    @MainActor
-    init?(session: Session, units: Units) {
-        guard let image = Self.renderShareImage(for: session, units: units) else {
-            return nil
-        }
+    private let identifier: PersistentIdentifier
 
-        self.image = image
+    private let container: ModelContainer?
+
+    private let units: Units
+
+    init(session: Session, units: Units) {
         self.name = "\(session.title), \(session.startDate.formatted(session.wallClockTime(date: .numeric)))"
+        self.identifier = session.persistentModelID
+        self.container = session.modelContext?.container
+        self.units = units
     }
 
     static var transferRepresentation: some TransferRepresentation {
         DataRepresentation(exportedContentType: .png) { item in
-            item.image.pngData() ?? Data()
+            try await item.pngData()
         }
         .suggestedFileName {
-            "\($0.name).png"
+            "\($0.name.replacing(/[\/:]/, with: "-")).png"
         }
     }
 
     @MainActor
-    private static func renderShareImage(for session: Session, units: Units) -> UIImage? {
+    static func render(_ session: Session, units: Units) -> UIImage? {
         let renderer = ImageRenderer(
-            content: SessionShareCard(session: session)
+            content: SessionShareCard(session)
                 .environment(\.colorScheme, .light)
                 .environment(\.locale, .current)
                 .environment(\.units, units)
@@ -210,13 +208,25 @@ private struct SessionShareImage: Transferable {
         renderer.isOpaque = true
         return renderer.uiImage
     }
+
+    @MainActor
+    private func pngData() throws -> Data {
+        guard
+            let session = container?.mainContext.model(for: identifier) as? Session,
+            let data = Self.render(session, units: units)?.pngData()
+        else {
+            throw CocoaError(.fileWriteUnknown)
+        }
+
+        return data
+    }
 }
 
 #Preview("Rendered") {
     let sessions = (try? Samples.container.mainContext.fetch(Session.finishedDescriptor)) ?? []
 
-    if let session = sessions.first, let shareImage = SessionShareImage(session: session, units: .current) {
-        Image(uiImage: shareImage.image)
+    if let session = sessions.first, let image = SessionShareImage.render(session, units: .current) {
+        Image(uiImage: image)
             .resizable()
             .scaledToFit()
     } else {
@@ -225,5 +235,5 @@ private struct SessionShareImage: Transferable {
 }
 
 #Preview("View") {
-    SessionShareCard(session: Samples.sessions.first!)
+    SessionShareCard(Samples.sessions.first!)
 }

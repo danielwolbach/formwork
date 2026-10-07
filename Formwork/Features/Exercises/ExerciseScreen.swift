@@ -61,8 +61,8 @@ struct ExerciseScreen: View {
         .contentMargins(.bottom, .sections, for: .scrollContent)
         .toolbar {
             Menu(.more) {
-                Section {
-                    if !exercise.isArchived {
+                if !exercise.isArchived {
+                    Section {
                         Button(.addToWorkout) {
                             sheet = .exerciseAddToWorkout(exercise)
                         }
@@ -138,4 +138,5 @@ struct ExerciseScreen: View {
     NavigationRoot {
         ExerciseScreen(Samples.exercises[1])
     }
+    .sampleData()
 }

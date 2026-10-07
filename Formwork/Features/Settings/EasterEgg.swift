@@ -9,9 +9,9 @@ import SwiftUI
 
 struct EasterEgg: View {
     @State
-    var degree = 0.0
+    private var degree = 0.0
 
-    var times = 1.0
+    private var times = 1.0
 
     var body: some View {
         VStack(spacing: 20) {

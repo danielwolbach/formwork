@@ -8,7 +8,9 @@
 import SwiftUI
 
 public struct RowLabeledContentStyle: LabeledContentStyle {
-    public init() {}
+    public init() {
+        // Nothing to initialize.
+    }
 
     public func makeBody(configuration: Configuration) -> some View {
         HStack {
@@ -23,6 +25,7 @@ public struct RowLabeledContentStyle: LabeledContentStyle {
                     }
                 }
             }
+            .accessibilityElement(children: .combine)
 
             Spacer(minLength: 0)
 

@@ -35,6 +35,7 @@ struct StatisticChips: View {
                     StatisticChip(kind, of: history)
                 }
                 .buttonStyle(.plain)
+                .accessibilityLabel(kind.definition.title)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -63,12 +64,8 @@ private struct StatisticChip: View {
     var body: some View {
         let pictogram = kind.definition.pictogram
 
-        Label {
-            Text(verbatim: text)
-        } icon: {
-            Image(systemName: pictogram.image)
-        }
-        .labelStyle(.chip(tint: pictogram.color))
+        Label(text, systemImage: pictogram.image)
+            .labelStyle(.chip(tint: pictogram.color))
     }
 
     private var text: String {

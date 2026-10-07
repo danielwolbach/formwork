@@ -33,6 +33,9 @@ struct ExerciseForm: View {
     @State
     private var draft: Draft
 
+    @State
+    private var showNotesEditor: Bool = false
+
     init(_ exercise: Exercise? = nil) {
         let draft = Draft(
             name: exercise?.name ?? "",
@@ -83,13 +86,14 @@ struct ExerciseForm: View {
                 }
 
                 SectionView(.fieldNotesTitle) {
-                    NavigationLink {
-                        ExerciseNotesScreen(notes: $draft.notes)
+                    Button {
+                        showNotesEditor = true
                     } label: {
                         GroupBox {
-                            TextField(.fieldNotesPlaceholder, text: .constant(draft.notes), axis: .vertical)
+                            Text(draft.notes.isEmpty ? String(localized: .fieldNotesPlaceholder) : draft.notes)
+                                .foregroundStyle(draft.notes.isEmpty ? .tertiary : .primary)
                                 .lineLimit(4...)
-                                .disabled(true)
+                                .frame(maxWidth: .infinity, alignment: .leading)
                         }
                     }
                     .buttonStyle(.plain)
@@ -98,7 +102,7 @@ struct ExerciseForm: View {
         }
         .contentMargins(.bottom, .sections, for: .scrollContent)
         .groupBoxStyle(.card)
-        .navigationTitle(exercise == nil ? .screenCreateExerciseTitle : .screenEditExerciseTile)
+        .navigationTitle(exercise == nil ? .screenCreateExerciseTitle : .screenEditExerciseTitle)
         .navigationBarTitleDisplayMode(.inline)
         .scrollDismissesKeyboard(.immediately)
         .interactiveDismissDisabled(hasChanges)
@@ -112,6 +116,11 @@ struct ExerciseForm: View {
                     commit()
                 }
                 .disabled(!valid)
+            }
+        }
+        .sheet(isPresented: $showNotesEditor) {
+            NavigationRoot {
+                ExerciseNotesSheet(notes: $draft.notes, title: draft.name)
             }
         }
     }
@@ -179,6 +188,7 @@ private struct ExerciseKindPicker: View {
                 }
                 .buttonStyle(CardButtonStyle(style: kind == candidate ? .selected : .bordered))
                 .tint(candidate.pictogram.color)
+                .accessibilityAddTraits(kind == candidate ? [.isSelected] : [])
             }
         }
         .buttonBorderShape(.roundedRectangle(radius: 8))
@@ -205,6 +215,7 @@ private struct ExerciseCategoryPicker: View {
                 .buttonStyle(CardButtonStyle(style: categories.contains(candidate) ? .selected : .bordered))
                 .tint(candidate.pictogram.color)
                 .labelStyle(.fixedTitleAndIcon)
+                .accessibilityAddTraits(categories.contains(candidate) ? [.isSelected] : [])
             }
         }
         .frame(maxWidth: .infinity)

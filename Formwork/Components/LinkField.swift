@@ -15,7 +15,7 @@ struct LinkField: View {
 
     @Binding
     private var text: String
-    
+
     @State
     private var scanned: URL?
 
@@ -37,6 +37,7 @@ struct LinkField: View {
 
             if QRCodeScanner.isSupported {
                 Button(.scanQRCode) {
+                    scanned = nil
                     showScanner = true
                 }
                 .labelStyle(.fixedIconOnly)

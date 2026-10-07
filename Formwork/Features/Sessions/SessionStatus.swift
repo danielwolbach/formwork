@@ -28,6 +28,7 @@ struct SessionStatus: View {
             HStack {
                 Text(verbatim: "\(session.resolvedCount) / \((session.entries ?? []).count)")
                     .contentTransition(.numericText(value: Double(session.resolvedCount)))
+                    .accessibilityLabel(Text(.sessionProgressLabel(resolved: session.resolvedCount, total: (session.entries ?? []).count)))
 
                 Divider()
                     .frame(height: 12)
@@ -38,6 +39,8 @@ struct SessionStatus: View {
             .monospacedDigit()
             .foregroundStyle(.secondary)
         }
+        .accessibilityElement(children: .combine)
+        .accessibilityAddTraits(.updatesFrequently)
     }
 
     @ViewBuilder

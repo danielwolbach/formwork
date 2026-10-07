@@ -45,6 +45,7 @@ public struct PictogramRow: View {
             Spacer(minLength: 0)
         }
         .contentShape(.rect)
+        .accessibilityElement(children: .combine)
     }
 }
 

@@ -36,6 +36,7 @@ struct ExerciseAddToWorkoutForm: View {
     }
 
     var body: some View {
+        let workouts = workouts
         let workout = selection ?? workouts.first
 
         Group {
@@ -44,7 +45,7 @@ struct ExerciseAddToWorkoutForm: View {
                     ContentStack {
                         SectionView(.fieldWorkoutTitle) {
                             GroupBox {
-                                workoutPicker(workout)
+                                workoutPicker(workout, workouts: workouts)
                             }
                         }
 
@@ -117,7 +118,7 @@ struct ExerciseAddToWorkoutForm: View {
         exercise.currentHighestTarget ?? .initial(for: exercise.kind, in: units)
     }
 
-    private func workoutPicker(_ workout: Workout) -> some View {
+    private func workoutPicker(_ workout: Workout, workouts: [Workout]) -> some View {
         Menu {
             Picker(.fieldWorkoutTitle, selection: Binding(get: { workout }, set: { selection = $0 })) {
                 ForEach(workouts) { workout in
@@ -132,6 +133,7 @@ struct ExerciseAddToWorkoutForm: View {
 
                 Image(systemName: "chevron.up.chevron.down")
                     .foregroundStyle(.tertiary)
+                    .accessibilityHidden(true)
             }
             .contentShape(.rect)
         }

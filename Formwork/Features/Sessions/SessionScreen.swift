@@ -60,12 +60,12 @@ struct SessionScreen: View {
             }
         }
         .alert(.alertDeleteSessionTitle, isPresented: $deleteAlert) {
-            Button(.cancel) {
-                // Works automatically.
-            }
-
             Button(.delete) {
                 delete()
+            }
+            
+            Button(.cancel) {
+                // Works automatically.
             }
         } message: {
             Text(.alertDeleteSessionMessage)

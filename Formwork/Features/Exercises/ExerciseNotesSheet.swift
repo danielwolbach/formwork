@@ -10,7 +10,10 @@ import FormworkUI
 import SwiftUI
 
 struct ExerciseNotesSheet: View {
-    private let exercise: Exercise
+    private let title: String
+
+    @Binding
+    private var original: String
 
     @Environment(\.dismiss)
     private var dismiss: DismissAction
@@ -21,9 +24,10 @@ struct ExerciseNotesSheet: View {
     @FocusState
     private var focused: Bool
 
-    init(_ exercise: Exercise) {
-        self._notes = .init(initialValue: exercise.notes)
-        self.exercise = exercise
+    init(notes: Binding<String>, title: String) {
+        self.title = title
+        self._original = notes
+        self._notes = .init(initialValue: notes.wrappedValue)
     }
 
     var body: some View {
@@ -36,14 +40,16 @@ struct ExerciseNotesSheet: View {
                         .padding(.horizontal, 5)
                         .padding(.vertical, 8)
                         .allowsHitTesting(false)
+                        .accessibilityHidden(true)
                 }
             }
             .padding(.horizontal)
             .navigationTitle(.fieldNotesTitle)
-            .navigationSubtitle(exercise.title)
+            .navigationSubtitle(title)
             .navigationBarTitleDisplayMode(.inline)
             .presentationDetents([.large])
             .interactiveDismissDisabled(hasChanges)
+            .accessibilityLabel(Text(.fieldNotesTitle))
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     CancelButton(hasChanges: hasChanges)
@@ -51,7 +57,7 @@ struct ExerciseNotesSheet: View {
 
                 ToolbarItem(placement: .confirmationAction) {
                     Button(.confirm) {
-                        exercise.notes = notes.trimmingCharacters(in: .whitespacesAndNewlines)
+                        original = notes.trimmingCharacters(in: .whitespacesAndNewlines)
                         dismiss()
                     }
                 }
@@ -63,13 +69,13 @@ struct ExerciseNotesSheet: View {
     }
 
     private var hasChanges: Bool {
-        notes != exercise.notes
+        notes != original
     }
 }
 
 #Preview {
     NavigationRoot {
-        ExerciseNotesSheet(Samples.exercises.first!)
+        ExerciseNotesSheet(notes: .constant(Samples.exercises[1].notes), title: Samples.exercises[1].title)
     }
     .sampleData()
 }

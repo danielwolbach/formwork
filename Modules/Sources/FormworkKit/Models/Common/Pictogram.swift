@@ -26,6 +26,25 @@ extension Pictogram.Tint: Identifiable {
     }
 }
 
+extension Pictogram.Tint {
+    public var title: String {
+        switch self {
+        case .blue: .init(localized: .pictogramTintBlueTitle)
+        case .indigo: .init(localized: .pictogramTintIndigoTitle)
+        case .purple: .init(localized: .pictogramTintPurpleTitle)
+        case .pink: .init(localized: .pictogramTintPinkTitle)
+        case .red: .init(localized: .pictogramTintRedTitle)
+        case .orange: .init(localized: .pictogramTintOrangeTitle)
+        case .yellow: .init(localized: .pictogramTintYellowTitle)
+        case .green: .init(localized: .pictogramTintGreenTitle)
+        case .mint: .init(localized: .pictogramTintMintTitle)
+        case .cyan: .init(localized: .pictogramTintCyanTitle)
+        case .brown: .init(localized: .pictogramTintBrownTitle)
+        case .gray: .init(localized: .pictogramTintGrayTitle)
+        }
+    }
+}
+
 extension Pictogram {
     public static let unknown: Pictogram = .init(image: "questionmark", tint: .gray)
 

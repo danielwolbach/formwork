@@ -24,12 +24,15 @@ struct OnboardingScreen: View {
     private var onboardingPending: Bool = true
 
     @State
-    private var page: Int? = Page.welcome.rawValue
+    private var page: Page? = .welcome
+
+    @State
+    private var finished: Bool = false
 
     var body: some View {
         ScrollView(.horizontal) {
             HStack(spacing: 0) {
-                ForEach(Page.allCases, id: \.rawValue) { page in
+                ForEach(Page.allCases, id: \.self) { page in
                     PageView(page: page)
                         .containerRelativeFrame(.horizontal)
                 }
@@ -39,10 +42,8 @@ struct OnboardingScreen: View {
         .scrollTargetBehavior(.viewAligned)
         .scrollPosition(id: $page)
         .scrollIndicators(.hidden)
-        .sensoryFeedback(.impact(flexibility: .soft), trigger: page) {
-            _, new in new != nil
-        }
-        .sensoryFeedback(.success, trigger: page == nil)
+        .sensoryFeedback(.impact(flexibility: .soft), trigger: page)
+        .sensoryFeedback(.success, trigger: finished)
         .safeAreaBar(edge: .bottom) {
             controls
         }
@@ -67,15 +68,18 @@ struct OnboardingScreen: View {
     }
 
     private var primaryAction: some View {
-        Button(.coninue) {
-            navigate(to: current.rawValue + 1)
+        Button(.continue) {
+            advance()
         }
     }
 
     private var indicator: some View {
         HStack(spacing: 6) {
             ForEach(Page.allCases, id: \.rawValue) { page in
-                Capsule().fill(.tint).opacity(page == current ? 1 : 0.2).frame(width: page == current ? 20 : 6, height: 6)
+                Capsule()
+                    .fill(.tint)
+                    .opacity(page == current ? 1 : 0.2)
+                    .frame(width: page == current ? 20 : 6, height: 6)
             }
         }
         .animation(.snappy, value: current)
@@ -83,18 +87,17 @@ struct OnboardingScreen: View {
     }
 
     private var current: Page {
-        page.flatMap(Page.init(rawValue:)) ?? .welcome
+        page ?? .welcome
     }
 
-    private func navigate(to rawValue: Int) {
-        guard let next = Page(rawValue: rawValue) else {
+    private func advance() {
+        guard let next = Page(rawValue: current.rawValue + 1) else {
             finish()
-            page = nil
             return
         }
 
         withAnimation(.snappy) {
-            page = next.rawValue
+            page = next
         }
     }
 
@@ -148,14 +151,26 @@ private struct PageView: View {
     let page: Page
 
     var body: some View {
+        ViewThatFits(in: .vertical) {
+            content
+
+            ScrollView {
+                content
+            }
+        }
+    }
+
+    var content: some View {
         VStack(spacing: 0) {
             preview
                 .frame(maxHeight: .infinity)
+                .accessibilityHidden(true)
 
             VStack(spacing: 16) {
                 Text(page.title)
                     .font(.title)
                     .fontWeight(.bold)
+                    .accessibilityAddTraits(.isHeader)
 
                 Text(page.message)
                     .font(.body)

@@ -7,7 +7,6 @@
 
 import FormworkKit
 import FormworkUI
-import Foundation
 import SwiftUI
 
 struct ExerciseGuide: View {
@@ -26,9 +25,7 @@ struct ExerciseGuide: View {
     var body: some View {
         VStack(spacing: .items) {
             if let link = exercise.link {
-                Button {
-                    openURL(link)
-                } label: {
+                Link(destination: link) {
                     GroupBox {
                         HStack {
                             if let host = link.host().map({ String($0.trimmingPrefix("www.")) }) {
@@ -41,6 +38,7 @@ struct ExerciseGuide: View {
 
                             Image(systemName: "arrow.up.right")
                                 .foregroundStyle(.tertiary)
+                                .accessibilityHidden(true)
                         }
                     } label: {
                         Label(.fieldLinkTitle, systemImage: "link")
@@ -53,9 +51,10 @@ struct ExerciseGuide: View {
                 sheet = .editExerciseNotes(exercise)
             } label: {
                 GroupBox {
-                    TextField(.fieldNotesPlaceholder, text: .constant(exercise.notes), axis: .vertical)
+                    Text(exercise.notes.isEmpty ? String(localized: .fieldNotesPlaceholder) : exercise.notes)
+                        .foregroundStyle(exercise.notes.isEmpty ? .tertiary : .primary)
                         .lineLimit(4...)
-                        .disabled(true)
+                        .frame(maxWidth: .infinity, alignment: .leading)
                 } label: {
                     Label(.fieldNotesTitle, systemImage: "document")
                 }

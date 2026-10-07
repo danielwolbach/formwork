@@ -181,13 +181,14 @@ private struct WeekdayPicker: View {
                 Button {
                     weekdays.formSymmetricDifference(option)
                 } label: {
-                    Text(calendar.veryShortWeekdaySymbols[weekday - 1])
+                    Text(calendar.veryShortStandaloneWeekdaySymbols[weekday - 1])
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
                 .buttonStyle(CardButtonStyle(style: weekdays.contains(option) ? .selected : .bordered))
                 .buttonBorderShape(.circle)
                 .aspectRatio(1, contentMode: .fit)
-                .accessibilityLabel(calendar.weekdaySymbols[weekday - 1])
+                .accessibilityLabel(calendar.standaloneWeekdaySymbols[weekday - 1])
+                .accessibilityAddTraits(weekdays.contains(option) ? [.isSelected] : [])
             }
         }
         .sensoryFeedback(.selection, trigger: weekdays)

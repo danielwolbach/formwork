@@ -1,6 +1,6 @@
 //
 //  ChipLabelStyle.swift
-//  FormworkModules
+//  FormworkUI
 //
 //  Created by Daniel Wolbach on 05.10.26.
 //
@@ -8,18 +8,18 @@
 import SwiftUI
 
 public struct ChipLabelStyle: LabelStyle {
-    private var tint: Color = .accentColor
+    private var tint: Color
 
-    @ScaledMetric
+    @ScaledMetric(relativeTo: .subheadline)
     private var iconSize: CGFloat = 20
 
-    public init(tint: Color) {
+    public init(tint: Color = .accentColor) {
         self.tint = tint
     }
 
     public func makeBody(configuration: Configuration) -> some View {
         HStack(spacing: 6) {
-            icon(configuration)
+            configuration.icon.frame(width: iconSize, height: iconSize)
             configuration.title
         }
         .font(.subheadline)
@@ -27,14 +27,8 @@ public struct ChipLabelStyle: LabelStyle {
         .padding(.horizontal, 12)
         .padding(.vertical, 6)
         .foregroundStyle(tint)
-        .background {
-            Capsule().fill(tint.quinary)
-        }
-        .contentShape(Capsule())
-    }
-
-    private func icon(_ configuration: Configuration) -> some View {
-        configuration.icon.frame(width: iconSize, height: iconSize)
+        .background(tint.quinary, in: .capsule)
+        .contentShape(.capsule)
     }
 }
 

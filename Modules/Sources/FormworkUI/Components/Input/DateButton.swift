@@ -5,7 +5,6 @@
 //  Created by Daniel Wolbach on 26.09.26.
 //
 
-import FormworkKit
 import SwiftUI
 
 public struct DateButton: View {
@@ -17,7 +16,7 @@ public struct DateButton: View {
     private var date: Date
 
     @State
-    private var isPresented = false
+    private var isPresented: Bool = false
 
     public init(_ title: String, date: Binding<Date>, components: DatePickerComponents) {
         self.title = title
@@ -30,11 +29,10 @@ public struct DateButton: View {
     }
 
     public var body: some View {
-        Button(components == .date ? date.formatted(date: .abbreviated, time: .omitted) : date.formatted(date: .omitted, time: .shortened)) {
+        Button(formattedDate) {
             isPresented = true
         }
         .buttonStyle(.card)
-        .labelStyle(.fixedTitleAndIcon)
         .popover(isPresented: $isPresented) {
             Group {
                 if components == .date {
@@ -50,5 +48,13 @@ public struct DateButton: View {
             .padding()
             .presentationCompactAdaptation(.popover)
         }
+        .accessibilityLabel(title)
+        .accessibilityValue(formattedDate)
+    }
+
+    private var formattedDate: String {
+        components == .date
+            ? date.formatted(date: .abbreviated, time: .omitted)
+            : date.formatted(date: .omitted, time: .shortened)
     }
 }

@@ -15,7 +15,7 @@ struct WorkoutEntryStatisticsSheet: View {
         case workout, overall
     }
 
-    let entry: WorkoutEntry
+    private let entry: WorkoutEntry
 
     @Environment(\.dismiss)
     private var dismiss: DismissAction
@@ -32,6 +32,8 @@ struct WorkoutEntryStatisticsSheet: View {
     }
 
     var body: some View {
+        let history = history
+
         Group {
             if history.sessions.isEmpty {
                 ContentUnavailableView {
@@ -88,7 +90,7 @@ struct WorkoutEntryStatisticsSheet: View {
     }
 
     private var isDoneElsewhere: Bool {
-        (entry.exercise?.sessionEntries ?? []).contains { $0.workoutEntry !== entry && $0.session.map { !$0.isActive } ?? false }
+        (entry.exercise?.sessionEntries ?? []).contains { $0.workoutEntry !== entry && $0.session?.isActive == false }
     }
 }
 

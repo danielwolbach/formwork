@@ -11,6 +11,17 @@ import SwiftData
 import SwiftUI
 
 struct ExerciseCategoryScreen: View {
+    private enum Sort: Hashable {
+        case name, newest
+
+        var descriptor: [SortDescriptor<Exercise>] {
+            switch self {
+            case .name: [SortDescriptor(\.name)]
+            case .newest: [SortDescriptor(\.creationDate, order: .reverse)]
+            }
+        }
+    }
+
     private let category: Exercise.Category
 
     @Environment(\.modelContext)
@@ -22,14 +33,14 @@ struct ExerciseCategoryScreen: View {
     @Environment(\.presentPaywall)
     private var presentPaywall: PresentPaywallAction
 
-    @Query(filter: #Predicate<Exercise> { !$0.isArchived }, sort: \Exercise.name)
+    @Query(filter: #Predicate<Exercise> { !$0.isArchived })
     private var exercises: [Exercise]
 
     @State
-    private var searchText = ""
+    private var searchText: String = ""
 
     @State
-    private var sortOrder = [SortDescriptor(\Exercise.name)]
+    private var sort: Sort = .name
 
     @State
     private var sheet: Sheet?
@@ -69,22 +80,18 @@ struct ExerciseCategoryScreen: View {
             Menu(.more) {
                 Section {
                     Button(.createExercise) {
-                        if fullVersion.canAddExercise(in: context) {
-                            sheet = .createExerciseInCategories([category])
-                        } else {
-                            presentPaywall()
-                        }
+                        createExercise()
                     }
                 }
 
                 Section {
                     Menu(.sort) {
-                        Picker(.fieldSortTitle, selection: $sortOrder) {
+                        Picker(.fieldSortTitle, selection: $sort) {
                             Label(.fieldSortNameTitle, systemImage: "character")
-                                .tag([SortDescriptor(\Exercise.name)])
+                                .tag(Sort.name)
 
                             Label(.fieldSortNewestTitle, systemImage: "clock")
-                                .tag([SortDescriptor(\Exercise.creationDate, order: .reverse)])
+                                .tag(Sort.newest)
                         }
                     }
                 }
@@ -94,7 +101,7 @@ struct ExerciseCategoryScreen: View {
             sheet
         }
         .animation(.snappy, value: searchText)
-        .animation(.snappy, value: sortOrder)
+        .animation(.snappy, value: sort)
     }
 
     private var emptyState: some View {
@@ -104,11 +111,7 @@ struct ExerciseCategoryScreen: View {
             Text(.emptyExercisesMessage)
         } actions: {
             Button(.createExercise) {
-                if fullVersion.canAddExercise(in: context) {
-                    sheet = .createExerciseInCategories([category])
-                } else {
-                    presentPaywall()
-                }
+                createExercise()
             }
             .labelStyle(.fixedTitleAndIcon)
             .buttonStyle(.cardProminent)
@@ -128,7 +131,15 @@ struct ExerciseCategoryScreen: View {
 
         return exercises
             .filter { searchText.isEmpty || $0.name.localizedCaseInsensitiveContains(searchText) }
-            .sorted(using: sortOrder)
+            .sorted(using: sort.descriptor)
+    }
+
+    private func createExercise() {
+        if fullVersion.canAddExercise(in: context) {
+            sheet = .createExerciseInCategories([category])
+        } else {
+            presentPaywall()
+        }
     }
 }
 

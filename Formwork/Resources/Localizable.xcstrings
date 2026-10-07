@@ -666,7 +666,7 @@
         }
       }
     },
-    "field.healthDisconnected.mesage" : {
+    "field.healthDisconnected.message" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
@@ -1360,6 +1360,17 @@
         }
       }
     },
+    "paywall.included.label" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Included"
+          }
+        }
+      }
+    },
     "paywall.liveActivity.title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1378,6 +1389,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Unlock all features and support a solo developer."
+          }
+        }
+      }
+    },
+    "paywall.notIncluded.label" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Not Included"
           }
         }
       }
@@ -1448,6 +1470,61 @@
         }
       }
     },
+    "recap.change.decrease.label" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$(change)@ less than last time"
+          }
+        }
+      }
+    },
+    "recap.change.increase.label" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$(change)@ more than last time"
+          }
+        }
+      }
+    },
+    "recap.duration.label" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Took %1$(duration)@"
+          }
+        }
+      }
+    },
+    "recap.time.completed.label" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Completed at %1$(time)@"
+          }
+        }
+      }
+    },
+    "recap.time.skipped.label" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skipped at %1$(time)@"
+          }
+        }
+      }
+    },
     "screen.addExercise.title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1514,7 +1591,7 @@
         }
       }
     },
-    "screen.editExercise.tile" : {
+    "screen.editExercise.title" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
@@ -1609,6 +1686,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Workouts"
+          }
+        }
+      }
+    },
+    "session.progress.label" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$(resolved)lld of %2$(total)lld done"
           }
         }
       }

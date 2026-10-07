@@ -14,7 +14,7 @@ struct CatalogScreen: View {
     private enum Sort: Hashable {
         case category, name, newest
 
-        var sortOrder: [SortDescriptor<Exercise>] {
+        var descriptor: [SortDescriptor<Exercise>] {
             switch self {
             case .category, .name: [SortDescriptor(\.name)]
             case .newest: [SortDescriptor(\.creationDate, order: .reverse)]
@@ -38,10 +38,10 @@ struct CatalogScreen: View {
     private var sort: Sort = .category
 
     @State
-    private var searchText = ""
+    private var searchText: String = ""
 
     @State
-    private var searchPresented = false
+    private var searchPresented: Bool = false
 
     @State
     private var sheet: Sheet?
@@ -81,11 +81,7 @@ struct CatalogScreen: View {
             Menu(.more) {
                 Section {
                     Button(.createExercise) {
-                        if fullVersion.canAddExercise(in: context) {
-                            sheet = .createExercise
-                        } else {
-                            presentPaywall()
-                        }
+                        createExercise()
                     }
                 }
 
@@ -127,7 +123,7 @@ struct CatalogScreen: View {
             Text(.emptyExercisesMessage)
         } actions: {
             Button(.createExercise) {
-                sheet = .createExercise
+                createExercise()
             }
             .labelStyle(.fixedTitleAndIcon)
             .buttonStyle(.cardProminent)
@@ -143,7 +139,7 @@ struct CatalogScreen: View {
 
         return exercises
             .filter { searchText.isEmpty || $0.name.localizedCaseInsensitiveContains(searchText) }
-            .sorted(using: sort.sortOrder)
+            .sorted(using: sort.descriptor)
     }
 
     private func exerciseList(_ exercises: [Exercise]) -> some View {
@@ -160,6 +156,14 @@ struct CatalogScreen: View {
     private func countExercises(in category: Exercise.Category) -> Int {
         exercises.count { $0.categories.contains(category) }
     }
+
+    private func createExercise() {
+        if fullVersion.canAddExercise(in: context) {
+            sheet = .createExercise
+        } else {
+            presentPaywall()
+        }
+    }
 }
 
 private struct ExerciseCategoryTile: View {
@@ -172,6 +176,7 @@ private struct ExerciseCategoryTile: View {
             Image(systemName: category.pictogram.image)
                 .font(.system(size: 48))
                 .foregroundStyle(.secondary)
+                .accessibilityHidden(true)
 
             HStack {
                 VStack(alignment: .leading, spacing: 0) {

@@ -11,7 +11,20 @@ import SwiftData
 import SwiftUI
 
 struct WorkoutAddEntriesForm: View {
-    private let add: ([(exercise: Exercise, target: ExerciseTarget)]) -> Void
+    private typealias Selection = [(exercise: Exercise, target: ExerciseTarget)]
+
+    private enum Sort: Hashable {
+        case name, newest
+
+        var descriptor: [SortDescriptor<Exercise>] {
+            switch self {
+            case .name: [SortDescriptor(\.name)]
+            case .newest: [SortDescriptor(\.creationDate, order: .reverse)]
+            }
+        }
+    }
+
+    private let add: (Selection) -> Void
 
     @Environment(\.dismiss)
     private var dismiss: DismissAction
@@ -32,27 +45,25 @@ struct WorkoutAddEntriesForm: View {
     private var exercises: [Exercise]
 
     @State
-    private var selection: [(exercise: Exercise, target: ExerciseTarget)] = []
+    private var selection: Selection = []
 
     @State
     private var selectedCategories: Set<Exercise.Category> = []
 
     @State
-    private var sortOrder = [SortDescriptor(\Exercise.name)]
+    private var sort: Sort = .name
 
     @State
-    private var searchText = ""
+    private var searchText: String = ""
 
     @State
-    private var searchPresented = false
+    private var searchPresented: Bool = false
 
     @State
     private var sheet: Sheet?
 
-    init(entries: Binding<[WorkoutEntry]>) {
-        self.add = { selection in
-            entries.wrappedValue.append(contentsOf: Self.workoutEntries(from: selection, after: entries.wrappedValue))
-        }
+    init(onAdd: @escaping ([(exercise: Exercise, target: ExerciseTarget)]) -> Void) {
+        self.add = onAdd
     }
 
     init(workout: Workout) {
@@ -100,11 +111,12 @@ struct WorkoutAddEntriesForm: View {
         .searchable(text: $searchText, isPresented: $searchPresented)
         .animation(.snappy, value: searchText)
         .animation(.snappy, value: selectedCategories)
-        .animation(.snappy, value: sortOrder)
+        .animation(.snappy, value: sort)
+        .animation(.snappy, value: selection.count)
         .sensoryFeedback(.selection, trigger: selection.count)
         .sensoryFeedback(.selection, trigger: selectedCategories)
         .scrollDismissesKeyboard(.immediately)
-        .safeAreaInset(edge: .bottom) {
+        .safeAreaBar(edge: .bottom) {
             ExerciseCategoryFilterBar(selection: $selectedCategories)
         }
         .interactiveDismissDisabled(hasChanges)
@@ -126,12 +138,12 @@ struct WorkoutAddEntriesForm: View {
 
             ToolbarItem(placement: .bottomBar) {
                 Menu(.sort) {
-                    Picker(.fieldSortTitle, selection: $sortOrder) {
+                    Picker(.fieldSortTitle, selection: $sort) {
                         Label(.fieldSortNameTitle, systemImage: "character")
-                            .tag([SortDescriptor(\Exercise.name)])
+                            .tag(Sort.name)
 
                         Label(.fieldSortNewestTitle, systemImage: "clock")
-                            .tag([SortDescriptor(\Exercise.creationDate, order: .reverse)])
+                            .tag(Sort.newest)
                     }
                 }
             }
@@ -175,11 +187,11 @@ struct WorkoutAddEntriesForm: View {
         return exercises
             .filter { selectedCategories.isEmpty || !selectedCategories.isDisjoint(with: $0.categories) }
             .filter { searchText.isEmpty || $0.name.localizedCaseInsensitiveContains(searchText) }
-            .sorted(using: sortOrder)
+            .sorted(using: sort.descriptor)
     }
 
     private static func workoutEntries(
-        from selection: [(exercise: Exercise, target: ExerciseTarget)],
+        from selection: Selection,
         after entries: [WorkoutEntry]
     ) -> [WorkoutEntry] {
         let firstOrder = (entries.map(\.order).max() ?? -1) + 1
@@ -195,22 +207,12 @@ struct WorkoutAddEntriesForm: View {
     private func row(for exercise: Exercise) -> some View {
         let selected = isSelected(exercise)
 
-        Button {
+        SelectableRow(isSelected: selected) {
             searchPresented = false
             toggle(exercise)
-        } label: {
-            HStack {
-                PictogramRow(exercise.pictogram, title: exercise.title, subtitle: exercise.categories.formatted(.exerciseCategories))
-
-                Image(systemName: selected ? "checkmark.circle.fill" : "circle")
-                    .font(.title2)
-                    .foregroundStyle(selected ? AnyShapeStyle(.tint) : AnyShapeStyle(.tertiary))
-                    .animation(.snappy(duration: 0.1), value: selected)
-            }
-            .padding(.horizontal)
-            .padding(.vertical, 8)
+        } content: {
+            PictogramRow(exercise.pictogram, title: exercise.title, subtitle: exercise.categories.formatted(.exerciseCategories))
         }
-        .buttonStyle(.plain)
 
         if selected {
             GroupBox {
@@ -233,12 +235,10 @@ struct WorkoutAddEntriesForm: View {
     }
 
     private func toggle(_ exercise: Exercise) {
-        withAnimation(.snappy) {
-            if let index = index(of: exercise) {
-                selection.remove(at: index)
-            } else {
-                selection.append((exercise, initialTarget(for: exercise)))
-            }
+        if let index = index(of: exercise) {
+            selection.remove(at: index)
+        } else {
+            selection.append((exercise, initialTarget(for: exercise)))
         }
     }
 
@@ -291,8 +291,9 @@ private struct ExerciseCategoryFilterBar: View {
                         }
                         .labelStyle(.fixedTitleAndIcon)
                         .buttonStyle(.glassProminent)
-                        .tint(isSelected(category) ? category.pictogram.color : .clear)
-                        .foregroundStyle(isSelected(category) ? .white : .secondary)
+                        .tint(isActive(category) ? category.pictogram.color : .clear)
+                        .foregroundStyle(isActive(category) ? .white : .secondary)
+                        .accessibilityAddTraits(selection.contains(category) ? [.isSelected] : [])
                     }
                 }
             }
@@ -304,17 +305,14 @@ private struct ExerciseCategoryFilterBar: View {
         .scrollClipDisabled()
     }
 
-    private func isSelected(_ category: Exercise.Category) -> Bool {
+    private func isActive(_ category: Exercise.Category) -> Bool {
         selection.isEmpty || selection.contains(category)
     }
 }
 
 #Preview {
-    @Previewable @State
-    var entries: [WorkoutEntry] = []
-
     NavigationRoot {
-        WorkoutAddEntriesForm(entries: $entries)
+        WorkoutAddEntriesForm { _ in }
     }
     .sampleData()
 }

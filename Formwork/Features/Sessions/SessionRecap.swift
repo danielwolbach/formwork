@@ -19,7 +19,11 @@ struct SessionRecap: View {
 
     var body: some View {
         ContentStack {
-            PictogramHeader(session.pictogram, title: session.title, subtitle: session.startDate.formatted(session.wallClockTime(date: .numeric)))
+            PictogramHeader(
+                session.pictogram,
+                title: session.title,
+                subtitle: session.startDate.formatted(session.wallClockTime(date: .numeric))
+            )
 
             SessionFigureGrid(session)
 
@@ -36,7 +40,10 @@ struct SessionRecap: View {
 private struct SessionEntryRow: View {
     private struct Detail {
         let pictogram: Pictogram
+        
         let text: String
+        
+        let label: String
     }
 
     private let entry: SessionEntry
@@ -65,13 +72,20 @@ private struct SessionEntryRow: View {
 
         VStack(alignment: .leading, spacing: 8) {
             HStack {
-                PictogramRow(entry.pictogram, title: entry.title, subtitle: entry.target.formatted(.exerciseTarget(units: units)), badge: badge)
+                PictogramRow(
+                    entry.pictogram,
+                    title: entry.title,
+                    subtitle: entry.target.formatted(.exerciseTarget(units: units)),
+                    badge: badge
+                )
 
                 if entry.exercise != nil {
                     Image(systemName: "chevron.forward")
                         .foregroundStyle(.tertiary)
+                        .accessibilityHidden(true)
                 }
             }
+            .accessibilityValue(entry.status.title)
 
             if !details.isEmpty {
                 HFlow {
@@ -79,8 +93,10 @@ private struct SessionEntryRow: View {
                         Label(detail.text, systemImage: detail.pictogram.image)
                             .monospacedDigit()
                             .labelStyle(.chip(tint: detail.pictogram.color))
+                            .accessibilityLabel(detail.label)
                     }
                 }
+                // From PictogramRow's height
                 .padding(.leading, 64 + 8)
             }
         }
@@ -95,16 +111,21 @@ private struct SessionEntryRow: View {
         var details: [Detail] = []
 
         if let resolved = entry.status.resolvedDate, let session = entry.session {
-            details.append(Detail(pictogram: .time, text: resolved.formatted(session.wallClockTime())))
+            let time = resolved.formatted(session.wallClockTime())
+            let label = entry.status.isCompleted ? String(localized: .recapTimeCompletedLabel(time: time)) : String(localized: .recapTimeSkippedLabel(time: time))
+            details.append(Detail(pictogram: .time, text: time, label: label))
         }
 
         if let duration = entry.duration, entry.status.isCompleted {
-            details.append(Detail(pictogram: .pace, text: Reading.duration(seconds: duration).formatted(.reading(units: units))))
+            let text = Reading.duration(seconds: duration).formatted(.reading(units: units))
+            details.append(Detail(pictogram: .pace, text: text, label: String(localized: .recapDurationLabel(duration: text))))
         }
 
         if let previous = entry.previous, previous.rank != entry.target.rank {
             let change = entry.target.rank - previous.rank
-            details.append(Detail(pictogram: change > 0 ? .increase : .decrease, text: Reading(rank: abs(change), of: entry.target.exerciseKind).formatted(.reading(units: units))))
+            let text = Reading(rank: abs(change), of: entry.target.exerciseKind).formatted(.reading(units: units))
+            let label = change > 0 ? String(localized: .recapChangeIncreaseLabel(change: text)) : String(localized: .recapChangeDecreaseLabel(change: text))
+            details.append(Detail(pictogram: change > 0 ? .increase : .decrease, text: text, label: label))
         }
 
         return details

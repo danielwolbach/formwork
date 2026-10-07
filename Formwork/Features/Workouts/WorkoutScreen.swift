@@ -46,6 +46,7 @@ struct WorkoutScreen: View {
 
     var body: some View {
         let badge = workout.isArchived ? Pictogram.archivedBadge : nil
+        let entries = (workout.entries ?? []).sorted()
 
         ScrollView {
             ContentStack {
@@ -63,6 +64,7 @@ struct WorkoutScreen: View {
                     .labelStyle(.fixedIconOnly)
                     .buttonStyle(.glass)
                     .buttonBorderShape(.circle)
+                    .disabled(workout.isArchived)
 
                     Button(.startSession) {
                         startSession()
@@ -82,7 +84,7 @@ struct WorkoutScreen: View {
                 }
                 .controlSize(.large)
 
-                if (workout.entries ?? []).isEmpty {
+                if entries.isEmpty {
                     ContentUnavailableView {
                         Label(.emptyWorkoutEntriesTitle, systemImage: "dumbbell")
                     } description: {
@@ -96,12 +98,12 @@ struct WorkoutScreen: View {
                     }
                 } else {
                     LazyVStack(spacing: 0) {
-                        ForEach((workout.entries ?? []).sorted()) { entry in
+                        ForEach(entries.sorted()) { entry in
                             WorkoutEntryRow(entry)
                         }
                     }
                     .swipeActionsContainer()
-                    .animation(.snappy, value: (workout.entries ?? []).count)
+                    .animation(.snappy, value: entries.count)
                     .edgeToEdge()
                 }
             }
@@ -208,7 +210,7 @@ struct WorkoutScreen: View {
     }
 
     private func startSession() {
-        guard activeSessions.first == nil else {
+        guard activeSessions.isEmpty else {
             replaceSessionAlert = true
             return
         }

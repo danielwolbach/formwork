@@ -6,7 +6,6 @@
 //
 
 import AppIntents
-import Foundation
 import SwiftUI
 
 public struct Action: Sendable {
@@ -24,6 +23,8 @@ public struct Action: Sendable {
 }
 
 extension Action {
+    // MARK: - General
+
     public static let confirm = Action(title: .actionConfirmTitle, image: "checkmark", role: .confirm)
 
     public static let cancel = Action(title: .actionCancelTitle, image: "xmark", role: .cancel)
@@ -52,7 +53,7 @@ extension Action {
 
     public static let forward = Action(title: .actionForwardTitle, image: "chevron.forward")
 
-    public static let coninue = Action(title: .actionContinueTitle, image: "chevron.forward")
+    public static let `continue` = Action(title: .actionContinueTitle, image: "chevron.forward")
 
     public static let retry = Action(title: .actionRetryTitle, image: "arrow.clockwise")
 
@@ -82,7 +83,7 @@ extension Action {
 
     public static let connectToHealth = Action(title: .actionConnectToHealthTitle, image: "heart")
 
-    // Exercise
+    // MARK: - Exercise
 
     public static let createExercise = Action(title: .actionCreateExerciseTitle, image: "plus")
 
@@ -92,7 +93,7 @@ extension Action {
 
     public static let addToWorkout = Action(title: .actionAddToWorkoutTitle, image: "text.badge.plus")
 
-    // Workout
+    // MARK: - Workout
 
     public static let createWorkout = Action(title: .actionCreateWorkoutTitle, image: "plus")
 
@@ -100,7 +101,7 @@ extension Action {
 
     public static let startSession = Action(title: .actionStartSessionTitle, image: "play.fill")
 
-    // Session
+    // MARK: - Session
 
     public static let resumeSession = Action(title: .actionResumeSessionTitle, image: "play.fill")
 
@@ -131,16 +132,10 @@ extension Button where Label == SwiftUI.Label<Text, Image> {
     public init(_ descriptor: Action, action: @escaping () -> Void) {
         self.init(descriptor.title, systemImage: descriptor.image, role: descriptor.role, action: action)
     }
-}
 
-extension Button where Label == SwiftUI.Label<Text, Image> {
     public init(_ descriptor: Action, intent: some AppIntent) {
-        self.init(intent: intent) {
-            SwiftUI.Label {
-                Text(descriptor.title)
-            } icon: {
-                Image(systemName: descriptor.image)
-            }
+        self.init(role: descriptor.role, intent: intent) {
+            SwiftUI.Label(descriptor)
         }
     }
 }
@@ -148,11 +143,7 @@ extension Button where Label == SwiftUI.Label<Text, Image> {
 extension Toggle where Label == SwiftUI.Label<Text, Image> {
     public init(_ descriptor: Action, isOn: Binding<Bool>) {
         self.init(isOn: isOn) {
-            SwiftUI.Label {
-                Text(descriptor.title)
-            } icon: {
-                Image(systemName: descriptor.image)
-            }
+            SwiftUI.Label(descriptor)
         }
     }
 }

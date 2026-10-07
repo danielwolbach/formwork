@@ -1,6 +1,6 @@
 //
 //  NavigationRoot.swift
-//  FormworkModules
+//  Formwork
 //
 //  Created by Daniel Wolbach on 05.10.26.
 //
@@ -11,7 +11,7 @@ import SwiftUI
 struct NavigationRoot<Content: View>: View {
     private let content: Content
 
-    init(@ViewBuilder content: @escaping () -> Content) {
+    init(@ViewBuilder content: () -> Content) {
         self.content = content()
     }
 

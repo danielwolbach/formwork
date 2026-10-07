@@ -20,6 +20,9 @@ struct SettingsSheet: View {
 
     @Environment(\.fullVersion)
     private var fullVersion: FullVersion
+    
+    @Environment(\.calendar)
+    private var calendar: Calendar
 
     @Environment(\.openURL)
     private var openURL: OpenURLAction
@@ -55,7 +58,7 @@ struct SettingsSheet: View {
     private var healthStatus: Health.Status? = nil
 
     @State
-    private var easterEggTaps = 0
+    private var easterEggTaps: Int = 0
 
     var body: some View {
         ScrollView {
@@ -106,6 +109,7 @@ struct SettingsSheet: View {
                             .onTapGesture {
                                 easterEggTaps += 1
                             }
+                            .accessibilityHidden(true)
 
                         VStack(alignment: .leading) {
                             Text(verbatim: AppMetadata.appName)
@@ -144,39 +148,11 @@ struct SettingsSheet: View {
         SectionView(.fieldUnitsTitle) {
             GroupBox {
                 VStack(spacing: .groups) {
-                    LabeledContent {
-                        Menu {
-                            Picker(.fieldWeightUnitTitle, selection: $weightSystem) {
-                                ForEach(Units.System.allCases) { system in
-                                    Text(system.title)
-                                        .id(system)
-                                }
-                            }
-                        } label: {
-                            Text(weightSystem.title)
-                        }
-                        .buttonStyle(.cardProminent)
-                    } label: {
-                        Text(.fieldWeightUnitTitle)
-                    }
+                    unitRow(.fieldWeightUnitTitle, selection: $weightSystem)
 
                     Divider()
 
-                    LabeledContent {
-                        Menu {
-                            Picker(.fieldDistanceUnitTitle, selection: $distanceSystem) {
-                                ForEach(Units.System.allCases) { system in
-                                    Text(system.title)
-                                        .id(system)
-                                }
-                            }
-                        } label: {
-                            Text(distanceSystem.title)
-                        }
-                        .buttonStyle(.cardProminent)
-                    } label: {
-                        Text(.fieldDistanceUnitTitle)
-                    }
+                    unitRow(.fieldDistanceUnitTitle, selection: $distanceSystem)
                 }
             }
         }
@@ -238,7 +214,7 @@ struct SettingsSheet: View {
                 GroupBox {
                     if healthStatus == .disconnected {
                         VStack {
-                            Text(.fieldHealthDisconnectedMesage)
+                            Text(.fieldHealthDisconnectedMessage)
                                 .font(.body)
                                 .foregroundStyle(.secondary)
 
@@ -264,12 +240,11 @@ struct SettingsSheet: View {
                             }
                         } label: {
                             Text(.fieldStatusTitle)
-                            
+
                             Text(.fieldHealthStatusMessage)
                         }
                     }
                 }
-                .groupBoxStyle(.card)
             }
         }
     }
@@ -285,6 +260,7 @@ struct SettingsSheet: View {
 
                             Image(systemName: "chevron.forward")
                                 .foregroundStyle(.tertiary)
+                                .accessibilityHidden(true)
                         }
                     } label: {
                         Text(.fieldArchivedItemsTitle)
@@ -295,11 +271,31 @@ struct SettingsSheet: View {
             }
         }
     }
+    
+    private func unitRow(_ title: LocalizedStringResource, selection: Binding<Units.System>) -> some View {
+        LabeledContent {
+            Menu {
+                Picker(title, selection: selection) {
+                    ForEach(Units.System.allCases) { system in
+                        Text(system.title)
+                            .tag(system)
+                    }
+                }
+            } label: {
+                Text(selection.wrappedValue.title)
+            }
+            .buttonStyle(.cardProminent)
+            .accessibilityLabel(Text(title))
+            .accessibilityValue(Text(selection.wrappedValue.title))
+        } label: {
+            Text(title)
+        }
+    }
 
     private var dailyReminderTime: Binding<Date> {
         Binding(
             get: {
-                Calendar.current.date(bySettingHour: dailyReminderMinute / 60, minute: dailyReminderMinute % 60, second: 0, of: .now) ?? .now
+                calendar.date(bySettingHour: dailyReminderMinute / 60, minute: dailyReminderMinute % 60, second: 0, of: .now) ?? .now
             },
             set: { newValue in
                 let time = Calendar.current.dateComponents([.hour, .minute], from: newValue)

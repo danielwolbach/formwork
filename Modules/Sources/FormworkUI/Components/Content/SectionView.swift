@@ -35,7 +35,7 @@ public struct SectionView<Content: View, Accessory: View>: View {
                         .lineLimit(1)
                         .font(.headline)
 
-                    if let subtitle {
+                    if let subtitle, !subtitle.isEmpty {
                         Text(subtitle)
                             .lineLimit(1)
                             .font(.subheadline)
@@ -44,6 +44,8 @@ public struct SectionView<Content: View, Accessory: View>: View {
                             .animation(.snappy, value: subtitle)
                     }
                 }
+                .accessibilityElement(children: .combine)
+                .accessibilityAddTraits(.isHeader)
 
                 Spacer(minLength: 0)
 

@@ -16,10 +16,10 @@ struct SessionPlayerScreen: View {
     private var dismiss: DismissAction
 
     @State
-    private var finishAlert = false
+    private var finishAlert: Bool = false
 
     @State
-    private var discardAlert = false
+    private var discardAlert: Bool = false
 
     @State
     private var navigator: SessionNavigator
@@ -28,7 +28,7 @@ struct SessionPlayerScreen: View {
     private var sheet: Sheet? = nil
 
     @State
-    private var completions = 0
+    private var completions: Int = 0
 
     init(_ session: Session) {
         self.session = session
@@ -51,7 +51,6 @@ struct SessionPlayerScreen: View {
                     .transition(.blurReplace)
                 } else {
                     SessionRecap(session)
-                        .transition(.blurReplace)
                         .frame(maxWidth: .infinity)
                         .transition(.blurReplace)
                 }
@@ -147,30 +146,18 @@ struct SessionPlayerScreen: View {
             healthData
 
             HStack(spacing: 24) {
-                Button(.backward) {
+                stepButton(.backward, isEnabled: session.previousEntry != nil) {
                     navigator.backward()
                 }
-                .font(.system(size: 24))
-                .foregroundStyle(.secondary)
-                .disabled(session.previousEntry == nil)
-                .buttonStyle(.plain)
-                .buttonBorderShape(.circle)
-                .labelStyle(.fixedIconOnly)
-
+                
                 primaryAction
                     .fontWeight(.semibold)
                     .buttonStyle(.glassProminent)
                     .labelStyle(.fixedTitleAndIcon)
 
-                Button(.forward) {
+                stepButton(.forward, isEnabled: session.nextEntry != nil) {
                     navigator.forward()
                 }
-                .font(.system(size: 24))
-                .foregroundStyle(.secondary)
-                .disabled(session.nextEntry == nil)
-                .buttonStyle(.plain)
-                .buttonBorderShape(.circle)
-                .labelStyle(.fixedIconOnly)
             }
             .controlSize(.large)
 
@@ -257,6 +244,15 @@ struct SessionPlayerScreen: View {
         .foregroundStyle(.secondary)
         .font(.footnote)
     }
+    
+    private func stepButton(_ descriptor: Action, isEnabled: Bool, action: @escaping () -> Void) -> some View {
+        Button(descriptor, action: action)
+            .font(.title2)
+            .foregroundStyle(.secondary)
+            .buttonStyle(.plain)
+            .labelStyle(.fixedIconOnly)
+            .disabled(!isEnabled)
+    }
 
     private func finish() {
         withAnimation(.smooth) {
@@ -268,6 +264,7 @@ struct SessionPlayerScreen: View {
         session.discard()
         dismiss()
     }
+    
 }
 
 private struct SessionEntryPage: View {
@@ -298,6 +295,7 @@ private struct SessionEntryPage: View {
 
             Spacer()
         }
+        .accessibilityValue(entry.status.title)
     }
 }
 

@@ -24,9 +24,6 @@ struct SessionMiniPlayer: View {
     @State
     private var navigator: SessionNavigator
 
-    @State
-    private var completions = 0
-
     init(_ session: Session, namespace: Namespace.ID) {
         self.session = session
         self.namespace = namespace
@@ -62,7 +59,9 @@ struct SessionMiniPlayer: View {
                 .padding(.trailing)
         }
         .matchedTransitionSource(id: session.persistentModelID, in: namespace)
-        .sensoryFeedback(.impact(weight: .medium), trigger: completions)
+        .sensoryFeedback(trigger: session.resolvedCount) { old, new in
+            new > old ? .impact(weight: .medium) : nil
+        }
         .onTapGesture {
             presentSession(session)
         }
@@ -88,7 +87,6 @@ struct SessionMiniPlayer: View {
         switch session.currentEntry?.status {
         case .pending:
             Button(.complete) {
-                completions += 1
                 navigator.complete()
             }
             .fontWeight(.bold)
@@ -116,6 +114,7 @@ struct SessionMiniPlayer: View {
             .monospacedDigit()
             .foregroundStyle(.secondary)
             .contentTransition(.numericText(value: Double(session.resolvedCount)))
+            .accessibilityLabel(Text(.sessionProgressLabel(resolved: session.resolvedCount, total: (session.entries ?? []).count)))
     }
 
     @ViewBuilder
@@ -139,7 +138,12 @@ struct SessionMiniPlayer: View {
         }
         .padding(.horizontal)
         .contentShape(.rect)
+        .accessibilityElement(children: .combine)
         .accessibilityAddTraits(.isButton)
+        .accessibilityValue(entry.status.title)
+        .accessibilityAction {
+            presentSession(session)
+        }
     }
 }
 

@@ -28,6 +28,7 @@ struct DecimalKeypad: View {
                 key(action: appendSeparator) {
                     digitLabel(Locale.currentDecimalSeparator)
                 }
+                .accessibilityLabel(Text(.keypadDecimalSeparatorLabel))
             } else {
                 Color.clear.frame(height: 48)
             }
@@ -36,14 +37,11 @@ struct DecimalKeypad: View {
                 digitLabel("0")
             }
 
-            key(action: {
-                if !text.isEmpty {
-                    text.removeLast()
-                }
-            }) {
+            key(action: deleteLast) {
                 Image(systemName: "delete.backward")
                     .font(.title3)
             }
+            .accessibilityLabel(Text(Action.delete.title))
         }
     }
 
@@ -63,13 +61,19 @@ struct DecimalKeypad: View {
     }
 
     private func appendDigit(_ digit: String) {
-        let candidate = text + digit
+        let candidate = text == "0" ? digit : text + digit
 
         guard withinFractionDigits(candidate), withinRange(candidate) else {
             return
         }
 
         text = candidate
+    }
+
+    private func deleteLast() {
+        if !text.isEmpty {
+            text.removeLast()
+        }
     }
 
     private func appendSeparator() {
@@ -89,7 +93,7 @@ struct DecimalKeypad: View {
     }
 
     private func withinRange(_ candidate: String) -> Bool {
-        guard let value = Double(candidate.replacingOccurrences(of: Locale.currentDecimalSeparator, with: ".")) else {
+        guard let value = try? Double(candidate, format: .number) else {
             return true
         }
 

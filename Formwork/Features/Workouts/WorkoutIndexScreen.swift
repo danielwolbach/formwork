@@ -11,6 +11,17 @@ import SwiftData
 import SwiftUI
 
 struct WorkoutIndexScreen: View {
+    private enum Sort: Hashable {
+        case name, newest
+
+        var descriptor: [SortDescriptor<Workout>] {
+            switch self {
+            case .name: [SortDescriptor(\.name)]
+            case .newest: [SortDescriptor(\.creationDate, order: .reverse)]
+            }
+        }
+    }
+    
     @Environment(\.modelContext)
     private var context: ModelContext
 
@@ -20,14 +31,14 @@ struct WorkoutIndexScreen: View {
     @Environment(\.presentPaywall)
     private var presentPaywall: PresentPaywallAction
 
-    @Query(filter: #Predicate<Workout> { !$0.isArchived }, sort: \Workout.name)
+    @Query(filter: #Predicate<Workout> { !$0.isArchived })
     private var workouts: [Workout]
 
     @State
-    private var searchText = ""
+    private var searchText: String = ""
 
     @State
-    private var sortOrder = [SortDescriptor(\Workout.name)]
+    private var sort: Sort = .name
 
     @State
     private var sheet: Sheet? = nil
@@ -65,22 +76,18 @@ struct WorkoutIndexScreen: View {
             Menu(.more) {
                 Section {
                     Button(.createWorkout) {
-                        if fullVersion.canAddWorkout(in: context) {
-                            sheet = .createWorkout
-                        } else {
-                            presentPaywall()
-                        }
+                        createWorkout()
                     }
                 }
 
                 Section {
                     Menu(.sort) {
-                        Picker(.fieldSortTitle, selection: $sortOrder) {
+                        Picker(.fieldSortTitle, selection: $sort) {
                             Label(.fieldSortNameTitle, systemImage: "character")
-                                .tag([SortDescriptor(\Workout.name)])
+                                .tag(Sort.name)
 
                             Label(.fieldSortNewestTitle, systemImage: "clock")
-                                .tag([SortDescriptor(\Workout.creationDate, order: .reverse)])
+                                .tag(Sort.newest)
                         }
                     }
                 }
@@ -90,7 +97,7 @@ struct WorkoutIndexScreen: View {
             sheet
         }
         .animation(.snappy, value: searchText)
-        .animation(.snappy, value: sortOrder)
+        .animation(.snappy, value: sort)
     }
 
     private var emptyState: some View {
@@ -100,7 +107,7 @@ struct WorkoutIndexScreen: View {
             Text(.emptyWorkoutsMessage)
         } actions: {
             Button(.createWorkout) {
-                sheet = .createWorkout
+                createWorkout()
             }
             .labelStyle(.fixedTitleAndIcon)
             .buttonStyle(.cardProminent)
@@ -116,7 +123,15 @@ struct WorkoutIndexScreen: View {
 
         return workouts
             .filter { searchText.isEmpty || $0.name.localizedCaseInsensitiveContains(searchText) }
-            .sorted(using: sortOrder)
+            .sorted(using: sort.descriptor)
+    }
+    
+    private func createWorkout() {
+        if fullVersion.canAddWorkout(in: context) {
+            sheet = .createWorkout
+        } else {
+            presentPaywall()
+        }
     }
 }
 

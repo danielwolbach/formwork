@@ -1,6 +1,6 @@
 //
 //  CardButtonStyle.swift
-//  FormworkModules
+//  FormworkUI
 //
 //  Created by Daniel Wolbach on 05.10.26.
 //
@@ -15,10 +15,10 @@ public struct CardButtonStyle: ButtonStyle {
     private let style: Style
 
     @Environment(\.controlSize)
-    private var controlSize
+    private var controlSize: ControlSize
 
     @Environment(\.isEnabled)
-    private var isEnabled
+    private var isEnabled: Bool
 
     public init(style: Style) {
         self.style = style
@@ -26,12 +26,9 @@ public struct CardButtonStyle: ButtonStyle {
 
     private var padding: EdgeInsets {
         switch controlSize {
-        case .mini: EdgeInsets(top: 5, leading: 10, bottom: 5, trailing: 10)
-        case .small: EdgeInsets(top: 5, leading: 10, bottom: 5, trailing: 10)
-        case .regular: EdgeInsets(top: 7, leading: 12, bottom: 7, trailing: 12)
-        case .large: EdgeInsets(top: 15, leading: 20, bottom: 15, trailing: 20)
-        case .extraLarge: EdgeInsets(top: 15, leading: 20, bottom: 15, trailing: 20)
-        @unknown default: EdgeInsets(top: 7, leading: 12, bottom: 7, trailing: 12)
+        case .mini, .small: EdgeInsets(top: 5, leading: 10, bottom: 5, trailing: 10)
+        case .large, .extraLarge: EdgeInsets(top: 15, leading: 20, bottom: 15, trailing: 20)
+        default: EdgeInsets(top: 7, leading: 12, bottom: 7, trailing: 12)
         }
     }
 

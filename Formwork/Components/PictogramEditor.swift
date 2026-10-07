@@ -21,21 +21,23 @@ struct PictogramEditor: View {
     }
 
     var body: some View {
-        PictogramView(pictogram, badge: .editBadge)
-            .onTapGesture {
-                showEditor = true
+        Button {
+            showEditor = true
+        } label: {
+            PictogramView(pictogram, badge: .editBadge)
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(Text(.screenPictogramTitle))
+        .accessibilityValue(pictogram.tint.title)
+        .sheet(isPresented: $showEditor) {
+            NavigationStack {
+                PictogramSheet(pictogram: $pictogram)
             }
-            .sheet(isPresented: $showEditor) {
-                NavigationStack {
-                    PictogramSheet(pictogram: $pictogram)
-                }
-            }
+        }
     }
 }
 
 private struct PictogramSheet: View {
-    private static let columns: Int = 6
-
     @Binding
     var pictogram: Pictogram
 
@@ -103,10 +105,11 @@ private struct PictogramColorPicker: View {
                 PictogramSwatch(
                     fill: AnyShapeStyle(tint.color),
                     ring: AnyShapeStyle(tint.color),
-                    selected: tint == selection
+                    isSelected: tint == selection
                 ) {
                     selection = tint
                 }
+                .accessibilityLabel(tint.title)
             }
         }
     }
@@ -122,7 +125,7 @@ private struct PictogramImagePicker: View {
                 PictogramSwatch(
                     fill: AnyShapeStyle(Color.gray.quinary),
                     ring: AnyShapeStyle(Color.gray.secondary),
-                    selected: option == selection,
+                    isSelected: option == selection,
                     image: option
                 ) {
                     selection = option
@@ -137,7 +140,7 @@ private struct PictogramSwatch: View {
 
     let ring: AnyShapeStyle
 
-    let selected: Bool
+    let isSelected: Bool
 
     var image: String?
 
@@ -152,18 +155,17 @@ private struct PictogramSwatch: View {
                     if let image {
                         Image(systemName: image)
                             .font(.subheadline)
-                            .foregroundStyle(.primary)
                     }
                 }
                 .overlay {
                     Circle()
-                        .stroke(selected ? ring : AnyShapeStyle(Color.clear), lineWidth: 2)
+                        .stroke(ring, lineWidth: 2)
+                        .opacity(isSelected ? 1 : 0)
                 }
-                .frame(maxWidth: .infinity)
-                .aspectRatio(1, contentMode: .fit)
+                .animation(.snappy(duration: 0.1), value: isSelected)
         }
         .buttonStyle(.plain)
-        .accessibilityAddTraits(selected ? [.isSelected] : [])
+        .accessibilityAddTraits(isSelected ? [.isSelected] : [])
     }
 }
 
@@ -197,8 +199,7 @@ extension PictogramEditor {
 }
 
 #Preview {
-    @Previewable
-    @State
+    @Previewable @State
     var pictogram: Pictogram = .unknown
 
     NavigationRoot {

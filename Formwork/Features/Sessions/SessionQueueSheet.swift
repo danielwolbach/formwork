@@ -26,12 +26,14 @@ struct SessionQueueSheet: View {
     }
 
     var body: some View {
+        let pendingEntries = session.pendingEntries
+        
         ScrollView {
             ContentStack {
                 SectionView(.fieldPendingTitle) {
-                    if !session.pendingEntries.isEmpty {
+                    if !pendingEntries.isEmpty {
                         LazyVStack(spacing: 0) {
-                            ForEach(session.pendingEntries) { entry in
+                            ForEach(pendingEntries) { entry in
                                 HStack {
                                     Button {
                                         session.currentEntry = entry
@@ -47,22 +49,19 @@ struct SessionQueueSheet: View {
 
                                     Image(systemName: "line.3.horizontal")
                                         .foregroundStyle(.tertiary)
+                                        .accessibilityHidden(true)
                                 }
                                 .padding(.horizontal)
                                 .padding(.vertical, 8)
                                 .swipeActions(edge: .trailing) {
                                     if entry.isAddedWithoutWorkout {
                                         Button(.remove) {
-                                            withAnimation(.snappy) {
-                                                session.remove(entry)
-                                            }
+                                            session.remove(entry)
                                         }
                                         .labelStyle(.fixedIconOnly)
                                     } else {
                                         Button(.skip) {
-                                            withAnimation(.snappy) {
-                                                session.skip(entry)
-                                            }
+                                            session.skip(entry)
                                         }
                                         .tint(.orange)
                                         .labelStyle(.fixedIconOnly)
@@ -72,7 +71,7 @@ struct SessionQueueSheet: View {
                             .reorderable()
                         }
                         .reorderContainer(for: SessionEntry.self) { difference in
-                            var pending = session.pendingEntries
+                            var pending = pendingEntries
                             pending.apply(difference: difference)
                             session.reorderPending(pending)
                         }
@@ -93,6 +92,7 @@ struct SessionQueueSheet: View {
                         sheet = .sessionAddEntries(session)
                     }
                     .buttonStyle(.cardProminent)
+                    .labelStyle(.fixedTitleAndIcon)
                 }
 
                 if !session.resolvedEntries.isEmpty {
@@ -113,19 +113,18 @@ struct SessionQueueSheet: View {
                                     }
                                     .buttonStyle(.plain)
 
-                                    Button {
-                                        undo(entry)
-                                    } label: {
-                                        Image(systemName: Action.undo.image)
-                                            .foregroundStyle(.tertiary)
+                                    Button(.undo) {
+                                        session.undo(entry)
                                     }
+                                    .labelStyle(.fixedIconOnly)
                                     .buttonStyle(.plain)
+                                    .foregroundStyle(.tertiary)
                                 }
                                 .padding(.horizontal)
                                 .padding(.vertical, 8)
+                                .accessibilityValue(entry.status.title)
                             }
                         }
-                        .swipeActionsContainer()
                         .padding(.vertical, 8)
                         .background(.ultraThinMaterial)
                         .clipShape(.rect(cornerRadius: 16, style: .continuous))
@@ -137,15 +136,15 @@ struct SessionQueueSheet: View {
         .contentMargins(.vertical, .sections, for: .scrollContent)
         .presentationDetents([.medium, .large])
         .presentationDragIndicator(.visible)
+        .animation(.snappy, value: session.pendingEntries.count)
+        .animation(.snappy, value: session.resolvedEntries.count)
         .sheet(item: $sheet) { sheet in
             sheet
         }
     }
 
     private func undo(_ entry: SessionEntry) {
-        withAnimation(.snappy) {
-            session.undo(entry)
-        }
+        session.undo(entry)
     }
 }
 

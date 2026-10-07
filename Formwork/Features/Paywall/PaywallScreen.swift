@@ -43,15 +43,17 @@ struct PaywallScreen: View {
 
     var body: some View {
         VStack(spacing: .sections) {
-            header
+            ScrollView {
+                header
 
-            PlanComparison()
-
-            Spacer(minLength: 0)
-
+                PlanComparison()
+            }
+        }
+        .safeAreaInset(edge: .bottom) {
             purchaseSection
         }
         .padding(.horizontal)
+        .scrollBounceBehavior(.basedOnSize)
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
                 Button(.cancel) {
@@ -78,12 +80,12 @@ struct PaywallScreen: View {
         } message: {
             Text(.alertPurchasePendingMessage)
         }
-        .alert(.alertPurchaseFailedTitle, isPresented: Binding<Bool>(get: { purchaseError != nil }, set: { _ in purchaseError = nil }), presenting: purchaseError) { _ in
+        .alert(.alertPurchaseFailedTitle, isPresented: Binding(isPresenting: $purchaseError), presenting: purchaseError) { _ in
             // OK is added automatically.
         } message: { error in
             Text(error.localizedDescription)
         }
-        .alert(.alertRestoreFailedTitle, isPresented: Binding<Bool>(get: { restoreError != nil }, set: { _ in restoreError = nil }), presenting: restoreError) { _ in
+        .alert(.alertRestoreFailedTitle, isPresented: Binding(isPresenting: $purchaseError), presenting: restoreError) { _ in
             // OK is added automatically.
         } message: { error in
             Text(error.localizedDescription)
@@ -101,10 +103,12 @@ struct PaywallScreen: View {
                 .font(.system(size: 48))
                 .frame(width: 64, height: 64)
                 .foregroundStyle(.tint)
+                .accessibilityHidden(true)
 
             Text(.paywallTitle)
                 .font(.title)
                 .fontWeight(.bold)
+                .accessibilityAddTraits(.isHeader)
 
             Text(.paywallMessage)
                 .font(.body)
@@ -147,7 +151,7 @@ struct PaywallScreen: View {
                         }
                     }
                 } label: {
-                    Text(Action.coninue.title)
+                    Text(Action.continue.title)
                         .fontWeight(.semibold)
                         .opacity(isBusy ? 0 : 1)
                         .overlay {
@@ -184,11 +188,12 @@ struct PaywallScreen: View {
             }
 
             HStack {
-                footerButton(.paywallTermsTitle) {
-                    openURL(LegalLinks.terms)
+                Link(destination: LegalLinks.terms) {
+                    Text(.paywallTermsTitle)
                 }
+                .frame(maxWidth: .infinity)
 
-                footerButton(.paywallRestoreTitle) {
+                Button(.paywallRestoreTitle) {
                     Task {
                         isBusy = true
                         defer { isBusy = false }
@@ -210,21 +215,18 @@ struct PaywallScreen: View {
                     }
                 }
                 .disabled(isBusy)
+                .frame(maxWidth: .infinity)
 
-                footerButton(.paywallPrivacyTitle) {
-                    openURL(LegalLinks.privacy)
+                Link(destination: LegalLinks.privacy) {
+                    Text(.paywallPrivacyTitle)
                 }
+                .frame(maxWidth: .infinity)
             }
             .buttonStyle(.plain)
             .font(.footnote)
             .foregroundStyle(.secondary)
         }
         .sensoryFeedback(.selection, trigger: selection)
-    }
-
-    private func footerButton(_ title: LocalizedStringResource, action: @escaping () -> Void) -> some View {
-        Button(title, action: action)
-            .frame(maxWidth: .infinity)
     }
 }
 
@@ -238,6 +240,7 @@ private struct ProductButton: View {
             HStack(spacing: 16) {
                 Image(systemName: isSelected ? "checkmark.circle" : "circle")
                     .font(.system(size: 24))
+                    .accessibilityHidden(true)
 
                 VStack(alignment: .leading) {
                     Text(product.displayName)
@@ -324,7 +327,23 @@ private struct PlanComparison: View {
         case let .included(isIncluded):
             Image(systemName: isIncluded ? "checkmark.circle.fill" : "minus")
                 .foregroundStyle(isIncluded ? AnyShapeStyle(.tint) : AnyShapeStyle(.tertiary))
+                .accessibilityLabel(Text(isIncluded ? .paywallIncludedLabel : .paywallNotIncludedLabel))
         }
+    }
+}
+
+extension Binding where Value == Bool {
+    fileprivate init(isPresenting value: Binding<(some Any)?>) {
+        self.init(
+            get: {
+                value.wrappedValue != nil
+            },
+            set: {
+                if !$0 {
+                    value.wrappedValue = nil
+                }
+            }
+        )
     }
 }
 

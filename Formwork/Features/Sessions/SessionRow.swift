@@ -26,10 +26,11 @@ struct SessionRow: View {
     var body: some View {
         NavigationLink(value: session) {
             HStack {
-                PictogramRow(session.pictogram, title: session.title, subtitle: session.startDate.formatted(session.wallClockTime(date: .numeric)))
-
+                summary
+                
                 Image(systemName: "chevron.forward")
                     .foregroundStyle(.tertiary)
+                    .accessibilityHidden(true)
             }
             .padding(8)
             .contentShape(.rect)
@@ -51,8 +52,8 @@ struct SessionRow: View {
             }
         } preview: {
             ContentStack(spacing: .groups) {
-                PictogramRow(session.pictogram, title: session.title, subtitle: session.startDate.formatted(session.wallClockTime(date: .numeric)))
-
+                summary
+                
                 SessionFigureGrid(session)
             }
             .frame(width: 360)
@@ -72,9 +73,17 @@ struct SessionRow: View {
         .padding(.horizontal, 8)
     }
 
+    private var summary: some View {
+        PictogramRow(
+            session.pictogram,
+            title: session.title,
+            subtitle: session.startDate.formatted(session.wallClockTime(date: .numeric))
+        )
+    }
+    
     private func delete() {
-        context.delete(session)
         Health.delete(session)
+        context.delete(session)
     }
 }
 
