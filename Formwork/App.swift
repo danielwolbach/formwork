@@ -17,7 +17,7 @@ struct App: SwiftUI.App {
     private let notificationRouter = NotificationRouter()
 
     @State
-    private var fullVersion = FullVersion()
+    private var paywall = Paywall()
 
     init() {
         UNUserNotificationCenter.current().delegate = notificationRouter
@@ -27,9 +27,9 @@ struct App: SwiftUI.App {
         WindowGroup {
             AppContent(notificationRouter: notificationRouter)
                 .task {
-                    await fullVersion.observe()
+                    await paywall.observe()
                 }
-                .environment(\.fullVersion, fullVersion)
+                .environment(\.paywall, paywall)
         }
         .modelContainer(Storage.container)
     }
@@ -48,8 +48,8 @@ private struct AppContent: View {
     @Environment(\.scenePhase)
     private var scenePhase: ScenePhase
 
-    @Environment(\.fullVersion)
-    private var fullVersion: FullVersion
+    @Environment(\.paywall)
+    private var paywall: Paywall
 
     @Query(Session.activeDescriptor)
     private var activeSessions: [Session]
@@ -143,7 +143,7 @@ private struct AppContent: View {
         .task(id: activityState) {
             await SessionActivity.sync(activityState)
         }
-        // Not tied to activityState, which is nil without the full version.
+        // Not tied to activityState, which is nil without Premium.
         .task(id: activeSessions.first?.persistentModelID) {
             await Health.shared.sync(activeSessions.first)
         }
@@ -189,11 +189,11 @@ private struct AppContent: View {
     }
 
     private var needsDowngrade: Bool {
-        guard fullVersion.hasCheckedEntitlements, !fullVersion.isUnlocked, !onboardingPending, presentedSession == nil else {
+        guard paywall.hasCheckedEntitlements, !paywall.isUnlocked, !onboardingPending, presentedSession == nil else {
             return false
         }
 
-        return workouts.count > FullVersion.workoutLimit || exercises.count > FullVersion.exerciseLimit
+        return workouts.count > Paywall.workoutLimit || exercises.count > Paywall.exerciseLimit
     }
 
     private var reminderOptions: ReminderOptions {
@@ -201,7 +201,7 @@ private struct AppContent: View {
     }
 
     private var activityState: SessionActivityAttributes.ContentState? {
-        guard fullVersion.isUnlocked || !fullVersion.hasCheckedEntitlements else {
+        guard paywall.isUnlocked || !paywall.hasCheckedEntitlements else {
             return nil
         }
 
@@ -211,7 +211,7 @@ private struct AppContent: View {
     private func syncReminders() {
         Reminders.sync((try? modelContext.fetch(FetchDescriptor<Workout>())) ?? [], options: reminderOptions)
     }
-    
+
     private func syncSpotlight() {
         Spotlight.sync((try? modelContext.fetch(FetchDescriptor<Workout>())) ?? [])
     }

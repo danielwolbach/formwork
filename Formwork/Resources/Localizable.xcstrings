@@ -245,7 +245,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Your access to the full version has ende and you can keep up to %#@workoutLimit@ and %#@exerciseLimit@. Everything else is archived and can be restored in settings."
+            "value" : "Your Premium subscription has ended and you can keep up to %#@workoutLimit@ and %#@exerciseLimit@. Everything else is archived and can be restored in settings."
           },
           "substitutions" : {
             "exerciseLimit" : {
@@ -787,6 +787,17 @@
         }
       }
     },
+    "field.manageSubscription.message" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You can manage your subscription in your Apple Account settings."
+          }
+        }
+      }
+    },
     "field.name.placeholder" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -849,6 +860,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pending"
+          }
+        }
+      }
+    },
+    "field.premium.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Premium"
           }
         }
       }
@@ -1125,6 +1147,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Units"
+          }
+        }
+      }
+    },
+    "field.unlocked.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unlocked"
           }
         }
       }
@@ -1415,9 +1448,6 @@
         }
       }
     },
-    "Open ${target}" : {
-
-    },
     "paywall.activeExercises.title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1447,17 +1477,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Free"
-          }
-        }
-      }
-    },
-    "paywall.full.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Full"
           }
         }
       }
@@ -1506,6 +1525,17 @@
         }
       }
     },
+    "paywall.premium.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Premium"
+          }
+        }
+      }
+    },
     "paywall.privacy.title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1545,7 +1575,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Unlock the Full Version"
+            "value" : "Unlock Premium"
           }
         }
       }

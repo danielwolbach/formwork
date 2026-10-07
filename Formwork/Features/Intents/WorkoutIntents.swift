@@ -30,4 +30,3 @@ struct StartSessionIntent: AppIntent, TargetContentProvidingIntent {
         Summary("Start \(\.$workout)")
     }
 }
-

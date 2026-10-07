@@ -20,8 +20,8 @@ struct WorkoutEntryScreen: View {
     @Environment(\.dismiss)
     private var dismiss: DismissAction
 
-    @Environment(\.fullVersion)
-    private var fullVersion: FullVersion
+    @Environment(\.paywall)
+    private var paywall: Paywall
 
     @Environment(\.presentPaywall)
     private var presentPaywall: PresentPaywallAction
@@ -111,7 +111,7 @@ struct WorkoutEntryScreen: View {
     }
 
     private func unarchive() {
-        guard fullVersion.canAddExercise(in: context) else {
+        guard paywall.canAddExercise(in: context) else {
             presentPaywall()
             return
         }

@@ -5,12 +5,12 @@
 //  Created by Daniel Wolbach on 07.10.26.
 //
 
-import FormworkKit
 import AppIntents
+import FormworkKit
 
 struct AppShortcuts: AppShortcutsProvider {
     static let shortcutTileColor: ShortcutTileColor = .navy
-    
+
     static var appShortcuts: [AppShortcut] {
         AppShortcut(
             intent: StartSessionIntent(),
@@ -45,7 +45,7 @@ struct AppShortcuts: AppShortcutsProvider {
                 summary: Summary("Open \(\.$target)"),
                 optionsCollections: {
                     OptionsCollection(WorkoutEntityQuery(), title: "intent.workout.title", systemImageName: "clipboard")
-                },
+                }
             )
         )
     }

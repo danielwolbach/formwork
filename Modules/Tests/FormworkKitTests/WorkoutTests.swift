@@ -29,36 +29,36 @@ struct WorkoutTests {
 
     @Test
     func canAddWorkoutUntilTheLimitIgnoringArchived() {
-        let fullVersion = FullVersion()
+        let paywall = Paywall()
 
-        #expect(fullVersion.canAddWorkout(in: store.context))
+        #expect(paywall.canAddWorkout(in: store.context))
 
         let second = Workout(name: "Upper Body", pictogram: .workout, schedule: .inactive, entries: [])
         store.context.insert(second)
 
-        #expect(!fullVersion.canAddWorkout(in: store.context))
+        #expect(!paywall.canAddWorkout(in: store.context))
 
         second.isArchived = true
 
-        #expect(fullVersion.canAddWorkout(in: store.context))
+        #expect(paywall.canAddWorkout(in: store.context))
     }
 
     @Test
     func canAddExerciseUntilTheLimitIgnoringArchived() {
-        let fullVersion = FullVersion()
+        let paywall = Paywall()
         var added: [Exercise] = []
 
-        for index in 0 ..< FullVersion.exerciseLimit - 3 {
+        for index in 0 ..< Paywall.exerciseLimit - 3 {
             let exercise = Exercise(name: "Exercise \(index)", kind: .bodyweight, categories: [])
             store.context.insert(exercise)
             added.append(exercise)
         }
 
-        #expect(!fullVersion.canAddExercise(in: store.context))
+        #expect(!paywall.canAddExercise(in: store.context))
 
         added.first?.isArchived = true
 
-        #expect(fullVersion.canAddExercise(in: store.context))
+        #expect(paywall.canAddExercise(in: store.context))
     }
 
     @Test

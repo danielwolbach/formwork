@@ -73,7 +73,7 @@ extension Action {
 
     public static let settings = Action(title: .actionSettingsTitle, image: "gear")
 
-    public static let unlockFullVersion = Action(title: .actionUnlockFullVersionTitle, image: "lock.open.fill")
+    public static let unlockPremium = Action(title: .actionUnlockPremiumTitle, image: "lock.open.fill")
 
     public static let discardChanges = Action(title: .actionDiscardChangesTitle, image: "trash", role: .destructive)
 

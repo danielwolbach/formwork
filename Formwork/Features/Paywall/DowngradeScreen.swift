@@ -42,7 +42,7 @@ struct DowngradeScreen: View {
                     .fieldWorkoutsTitle,
                     items: sortedWorkouts,
                     selection: $keptWorkouts,
-                    limit: FullVersion.workoutLimit
+                    limit: Paywall.workoutLimit
                 ) { workout in
                     PictogramRow(
                         workout.pictogram,
@@ -55,7 +55,7 @@ struct DowngradeScreen: View {
                     .fieldExercisesTitle,
                     items: sortedExercises,
                     selection: $keptExercises,
-                    limit: FullVersion.exerciseLimit
+                    limit: Paywall.exerciseLimit
                 ) { exercise in
                     PictogramRow(
                         exercise.pictogram,
@@ -68,7 +68,7 @@ struct DowngradeScreen: View {
         .contentMargins(.bottom, .sections, for: .scrollContent)
         .animation(.snappy, value: sort)
         .safeAreaBar(edge: .bottom) {
-            Button(.unlockFullVersion) {
+            Button(.unlockPremium) {
                 presentPaywall()
             }
             .labelStyle(.fixedTitleAndIcon)
@@ -101,8 +101,8 @@ struct DowngradeScreen: View {
                 return
             }
 
-            keptWorkouts = Set(workouts.prefix(FullVersion.workoutLimit))
-            keptExercises = Set(exercises.prefix(FullVersion.exerciseLimit))
+            keptWorkouts = Set(workouts.prefix(Paywall.workoutLimit))
+            keptExercises = Set(exercises.prefix(Paywall.exerciseLimit))
         }
     }
 
@@ -119,7 +119,7 @@ struct DowngradeScreen: View {
                 .fontWeight(.bold)
                 .accessibilityAddTraits(.isHeader)
 
-            Text(.downgradeMessage(workoutLimit: FullVersion.workoutLimit, exerciseLimit: FullVersion.exerciseLimit))
+            Text(.downgradeMessage(workoutLimit: Paywall.workoutLimit, exerciseLimit: Paywall.exerciseLimit))
                 .font(.body)
                 .foregroundStyle(.secondary)
         }

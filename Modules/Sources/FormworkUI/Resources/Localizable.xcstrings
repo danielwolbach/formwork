@@ -441,13 +441,13 @@
         }
       }
     },
-    "action.unlockFullVersion.title" : {
+    "action.unlockPremium.title" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Unlock Full Version"
+            "value" : "Unlock Premium"
           }
         }
       }

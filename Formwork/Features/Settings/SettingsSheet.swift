@@ -18,8 +18,8 @@ struct SettingsSheet: View {
     @Environment(\.presentPaywall)
     private var presentPaywall: PresentPaywallAction
 
-    @Environment(\.fullVersion)
-    private var fullVersion: FullVersion
+    @Environment(\.paywall)
+    private var paywall: Paywall
 
     @Environment(\.calendar)
     private var calendar: Calendar
@@ -64,6 +64,8 @@ struct SettingsSheet: View {
         ScrollView {
             ContentStack {
                 aboutSection
+
+                premiumSection
 
                 unitsSection
 
@@ -126,19 +128,37 @@ struct SettingsSheet: View {
 
                         Spacer(minLength: 0)
                     }
+                }
+            }
+        }
+    }
 
-                    if !fullVersion.isUnlocked {
-                        Divider()
+    private var premiumSection: some View {
+        SectionView(.fieldPremiumTitle) {
+            GroupBox {
+                if paywall.isUnlocked {
+                    LabeledContent {
+                        Label(.fieldUnlockedTitle, systemImage: "crown")
+                            .labelStyle(.chip(tint: .yellow))
+                    } label: {
+                        Text(.fieldStatusTitle)
 
-                        Button {
+                        Text(.fieldManageSubscriptionMessage)
+                    }
+                } else {
+                    VStack {
+                        Text(.paywallMessage)
+                            .font(.body)
+                            .foregroundStyle(.secondary)
+
+                        Button(.unlockPremium) {
                             presentPaywall()
-                        } label: {
-                            Label(.unlockFullVersion)
-                                .frame(maxWidth: .infinity)
                         }
-                        .fontWeight(.medium)
+                        .labelStyle(.fixedTitleAndIcon)
                         .buttonStyle(.cardProminent)
                     }
+                    .frame(maxWidth: .infinity)
+                    .multilineTextAlignment(.center)
                 }
             }
         }

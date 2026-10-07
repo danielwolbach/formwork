@@ -11,7 +11,7 @@ import SwiftData
 @Model
 public final class Workout {
     public var id: UUID = UUID()
-    
+
     public var name: String = ""
 
     public var pictogram: Pictogram = Pictogram(image: "clipboard", tint: .blue)

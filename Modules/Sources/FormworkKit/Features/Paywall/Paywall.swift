@@ -1,5 +1,5 @@
 //
-//  FullVersion.swift
+//  Paywall.swift
 //  FormworkModules
 //
 //  Created by Daniel Wolbach on 01.10.26.
@@ -11,10 +11,10 @@ import SwiftData
 
 @MainActor
 @Observable
-public final class FullVersion {
+public final class Paywall {
     public static let productIDs = [
-        "de.danielwolbach.Formwork.fullversion.monthly",
-        "de.danielwolbach.Formwork.fullversion.yearly",
+        "de.danielwolbach.Formwork.premium.monthly",
+        "de.danielwolbach.Formwork.premium.yearly",
     ]
 
     public nonisolated static let workoutLimit = 2

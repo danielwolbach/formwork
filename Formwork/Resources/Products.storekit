@@ -110,7 +110,7 @@
       "localizations" : [
 
       ],
-      "name" : "Full Version",
+      "name" : "Premium",
       "subscriptions" : [
         {
           "adHocOffers" : [
@@ -138,13 +138,13 @@
           "localizations" : [
             {
               "description" : "Billed per Month",
-              "displayName" : "Full Version Monthly",
+              "displayName" : "Premium Monthly",
               "locale" : "en_US"
             }
           ],
-          "productID" : "de.danielwolbach.Formwork.fullversion.monthly",
+          "productID" : "de.danielwolbach.Formwork.premium.monthly",
           "recurringSubscriptionPeriod" : "P1M",
-          "referenceName" : "Full Version Monthly",
+          "referenceName" : "Premium Monthly",
           "subscriptionGroupID" : "EB50B788",
           "type" : "RecurringSubscription",
           "winbackOffers" : [
@@ -177,13 +177,13 @@
           "localizations" : [
             {
               "description" : "Billed per Year",
-              "displayName" : "Full Version Yearly",
+              "displayName" : "Premium Yearly",
               "locale" : "en_US"
             }
           ],
-          "productID" : "de.danielwolbach.Formwork.fullversion.yearly",
+          "productID" : "de.danielwolbach.Formwork.premium.yearly",
           "recurringSubscriptionPeriod" : "P1Y",
-          "referenceName" : "Full Version Yearly",
+          "referenceName" : "Premium Yearly",
           "subscriptionGroupID" : "EB50B788",
           "type" : "RecurringSubscription",
           "winbackOffers" : [

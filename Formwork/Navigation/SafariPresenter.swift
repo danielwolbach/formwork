@@ -15,62 +15,28 @@ extension View {
 }
 
 private struct SafariPresenter: ViewModifier {
-    private struct Page: Identifiable {
-        let url: URL
-
-        var id: URL {
-            url
-        }
-    }
-
-    @State
-    private var page: Page?
-
     func body(content: Content) -> some View {
         content
             .environment(\.openURL, OpenURLAction { url in
-                guard ["http", "https"].contains(url.scheme?.lowercased()) else {
+                guard ["http", "https"].contains(url.scheme?.lowercased()), let presenter = topViewController() else {
                     return .systemAction
                 }
 
-                page = Page(url: url)
+                // Safari dismisses itself on Done, so a SwiftUI cover would dismiss twice and close what's underneath.
+                presenter.present(SFSafariViewController(url: url), animated: true)
                 return .handled
             })
-            .fullScreenCover(item: $page) { page in
-                SafariView(url: page.url) {
-                    self.page = nil
-                }
-                .ignoresSafeArea()
-            }
-    }
-}
-
-private struct SafariView: UIViewControllerRepresentable {
-    final class Coordinator: NSObject, SFSafariViewControllerDelegate {
-        private let onDone: () -> Void
-
-        init(onDone: @escaping () -> Void) {
-            self.onDone = onDone
-        }
-
-        func safariViewControllerDidFinish(_: SFSafariViewController) {
-            onDone()
-        }
     }
 
-    let url: URL
+    private func topViewController() -> UIViewController? {
+        let scene = UIApplication.shared.connectedScenes
+            .compactMap { $0 as? UIWindowScene }
+            .first { $0.activationState == .foregroundActive }
 
-    let onDone: () -> Void
-
-    func makeUIViewController(context: Context) -> SFSafariViewController {
-        let controller = SFSafariViewController(url: url)
-        controller.delegate = context.coordinator
+        var controller = scene?.keyWindow?.rootViewController
+        while let presented = controller?.presentedViewController, !presented.isBeingDismissed {
+            controller = presented
+        }
         return controller
-    }
-
-    func updateUIViewController(_: SFSafariViewController, context _: Context) {}
-
-    func makeCoordinator() -> Coordinator {
-        Coordinator(onDone: onDone)
     }
 }

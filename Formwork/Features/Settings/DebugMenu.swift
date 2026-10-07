@@ -14,6 +14,9 @@ struct DebugMenu: View {
     @Environment(\.modelContext)
     private var modelContext: ModelContext
 
+    @Environment(\.presentPaywall)
+    private var presentPaywall: PresentPaywallAction
+
     @AppStorage(StorageKeys.onboardingPending)
     private var onboardingPending: Bool = true
 
@@ -22,6 +25,10 @@ struct DebugMenu: View {
             Menu(.debug) {
                 Button(String("Restart Onboarding"), systemImage: "arrow.counterclockwise") {
                     onboardingPending = true
+                }
+
+                Button(String("Show Paywall"), systemImage: "lock.open") {
+                    presentPaywall()
                 }
 
                 Button(String("Insert Sample Data"), systemImage: "tray.and.arrow.down") {

@@ -44,8 +44,8 @@ public struct PresentPaywallAction {
     }
 }
 
-extension FullVersion {
-    fileprivate nonisolated static let fallback = FullVersion(isUnlocked: true)
+extension Paywall {
+    fileprivate nonisolated static let fallback = Paywall(isUnlocked: true)
 }
 
 extension EnvironmentValues {
@@ -59,7 +59,7 @@ extension EnvironmentValues {
     public var presentPaywall = PresentPaywallAction {}
 
     @Entry
-    public var fullVersion: FullVersion = .fallback
+    public var paywall: Paywall = .fallback
 
     @Entry
     public var units: Units = .current

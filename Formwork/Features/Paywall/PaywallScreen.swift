@@ -20,8 +20,8 @@ struct PaywallScreen: View {
     @Environment(\.openURL)
     private var openURL: OpenURLAction
 
-    @Environment(\.fullVersion)
-    private var fullVersion: FullVersion
+    @Environment(\.paywall)
+    private var paywall: Paywall
 
     @State
     private var selection: Product? = nil
@@ -42,8 +42,8 @@ struct PaywallScreen: View {
     private var nothingToRestoreAlert: Bool = false
 
     var body: some View {
-        VStack(spacing: .sections) {
-            ScrollView {
+        ScrollView {
+            VStack(spacing: .sections) {
                 header
 
                 PlanComparison()
@@ -61,18 +61,18 @@ struct PaywallScreen: View {
                 }
             }
         }
-        .onChange(of: fullVersion.isUnlocked) {
-            if fullVersion.isUnlocked {
+        .onChange(of: paywall.isUnlocked) {
+            if paywall.isUnlocked {
                 dismiss()
             }
         }
-        .onChange(of: fullVersion.products, initial: true) {
-            selection = selection ?? fullVersion.products.first
+        .onChange(of: paywall.products, initial: true) {
+            selection = selection ?? paywall.products.first
         }
         .task {
             // Loading at launch fails while offline, so try again whenever the paywall opens without products.
-            if fullVersion.products.isEmpty {
-                await fullVersion.loadProducts()
+            if paywall.products.isEmpty {
+                await paywall.loadProducts()
             }
         }
         .alert(.alertPurchasePendingTitle, isPresented: $pendingAlert) {
@@ -85,7 +85,7 @@ struct PaywallScreen: View {
         } message: { error in
             Text(error.localizedDescription)
         }
-        .alert(.alertRestoreFailedTitle, isPresented: Binding(isPresenting: $purchaseError), presenting: restoreError) { _ in
+        .alert(.alertRestoreFailedTitle, isPresented: Binding(isPresenting: $restoreError), presenting: restoreError) { _ in
             // OK is added automatically.
         } message: { error in
             Text(error.localizedDescription)
@@ -120,8 +120,8 @@ struct PaywallScreen: View {
 
     private var purchaseSection: some View {
         VStack(spacing: .groups) {
-            if !fullVersion.products.isEmpty {
-                ForEach(fullVersion.products) { product in
+            if !paywall.products.isEmpty {
+                ForEach(paywall.products) { product in
                     ProductButton(product: product, isSelected: selection == product) {
                         selection = product
                     }
@@ -139,7 +139,7 @@ struct PaywallScreen: View {
 
                         do {
                             let result = try await purchase(selection)
-                            await fullVersion.handle(result)
+                            await paywall.handle(result)
 
                             if case .pending = result {
                                 pendingAlert = true
@@ -168,7 +168,7 @@ struct PaywallScreen: View {
                 .buttonStyle(.plain)
                 .clipShape(.rect(cornerRadius: 16))
                 .disabled(selection == nil || isBusy)
-            } else if fullVersion.isLoadingProducts {
+            } else if paywall.isLoadingProducts {
                 ProgressView()
                     .padding()
             } else {
@@ -179,7 +179,7 @@ struct PaywallScreen: View {
                 } actions: {
                     Button(.retry) {
                         Task {
-                            await fullVersion.loadProducts()
+                            await paywall.loadProducts()
                         }
                     }
                     .labelStyle(.fixedTitleAndIcon)
@@ -199,10 +199,10 @@ struct PaywallScreen: View {
                         defer { isBusy = false }
 
                         do {
-                            try await fullVersion.restore()
+                            try await paywall.restore()
 
                             // If it was unlocked before restoring, onChange won't fire, so close here too.
-                            if fullVersion.isUnlocked {
+                            if paywall.isUnlocked {
                                 dismiss()
                             } else {
                                 nothingToRestoreAlert = true
@@ -276,13 +276,13 @@ private struct PlanComparison: View {
     private struct Row {
         let feature: LocalizedStringResource
         let free: Value
-        let full: Value
+        let premium: Value
     }
 
     private let rows: [Row] = [
-        Row(feature: .paywallActiveExercisesTitle, free: .text("\(FullVersion.exerciseLimit)"), full: .text(String(localized: .paywallUnlimitedTitle))),
-        Row(feature: .paywallActiveWorkoutsTitle, free: .text("\(FullVersion.workoutLimit)"), full: .text(String(localized: .paywallUnlimitedTitle))),
-        Row(feature: .paywallLiveActivityTitle, free: .included(false), full: .included(true)),
+        Row(feature: .paywallActiveExercisesTitle, free: .text("\(Paywall.exerciseLimit)"), premium: .text(String(localized: .paywallUnlimitedTitle))),
+        Row(feature: .paywallActiveWorkoutsTitle, free: .text("\(Paywall.workoutLimit)"), premium: .text(String(localized: .paywallUnlimitedTitle))),
+        Row(feature: .paywallLiveActivityTitle, free: .included(false), premium: .included(true)),
     ]
 
     var body: some View {
@@ -295,7 +295,7 @@ private struct PlanComparison: View {
                 Text(.paywallFreeTitle)
                     .foregroundStyle(.secondary)
 
-                Text(.paywallFullTitle)
+                Text(.paywallPremiumTitle)
                     .foregroundStyle(.white)
                     .padding(.horizontal, 12)
                     .padding(.vertical, 4)
@@ -310,7 +310,7 @@ private struct PlanComparison: View {
                 GridRow {
                     Text(row.feature)
                     cell(row.free, highlighted: false)
-                    cell(row.full, highlighted: true)
+                    cell(row.premium, highlighted: true)
                 }
             }
         }
