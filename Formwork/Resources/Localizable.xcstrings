@@ -1041,6 +1041,17 @@
         }
       }
     },
+    "field.saveTargetToWorkout.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save Target to Workout"
+          }
+        }
+      }
+    },
     "field.schedule.title" : {
       "extractionState" : "manual",
       "localizations" : {

@@ -151,7 +151,9 @@ extension Session {
                 entry.status = .skipped(date: .now)
             }
 
-            entry.workoutEntry?.target = entry.target
+            if entry.shouldSaveTargetToWorkout {
+                entry.workoutEntry?.target = entry.target
+            }
         }
 
         endDate = .now

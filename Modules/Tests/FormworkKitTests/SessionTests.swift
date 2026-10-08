@@ -71,6 +71,36 @@ struct SessionLifecycleTests {
     }
 
     @Test
+    func finishKeepsWorkoutTargetWhenTargetDropped() throws {
+        let session = try store.startSession()
+        session.currentEntry?.target = .bodyweight(reps: 7, sets: 3)
+        session.finish()
+
+        #expect((store.workout.entries ?? []).sorted().first?.target.bodyweightTarget == .init(sets: 3, reps: 10))
+    }
+
+    @Test(arguments: [(12, false, 10), (7, true, 7)])
+    func finishFollowsExplicitChoice(reps: Int, saves: Bool, expected: Int) throws {
+        let session = try store.startSession()
+        session.currentEntry?.target = .bodyweight(reps: reps, sets: 3)
+        session.currentEntry?.updatesWorkoutTarget = saves
+        session.finish()
+
+        #expect((store.workout.entries ?? []).sorted().first?.target.bodyweightTarget == .init(sets: 3, reps: expected))
+    }
+
+    @Test(arguments: [
+        (ExerciseTarget.weight(kilograms: 62.5, reps: 8, sets: 3), true),
+        (.weight(kilograms: 60, reps: 10, sets: 4), true),
+        (.weight(kilograms: 60, reps: 8, sets: 3), false),
+        (.weight(kilograms: 57.5, reps: 12, sets: 3), false),
+        (.bodyweight(reps: 10, sets: 3), true),
+    ])
+    func improvementComparesWeightBeforeVolume(target: ExerciseTarget, isImprovement: Bool) {
+        #expect(target.isImprovement(over: .weight(kilograms: 60, reps: 10, sets: 3)) == isImprovement)
+    }
+
+    @Test
     func finishTwiceKeepsFirstEndDate() throws {
         let session = try store.startSession()
         session.finish()

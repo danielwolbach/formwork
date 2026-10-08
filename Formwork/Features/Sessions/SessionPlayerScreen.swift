@@ -248,6 +248,9 @@ private struct SessionEntryPage: View {
     @Bindable
     private var entry: SessionEntry
 
+    @State
+    private var showsUpdateWorkoutTarget: Bool = false
+
     init(_ entry: SessionEntry) {
         self.entry = entry
     }
@@ -265,7 +268,20 @@ private struct SessionEntryPage: View {
                     badge: entry.status.isPending ? nil : entry.status.pictogram
                 )
 
-                ExerciseTargetEditor(target: $entry.target)
+                VStack(spacing: .sections) {
+                    ExerciseTargetEditor(target: target)
+
+                    Toggle(isOn: savesTargetToWorkout) {
+                        Text(.fieldSaveTargetToWorkoutTitle)
+                    }
+                    .toggleStyle(.chip)
+                    .animation(.smooth) { content in
+                        content.opacity(entry.isTargetChanged ? 1 : 0)
+                    }
+                    .sensoryFeedback(.selection, trigger: savesTargetToWorkout.wrappedValue)
+                    .disabled(!entry.isTargetChanged)
+                    .accessibilityHidden(!entry.isTargetChanged)
+                }
             }
 
             Spacer()
@@ -273,6 +289,32 @@ private struct SessionEntryPage: View {
             Spacer()
         }
         .accessibilityValue(entry.status.title)
+    }
+
+    private var target: Binding<ExerciseTarget> {
+        Binding(
+            get: {
+                entry.target
+            },
+            set: {
+                if entry.isTargetChanged {
+                    showsUpdateWorkoutTarget = entry.shouldSaveTargetToWorkout
+                }
+
+                entry.target = $0
+            }
+        )
+    }
+
+    private var savesTargetToWorkout: Binding<Bool> {
+        Binding(
+            get: {
+                entry.isTargetChanged ? entry.shouldSaveTargetToWorkout : showsUpdateWorkoutTarget
+            },
+            set: {
+                entry.updatesWorkoutTarget = $0
+            }
+        )
     }
 }
 

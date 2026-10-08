@@ -48,6 +48,21 @@ extension ExerciseTarget {
         case .distance: Exercise.Kind.distance
         }
     }
+
+    public func isImprovement(over other: ExerciseTarget) -> Bool {
+        switch (self, other) {
+        case let (.weight(kilograms, reps, sets), .weight(otherKilograms, otherReps, otherSets)):
+            kilograms == otherKilograms ? reps * sets > otherReps * otherSets : kilograms > otherKilograms
+        case let (.bodyweight(reps, sets), .bodyweight(otherReps, otherSets)):
+            reps == otherReps ? sets > otherSets : reps > otherReps
+        case let (.duration(seconds, sets), .duration(otherSeconds, otherSets)):
+            seconds == otherSeconds ? sets > otherSets : seconds > otherSeconds
+        case let (.distance(meters, sets), .distance(otherMeters, otherSets)):
+            meters == otherMeters ? sets > otherSets : meters > otherMeters
+        default:
+            true
+        }
+    }
 }
 
 extension ExerciseTarget {

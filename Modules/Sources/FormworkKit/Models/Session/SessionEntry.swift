@@ -30,6 +30,8 @@ public class SessionEntry {
 
     public var workoutEntry: WorkoutEntry?
 
+    public var updatesWorkoutTarget: Bool?
+
     public var creationDate: Date = Date.distantPast
 
     init(entry: WorkoutEntry) {
@@ -64,6 +66,14 @@ extension SessionEntry {
     /// Added during the session rather than planned by the workout, so it's removed instead of skipped.
     public var isAddedWithoutWorkout: Bool {
         workoutEntry == nil
+    }
+
+    public var isTargetChanged: Bool {
+        workoutEntry.map { target != $0.target } ?? false
+    }
+
+    public var shouldSaveTargetToWorkout: Bool {
+        updatesWorkoutTarget ?? workoutEntry.map { target.isImprovement(over: $0.target) } ?? false
     }
 
     public var duration: TimeInterval? {
