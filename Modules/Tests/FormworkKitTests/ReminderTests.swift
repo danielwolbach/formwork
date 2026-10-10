@@ -88,7 +88,7 @@ struct ReminderTests {
         let store = try store(history: 0)
         let session = Session(workout: store.workout)
         store.context.insert(session)
-        session.startDate = try date(day: -History.recentDays, hour: 18)
+        session.startDate = try date(day: -History.recentWeeks * 7, hour: 18)
         session.endDate = session.startDate
 
         let reminders = try [store.workout].reminders(ReminderOptions(dailyMinute: nil, isUpcomingEnabled: true), now: date(day: 0, hour: 6), in: calendar)

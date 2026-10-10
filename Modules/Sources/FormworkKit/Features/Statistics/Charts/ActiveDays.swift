@@ -22,22 +22,18 @@ public struct ActiveDays {
 }
 
 extension ActiveDays {
-    public init(_ window: History.Window) {
-        let calendar = window.history.calendar
+    public init(_ period: Period) {
+        let calendar = period.history.calendar
         // An exercise done twice in one session is still one session.
-        let counts = Set(window.completions.map(\.session)).reduce(into: [Date: Int]()) { counts, session in
-            guard let day = session.period(of: .day, in: calendar)?.start else {
-                return
-            }
-
-            counts[day, default: 0] += 1
+        let sessions = period.completions.reduce(into: [Date: Set<Session>]()) { sessions, occurrence in
+            sessions[occurrence.day, default: []].insert(occurrence.session)
         }
 
         self.calendar = calendar
-        self.days = sequence(first: window.period.start) { calendar.date(byAdding: .day, value: 1, to: $0) }
-            .prefix { $0 < window.period.end }
+        self.days = sequence(first: period.span.start) { calendar.date(byAdding: .day, value: 1, to: $0) }
+            .prefix { $0 < period.span.end }
             .map { date in
-                Day(date: date, sessionCount: counts[date] ?? 0, isAhead: date >= window.history.interval.end)
+                Day(date: date, sessionCount: sessions[date]?.count ?? 0, isAhead: date >= period.history.interval.end)
             }
     }
 

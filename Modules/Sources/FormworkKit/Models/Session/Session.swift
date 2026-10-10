@@ -11,17 +11,11 @@ import SwiftData
 
 @Model
 public class Session {
-    public struct HealthSummary: Codable {
-        public var averageHeartRate: Double? = nil
-    }
-
     public var workout: Workout?
 
     public var startDate: Date = Date.distantPast
 
     public var endDate: Date?
-
-    public var health: HealthSummary?
 
     @Relationship(deleteRule: .cascade, inverse: \SessionEntry.session)
     public var entries: [SessionEntry]? = []

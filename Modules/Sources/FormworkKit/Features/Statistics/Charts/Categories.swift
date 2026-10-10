@@ -20,8 +20,9 @@ public struct Categories {
 }
 
 extension Categories {
-    public init(_ window: History.Window) {
-        let counts = window.entries
+    public init(_ period: Period) {
+        let counts = period.occurrences
+            .flatMap(\.entries)
             .filter(\.status.isCompleted)
             .compactMap(\.exercise)
             .flatMap(\.categories)

@@ -459,6 +459,226 @@
         }
       }
     },
+    "quantity.best.info" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The best result you completed for the exercise."
+          }
+        }
+      }
+    },
+    "quantity.best.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Best"
+          }
+        }
+      }
+    },
+    "quantity.completedExercises.info" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "How many exercises you completed in this session."
+          }
+        }
+      }
+    },
+    "quantity.completedExercises.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Completed Exercises"
+          }
+        }
+      }
+    },
+    "quantity.completionRate.info" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The share of exercises in this session you completed instead of skipping them."
+          }
+        }
+      }
+    },
+    "quantity.completionRate.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Completion Rate"
+          }
+        }
+      }
+    },
+    "quantity.duration.info" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "How long the session took from start to finish."
+          }
+        }
+      }
+    },
+    "quantity.duration.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Duration"
+          }
+        }
+      }
+    },
+    "quantity.endTime.info" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The time of day you finished the session."
+          }
+        }
+      }
+    },
+    "quantity.endTime.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "End Time"
+          }
+        }
+      }
+    },
+    "quantity.exerciseDuration.info" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "How long an exercise usually took in this session."
+          }
+        }
+      }
+    },
+    "quantity.exerciseDuration.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Time per Exercise"
+          }
+        }
+      }
+    },
+    "quantity.oneRepMax.info" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "An estimate of the most weight you could lift for a single rep."
+          }
+        }
+      }
+    },
+    "quantity.oneRepMax.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "One Rep Max"
+          }
+        }
+      }
+    },
+    "quantity.plannedExercises.info" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "How many exercises the session had, whether completed or skipped."
+          }
+        }
+      }
+    },
+    "quantity.plannedExercises.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Planned Exercises"
+          }
+        }
+      }
+    },
+    "quantity.startTime.info" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The time of day you started the session."
+          }
+        }
+      }
+    },
+    "quantity.startTime.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start Time"
+          }
+        }
+      }
+    },
+    "quantity.volume.info" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The total weight you moved in this session: weight × reps × sets of every completed exercise."
+          }
+        }
+      }
+    },
+    "quantity.volume.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Total Volume"
+          }
+        }
+      }
+    },
     "reminder.daily.title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -510,160 +730,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Skipped"
-          }
-        }
-      }
-    },
-    "sessionFigure.averageHeartRate.info" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Your average heart rate during the session, as recorded in Health."
-          }
-        }
-      }
-    },
-    "sessionFigure.averageHeartRate.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Average Heart Rate"
-          }
-        }
-      }
-    },
-    "sessionFigure.completedExercises.info" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "How many exercises you completed in this session."
-          }
-        }
-      }
-    },
-    "sessionFigure.completedExercises.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Completed Exercises"
-          }
-        }
-      }
-    },
-    "sessionFigure.completionRate.info" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "The share of exercises in this session you completed instead of skipping them."
-          }
-        }
-      }
-    },
-    "sessionFigure.completionRate.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Completion Rate"
-          }
-        }
-      }
-    },
-    "sessionFigure.duration.info" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "How long the session took from start to finish."
-          }
-        }
-      }
-    },
-    "sessionFigure.duration.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Duration"
-          }
-        }
-      }
-    },
-    "sessionFigure.endTime.info" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "The time of day you finished the session."
-          }
-        }
-      }
-    },
-    "sessionFigure.endTime.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "End Time"
-          }
-        }
-      }
-    },
-    "sessionFigure.exerciseDuration.info" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "How long an exercise usually took in this session."
-          }
-        }
-      }
-    },
-    "sessionFigure.exerciseDuration.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Time per Exercise"
-          }
-        }
-      }
-    },
-    "sessionFigure.volume.info" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "The total weight you moved in this session: weight × reps × sets of every completed exercise."
-          }
-        }
-      }
-    },
-    "sessionFigure.volume.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Total Volume"
           }
         }
       }
@@ -866,17 +932,6 @@
         }
       }
     },
-    "statistic.longestWeekStreak.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Longest Week Streak"
-          }
-        }
-      }
-    },
     "statistic.mostSkippedExercise.info" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1009,28 +1064,6 @@
         }
       }
     },
-    "statistic.typicalHeartRate.info" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Your usual average heart rate during a session."
-          }
-        }
-      }
-    },
-    "statistic.typicalHeartRate.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Typical Heart Rate"
-          }
-        }
-      }
-    },
     "statistic.typicalInterval.info" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1097,17 +1130,6 @@
         }
       }
     },
-    "statistic.weekStreak.fulfilled.subtitle" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "This week completed"
-          }
-        }
-      }
-    },
     "statistic.weekStreak.info" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1115,17 +1137,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "How many weeks in a row you trained at least once. The current week keeps your streak going until it ends."
-          }
-        }
-      }
-    },
-    "statistic.weekStreak.pending.subtitle" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "This week not completed yet"
           }
         }
       }

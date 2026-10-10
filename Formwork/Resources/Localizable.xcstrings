@@ -1927,6 +1927,39 @@
     },
     "Start ${workout}" : {
 
+    },
+    "statistic.longestWeekStreak.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Longest Week Streak"
+          }
+        }
+      }
+    },
+    "statistic.weekStreak.fulfilled.subtitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This week completed"
+          }
+        }
+      }
+    },
+    "statistic.weekStreak.pending.subtitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This week not completed yet"
+          }
+        }
+      }
     }
   },
   "version" : "1.3"

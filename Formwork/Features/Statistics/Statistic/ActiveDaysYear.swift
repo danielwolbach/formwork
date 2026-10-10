@@ -59,7 +59,7 @@ struct ActiveDaysYear: View {
             return AnyShapeStyle(.clear)
         }
 
-        return day.sessionCount > 0 ? AnyShapeStyle(StatisticKind.activeDays.definition.pictogram.color) : AnyShapeStyle(.gray.quaternary)
+        return day.sessionCount > 0 ? AnyShapeStyle(Statistic.activeDays.pictogram.color) : AnyShapeStyle(.gray.quaternary)
     }
 }
 

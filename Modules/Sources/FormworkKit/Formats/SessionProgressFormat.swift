@@ -17,7 +17,7 @@ public struct SessionProgressFormat: FormatStyle {
     public func format(_ session: Session) -> String {
         let pending = String(localized: .formatPendingCountScheme(count: session.pendingEntries.count))
         let finish = session.workout.flatMap { workout in
-            History(.workout(workout), among: workout.sessions ?? [], at: now).recent.typicalDuration
+            History(.workout(workout), among: workout.sessions ?? [], at: now).recent.value(.typical(.duration))
                 .map { session.startDate.addingTimeInterval($0) }
                 .flatMap { $0 > now ? "→ " + $0.formatted(Calendar.current.formatStyle(time: .shortened)) : nil }
         }

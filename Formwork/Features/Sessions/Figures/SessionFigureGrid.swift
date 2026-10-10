@@ -17,7 +17,7 @@ struct SessionFigureGrid: View {
     private var sessions: [Session]
 
     @State
-    private var selection: SessionFigureKind? = nil
+    private var selection: Quantity? = nil
 
     init(_ session: Session) {
         self.session = session
@@ -25,20 +25,20 @@ struct SessionFigureGrid: View {
 
     var body: some View {
         TileGrid {
-            ForEach(SessionFigureKind.allCases, id: \.self) { kind in
-                SessionFigureCard(kind, of: session, among: sessions) {
+            ForEach(Quantity.figures) { quantity in
+                SessionFigureCard(quantity, of: session, among: sessions) {
                     // A tap above an open sheet also reaches the tiles behind it, so it may only close the sheet.
                     guard selection == nil else {
                         return
                     }
 
-                    selection = kind
+                    selection = quantity
                 }
             }
         }
-        .sheet(item: $selection) { kind in
+        .sheet(item: $selection) { quantity in
             NavigationRoot {
-                SessionFigureSheet(kind, of: session, among: sessions)
+                SessionFigureSheet(quantity, of: session, among: sessions)
             }
             .presentationDetents([.medium, .large])
         }

@@ -31,7 +31,9 @@ public enum Reading: Hashable, Sendable {
         case days
         case heartRate
         /// A target's rank, read in an exercise's kind.
-        case rank
+        case rank(Exercise.Kind?)
+        /// Minutes since midnight.
+        case time(Calendar)
     }
 }
 
@@ -46,15 +48,7 @@ extension Reading {
         }
     }
 
-    init?(minuteOfDay minute: Int, in calendar: Calendar) {
-        guard let date = calendar.date(from: DateComponents(hour: minute / 60, minute: minute % 60)) else {
-            return nil
-        }
-
-        self = .time(date, calendar: calendar)
-    }
-
-    init(_ value: Double, as unit: Unit, of kind: Exercise.Kind? = nil) {
+    init(_ value: Double, as unit: Unit) {
         self = switch unit {
         case .count: .count(Int(value.rounded()))
         case .percent: .percent(value)
@@ -63,7 +57,8 @@ extension Reading {
         case .duration: .duration(seconds: value)
         case .days: .days(value)
         case .heartRate: .heartRate(beatsPerMinute: value)
-        case .rank: Reading(rank: value, of: kind)
+        case let .rank(kind): Reading(rank: value, of: kind)
+        case let .time(calendar): .time(calendar.date(from: DateComponents(hour: Int(value) / 60, minute: Int(value) % 60)) ?? .distantPast, calendar: calendar)
         }
     }
 }

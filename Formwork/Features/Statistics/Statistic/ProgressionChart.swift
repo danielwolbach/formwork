@@ -30,7 +30,7 @@ struct ProgressionChart: View {
     }
 
     var body: some View {
-        let color = StatisticKind.progression.definition.pictogram.color
+        let color = Statistic.progression.pictogram.color
         let selected = selectedPoint
 
         Chart {
@@ -61,7 +61,7 @@ struct ProgressionChart: View {
                     }
             }
         }
-        .chartXScale(domain: progression.period.start ... progression.period.end)
+        .chartXScale(domain: progression.span.start ... progression.span.end)
         .chartXAxis {
             if isYear {
                 AxisMarks(values: .stride(by: .month)) {

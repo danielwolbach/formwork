@@ -23,7 +23,7 @@ struct CategoriesCard: View {
 
             Spacer(minLength: 0)
         } label: {
-            Label(StatisticKind.categories.definition.title, systemImage: StatisticKind.categories.definition.pictogram.image)
+            Label(Statistic.categories.title, systemImage: Statistic.categories.pictogram.image)
         }
         .groupBoxStyle(.card)
     }

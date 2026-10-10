@@ -27,7 +27,7 @@ public final class Health: NSObject {
 
     public private(set) var status: Status?
 
-    public private(set) var measurements = BodyMeasurements()
+    public private(set) var measurements: [BodyMeasurement: [BodyMeasurement.Sample]] = [:]
 
     @ObservationIgnored
     private var live: HKWorkoutSession?
@@ -97,11 +97,11 @@ extension Health {
         }
     }
 
-    private static func samples(of kind: BodyMeasurements.Kind) async -> [BodyMeasurements.Sample] {
+    private static func samples(of kind: BodyMeasurement) async -> [BodyMeasurement.Sample] {
         let query = HKSampleQueryDescriptor(predicates: [.quantitySample(type: kind.quantityType)], sortDescriptors: [SortDescriptor(\.startDate)])
 
         do {
-            return try await query.result(for: store).map { BodyMeasurements.Sample(date: $0.startDate, value: $0.quantity.doubleValue(for: kind.healthUnit)) }
+            return try await query.result(for: store).map { BodyMeasurement.Sample(date: $0.startDate, value: $0.quantity.doubleValue(for: kind.healthUnit)) }
         } catch {
             Logger.health.error("Reading \(kind.quantityType.identifier, privacy: .public) samples failed: \(error, privacy: .public)")
             return []
@@ -122,16 +122,16 @@ extension Health {
             return
         }
 
-        var measurements = BodyMeasurements()
+        var measurements: [BodyMeasurement: [BodyMeasurement.Sample]] = [:]
 
-        for kind in BodyMeasurements.Kind.allCases {
-            measurements[kind] = await Self.samples(of: kind)
+        for measurement in BodyMeasurement.allCases {
+            measurements[measurement] = await Self.samples(of: measurement)
         }
 
         self.measurements = measurements
     }
 
-    public func log(_ value: Double, as kind: BodyMeasurements.Kind) async {
+    public func log(_ value: Double, as kind: BodyMeasurement) async {
         let quantity = HKQuantity(unit: kind.healthUnit, doubleValue: value)
         let sample = HKQuantitySample(type: kind.quantityType, quantity: quantity, start: .now, end: .now)
 
@@ -226,11 +226,6 @@ extension Health {
         do {
             try await builder.endCollection(at: session.endDate ?? .now)
 
-            session.health = Session.HealthSummary(
-                averageHeartRate: builder.statistics(for: HKQuantityType(.heartRate))?
-                    .averageQuantity()?.doubleValue(for: .count().unitDivided(by: .minute()))
-            )
-
             _ = try await builder.finishWorkout()
 
             Logger.health.info("Finished workout session")
@@ -311,7 +306,7 @@ extension Health: HKLiveWorkoutBuilderDelegate {
     }
 }
 
-extension BodyMeasurements.Kind {
+extension BodyMeasurement {
     fileprivate var quantityType: HKQuantityType {
         switch self {
         case .weight: HKQuantityType(.bodyMass)

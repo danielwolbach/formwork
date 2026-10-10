@@ -10,95 +10,167 @@ import FormworkUI
 import SwiftUI
 
 struct StatisticSheet: View {
-    private let kind: StatisticKind
+    private let statistic: Statistic
 
     private let history: History
 
-    init(_ kind: StatisticKind, of history: History) {
-        self.kind = kind
+    init(_ statistic: Statistic, of history: History) {
+        self.statistic = statistic
         self.history = history
     }
 
     var body: some View {
-        let definition = kind.definition
-        let details = kind.details(of: history)
+        DetailSheet(statistic, subtitle: history.subject.title) {
+            switch statistic.kind {
+            case let .formula(formula, tolerance): details(of: formula, tolerance: tolerance)
+            case let .measurement(measurement, tolerance): details(of: measurement, tolerance: tolerance)
+            case .streak: streakDetails
+            case .activeDays: activeDaysDetails
+            case .categories: categoriesDetails
+            case .progression: progressionDetails
+            }
+        }
+    }
 
-        DetailSheet(definition, subtitle: history.subject.title) {
-            if !details.values.isEmpty {
+    @ViewBuilder
+    private var streakDetails: some View {
+        let streak = history.allTime.streak
+
+        ValueList {
+            ValueRow(
+                title: statistic.title,
+                reading: .count(streak.weeks),
+                footnote: String(localized: streak.isCurrentWeekFulfilled ? .statisticWeekStreakFulfilledSubtitle : .statisticWeekStreakPendingSubtitle)
+            )
+
+            ValueRow(title: String(localized: .statisticLongestWeekStreakTitle), reading: .count(streak.longest))
+        }
+    }
+
+    private var activeDaysDetails: some View {
+        YearSection(years: history.years) { year in
+            ActiveDaysYear(ActiveDays(history.year(year)))
+        }
+    }
+
+    @ViewBuilder
+    private var categoriesDetails: some View {
+        SectionView(.fieldRecentTitle, subtitle: .init(localized: .fieldLastWeeksSubtitle(count: History.recentWeeks))) {
+            GroupBox {
+                CategoriesBreakdown(Categories(history.recent))
+            }
+            .groupBoxStyle(.card)
+        }
+
+        SectionView(.fieldOverallTitle) {
+            GroupBox {
+                CategoriesBreakdown(Categories(history.allTime))
+            }
+            .groupBoxStyle(.card)
+        }
+
+        YearSection(years: history.years) { year in
+            CategoriesChart(history, year: year)
+        }
+    }
+
+    @ViewBuilder
+    private var progressionDetails: some View {
+        ValueList {
+            ValueComparison(Progression.comparison(in: history))
+
+            ValueRow(title: String(localized: .fieldOverallTitle), reading: history.allTime.reading(.maximum(.best)))
+        }
+
+        YearSection(years: history.years) { year in
+            ProgressionChart(Progression(history.year(year)), isYear: true, isSelectable: true)
+                .frame(height: 200)
+        }
+    }
+
+    @ViewBuilder
+    private func details(of formula: Formula, tolerance: Double?) -> some View {
+        ValueList {
+            if formula == .latest {
+                ValueRow(title: statistic.title, reading: history.allTime.reading(formula))
+            } else {
+                if tolerance == nil {
+                    ValueComparison(recent: history.recent.reading(formula))
+                } else {
+                    ValueComparison(history.comparison(formula, tolerance: tolerance))
+                }
+
+                ValueRow(title: String(localized: .fieldOverallTitle), reading: history.allTime.reading(formula))
+            }
+        }
+
+        if let series = history.series(formula) {
+            sessions(series)
+        }
+
+        if formula.isNumeric {
+            YearSection(years: history.years) { year in
+                if let monthly = history.monthly(formula, in: year) {
+                    MonthlyChart(monthly, title: statistic.title)
+                }
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func details(of measurement: BodyMeasurement, tolerance: Double) -> some View {
+        ValueList {
+            ValueComparison(history.body.comparison(measurement, tolerance: tolerance), latestOn: history.body.latest(measurement)?.date)
+        }
+
+        MeasurementLogButton(measurement, title: statistic.title, latest: history.body.latest(measurement)?.value)
+
+        sessions(history.body.series(measurement))
+
+        if let years = history.body.years(of: measurement) {
+            YearSection(years: years) { year in
+                MonthlyChart(history.body.monthly(measurement, in: year), title: statistic.title)
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func sessions(_ series: Series) -> some View {
+        if series.values.count > 1 {
+            SectionView(.fieldLatestTitle, subtitle: String(localized: .fieldLastWeeksSubtitle(count: History.chartedWeeks))) {
                 GroupBox {
-                    VStack(spacing: .groups) {
-                        ForEach(details.values.indices, id: \.self) { index in
-                            if index > 0 {
-                                Divider()
-                            }
-
-                            value(details.values[index])
-                        }
-                    }
+                    SessionsChart(series, title: statistic.title)
                 }
                 .groupBoxStyle(.card)
-
-                if let measurement = kind.measurement {
-                    MeasurementLogButton(measurement, title: definition.title, latest: history.measurements[measurement].last?.value)
-                }
             }
-
-            if let categories = details.categories {
-                SectionView(.fieldRecentTitle, subtitle: .init(localized: .fieldLastWeeksSubtitle(count: History.recentWeeks))) {
-                    GroupBox {
-                        CategoriesBreakdown(categories.recent)
-                    }
-                    .groupBoxStyle(.card)
-                }
-
-                SectionView(.fieldOverallTitle) {
-                    GroupBox {
-                        CategoriesBreakdown(categories.overall)
-                    }
-                    .groupBoxStyle(.card)
-                }
-            }
-
-            if let sessions = details.sessions, sessions.points.count > 1 {
-                SectionView(.fieldLatestTitle, subtitle: String(localized: .fieldLastWeeksSubtitle(count: History.comparedWeeks))) {
-                    GroupBox {
-                        SessionsChart(sessions.points, period: sessions.period, title: definition.title, reading: sessions.reading)
-                    }
-                    .groupBoxStyle(.card)
-                }
-            }
-
-            if let yearly = details.yearly {
-                YearSection(years: yearly.years) { year in
-                    chart(yearly.chart(year))
-                }
-            }
-        }
-    }
-
-    @ViewBuilder
-    private func value(_ value: StatisticDetails.Value) -> some View {
-        switch value {
-        case let .trend(recent, before, direction): ValueComparison(recent: recent, before: before, direction: direction)
-        case let .recent(reading): ValueComparison(recent: reading)
-        case let .overall(reading): ValueRow(title: String(localized: .fieldOverallTitle), reading: reading)
-        case let .named(title, reading, footnote): ValueRow(title: title, reading: reading, footnote: footnote)
-        }
-    }
-
-    @ViewBuilder
-    private func chart(_ chart: StatisticDetails.Chart) -> some View {
-        switch chart {
-        case let .monthly(series, reading): MonthlyChart(series, title: kind.definition.title, reading: reading)
-        case let .activeDays(activeDays): ActiveDaysYear(activeDays)
-        case let .categories(series): CategoriesChart(series: series)
-        case let .progression(progression): ProgressionChart(progression, isYear: true, isSelectable: true).frame(height: 200)
         }
     }
 }
 
+private struct ValueList<Content: View>: View {
+    @ViewBuilder
+    let content: Content
+
+    var body: some View {
+        GroupBox {
+            Group(subviews: content) { subviews in
+                VStack(spacing: .groups) {
+                    ForEach(subviews.indices, id: \.self) { index in
+                        if index > 0 {
+                            Divider()
+                        }
+
+                        subviews[index]
+                    }
+                }
+            }
+        }
+        .groupBoxStyle(.card)
+    }
+}
+
 private struct MeasurementLogButton: View {
-    private let kind: BodyMeasurements.Kind
+    private let measurement: BodyMeasurement
 
     private let title: String
 
@@ -110,8 +182,8 @@ private struct MeasurementLogButton: View {
     @State
     private var isLogging: Bool = false
 
-    init(_ kind: BodyMeasurements.Kind, title: String, latest: Double?) {
-        self.kind = kind
+    init(_ measurement: BodyMeasurement, title: String, latest: Double?) {
+        self.measurement = measurement
         self.title = title
         self.latest = latest
     }
@@ -139,28 +211,28 @@ private struct MeasurementLogButton: View {
                 }
 
                 Task {
-                    await Health.shared.log(newValue * factor, as: kind)
+                    await Health.shared.log(newValue * factor, as: measurement)
                 }
             }
         )
     }
 
     private var factor: Double {
-        switch kind {
+        switch measurement {
         case .weight: Measurement(value: 1, unit: units.weightUnit).converted(to: .kilograms).value
         case .bodyFat: 0.01
         }
     }
 
     private var suffix: String {
-        switch kind {
+        switch measurement {
         case .weight: units.weightUnit.symbol
         case .bodyFat: "%"
         }
     }
 
     private var range: ClosedRange<Double> {
-        switch kind {
+        switch measurement {
         case .weight: 0 ... 500 / factor
         case .bodyFat: 0 ... 100
         }

@@ -11,19 +11,28 @@ import FormworkUI
 import SwiftUI
 
 struct CategoriesChart: View {
-    let series: Series<Categories>
+    private let history: History
+
+    private let year: Int
+
+    init(_ history: History, year: Int) {
+        self.history = history
+        self.year = year
+    }
 
     var body: some View {
-        Chart(series.bars) { bar in
-            ForEach(bar.value.shares) { share in
+        let span = history.year(year).span
+
+        Chart(history.months(in: year).filter(\.isOnRecord), id: \.span.start) { month in
+            ForEach(Categories(month).shares) { share in
                 BarMark(
-                    x: .value(.chartMonth, bar.month, unit: .month),
+                    x: .value(.chartMonth, month.span.start, unit: .month),
                     y: .value(share.category.title, share.count)
                 )
                 .foregroundStyle(share.category.pictogram.color)
             }
         }
-        .chartXScale(domain: series.period.start ... series.period.end)
+        .chartXScale(domain: span.start ... span.end)
         .chartXAxis {
             AxisMarks(values: .stride(by: .month)) {
                 AxisValueLabel(format: .dateTime.month(.narrow), centered: true)
@@ -39,6 +48,6 @@ struct CategoriesChart: View {
 #Preview {
     let history = History(.all, among: Samples.sessions)
 
-    CategoriesChart(series: Series(history, year: history.years.upperBound, value: Categories.init))
+    CategoriesChart(history, year: history.years.upperBound)
         .padding()
 }

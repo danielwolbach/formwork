@@ -35,6 +35,10 @@ extension [Double] {
         let sorted = sorted(), middle = count / 2
         return count.isMultiple(of: 2) ? (sorted[middle - 1] + sorted[middle]) / 2 : sorted[middle]
     }
+
+    var sum: Double? {
+        isEmpty ? nil : reduce(0, +)
+    }
 }
 
 extension Sequence {

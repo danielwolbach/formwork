@@ -51,7 +51,7 @@ struct ExerciseScreen: View {
                     badge: badge
                 )
 
-                if !history.sessions.isEmpty {
+                if !history.occurrences.isEmpty {
                     StatisticGrid(history)
                 }
 

@@ -10,33 +10,29 @@ import FormworkUI
 import SwiftUI
 
 struct SessionFigureSheet: View {
-    private let kind: SessionFigureKind
+    private let quantity: Quantity
 
     private let session: Session
 
     private let sessions: [Session]
 
-    init(_ kind: SessionFigureKind, of session: Session, among sessions: [Session]) {
-        self.kind = kind
+    init(_ quantity: Quantity, of session: Session, among sessions: [Session]) {
+        self.quantity = quantity
         self.session = session
         self.sessions = sessions
     }
 
     var body: some View {
-        let definition = kind.definition
-        let comparison = SessionComparison(kind, of: session, among: sessions)
-        let points = comparison.points()
-
-        DetailSheet(definition, subtitle: session.title) {
+        DetailSheet(quantity, subtitle: session.title) {
             GroupBox {
-                ValueComparison(comparison)
+                ValueComparison(Comparison(quantity, of: session, among: sessions), of: session)
             }
             .groupBoxStyle(.card)
 
-            if points.count > 1 {
-                SectionView(.fieldLatestTitle, subtitle: String(localized: .fieldLastSessionsSubtitle(count: points.count))) {
+            if let series = Series(quantity, endingWith: session, among: sessions), series.points.count > 1 {
+                SectionView(.fieldLatestTitle, subtitle: String(localized: .fieldLastSessionsSubtitle(count: series.points.count))) {
                     GroupBox {
-                        SessionsChart(points, title: definition.title, reading: kind.reading(of:))
+                        SessionsChart(series, title: quantity.title)
                     }
                     .groupBoxStyle(.card)
                 }

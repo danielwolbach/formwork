@@ -35,7 +35,7 @@ struct WorkoutEntryStatisticsSheet: View {
         let history = history
 
         Group {
-            if history.sessions.isEmpty {
+            if history.occurrences.isEmpty {
                 ContentUnavailableView {
                     Label(.emptyStatisticsTitle, systemImage: "flame")
                 } description: {

@@ -10,14 +10,14 @@ import FormworkUI
 import SwiftUI
 
 struct StatisticCard: View {
-    private let kind: StatisticKind
+    private let statistic: Statistic
 
     private let history: History
 
     private let action: () -> Void
 
-    init(_ kind: StatisticKind, of history: History, action: @escaping () -> Void) {
-        self.kind = kind
+    init(_ statistic: Statistic, of history: History, action: @escaping () -> Void) {
+        self.statistic = statistic
         self.history = history
         self.action = action
     }
@@ -32,16 +32,16 @@ struct StatisticCard: View {
 
     @ViewBuilder
     private var label: some View {
-        switch kind.summary(of: history) {
-        case let .reading(reading, direction): ReadingCard(kind.definition, reading: reading, direction: direction)
-        case let .activeDays(activeDays): ActiveDaysCard(activeDays)
-        case let .categories(categories): CategoriesCard(categories)
-        case let .progression(progression): ProgressionCard(progression)
+        switch statistic.kind {
+        case .formula, .measurement, .streak: ReadingCard(statistic, reading: statistic.reading(in: history), direction: statistic.direction(in: history))
+        case .activeDays: ActiveDaysCard(ActiveDays(history.weeks(History.chartedWeeks)))
+        case .categories: CategoriesCard(Categories(history.recent))
+        case .progression: ProgressionCard(Progression(history.weeks(History.chartedWeeks)))
         }
     }
 
     private var span: Int {
-        kind.isChart ? 2 : 1
+        statistic.isChart ? 2 : 1
     }
 }
 

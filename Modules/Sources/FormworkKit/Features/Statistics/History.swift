@@ -8,90 +8,30 @@
 //
 // Guidelines
 //
+// - A history resolves its sessions into occurrences once: every time its subject was done, dated by the day it
+//   started on, on the clock where it started. Everything else reads occurrences, never sessions, so no statistic
+//   switches on the subject or does date math of its own.
 // - Use the history's `calendar` for all date math (no fixed calendars, no `86_400` arithmetic).
 //   Weeks start on `calendar.firstWeekday`.
-// - Sessions are dated by the clock where they started: ask them which period they fall into
-//   (`falls(into:in:)`, `period(of:in:)`) and at which time of day they started (`startMinute(in:)`),
-//   and show their dates with `localCalendar(from:)`. `startDate` and `endDate` are real instants, only for
-//   durations, ordering, comparisons with now and relative formatting.
-// - Only finished sessions count. A session belongs to the day it started on, and intervals are half-open
-//   (`start <= date < end`). `DateInterval.contains` includes the end, so don't use it.
-// - A history is frozen at one moment. Its windows are whole days, cut out of the days on record: from the
-//   day of the first session to the end of today. Statistics count a window's `interval`, charts lay out its
-//   `period`.
-// - Streaks are what the user saw on a window's last day on record: they count every session up to then,
-//   before the window too.
-// - A statistic that asks when, how often or how long the subject was done reads the window's `completions` (a
-//   workout's finished sessions, an exercise's completed entries) instead of switching on the subject itself.
-// - Body measurements come from Health, not sessions, so their windows only end at today and don't start at the
-//   first session: someone who weighed in for years before their first session still gets a trend.
+// - Only finished sessions count. Intervals are half-open (`start <= date < end`). `DateInterval.contains`
+//   includes the end, so don't use it.
+// - A history is frozen at one moment. Its periods are whole days, cut out of the days on record: from the day of
+//   the first occurrence to the end of today. Statistics count a period's `interval`, charts lay out its `span`.
+// - An occurrence counts as done once it was completed. Skipped ones still count where a statistic asks what was
+//   planned, like the completion rate or the most skipped exercise.
+// - Streaks are what the user saw on a period's last day on record: they count every session up to then, before
+//   the period too.
+// - Body measurements are read through `body`, which has date rules of its own.
 //
 
 import Foundation
 
-public struct History: Hashable {
+public struct History {
     public enum Subject: Hashable {
         case all
         case workout(Workout)
         case exercise(Exercise)
         case entry(WorkoutEntry)
-    }
-
-    public struct Window: Hashable {
-        public let history: History
-
-        public let period: DateInterval
-
-        public let interval: DateInterval
-
-        public let sessions: [Session]
-
-        public let entries: [SessionEntry]
-
-        let completions: [Completion]
-
-        fileprivate init(_ history: History, period: DateInterval, only session: Session? = nil) {
-            let start = max(period.start, history.interval.start)
-            let interval = DateInterval(start: start, end: max(start, min(period.end, history.interval.end)))
-            let sessions = history.sessions.filter { candidate in
-                candidate.falls(into: interval, in: history.calendar) && (session.map { $0 === candidate } ?? true)
-            }
-            let entries = sessions.flatMap { $0.entries ?? [] }.filter { entry in
-                switch history.subject {
-                case .all, .workout: true
-                case let .exercise(exercise): entry.exercise == exercise
-                case let .entry(slot): entry.workoutEntry == slot
-                }
-            }
-
-            self.history = history
-            self.period = period
-            self.interval = interval
-            self.sessions = sessions
-            self.entries = entries
-            self.completions = switch history.subject {
-            case .all, .workout:
-                sessions.compactMap { session in
-                    session.endDate.map { Completion(session: session, date: $0, duration: session.duration) }
-                }
-            case .exercise, .entry:
-                entries.compactMap { entry -> Completion? in
-                    guard entry.status.isCompleted, let session = entry.session, let date = entry.status.resolvedDate else {
-                        return nil
-                    }
-
-                    return Completion(session: session, date: date, duration: entry.duration)
-                }
-            }
-        }
-    }
-
-    struct Completion: Hashable {
-        let session: Session
-
-        let date: Date
-
-        let duration: TimeInterval?
     }
 
     public let subject: Subject
@@ -100,42 +40,32 @@ public struct History: Hashable {
 
     public let calendar: Calendar
 
-    public let sessions: [Session]
+    public let occurrences: [Occurrence]
 
     public let interval: DateInterval
 
-    public let measurements: BodyMeasurements
+    public let measurements: [BodyMeasurement: [BodyMeasurement.Sample]]
 
     public init(
         _ subject: Subject,
-        among candidates: [Session],
-        measurements: BodyMeasurements = BodyMeasurements(),
+        among sessions: [Session],
+        measurements: [BodyMeasurement: [BodyMeasurement.Sample]] = [:],
         at now: Date = .now,
         calendar: Calendar = .current
     ) {
         let today = calendar.startOfDay(for: now)
         let tomorrow = calendar.date(byAdding: .day, value: 1, to: today) ?? today
-        let sessions = candidates.filter { session in
-            !session.isActive && session.falls(into: DateInterval(start: .distantPast, end: tomorrow), in: calendar) && subject.includes(session)
-        }
-        let first = sessions.compactMap { $0.period(of: .day, in: calendar)?.start }.min()
+        let occurrences = sessions
+            .filter { !$0.isActive && $0.falls(into: DateInterval(start: .distantPast, end: tomorrow), in: calendar) }
+            .flatMap { subject.occurrences(of: $0, in: calendar) }
+            .sorted { ($0.day, $0.session.startDate) < ($1.day, $1.session.startDate) }
 
         self.subject = subject
         self.now = now
         self.calendar = calendar
-        self.sessions = sessions
-        self.interval = DateInterval(start: first ?? tomorrow, end: tomorrow)
+        self.occurrences = occurrences
+        self.interval = DateInterval(start: occurrences.first?.day ?? tomorrow, end: tomorrow)
         self.measurements = measurements
-    }
-}
-
-extension History.Window {
-    public var measurements: BodyMeasurements {
-        history.measurements.within(measurementInterval)
-    }
-
-    var measurementInterval: DateInterval {
-        DateInterval(start: period.start, end: max(period.start, min(period.end, history.interval.end)))
     }
 }
 
@@ -157,12 +87,14 @@ extension History.Subject {
         }
     }
 
-    fileprivate func includes(_ session: Session) -> Bool {
-        switch self {
-        case .all: true
-        case let .workout(workout): session.workout == workout
-        case let .exercise(exercise): (session.entries ?? []).contains { $0.exercise == exercise }
-        case let .entry(slot): (session.entries ?? []).contains { $0.workoutEntry == slot }
+    fileprivate func occurrences(of session: Session, in calendar: Calendar) -> [Occurrence] {
+        let entries = (session.entries ?? []).sorted()
+
+        return switch self {
+        case .all: [Occurrence(session, in: calendar)]
+        case let .workout(workout): session.workout == workout ? [Occurrence(session, in: calendar)] : []
+        case let .exercise(exercise): entries.filter { $0.exercise == exercise }.map { Occurrence(session, entry: $0, in: calendar) }
+        case let .entry(slot): entries.filter { $0.workoutEntry == slot }.map { Occurrence(session, entry: $0, in: calendar) }
         }
     }
 }
@@ -176,16 +108,8 @@ extension History {
         12
     }
 
-    public static var comparedWeeks: Int {
+    public static var chartedWeeks: Int {
         recentWeeks + baselineWeeks
-    }
-
-    public static var recentDays: Int {
-        recentWeeks * 7
-    }
-
-    public static var baselineDays: Int {
-        baselineWeeks * 7
     }
 
     public static var chartedSessions: Int {
@@ -196,16 +120,16 @@ extension History {
         3
     }
 
-    public var allTime: Window {
-        Window(self, period: interval)
+    public var allTime: Period {
+        Period(self, span: interval)
     }
 
-    public var recent: Window {
-        days(Self.recentDays, endingOn: now)
+    public var recent: Period {
+        days(Self.recentWeeks * 7, endingOn: now)
     }
 
-    public var baseline: Window {
-        days(Self.baselineDays, endingOn: calendar.date(byAdding: .day, value: -Self.recentDays, to: now) ?? now)
+    public var baseline: Period {
+        days(Self.baselineWeeks * 7, endingOn: calendar.date(byAdding: .day, value: -Self.recentWeeks * 7, to: now) ?? now)
     }
 
     public var years: ClosedRange<Int> {
@@ -213,30 +137,32 @@ extension History {
         return min(calendar.component(.year, from: interval.start), current) ... current
     }
 
-    public func weeks(_ count: Int) -> Window {
+    public func weeks(_ count: Int) -> Period {
         let current = calendar.dateInterval(of: .weekOfYear, for: now) ?? DateInterval(start: interval.end, duration: 0)
         let start = calendar.date(byAdding: .weekOfYear, value: 1 - max(count, 0), to: current.start) ?? current.start
-        return Window(self, period: DateInterval(start: start, end: current.end))
+        return Period(self, span: DateInterval(start: start, end: current.end))
     }
 
-    public func month(containing date: Date) -> Window {
-        Window(self, period: calendar.dateInterval(of: .month, for: date) ?? DateInterval(start: date, duration: 0))
-    }
-
-    public func year(_ year: Int) -> Window {
-        let first = calendar.date(from: DateComponents(year: year)) ?? now
-        return Window(self, period: calendar.dateInterval(of: .year, for: first) ?? DateInterval(start: first, duration: 0))
-    }
-
-    /// Just this session, so a window's values read as that session's own.
-    public func session(_ session: Session) -> Window {
-        let day = session.period(of: .day, in: calendar) ?? DateInterval(start: session.startDate, duration: 0)
-        return Window(self, period: day, only: session)
-    }
-
-    public func days(_ count: Int, endingOn day: Date) -> Window {
+    public func days(_ count: Int, endingOn day: Date) -> Period {
         let end = calendar.date(byAdding: .day, value: 1, to: calendar.startOfDay(for: day)) ?? day
         let start = calendar.date(byAdding: .day, value: -count, to: end) ?? end
-        return Window(self, period: DateInterval(start: start, end: end))
+        return Period(self, span: DateInterval(start: start, end: end))
+    }
+
+    public func month(containing date: Date) -> Period {
+        Period(self, span: calendar.dateInterval(of: .month, for: date) ?? DateInterval(start: date, duration: 0))
+    }
+
+    public func year(_ year: Int) -> Period {
+        let first = calendar.date(from: DateComponents(year: year)) ?? now
+        return Period(self, span: calendar.dateInterval(of: .year, for: first) ?? DateInterval(start: first, duration: 0))
+    }
+
+    public func months(in year: Int) -> [Period] {
+        let span = self.year(year).span
+
+        return sequence(first: span.start) { calendar.date(byAdding: .month, value: 1, to: $0) }
+            .prefix { $0 < span.end }
+            .map(month(containing:))
     }
 }

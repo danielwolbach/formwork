@@ -124,7 +124,7 @@ extension OverviewEntry {
         let context = ModelContext(Storage.container)
         let sessions = (try? context.fetch(FetchDescriptor<Session>())) ?? []
         let workouts = (try? context.fetch(FetchDescriptor<Workout>(predicate: #Predicate<Workout> { !$0.isArchived }))) ?? []
-        let streak = History(.all, among: sessions, at: date).allTime.weekStreak
+        let streak = History(.all, among: sessions, at: date).allTime.streak
         let isScheduled = workouts.contains { $0.isScheduled(on: date, now: date) }
         let workout = workouts.pending(on: date).first
 

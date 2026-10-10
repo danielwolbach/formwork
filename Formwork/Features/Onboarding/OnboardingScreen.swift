@@ -287,10 +287,10 @@ private struct StatisticsPreview: View {
 
     var body: some View {
         TileGrid {
-            ReadingCard(StatisticKind.weekStreak.definition, reading: StarterCatalog.Samples.weekStreak)
-            ReadingCard(StatisticKind.weeklySessions.definition, reading: StarterCatalog.Samples.weeklySessions)
-            ReadingCard(StatisticKind.personalBest.definition, reading: StarterCatalog.Samples.personalBest(in: units))
-            ReadingCard(SessionFigureKind.volume.definition, reading: StarterCatalog.Samples.totalVolume(in: units))
+            ReadingCard(Statistic.weekStreak, reading: StarterCatalog.Samples.weekStreak)
+            ReadingCard(Statistic.weeklySessions, reading: StarterCatalog.Samples.weeklySessions)
+            ReadingCard(Statistic.personalBest, reading: StarterCatalog.Samples.personalBest(in: units))
+            ReadingCard(Quantity.volume, reading: StarterCatalog.Samples.totalVolume(in: units))
         }
     }
 }

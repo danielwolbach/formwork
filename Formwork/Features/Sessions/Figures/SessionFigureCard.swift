@@ -10,7 +10,7 @@ import FormworkUI
 import SwiftUI
 
 struct SessionFigureCard: View {
-    private let kind: SessionFigureKind
+    private let quantity: Quantity
 
     private let session: Session
 
@@ -18,19 +18,19 @@ struct SessionFigureCard: View {
 
     private let action: () -> Void
 
-    init(_ kind: SessionFigureKind, of session: Session, among sessions: [Session], action: @escaping () -> Void) {
-        self.kind = kind
+    init(_ quantity: Quantity, of session: Session, among sessions: [Session], action: @escaping () -> Void) {
+        self.quantity = quantity
         self.session = session
         self.sessions = sessions
         self.action = action
     }
 
     var body: some View {
-        let comparison = SessionComparison(kind, of: session, among: sessions)
+        let comparison = Comparison(quantity, of: session, among: sessions)
 
         if comparison.current != nil {
             Button(action: action) {
-                ReadingCard(kind.definition, reading: comparison.current, direction: comparison.direction)
+                ReadingCard(quantity, reading: comparison.current, direction: comparison.direction)
             }
             .buttonStyle(.plain)
         }

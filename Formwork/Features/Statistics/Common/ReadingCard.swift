@@ -16,14 +16,14 @@ struct ReadingCard: View {
 
     private let reading: Reading?
 
-    private let direction: Trend.Direction?
+    private let direction: Comparison.Direction?
 
     @Environment(\.units)
     private var units: Units
 
-    init(_ definition: Definition<some Any>, reading: Reading?, direction: Trend.Direction? = nil) {
-        self.pictogram = definition.pictogram
-        self.title = definition.title
+    init(_ item: some Describable, reading: Reading?, direction: Comparison.Direction? = nil) {
+        self.pictogram = item.pictogram
+        self.title = item.title
         self.reading = reading
         self.direction = direction
     }
@@ -71,6 +71,6 @@ struct ReadingCard: View {
 }
 
 #Preview {
-    ReadingCard(StatisticKind.weekStreak.definition, reading: StarterCatalog.Samples.weekStreak)
+    ReadingCard(Statistic.weekStreak, reading: StarterCatalog.Samples.weekStreak)
         .padding()
 }

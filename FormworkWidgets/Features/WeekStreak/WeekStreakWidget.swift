@@ -141,7 +141,7 @@ extension WeekStreakEntry {
         let context = ModelContext(Storage.container)
         let sessions = (try? context.fetch(FetchDescriptor<Session>())) ?? []
         let history = History(.all, among: sessions, at: date)
-        let streak = history.allTime.weekStreak
+        let streak = history.allTime.streak
 
         return WeekStreakEntry(date: date, streak: streak.weeks, isStreakFulfilled: streak.isCurrentWeekFulfilled, week: ActiveDays(history.weeks(1)))
     }

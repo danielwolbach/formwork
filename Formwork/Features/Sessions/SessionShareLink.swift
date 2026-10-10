@@ -89,8 +89,8 @@ private struct SessionShareCard: View {
 
     private var summary: some View {
         TileGrid(columns: 2, spacing: 8, aspectRatio: 2) {
-            ForEach([SessionFigureKind.duration, .volume, .completedExercises, .exerciseDuration]) { kind in
-                ReadingCard(kind.definition, reading: kind.reading(of: session))
+            ForEach([Quantity.duration, .volume, .completedExercises, .exerciseDuration]) { quantity in
+                ReadingCard(quantity, reading: quantity.reading(of: session))
             }
             personalBest.tileSpan(columns: 2)
         }
@@ -119,7 +119,7 @@ private struct SessionShareCard: View {
                     .frame(width: 48, height: 48)
 
                 VStack(alignment: .leading) {
-                    Text(StatisticKind.personalBest.definition.title)
+                    Text(Statistic.personalBest.title)
                         .font(.subheadline)
                         .lineLimit(1)
                         .foregroundStyle(.secondary)

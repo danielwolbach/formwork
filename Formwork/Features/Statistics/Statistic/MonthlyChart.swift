@@ -11,11 +11,9 @@ import FormworkUI
 import SwiftUI
 
 struct MonthlyChart: View {
-    private let series: Series<Double?>
+    private let series: Series
 
     private let title: String
-
-    private let reading: (Double) -> Reading
 
     @Environment(\.units)
     private var units: Units
@@ -23,20 +21,19 @@ struct MonthlyChart: View {
     @State
     private var selectedDate: Date? = nil
 
-    init(_ series: Series<Double?>, title: String, reading: @escaping (Double) -> Reading) {
+    init(_ series: Series, title: String) {
         self.series = series
         self.title = title
-        self.reading = reading
     }
 
     var body: some View {
         let selected = selectedBar
 
         Chart {
-            ForEach(series.bars) { bar in
+            ForEach(series.points) { bar in
                 if let value = bar.value {
                     BarMark(
-                        x: .value(.chartMonth, bar.month, unit: .month),
+                        x: .value(.chartMonth, bar.date, unit: .month),
                         y: .value(title, value)
                     )
                     .foregroundStyle(.tint)
@@ -44,15 +41,15 @@ struct MonthlyChart: View {
             }
 
             if let selected, let value = selected.value {
-                RuleMark(x: .value(.chartMonth, selected.month, unit: .month))
+                RuleMark(x: .value(.chartMonth, selected.date, unit: .month))
                     .foregroundStyle(.tint.secondary)
                     .lineStyle(StrokeStyle(lineWidth: 4))
                     .annotation(position: .top, spacing: 0, overflowResolution: .init(x: .fit(to: .chart), y: .disabled)) {
-                        ChartSelectionLabel(reading(value).formatted(.reading(units: units)))
+                        ChartSelectionLabel(series.reading(of: value).formatted(.reading(units: units)))
                     }
             }
         }
-        .chartXScale(domain: series.period.start ... series.period.end)
+        .chartXScale(domain: series.span.start ... series.span.end)
         .chartXAxis {
             AxisMarks(values: .stride(by: .month)) {
                 AxisValueLabel(format: .dateTime.month(.narrow), centered: true)
@@ -60,16 +57,16 @@ struct MonthlyChart: View {
         }
         .chartXSelection(value: $selectedDate)
         .sensoryFeedback(.selection, trigger: selected?.id)
-        .readingAxis(upTo: series.bars.compactMap(\.value).max() ?? 0, reading: reading)
+        .readingAxis(upTo: series.values.max() ?? 0, reading: series.reading(of:))
         .frame(height: 192)
     }
 
-    private var selectedBar: Series<Double?>.Bar? {
+    private var selectedBar: Series.Point? {
         guard let selectedDate else {
             return nil
         }
 
-        return series.bars.first { Calendar.current.isDate($0.month, equalTo: selectedDate, toGranularity: .month) }
+        return series.points.first { Calendar.current.isDate($0.date, equalTo: selectedDate, toGranularity: .month) }
     }
 }
 

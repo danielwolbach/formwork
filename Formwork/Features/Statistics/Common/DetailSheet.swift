@@ -21,11 +21,11 @@ struct DetailSheet<Content: View>: View {
     @ViewBuilder
     private let content: Content
 
-    init(_ definition: Definition<some Any>, subtitle: String?, @ViewBuilder content: () -> Content) {
-        self.pictogram = definition.pictogram
-        self.title = definition.title
+    init(_ item: some Describable, subtitle: String?, @ViewBuilder content: () -> Content) {
+        self.pictogram = item.pictogram
+        self.title = item.title
         self.subtitle = subtitle
-        self.info = definition.info
+        self.info = item.info
         self.content = content()
     }
 
@@ -58,11 +58,9 @@ struct DetailSheet<Content: View>: View {
     NavigationRoot {}
         .sheet(isPresented: .constant(true)) {
             NavigationRoot {
-                let definition = StatisticKind.weekStreak.definition
-
-                DetailSheet(definition, subtitle: nil) {
+                DetailSheet(Statistic.weekStreak, subtitle: nil) {
                     GroupBox {
-                        ValueRow(title: definition.title, reading: .count(3))
+                        ValueRow(title: Statistic.weekStreak.title, reading: .count(3))
                     }
                     .groupBoxStyle(.card)
                 }

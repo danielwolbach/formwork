@@ -34,7 +34,7 @@ struct StatisticsScreen: View {
     private var content: some View {
         let history = History(.all, among: sessions, measurements: Health.shared.measurements)
 
-        if history.sessions.isEmpty {
+        if history.occurrences.isEmpty {
             ContentUnavailableView {
                 Label(.emptyStatisticsTitle, systemImage: "flame")
             } description: {

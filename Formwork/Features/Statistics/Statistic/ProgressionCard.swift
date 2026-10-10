@@ -20,7 +20,7 @@ struct ProgressionCard: View {
     var body: some View {
         GroupBox {
             if progression.points.isEmpty {
-                Image(systemName: StatisticKind.progression.definition.pictogram.image)
+                Image(systemName: Statistic.progression.pictogram.image)
                     .font(.largeTitle)
                     .foregroundStyle(.tertiary)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -29,7 +29,7 @@ struct ProgressionCard: View {
                     .padding(.top)
             }
         } label: {
-            Label(StatisticKind.progression.definition.title, systemImage: StatisticKind.progression.definition.pictogram.image)
+            Label(Statistic.progression.title, systemImage: Statistic.progression.pictogram.image)
         }
         .groupBoxStyle(.card)
     }

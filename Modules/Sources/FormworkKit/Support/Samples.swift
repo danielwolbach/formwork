@@ -122,8 +122,6 @@ extension Samples {
 
     fileprivate static func makeSessions(for workouts: [Workout], days: Int = historyDays, calendar: Calendar = .current) -> [Session] {
         var random = SeededGenerator(seed: 42)
-        // Separate, so adding health values leaves the generated history as it was.
-        var healthRandom = SeededGenerator(seed: 7)
         var sessions: [Session] = []
         var lastSessions: [Workout: Date] = [:]
         let today = calendar.startOfDay(for: .now)
@@ -152,9 +150,6 @@ extension Samples {
                 }
 
                 session.endDate = clock
-                session.health = Session.HealthSummary(
-                    averageHeartRate: Double.random(in: 118 ... 132, using: &healthRandom) - 8 * progress
-                )
                 sessions.append(session)
             }
         }
@@ -163,9 +158,9 @@ extension Samples {
     }
 
     /// A weigh-in every few days, with body fat on some of them, slowly going down.
-    fileprivate static func makeMeasurements(days: Int = historyDays, calendar: Calendar = .current) -> BodyMeasurements {
+    fileprivate static func makeMeasurements(days: Int = historyDays, calendar: Calendar = .current) -> [BodyMeasurement: [BodyMeasurement.Sample]] {
         var random = SeededGenerator(seed: 3)
-        var measurements = BodyMeasurements()
+        var measurements: [BodyMeasurement: [BodyMeasurement.Sample]] = [:]
         let today = calendar.startOfDay(for: .now)
 
         for offset in stride(from: days, through: 1, by: -3) {
@@ -175,10 +170,10 @@ extension Samples {
 
             let date = day.addingTimeInterval(TimeInterval.random(in: 6.5 ... 8, using: &random) * 3600)
             let progress = 1 - Double(offset) / Double(days)
-            measurements.weight.append(.init(date: date, value: 84 - 4 * progress + Double.random(in: -0.6 ... 0.6, using: &random)))
+            measurements[.weight, default: []].append(.init(date: date, value: 84 - 4 * progress + Double.random(in: -0.6 ... 0.6, using: &random)))
 
             if offset.isMultiple(of: 2) {
-                measurements.bodyFat.append(.init(date: date, value: 0.22 - 0.03 * progress + Double.random(in: -0.004 ... 0.004, using: &random)))
+                measurements[.bodyFat, default: []].append(.init(date: date, value: 0.22 - 0.03 * progress + Double.random(in: -0.004 ... 0.004, using: &random)))
             }
         }
 

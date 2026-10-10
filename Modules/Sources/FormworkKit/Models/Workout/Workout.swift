@@ -121,7 +121,7 @@ extension Workout {
     }
 
     func typicalStartMinute(at now: Date, in calendar: Calendar) -> Int? {
-        History(.workout(self), among: sessions ?? [], at: now, calendar: calendar).recent.typicalStartTime
+        History(.workout(self), among: sessions ?? [], at: now, calendar: calendar).recent.value(.typical(.startTime)).map { Int($0) }
     }
 }
 

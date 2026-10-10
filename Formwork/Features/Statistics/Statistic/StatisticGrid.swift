@@ -15,7 +15,7 @@ struct StatisticGrid: View {
     private let includesCharts: Bool
 
     @State
-    private var selection: StatisticKind? = nil
+    private var selection: Statistic? = nil
 
     init(_ history: History, includesCharts: Bool = true) {
         self.history = history
@@ -24,20 +24,20 @@ struct StatisticGrid: View {
 
     var body: some View {
         TileGrid {
-            ForEach(history.subject.statistics.filter { (includesCharts || !$0.isChart) && $0.isShown(in: history, isHealthConnected: Health.shared.status == .connected) }, id: \.self) { kind in
-                StatisticCard(kind, of: history) {
+            ForEach(history.subject.statistics.filter { (includesCharts || !$0.isChart) && $0.isShown(in: history, isHealthConnected: Health.shared.status == .connected) }) { statistic in
+                StatisticCard(statistic, of: history) {
                     // A tap above an open sheet also reaches the cards behind it, so it may only close the sheet.
                     guard selection == nil else {
                         return
                     }
 
-                    selection = kind
+                    selection = statistic
                 }
             }
         }
-        .sheet(item: $selection) { kind in
+        .sheet(item: $selection) { statistic in
             NavigationRoot {
-                StatisticSheet(kind, of: history)
+                StatisticSheet(statistic, of: history)
             }
             .presentationDetents([.medium, .large])
         }

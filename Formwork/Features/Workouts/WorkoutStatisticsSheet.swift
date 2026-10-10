@@ -27,7 +27,7 @@ struct WorkoutStatisticsSheet: View {
         let history = History(.workout(workout), among: sessions)
 
         Group {
-            if history.sessions.isEmpty {
+            if history.occurrences.isEmpty {
                 ContentUnavailableView {
                     Label(.emptyStatisticsTitle, systemImage: "flame")
                 } description: {
