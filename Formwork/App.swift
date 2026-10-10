@@ -151,9 +151,7 @@ private struct AppContent: View {
         .onChange(of: scenePhase, initial: true) { _, phase in
             switch phase {
             case .active:
-                AppShortcuts.updateAppShortcutParameters()
-                syncReminders()
-                syncSpotlight()
+                sync()
             case .background:
                 do {
                     try modelContext.save()
@@ -179,12 +177,10 @@ private struct AppContent: View {
         }
         // Any saved change can move a planned day, so reminders rebuild after every save.
         .onReceive(NotificationCenter.default.publisher(for: ModelContext.didSave)) { _ in
-            AppShortcuts.updateAppShortcutParameters()
-            syncReminders()
-            syncSpotlight()
+            sync()
         }
         .onChange(of: reminderOptions) {
-            syncReminders()
+            sync()
         }
         .intentHandler()
         // Outside the intent handler, which starts sessions through it.
@@ -214,12 +210,12 @@ private struct AppContent: View {
         return activeSessions.first.flatMap(SessionActivityAttributes.ContentState.init(session:))
     }
 
-    private func syncReminders() {
-        Reminders.sync((try? modelContext.fetch(FetchDescriptor<Workout>())) ?? [], options: reminderOptions)
-    }
+    private func sync() {
+        let workouts = (try? modelContext.fetch(FetchDescriptor<Workout>())) ?? []
 
-    private func syncSpotlight() {
-        Spotlight.sync((try? modelContext.fetch(FetchDescriptor<Workout>())) ?? [])
+        AppShortcuts.updateAppShortcutParameters()
+        Reminders.sync(workouts, options: reminderOptions)
+        Spotlight.sync(workouts)
     }
 
     private func presentSession(_ session: Session) {

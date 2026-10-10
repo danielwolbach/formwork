@@ -103,31 +103,29 @@ struct SettingsSheet: View {
     private var aboutSection: some View {
         SectionView(.fieldAboutTitle) {
             GroupBox {
-                VStack(spacing: .groups) {
-                    HStack {
-                        Image(.imageAppIcon)
-                            .resizable()
-                            .frame(width: 64, height: 64)
-                            .onTapGesture {
-                                easterEggTaps += 1
-                            }
-                            .accessibilityHidden(true)
-
-                        VStack(alignment: .leading) {
-                            Text(verbatim: AppMetadata.appName)
-                                .font(.headline)
-                                .lineLimit(1)
-
-                            if let version = AppMetadata.version {
-                                Text(.fieldVersionScheme(version: version))
-                                    .font(.subheadline)
-                                    .foregroundStyle(.secondary)
-                                    .lineLimit(1)
-                            }
+                HStack {
+                    Image(.imageAppIcon)
+                        .resizable()
+                        .frame(width: 64, height: 64)
+                        .onTapGesture {
+                            easterEggTaps += 1
                         }
+                        .accessibilityHidden(true)
 
-                        Spacer(minLength: 0)
+                    VStack(alignment: .leading) {
+                        Text(verbatim: AppMetadata.appName)
+                            .font(.headline)
+                            .lineLimit(1)
+
+                        if let version = AppMetadata.version {
+                            Text(.fieldVersionScheme(version: version))
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                                .lineLimit(1)
+                        }
                     }
+
+                    Spacer(minLength: 0)
                 }
             }
         }
@@ -146,19 +144,9 @@ struct SettingsSheet: View {
                         Text(.fieldManageSubscriptionMessage)
                     }
                 } else {
-                    VStack {
-                        Text(.paywallMessage)
-                            .font(.body)
-                            .foregroundStyle(.secondary)
-
-                        Button(.unlockPremium) {
-                            presentPaywall()
-                        }
-                        .labelStyle(.fixedTitleAndIcon)
-                        .buttonStyle(.cardProminent)
+                    callToAction(.paywallMessage, action: .unlockPremium) {
+                        presentPaywall()
                     }
-                    .frame(maxWidth: .infinity)
-                    .multilineTextAlignment(.center)
                 }
             }
         }
@@ -183,21 +171,11 @@ struct SettingsSheet: View {
             GroupBox {
                 VStack(spacing: .groups) {
                     if notificationStatus == .denied {
-                        VStack {
-                            Text(.fieldRemindersDeniedMessage)
-                                .font(.body)
-                                .foregroundStyle(.secondary)
-
-                            Button(.openSettings) {
-                                if let url = URL(string: UIApplication.openNotificationSettingsURLString) {
-                                    openURL(url)
-                                }
+                        callToAction(.fieldRemindersDeniedMessage, action: .openSettings) {
+                            if let url = URL(string: UIApplication.openNotificationSettingsURLString) {
+                                openURL(url)
                             }
-                            .labelStyle(.fixedTitleAndIcon)
-                            .buttonStyle(.cardProminent)
                         }
-                        .frame(maxWidth: .infinity)
-                        .multilineTextAlignment(.center)
                     } else {
                         Toggle(isOn: $isDailyReminderEnabled) {
                             Text(.fieldDailyReminderTitle)
@@ -233,22 +211,12 @@ struct SettingsSheet: View {
             SectionView(.fieldHealthTitle) {
                 GroupBox {
                     if healthStatus == .disconnected {
-                        VStack {
-                            Text(.fieldHealthDisconnectedMessage)
-                                .font(.body)
-                                .foregroundStyle(.secondary)
-
-                            Button(.connectToHealth) {
-                                Task {
-                                    try? await Health.connect()
-                                    self.healthStatus = await Health.status()
-                                }
+                        callToAction(.fieldHealthDisconnectedMessage, action: .connectToHealth) {
+                            Task {
+                                try? await Health.connect()
+                                self.healthStatus = await Health.status()
                             }
-                            .labelStyle(.fixedTitleAndIcon)
-                            .buttonStyle(.cardProminent)
                         }
-                        .frame(maxWidth: .infinity)
-                        .multilineTextAlignment(.center)
                     } else {
                         LabeledContent {
                             if healthStatus == .connected {
@@ -298,7 +266,7 @@ struct SettingsSheet: View {
                 calendar.date(bySettingHour: dailyReminderMinute / 60, minute: dailyReminderMinute % 60, second: 0, of: .now) ?? .now
             },
             set: { newValue in
-                let time = Calendar.current.dateComponents([.hour, .minute], from: newValue)
+                let time = calendar.dateComponents([.hour, .minute], from: newValue)
                 dailyReminderMinute = (time.hour ?? 0) * 60 + (time.minute ?? 0)
             }
         )
@@ -306,6 +274,20 @@ struct SettingsSheet: View {
 
     private var archivedCount: Int {
         archivedWorkouts.count + archivedExercises.count
+    }
+
+    private func callToAction(_ message: LocalizedStringResource, action: Action, perform: @escaping () -> Void) -> some View {
+        VStack {
+            Text(message)
+                .font(.body)
+                .foregroundStyle(.secondary)
+
+            Button(action, action: perform)
+                .labelStyle(.fixedTitleAndIcon)
+                .buttonStyle(.cardProminent)
+        }
+        .frame(maxWidth: .infinity)
+        .multilineTextAlignment(.center)
     }
 
     private func unitRow(_ title: LocalizedStringResource, selection: Binding<Units.System>) -> some View {

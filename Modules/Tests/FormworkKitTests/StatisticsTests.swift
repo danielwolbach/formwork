@@ -53,7 +53,7 @@ extension TestStore {
 
 extension StatisticKind {
     func reading(of value: Double, for subject: History.Subject = .all) -> Reading? {
-        guard case let .metric(unit, _, _, _) = definition.value else {
+        guard case let .metric(unit, _, _, _, _) = definition.value else {
             return nil
         }
 
@@ -1010,11 +1010,11 @@ struct TrendTests {
     }
 
     func trend(of kind: StatisticKind, at now: Date) -> Trend? {
-        guard case let .metric(_, tolerance, _, value) = kind.definition.value else {
+        guard case let .metric(_, tolerance, _, perSession, value) = kind.definition.value else {
             return nil
         }
 
-        return Trend(history(at: now), tolerance: tolerance, perSession: kind.isPerSession, value: value)
+        return Trend(history(at: now), tolerance: tolerance, perSession: perSession, value: value)
     }
 
     @Test

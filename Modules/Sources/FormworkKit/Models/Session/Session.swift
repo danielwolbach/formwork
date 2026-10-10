@@ -43,12 +43,10 @@ public class Session {
 
 extension Session {
     public static var activeDescriptor: FetchDescriptor<Session> {
-        var descriptor = FetchDescriptor<Session>(
+        FetchDescriptor<Session>(
             predicate: #Predicate<Session> { $0.endDate == nil },
             sortBy: [SortDescriptor(\.startDate, order: .reverse)]
         )
-        descriptor.fetchLimit = 1
-        return descriptor
     }
 
     public static var finishedDescriptor: FetchDescriptor<Session> {

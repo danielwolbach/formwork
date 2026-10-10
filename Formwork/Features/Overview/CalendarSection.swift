@@ -399,8 +399,9 @@ private struct CalendarDayList: View {
         NavigationLink(value: value) {
             label()
 
-            Image(systemName: "chevron.right")
+            Image(systemName: "chevron.forward")
                 .foregroundStyle(.tertiary)
+                .accessibilityHidden(true)
         }
         .buttonStyle(.plain)
         .padding(.vertical, 8)

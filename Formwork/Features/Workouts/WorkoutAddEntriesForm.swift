@@ -11,7 +11,7 @@ import SwiftData
 import SwiftUI
 
 struct WorkoutAddEntriesForm: View {
-    private typealias Selection = [(exercise: Exercise, target: ExerciseTarget)]
+    typealias Selection = [(exercise: Exercise, target: ExerciseTarget)]
 
     private enum Sort: Hashable {
         case name, newest
@@ -62,13 +62,15 @@ struct WorkoutAddEntriesForm: View {
     @State
     private var sheet: Sheet?
 
-    init(onAdd: @escaping ([(exercise: Exercise, target: ExerciseTarget)]) -> Void) {
+    init(onAdd: @escaping (Selection) -> Void) {
         self.add = onAdd
     }
 
     init(workout: Workout) {
         self.add = { selection in
-            workout.entries = (workout.entries ?? []) + Self.workoutEntries(from: selection, after: workout.entries ?? [])
+            for item in selection {
+                workout.append(exercise: item.exercise, target: item.target)
+            }
         }
     }
 
@@ -188,19 +190,6 @@ struct WorkoutAddEntriesForm: View {
             .filter { selectedCategories.isEmpty || !selectedCategories.isDisjoint(with: $0.categories) }
             .filter { searchText.isEmpty || $0.name.localizedCaseInsensitiveContains(searchText) }
             .sorted(using: sort.descriptor)
-    }
-
-    private static func workoutEntries(
-        from selection: Selection,
-        after entries: [WorkoutEntry]
-    ) -> [WorkoutEntry] {
-        let firstOrder = (entries.map(\.order).max() ?? -1) + 1
-
-        return selection.enumerated().map { offset, item in
-            let entry = WorkoutEntry(exercise: item.exercise, target: item.target)
-            entry.order = firstOrder + offset
-            return entry
-        }
     }
 
     @ViewBuilder

@@ -91,12 +91,10 @@ extension Workout {
             return nil
         }
 
-        let runningDescriptor = FetchDescriptor<Session>(predicate: #Predicate { $0.endDate == nil })
-
         let running: [Session]
 
         do {
-            running = try modelContext.fetch(runningDescriptor)
+            running = try modelContext.fetch(Session.activeDescriptor)
         } catch {
             Logger.session.error("Starting session failed while fetching running sessions: \(error, privacy: .public)")
             return nil

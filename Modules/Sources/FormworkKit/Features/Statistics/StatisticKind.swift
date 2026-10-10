@@ -32,8 +32,9 @@ public enum StatisticKind: String, Codable, CaseIterable, Sendable {
     /// Everything a statistic brings of its own. Cards and sheets follow from its `value`.
     public struct Definition {
         enum Value {
-            /// A number that compares recent against before (unless `tolerance` is nil) and charts by month.
-            case metric(Reading.Unit, tolerance: Double?, card: Period, (History.Window) -> Double?)
+            /// A number that compares recent against before (unless `tolerance` is nil) and charts by month. `perSession`
+            /// says whether each session has a value of its own; weekly sessions or completions only exist across several.
+            case metric(Reading.Unit, tolerance: Double?, card: Period, perSession: Bool, (History.Window) -> Double?)
             case indicator(card: Period, (History.Window) -> Reading?)
             /// Draws its own card and sheet.
             case chart
@@ -112,14 +113,14 @@ extension StatisticKind {
                 title: .statisticWeeklySessionsTitle,
                 info: .statisticWeeklySessionsInfo,
                 pictogram: .frequency,
-                value: .metric(.rate, tolerance: 0.1, card: .recent) { $0.weeklySessions }
+                value: .metric(.rate, tolerance: 0.1, card: .recent, perSession: false) { $0.weeklySessions }
             )
         case .typicalDuration:
             Definition(
                 title: .statisticTypicalDurationTitle,
                 info: .statisticTypicalDurationInfo,
                 pictogram: .duration,
-                value: .metric(.duration, tolerance: 0.05, card: .recent) { $0.typicalDuration }
+                value: .metric(.duration, tolerance: 0.05, card: .recent, perSession: true) { $0.typicalDuration }
             )
         case .typicalStartTime:
             Definition(
@@ -135,14 +136,14 @@ extension StatisticKind {
                 title: .statisticCompletionRateTitle,
                 info: .statisticCompletionRateInfo,
                 pictogram: .completed,
-                value: .metric(.percent, tolerance: 0.05, card: .recent) { $0.completionRate }
+                value: .metric(.percent, tolerance: 0.05, card: .recent, perSession: true) { $0.completionRate }
             )
         case .completions:
             Definition(
                 title: .statisticCompletionsTitle,
                 info: .statisticCompletionsInfo,
                 pictogram: .tally,
-                value: .metric(.count, tolerance: nil, card: .recent) { Double($0.completionCount) }
+                value: .metric(.count, tolerance: nil, card: .recent, perSession: false) { Double($0.completionCount) }
             )
         case .favoriteWorkout:
             Definition(
@@ -170,7 +171,7 @@ extension StatisticKind {
                 title: .statisticPersonalBestTitle,
                 info: .statisticPersonalBestInfo,
                 pictogram: .record,
-                value: .metric(.rank, tolerance: nil, card: .allTime) { $0.personalBest?.rank }
+                value: .metric(.rank, tolerance: nil, card: .allTime, perSession: true) { $0.personalBest?.rank }
             )
         case .activeDays:
             Definition(
@@ -198,35 +199,35 @@ extension StatisticKind {
                 title: .statisticTotalVolumeTitle,
                 info: .statisticTotalVolumeInfo,
                 pictogram: .volume,
-                value: .metric(.weight, tolerance: nil, card: .recent) { $0.totalVolume }
+                value: .metric(.weight, tolerance: nil, card: .recent, perSession: true) { $0.totalVolume }
             )
         case .oneRepMax:
             Definition(
                 title: .statisticOneRepMaxTitle,
                 info: .statisticOneRepMaxInfo,
                 pictogram: .strength,
-                value: .metric(.weight, tolerance: 0.02, card: .allTime) { $0.oneRepMax }
+                value: .metric(.weight, tolerance: 0.02, card: .allTime, perSession: true) { $0.oneRepMax }
             )
         case .typicalInterval:
             Definition(
                 title: .statisticTypicalIntervalTitle,
                 info: .statisticTypicalIntervalInfo,
                 pictogram: .frequency,
-                value: .metric(.days, tolerance: 0.1, card: .recent) { $0.typicalInterval }
+                value: .metric(.days, tolerance: 0.1, card: .recent, perSession: false) { $0.typicalInterval }
             )
         case .typicalHeartRate:
             Definition(
                 title: .statisticTypicalHeartRateTitle,
                 info: .statisticTypicalHeartRateInfo,
                 pictogram: .heartRate,
-                value: .metric(.heartRate, tolerance: 0.05, card: .recent) { $0.typicalHeartRate }
+                value: .metric(.heartRate, tolerance: 0.05, card: .recent, perSession: true) { $0.typicalHeartRate }
             )
         case .typicalActiveEnergy:
             Definition(
                 title: .statisticTypicalActiveEnergyTitle,
                 info: .statisticTypicalActiveEnergyInfo,
                 pictogram: .energy,
-                value: .metric(.energy, tolerance: 0.05, card: .recent) { $0.typicalActiveEnergy }
+                value: .metric(.energy, tolerance: 0.05, card: .recent, perSession: true) { $0.typicalActiveEnergy }
             )
         }
     }
@@ -241,7 +242,7 @@ extension StatisticKind {
 
     func reading(in window: History.Window) -> Reading? {
         switch definition.value {
-        case let .metric(unit, _, _, value): value(window).map { Reading($0, as: unit, of: window.history.subject.exercise?.kind) }
+        case let .metric(unit, _, _, _, value): value(window).map { Reading($0, as: unit, of: window.history.subject.exercise?.kind) }
         case let .indicator(_, reading): reading(window)
         case .chart: nil
         }

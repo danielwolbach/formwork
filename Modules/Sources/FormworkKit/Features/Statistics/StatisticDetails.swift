@@ -75,14 +75,6 @@ public struct StatisticDetails {
 }
 
 extension StatisticKind {
-    /// Whether each session has a value of its own; weekly sessions or completions only exist across several.
-    var isPerSession: Bool {
-        switch self {
-        case .typicalDuration, .completionRate, .totalVolume, .personalBest, .oneRepMax, .typicalHeartRate, .typicalActiveEnergy: true
-        default: false
-        }
-    }
-
     public func details(of history: History) -> StatisticDetails {
         let allTime = history.allTime
 
@@ -121,9 +113,9 @@ extension StatisticKind {
 
     private func valueDetails(of history: History) -> StatisticDetails {
         switch definition.value {
-        case let .metric(unit, tolerance, _, value):
+        case let .metric(unit, tolerance, _, perSession, value):
             let read = { Reading($0, as: unit, of: history.subject.exercise?.kind) }
-            let trend = Trend(history, tolerance: tolerance, perSession: isPerSession, value: value)
+            let trend = Trend(history, tolerance: tolerance, perSession: perSession, value: value)
             let comparison: StatisticDetails.Value = if tolerance == nil {
                 .recent(trend.recent.map(read))
             } else {
@@ -132,7 +124,7 @@ extension StatisticKind {
 
             return StatisticDetails(
                 values: [comparison, .overall(reading(in: history.allTime))],
-                sessions: isPerSession ? StatisticDetails.Sessions(history, reading: read, value: value) : nil,
+                sessions: perSession ? StatisticDetails.Sessions(history, reading: read, value: value) : nil,
                 yearly: StatisticDetails.Yearly(history) { .monthly(Series(history, year: $0, value: value), reading: read) }
             )
         case .indicator(card: .recent, _):
