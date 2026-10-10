@@ -515,7 +515,15 @@
       }
     },
     "sessionFigure.activeEnergy.info" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The active energy you burned during the session, as recorded in Health."
+          }
+        }
+      }
     },
     "sessionFigure.activeEnergy.title" : {
       "extractionState" : "manual",
@@ -529,7 +537,15 @@
       }
     },
     "sessionFigure.averageHeartRate.info" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your average heart rate during the session, as recorded in Health."
+          }
+        }
+      }
     },
     "sessionFigure.averageHeartRate.title" : {
       "extractionState" : "manual",
@@ -543,7 +559,15 @@
       }
     },
     "sessionFigure.completedExercises.info" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "How many exercises you completed in this session."
+          }
+        }
+      }
     },
     "sessionFigure.completedExercises.title" : {
       "extractionState" : "manual",
@@ -557,7 +581,15 @@
       }
     },
     "sessionFigure.completionRate.info" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The share of exercises in this session you completed instead of skipping them."
+          }
+        }
+      }
     },
     "sessionFigure.completionRate.title" : {
       "extractionState" : "manual",
@@ -571,7 +603,15 @@
       }
     },
     "sessionFigure.duration.info" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "How long the session took from start to finish."
+          }
+        }
+      }
     },
     "sessionFigure.duration.title" : {
       "extractionState" : "manual",
@@ -585,7 +625,15 @@
       }
     },
     "sessionFigure.endTime.info" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The time of day you finished the session."
+          }
+        }
+      }
     },
     "sessionFigure.endTime.title" : {
       "extractionState" : "manual",
@@ -599,7 +647,15 @@
       }
     },
     "sessionFigure.exerciseDuration.info" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "How long an exercise usually took in this session."
+          }
+        }
+      }
     },
     "sessionFigure.exerciseDuration.title" : {
       "extractionState" : "manual",
@@ -613,7 +669,15 @@
       }
     },
     "sessionFigure.volume.info" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The total weight you moved in this session: weight × reps × sets of every completed exercise."
+          }
+        }
+      }
     },
     "sessionFigure.volume.title" : {
       "extractionState" : "manual",
@@ -627,7 +691,15 @@
       }
     },
     "statistic.activeDays.info" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The days you trained are highlighted."
+          }
+        }
+      }
     },
     "statistic.activeDays.title" : {
       "extractionState" : "manual",
@@ -641,7 +713,15 @@
       }
     },
     "statistic.categories.info" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "How your completed exercises are spread across categories. An exercise counts toward each of its categories."
+          }
+        }
+      }
     },
     "statistic.categories.title" : {
       "extractionState" : "manual",
@@ -655,7 +735,15 @@
       }
     },
     "statistic.completionRate.info" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The share of exercises you completed instead of skipping them."
+          }
+        }
+      }
     },
     "statistic.completionRate.title" : {
       "extractionState" : "manual",
@@ -669,7 +757,15 @@
       }
     },
     "statistic.completions.info" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "How many times you completed it."
+          }
+        }
+      }
     },
     "statistic.completions.title" : {
       "extractionState" : "manual",
@@ -683,7 +779,15 @@
       }
     },
     "statistic.favoriteExercise.info" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The exercise you completed most often. On a tie, the one you did most recently wins."
+          }
+        }
+      }
     },
     "statistic.favoriteExercise.title" : {
       "extractionState" : "manual",
@@ -697,7 +801,15 @@
       }
     },
     "statistic.favoriteWorkout.info" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The workout you completed most often. On a tie, the one you did most recently wins."
+          }
+        }
+      }
     },
     "statistic.favoriteWorkout.title" : {
       "extractionState" : "manual",
@@ -711,7 +823,15 @@
       }
     },
     "statistic.lastCompleted.info" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The day you most recently completed it."
+          }
+        }
+      }
     },
     "statistic.lastCompleted.title" : {
       "extractionState" : "manual",
@@ -736,7 +856,15 @@
       }
     },
     "statistic.mostSkippedExercise.info" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The exercise you skipped most often. It might be worth adjusting or replacing it."
+          }
+        }
+      }
     },
     "statistic.mostSkippedExercise.title" : {
       "extractionState" : "manual",
@@ -750,7 +878,15 @@
       }
     },
     "statistic.oneRepMax.info" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "An estimate of the most weight you could lift for a single rep, based on your completed sets."
+          }
+        }
+      }
     },
     "statistic.oneRepMax.title" : {
       "extractionState" : "manual",
@@ -764,7 +900,15 @@
       }
     },
     "statistic.personalBest.info" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The best result you ever completed for this exercise."
+          }
+        }
+      }
     },
     "statistic.personalBest.title" : {
       "extractionState" : "manual",
@@ -778,7 +922,15 @@
       }
     },
     "statistic.progression.info" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your best result on each day you trained. The line shows your typical best over the recent weeks before each point."
+          }
+        }
+      }
     },
     "statistic.progression.title" : {
       "extractionState" : "manual",
@@ -792,7 +944,15 @@
       }
     },
     "statistic.totalVolume.info" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The total weight you moved: weight × reps × sets of every completed exercise."
+          }
+        }
+      }
     },
     "statistic.totalVolume.title" : {
       "extractionState" : "manual",
@@ -806,7 +966,15 @@
       }
     },
     "statistic.typicalActiveEnergy.info" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The active energy you usually burn per session."
+          }
+        }
+      }
     },
     "statistic.typicalActiveEnergy.title" : {
       "extractionState" : "manual",
@@ -820,7 +988,15 @@
       }
     },
     "statistic.typicalDuration.info" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "How long it usually takes. A single unusually long or short session barely changes it."
+          }
+        }
+      }
     },
     "statistic.typicalDuration.title" : {
       "extractionState" : "manual",
@@ -834,7 +1010,15 @@
       }
     },
     "statistic.typicalHeartRate.info" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your usual average heart rate during a session."
+          }
+        }
+      }
     },
     "statistic.typicalHeartRate.title" : {
       "extractionState" : "manual",
@@ -848,7 +1032,15 @@
       }
     },
     "statistic.typicalInterval.info" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "How many days usually pass between two days you trained."
+          }
+        }
+      }
     },
     "statistic.typicalInterval.title" : {
       "extractionState" : "manual",
@@ -862,7 +1054,15 @@
       }
     },
     "statistic.typicalStartTime.info" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The time of day you usually start. It is always a start time you actually recorded."
+          }
+        }
+      }
     },
     "statistic.typicalStartTime.title" : {
       "extractionState" : "manual",
@@ -875,11 +1075,16 @@
         }
       }
     },
-    "statistic.weeklyActiveDays.info" : {
-      "extractionState" : "manual"
-    },
     "statistic.weeklySessions.info" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "How many sessions you complete per week on average."
+          }
+        }
+      }
     },
     "statistic.weeklySessions.title" : {
       "extractionState" : "manual",
@@ -904,7 +1109,15 @@
       }
     },
     "statistic.weekStreak.info" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "How many weeks in a row you trained at least once. The current week keeps your streak going until it ends."
+          }
+        }
+      }
     },
     "statistic.weekStreak.pending.subtitle" : {
       "extractionState" : "manual",

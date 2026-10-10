@@ -134,19 +134,59 @@
       }
     },
     "alert.nothingToRestore.message" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No previous purchases were found for your Apple Account."
+          }
+        }
+      }
     },
     "alert.nothingToRestore.title" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nothing to Restore"
+          }
+        }
+      }
     },
     "alert.purchaseFailed.title" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Purchase Failed"
+          }
+        }
+      }
     },
     "alert.purchasePending.message" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your purchase is pending."
+          }
+        }
+      }
     },
     "alert.purchasePending.title" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Purchase Pending"
+          }
+        }
+      }
     },
     "alert.removeWorkoutEntry.message" : {
       "extractionState" : "manual",
@@ -193,7 +233,15 @@
       }
     },
     "alert.restoreFailed.title" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restore Failed"
+          }
+        }
+      }
     },
     "chart.date" : {
       "extractionState" : "manual",
