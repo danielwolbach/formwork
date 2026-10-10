@@ -560,17 +560,6 @@
         }
       }
     },
-    "field.activeEnergy.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Active Energy"
-          }
-        }
-      }
-    },
     "field.archive.title" : {
       "extractionState" : "manual",
       "localizations" : {

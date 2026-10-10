@@ -11,8 +11,4 @@ extension History.Window {
     var typicalHeartRate: Double? {
         sessions.compactMap { $0.health?.averageHeartRate }.median
     }
-
-    var typicalActiveEnergy: Double? {
-        sessions.compactMap { $0.health?.activeEnergy }.median
-    }
 }

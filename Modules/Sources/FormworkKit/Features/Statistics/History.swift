@@ -23,6 +23,8 @@
 //   before the window too.
 // - A statistic that asks when, how often or how long the subject was done reads the window's `completions` (a
 //   workout's finished sessions, an exercise's completed entries) instead of switching on the subject itself.
+// - Body measurements come from Health, not sessions, so their windows only end at today and don't start at the
+//   first session: someone who weighed in for years before their first session still gets a trend.
 //
 
 import Foundation
@@ -102,7 +104,15 @@ public struct History: Hashable {
 
     public let interval: DateInterval
 
-    public init(_ subject: Subject, among candidates: [Session], at now: Date = .now, calendar: Calendar = .current) {
+    public let measurements: BodyMeasurements
+
+    public init(
+        _ subject: Subject,
+        among candidates: [Session],
+        measurements: BodyMeasurements = BodyMeasurements(),
+        at now: Date = .now,
+        calendar: Calendar = .current
+    ) {
         let today = calendar.startOfDay(for: now)
         let tomorrow = calendar.date(byAdding: .day, value: 1, to: today) ?? today
         let sessions = candidates.filter { session in
@@ -115,6 +125,17 @@ public struct History: Hashable {
         self.calendar = calendar
         self.sessions = sessions
         self.interval = DateInterval(start: first ?? tomorrow, end: tomorrow)
+        self.measurements = measurements
+    }
+}
+
+extension History.Window {
+    public var measurements: BodyMeasurements {
+        history.measurements.within(measurementInterval)
+    }
+
+    var measurementInterval: DateInterval {
+        DateInterval(start: period.start, end: max(period.start, min(period.end, history.interval.end)))
     }
 }
 
@@ -147,7 +168,6 @@ extension History.Subject {
 }
 
 extension History {
-    /// Whole weeks, so the periods read as weeks and match the week-based schedules and streaks.
     public static var recentWeeks: Int {
         4
     }
@@ -156,7 +176,6 @@ extension History {
         12
     }
 
-    /// Recent and the baseline before it together: the span a trend compares.
     public static var comparedWeeks: Int {
         recentWeeks + baselineWeeks
     }

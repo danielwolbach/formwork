@@ -24,7 +24,7 @@ struct StatisticGrid: View {
 
     var body: some View {
         TileGrid {
-            ForEach(history.subject.statistics.filter { includesCharts || !$0.isChart }, id: \.self) { kind in
+            ForEach(history.subject.statistics.filter { (includesCharts || !$0.isChart) && $0.isShown(in: history, isHealthConnected: Health.shared.status == .connected) }, id: \.self) { kind in
                 StatisticCard(kind, of: history) {
                     // A tap above an open sheet also reaches the cards behind it, so it may only close the sheet.
                     guard selection == nil else {

@@ -7,10 +7,8 @@
 
 import Foundation
 
-/// What a statistic's sheet shows, top to bottom: its values, the category breakdowns, and a chart paged by year.
 public struct StatisticDetails {
     public enum Value: Hashable {
-        /// Recent against before; `before` is nil while there isn't enough history to compare.
         case trend(recent: Reading?, before: Reading?, direction: Trend.Direction?)
         case recent(Reading?)
         case overall(Reading?)
@@ -24,7 +22,6 @@ public struct StatisticDetails {
         case progression(Progression)
     }
 
-    /// Each session of the days the trend compares, recent and before, oldest first.
     public struct Sessions {
         public let period: DateInterval
 
@@ -32,16 +29,13 @@ public struct StatisticDetails {
 
         public let reading: (Double) -> Reading
 
-        init(_ history: History, reading: @escaping (Double) -> Reading, value: (History.Window) -> Double?) {
+        init(_ history: History, reading: @escaping (Double) -> Reading, values: (History.Window) -> [(date: Date, value: Double?)]) {
             let window = history.days(History.comparedWeeks * 7, endingOn: history.now)
 
             self.period = window.period
-            self.points = window.sessions
-                .sorted { $0.startDate < $1.startDate }
-                .enumerated()
-                .map { index, session in
-                    SessionComparison.Point(id: index, date: session.startDate, value: value(history.session(session)), isCurrent: false)
-                }
+            self.points = values(window).enumerated().map { index, point in
+                SessionComparison.Point(id: index, date: point.date, value: point.value, isCurrent: false)
+            }
             self.reading = reading
         }
     }
@@ -49,11 +43,10 @@ public struct StatisticDetails {
     public struct Yearly {
         public let years: ClosedRange<Int>
 
-        /// Works out one year at a time, so only the year on screen is computed.
         public let chart: (Int) -> Chart
 
-        init(_ history: History, chart: @escaping (Int) -> Chart) {
-            self.years = history.years
+        init(_ history: History, years: ClosedRange<Int>? = nil, chart: @escaping (Int) -> Chart) {
+            self.years = years ?? history.years
             self.chart = chart
         }
     }
@@ -71,68 +64,5 @@ public struct StatisticDetails {
         self.categories = categories
         self.sessions = sessions
         self.yearly = yearly
-    }
-}
-
-extension StatisticKind {
-    public func details(of history: History) -> StatisticDetails {
-        let allTime = history.allTime
-
-        switch self {
-        case .weekStreak:
-            return StatisticDetails(values: [
-                .named(
-                    definition.title,
-                    .count(allTime.weekStreak.weeks),
-                    footnote: String(localized: allTime.weekStreak.isCurrentWeekFulfilled ? .statisticWeekStreakFulfilledSubtitle : .statisticWeekStreakPendingSubtitle)
-                ),
-                .named(String(localized: .statisticLongestWeekStreakTitle), .count(allTime.longestWeekStreak)),
-            ])
-        case .activeDays:
-            return StatisticDetails(yearly: StatisticDetails.Yearly(history) { .activeDays(ActiveDays(history.year($0))) })
-        case .categories:
-            return StatisticDetails(
-                categories: (Categories(history.recent), Categories(allTime)),
-                yearly: StatisticDetails.Yearly(history) { .categories(Series(history, year: $0, value: Categories.init)) }
-            )
-        case .progression:
-            let read = { Reading(rank: $0, of: history.subject.exercise?.kind) }
-            let trend = Trend(history, tolerance: 0.02, perSession: false) { $0.typicalBest?.rank }
-
-            return StatisticDetails(
-                values: [
-                    .trend(recent: trend.recent.map(read), before: trend.before.map(read), direction: trend.direction),
-                    .overall(StatisticKind.personalBest.reading(in: allTime)),
-                ],
-                yearly: StatisticDetails.Yearly(history) { .progression(Progression(history.year($0))) }
-            )
-        default:
-            return valueDetails(of: history)
-        }
-    }
-
-    private func valueDetails(of history: History) -> StatisticDetails {
-        switch definition.value {
-        case let .metric(unit, tolerance, _, perSession, value):
-            let read = { Reading($0, as: unit, of: history.subject.exercise?.kind) }
-            let trend = Trend(history, tolerance: tolerance, perSession: perSession, value: value)
-            let comparison: StatisticDetails.Value = if tolerance == nil {
-                .recent(trend.recent.map(read))
-            } else {
-                .trend(recent: trend.recent.map(read), before: trend.before.map(read), direction: trend.direction)
-            }
-
-            return StatisticDetails(
-                values: [comparison, .overall(reading(in: history.allTime))],
-                sessions: perSession ? StatisticDetails.Sessions(history, reading: read, value: value) : nil,
-                yearly: StatisticDetails.Yearly(history) { .monthly(Series(history, year: $0, value: value), reading: read) }
-            )
-        case .indicator(card: .recent, _):
-            return StatisticDetails(values: [.recent(reading(in: history.recent)), .overall(reading(in: history.allTime))])
-        case .indicator(card: .allTime, _):
-            return StatisticDetails(values: [.named(definition.title, reading(in: history.allTime))])
-        case .chart:
-            preconditionFailure("\(self) describes its own chart.")
-        }
     }
 }

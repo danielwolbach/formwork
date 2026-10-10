@@ -83,6 +83,8 @@ extension Action {
 
     public static let connectToHealth = Action(title: .actionConnectToHealthTitle, image: "heart")
 
+    public static let logMeasurement = Action(title: .actionLogMeasurementTitle, image: "plus")
+
     // MARK: - Exercise
 
     public static let createExercise = Action(title: .actionCreateExerciseTitle, image: "plus")

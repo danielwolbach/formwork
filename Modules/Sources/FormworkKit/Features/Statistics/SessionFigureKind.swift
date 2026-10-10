@@ -7,7 +7,6 @@
 
 import Foundation
 
-/// Something one session has. Unlike a statistic it describes a session, not a stretch of time.
 public enum SessionFigureKind: CaseIterable, Sendable {
     case duration
     case endTime
@@ -16,41 +15,10 @@ public enum SessionFigureKind: CaseIterable, Sendable {
     case completedExercises
     case volume
     case averageHeartRate
-    case activeEnergy
 
-    /// Everything a session figure brings of its own. Its card, comparison and chart follow from its `value`.
-    public struct Definition {
-        enum Value {
-            /// A number whose usual value is the median of the sessions before, compared within `tolerance`.
-            case measure(Reading.Unit, tolerance: Double, (Session) -> Double?)
-            /// A minute of the day on the session's clock, whose usual value is the medoid. It never compares.
-            case clock((Session, Calendar) -> Int?)
-        }
-
-        public let pictogram: Pictogram
-
-        let value: Value
-
-        private let titleResource: LocalizedStringResource
-
-        private let infoResource: LocalizedStringResource
-
-        init(title: LocalizedStringResource, info: LocalizedStringResource, pictogram: Pictogram, value: Value) {
-            self.pictogram = pictogram
-            self.value = value
-            self.titleResource = title
-            self.infoResource = info
-        }
-    }
-}
-
-extension SessionFigureKind.Definition {
-    public var title: String {
-        String(localized: titleResource)
-    }
-
-    public var info: String {
-        String(localized: infoResource)
+    public enum Value {
+        case measure(Reading.Unit, tolerance: Double, (Session) -> Double?)
+        case clock((Session, Calendar) -> Int?)
     }
 }
 
@@ -61,7 +29,7 @@ extension SessionFigureKind: Identifiable {
 }
 
 extension SessionFigureKind {
-    public var definition: Definition {
+    public var definition: Definition<Value> {
         switch self {
         case .duration:
             Definition(
@@ -112,13 +80,6 @@ extension SessionFigureKind {
                 pictogram: .heartRate,
                 value: .measure(.heartRate, tolerance: 0.05) { $0.health?.averageHeartRate }
             )
-        case .activeEnergy:
-            Definition(
-                title: .sessionFigureActiveEnergyTitle,
-                info: .sessionFigureActiveEnergyInfo,
-                pictogram: .energy,
-                value: .measure(.energy, tolerance: 0.05) { $0.health?.activeEnergy }
-            )
         }
     }
 
@@ -129,7 +90,6 @@ extension SessionFigureKind {
         }
     }
 
-    /// For a chart's axis: how a measure reads at `value`. Clock figures don't chart.
     public func reading(of value: Double) -> Reading? {
         guard case let .measure(unit, _, _) = definition.value else {
             return nil

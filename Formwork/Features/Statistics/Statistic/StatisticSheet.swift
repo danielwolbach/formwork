@@ -23,7 +23,7 @@ struct StatisticSheet: View {
         let definition = kind.definition
         let details = kind.details(of: history)
 
-        DetailSheet(definition.pictogram, title: definition.title, subtitle: history.subject.title, info: definition.info) {
+        DetailSheet(definition, subtitle: history.subject.title) {
             if !details.values.isEmpty {
                 GroupBox {
                     VStack(spacing: .groups) {
@@ -37,6 +37,10 @@ struct StatisticSheet: View {
                     }
                 }
                 .groupBoxStyle(.card)
+
+                if let measurement = kind.measurement {
+                    MeasurementLogButton(measurement, title: definition.title, latest: history.measurements[measurement].last?.value)
+                }
             }
 
             if let categories = details.categories {
@@ -93,6 +97,76 @@ struct StatisticSheet: View {
     }
 }
 
+private struct MeasurementLogButton: View {
+    private let kind: BodyMeasurements.Kind
+
+    private let title: String
+
+    private let latest: Double?
+
+    @Environment(\.units)
+    private var units: Units
+
+    @State
+    private var isLogging: Bool = false
+
+    init(_ kind: BodyMeasurements.Kind, title: String, latest: Double?) {
+        self.kind = kind
+        self.title = title
+        self.latest = latest
+    }
+
+    var body: some View {
+        Button(.logMeasurement) {
+            isLogging = true
+        }
+        .labelStyle(.fixedTitleAndIcon)
+        .buttonStyle(.cardProminent)
+        .sheet(isPresented: $isLogging) {
+            NumberEntrySheet(title, value: value, suffix: suffix, range: range)
+                .tint(nil)
+        }
+    }
+
+    private var value: Binding<Double> {
+        Binding(
+            get: {
+                (latest ?? 0) / factor
+            },
+            set: { newValue in
+                guard newValue > 0 else {
+                    return
+                }
+
+                Task {
+                    await Health.shared.log(newValue * factor, as: kind)
+                }
+            }
+        )
+    }
+
+    private var factor: Double {
+        switch kind {
+        case .weight: Measurement(value: 1, unit: units.weightUnit).converted(to: .kilograms).value
+        case .bodyFat: 0.01
+        }
+    }
+
+    private var suffix: String {
+        switch kind {
+        case .weight: units.weightUnit.symbol
+        case .bodyFat: "%"
+        }
+    }
+
+    private var range: ClosedRange<Double> {
+        switch kind {
+        case .weight: 0 ... 500 / factor
+        case .bodyFat: 0 ... 100
+        }
+    }
+}
+
 #Preview("Streak") {
     NavigationRoot {}
         .sheet(isPresented: .constant(true)) {
@@ -109,6 +183,17 @@ struct StatisticSheet: View {
         .sheet(isPresented: .constant(true)) {
             NavigationRoot {
                 StatisticSheet(.typicalStartTime, of: History(.all, among: Samples.sessions))
+            }
+            .presentationDetents([.medium, .large])
+        }
+        .sampleData()
+}
+
+#Preview("Measurement") {
+    NavigationRoot {}
+        .sheet(isPresented: .constant(true)) {
+            NavigationRoot {
+                StatisticSheet(.bodyWeight, of: History(.all, among: Samples.sessions, measurements: Samples.measurements))
             }
             .presentationDetents([.medium, .large])
         }

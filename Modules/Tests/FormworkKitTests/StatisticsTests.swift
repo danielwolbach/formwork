@@ -51,16 +51,6 @@ extension TestStore {
 
 // MARK: - Formatting
 
-extension StatisticKind {
-    func reading(of value: Double, for subject: History.Subject = .all) -> Reading? {
-        guard case let .metric(unit, _, _, _, _) = definition.value else {
-            return nil
-        }
-
-        return Reading(value, as: unit, of: subject.exercise?.kind)
-    }
-}
-
 struct StatisticFormattingTests {
     @Test
     func missingValueIsNotFormatted() {
@@ -74,26 +64,26 @@ struct StatisticFormattingTests {
 
     @Test
     func valueIsFormattedAsSubtitle() {
-        #expect(StatisticKind.completions.reading(of: 3)?.formatted(.reading(units: .metric)) == "3")
+        #expect(Reading(3, as: .count).formatted(.reading(units: .metric)) == "3")
     }
 
     @Test
     func weeklySessionsShowOneDecimal() {
-        #expect(StatisticKind.weeklySessions.reading(of: 2)?.formatted(.reading(units: .metric)) == 2.0.formatted(.number.precision(.fractionLength(1))))
-        #expect(StatisticKind.weeklySessions.reading(of: 1.46)?.formatted(.reading(units: .metric)) == 1.5.formatted(.number.precision(.fractionLength(1))))
+        #expect(Reading(2, as: .rate).formatted(.reading(units: .metric)) == 2.0.formatted(.number.precision(.fractionLength(1))))
+        #expect(Reading(1.46, as: .rate).formatted(.reading(units: .metric)) == 1.5.formatted(.number.precision(.fractionLength(1))))
     }
 
     @Test(arguments: [42.0, 2000, 3500])
     func typicalDurationUnderAnHourReadsLikeAnExercise(seconds: Double) {
         let exerciseStyle = Duration.UnitsFormatStyle.units(allowed: [.minutes, .seconds], width: .abbreviated, maximumUnitCount: 1)
 
-        #expect(StatisticKind.typicalDuration.reading(of: seconds)?.formatted(.reading(units: .metric)) == Duration.seconds(seconds).formatted(exerciseStyle))
+        #expect(Reading(seconds, as: .duration).formatted(.reading(units: .metric)) == Duration.seconds(seconds).formatted(exerciseStyle))
     }
 
     @Test(arguments: [(6120.0, 6120.0), (3590, 3600)])
     func typicalDurationFromAnHourReadsInHoursAndMinutes(seconds: Double, shown: Double) {
         // 59 min 50 sec rounds to the hour, so it reads as 1 hr rather than 60 min.
-        #expect(StatisticKind.typicalDuration.reading(of: seconds)?.formatted(.reading(units: .metric)) == Duration.seconds(shown).formatted(.units(allowed: [.hours, .minutes], width: .abbreviated)))
+        #expect(Reading(seconds, as: .duration).formatted(.reading(units: .metric)) == Duration.seconds(shown).formatted(.units(allowed: [.hours, .minutes], width: .abbreviated)))
     }
 
     @Test
@@ -149,7 +139,7 @@ struct StatisticFormattingTests {
     func personalBestShowsOnlyTheRank(target: ExerciseTarget, expected: String) {
         let exercise = Exercise(name: "Test", kind: target.exerciseKind, categories: [])
 
-        #expect(StatisticKind.personalBest.reading(of: target.rank, for: .exercise(exercise))?.formatted(.reading(units: .metric)) == expected)
+        #expect(Reading(target.rank, as: .rank, of: exercise.kind).formatted(.reading(units: .metric)) == expected)
     }
 }
 
@@ -1009,12 +999,12 @@ struct TrendTests {
         History(.workout(store.workout), among: store.sessions, at: now, calendar: calendar)
     }
 
-    func trend(of kind: StatisticKind, at now: Date) -> Trend? {
-        guard case let .metric(_, tolerance, _, perSession, value) = kind.definition.value else {
-            return nil
+    func trend(of kind: StatisticKind, at now: Date) -> (recent: Reading?, before: Reading?, direction: Trend.Direction?)? {
+        switch kind.details(of: history(at: now)).values.first {
+        case let .trend(recent, before, direction): (recent, before, direction)
+        case let .recent(recent): (recent, nil, nil)
+        default: nil
         }
-
-        return Trend(history(at: now), tolerance: tolerance, perSession: perSession, value: value)
     }
 
     @Test
@@ -1044,7 +1034,7 @@ struct TrendTests {
 
         try store.session(30, month: 6).health = Session.HealthSummary(averageHeartRate: 125)
 
-        #expect(try #require(trend(of: .typicalHeartRate, at: calendar.date(16))).before == 125)
+        #expect(try #require(trend(of: .typicalHeartRate, at: calendar.date(16))).before == .heartRate(beatsPerMinute: 125))
     }
 
     @Test
@@ -1055,7 +1045,7 @@ struct TrendTests {
 
         let trend = try #require(self.trend(of: .completions, at: calendar.date(16)))
 
-        #expect(trend.recent == 1)
+        #expect(trend.recent == .count(1))
         #expect(trend.before == nil)
         #expect(trend.direction == nil)
     }
@@ -1069,7 +1059,7 @@ struct TrendTests {
 
         let trend = try #require(self.trend(of: .weeklySessions, at: calendar.date(16)))
 
-        #expect(trend.recent == 1)
+        #expect(trend.recent == .rate(1))
         #expect(trend.direction == .up)
     }
 
@@ -1094,6 +1084,117 @@ struct TrendTests {
         #expect(try series.bars.map(\.month) == (3 ... 9).map { try calendar.date(1, month: $0, hour: 0) })
         #expect(series.bars.map(\.value) == [1, 0, 0, 0, 0, 0, 0])
         #expect(try series.period == DateInterval(start: calendar.date(1, month: 1, hour: 0), end: calendar.date(1, month: 1, year: 2027, hour: 0)))
+    }
+}
+
+// MARK: - Body measurements
+
+@MainActor
+struct BodyMeasurementTests {
+    let store: TestStore
+
+    let calendar = Calendar.berlin()
+
+    init() throws {
+        self.store = try TestStore()
+    }
+
+    func history(_ weight: [(day: Int, month: Int, kilograms: Double)], at now: Date) throws -> History {
+        let samples = try weight.map { try BodyMeasurements.Sample(date: calendar.date($0.day, month: $0.month), value: $0.kilograms) }
+        return History(.all, among: store.sessions, measurements: BodyMeasurements(weight: samples), at: now, calendar: calendar)
+    }
+
+    @Test
+    func cardsWithoutSamplesAreHiddenUnlessHealthIsConnected() throws {
+        try store.session(15)
+
+        let empty = try history([], at: calendar.date(16))
+        let weighed = try history([(10, 9, 80)], at: calendar.date(16))
+
+        #expect(!StatisticKind.bodyWeight.isShown(in: empty, isHealthConnected: false))
+        #expect(!StatisticKind.bodyFat.isShown(in: weighed, isHealthConnected: false))
+        #expect(StatisticKind.bodyWeight.isShown(in: weighed, isHealthConnected: false))
+        #expect(StatisticKind.typicalDuration.isShown(in: empty, isHealthConnected: false))
+        #expect(StatisticKind.bodyFat.isShown(in: empty, isHealthConnected: true))
+    }
+
+    @Test
+    func cardShowsTheLatestSampleAndTheTrend() throws {
+        // Read on Sep 16, the recent days start on Aug 20 and the ones before on May 28.
+        try store.session(15)
+        let history = try history([(1, 7, 82), (10, 7, 82), (20, 7, 82), (1, 9, 80), (10, 9, 79.5)], at: calendar.date(16))
+
+        guard case let .reading(reading, direction) = StatisticKind.bodyWeight.summary(of: history) else {
+            Issue.record("Body weight should read as a value.")
+            return
+        }
+
+        #expect(reading == .weight(kilograms: 79.5))
+        #expect(direction == .down)
+    }
+
+    @Test
+    func trendNeedsThreeSamplesInTheDaysBefore() throws {
+        try store.session(15)
+        let history = try history([(1, 7, 82), (10, 7, 82), (1, 9, 80)], at: calendar.date(16))
+
+        guard case let .reading(_, direction) = StatisticKind.bodyWeight.summary(of: history) else {
+            Issue.record("Body weight should read as a value.")
+            return
+        }
+
+        #expect(direction == nil)
+    }
+
+    @Test
+    func samplesBeforeTheFirstSessionStillCount() throws {
+        // The only session is in the recent days, so a session statistic would have nothing before to compare.
+        try store.session(15)
+        let history = try history([(1, 6, 84), (1, 7, 84), (1, 8, 84), (1, 9, 84)], at: calendar.date(16))
+
+        let details = StatisticKind.bodyWeight.details(of: history)
+
+        #expect(details.values == [.trend(recent: .weight(kilograms: 84), before: .weight(kilograms: 84), direction: .flat)])
+        #expect(details.sessions?.points.map(\.value) == [84, 84, 84, 84])
+    }
+
+    @Test
+    func yearsAndMonthsFollowTheSamples() throws {
+        try store.session(15)
+        let samples = try [calendar.date(10, month: 3, year: 2025), calendar.date(10, month: 7)].map { BodyMeasurements.Sample(date: $0, value: 80) }
+        let history = try History(.all, among: store.sessions, measurements: BodyMeasurements(weight: samples), at: calendar.date(16), calendar: calendar)
+
+        let yearly = try #require(StatisticKind.bodyWeight.details(of: history).yearly)
+
+        #expect(yearly.years == 2025 ... 2026)
+
+        guard case let .monthly(series, _) = yearly.chart(2026) else {
+            Issue.record("Body weight should chart by month.")
+            return
+        }
+
+        // January to September, up to today, though the only session is in September.
+        #expect(series.bars.count == 9)
+        #expect(series.bars.compactMap(\.value) == [80])
+    }
+
+    @Test
+    func yearsStartWithTheFirstSampleRatherThanTheFirstSession() throws {
+        let session = try store.session(15)
+        session.startDate = try calendar.date(15, month: 3, year: 2024)
+        session.endDate = session.startDate.addingTimeInterval(3600)
+        let samples = try [BodyMeasurements.Sample(date: calendar.date(10, month: 7), value: 80)]
+        let history = try History(.all, among: store.sessions, measurements: BodyMeasurements(weight: samples), at: calendar.date(16), calendar: calendar)
+
+        #expect(try #require(StatisticKind.bodyWeight.details(of: history).yearly).years == 2026 ... 2026)
+    }
+
+    @Test
+    func withoutSamplesThereIsNoYearlyChart() throws {
+        try store.session(15)
+        let history = try History(.all, among: store.sessions, at: calendar.date(16), calendar: calendar)
+
+        #expect(StatisticKind.bodyWeight.details(of: history).yearly == nil)
     }
 }
 

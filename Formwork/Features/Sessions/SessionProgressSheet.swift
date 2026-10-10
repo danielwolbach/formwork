@@ -172,10 +172,6 @@ struct SessionProgressSheet: View {
         if let heartRate = Health.shared.heartRate {
             ValueRow(title: .init(localized: .fieldHeartRateTitle), reading: .heartRate(beatsPerMinute: heartRate))
         }
-
-        if let activeEnergy = Health.shared.activeEnergy {
-            ValueRow(title: .init(localized: .fieldActiveEnergyTitle), reading: .energy(kilocalories: activeEnergy))
-        }
     }
 
     @ViewBuilder

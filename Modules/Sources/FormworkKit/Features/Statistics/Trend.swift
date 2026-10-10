@@ -20,17 +20,21 @@ public struct Trend {
 
     let direction: Direction?
 
-    /// Without a tolerance the value doesn't compare, so `before` and `direction` stay nil. With `perSession`, only
-    /// sessions that have a value of their own count towards the minimum; otherwise the value exists across several.
-    init(_ history: History, tolerance: Double?, perSession: Bool, value: (History.Window) -> Double?) {
-        let baseline = history.baseline
-        let recent = value(history.recent)
-        let count = perSession ? baseline.sessions.count { value(history.session($0)) != nil } : baseline.sessions.count
-        let before = tolerance == nil || count < History.minimumValues ? nil : value(baseline)
+    init(recent: Double?, before: @autoclosure () -> Double?, values: Int, tolerance: Double?) {
+        let before = tolerance == nil || values < History.minimumValues ? nil : before()
 
         self.recent = recent
         self.before = before
         self.direction = tolerance.flatMap { Direction(from: before, to: recent, tolerance: $0) }
+    }
+}
+
+extension Trend {
+    init(_ history: History, tolerance: Double?, perSession: Bool, value: (History.Window) -> Double?) {
+        let baseline = history.baseline
+        let count = perSession ? baseline.sessions.count { value(history.session($0)) != nil } : baseline.sessions.count
+
+        self.init(recent: value(history.recent), before: value(baseline), values: count, tolerance: tolerance)
     }
 }
 

@@ -514,28 +514,6 @@
         }
       }
     },
-    "sessionFigure.activeEnergy.info" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "The active energy you burned during the session, as recorded in Health."
-          }
-        }
-      }
-    },
-    "sessionFigure.activeEnergy.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Active Energy"
-          }
-        }
-      }
-    },
     "sessionFigure.averageHeartRate.info" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -708,6 +686,50 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Active Days"
+          }
+        }
+      }
+    },
+    "statistic.bodyFat.info" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your body fat percentage, as recorded in Health."
+          }
+        }
+      }
+    },
+    "statistic.bodyFat.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Body Fat"
+          }
+        }
+      }
+    },
+    "statistic.bodyWeight.info" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your body weight, as recorded in Health."
+          }
+        }
+      }
+    },
+    "statistic.bodyWeight.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Body Weight"
           }
         }
       }
@@ -961,28 +983,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Total Volume"
-          }
-        }
-      }
-    },
-    "statistic.typicalActiveEnergy.info" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "The active energy you usually burn per session."
-          }
-        }
-      }
-    },
-    "statistic.typicalActiveEnergy.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Typical Active Energy"
           }
         }
       }

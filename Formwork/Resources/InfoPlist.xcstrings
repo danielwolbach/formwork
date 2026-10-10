@@ -43,7 +43,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "Formwork shows your heart rate and burned calories during and after a session, and charts your body weight over time."
+            "value" : "Formwork shows your heart rate during and after a session, and charts your body weight over time."
           }
         }
       }
@@ -55,7 +55,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "Formwork saves your sessions as workouts and logs the body weight you enter."
+            "value" : "Formwork saves your sessions as workouts and logs the body weight and body fat you enter."
           }
         }
       }

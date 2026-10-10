@@ -16,14 +16,13 @@ public enum Reading: Hashable, Sendable {
     case duration(seconds: Double)
     case days(Double)
     case heartRate(beatsPerMinute: Double)
-    case energy(kilocalories: Double)
     case reps(Int)
     case name(String)
     case day(Date, calendar: Calendar)
     case time(Date, calendar: Calendar)
 
     /// How a plain number reads.
-    enum Unit {
+    public enum Unit: Sendable {
         case count
         case percent
         case rate
@@ -31,7 +30,6 @@ public enum Reading: Hashable, Sendable {
         case duration
         case days
         case heartRate
-        case energy
         /// A target's rank, read in an exercise's kind.
         case rank
     }
@@ -65,7 +63,6 @@ extension Reading {
         case .duration: .duration(seconds: value)
         case .days: .days(value)
         case .heartRate: .heartRate(beatsPerMinute: value)
-        case .energy: .energy(kilocalories: value)
         case .rank: Reading(rank: value, of: kind)
         }
     }

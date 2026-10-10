@@ -24,15 +24,12 @@ public struct SessionComparison {
 
     public let current: Reading?
 
-    /// The usual value of the workout's sessions before; nil with fewer than three values among them.
     public let baseline: Reading?
 
     public let direction: Trend.Direction?
 
     let window: History.Window?
 
-    /// The baseline is the workout's sessions in the days before the session's day, so it never includes the
-    /// session itself and stays meaningful for sessions long past.
     public init(_ kind: SessionFigureKind, of session: Session, among sessions: [Session], calendar: Calendar = .current) {
         self.kind = kind
         self.session = session
@@ -70,7 +67,6 @@ public struct SessionComparison {
 }
 
 extension SessionComparison {
-    /// The workout's sessions up to and including this one, oldest first. Empty for figures that don't chart.
     public func points(count: Int = History.chartedSessions) -> [Point] {
         guard case let .measure(_, _, value) = kind.definition.value else {
             return []

@@ -16,6 +16,8 @@ public enum Samples {
 
     public static let sessions = makeSessions(for: workouts)
 
+    public static let measurements = makeMeasurements()
+
     public static var activeSession: Session {
         // swiftlint:disable:next force_try
         try! Session.active(in: container.mainContext)!
@@ -151,14 +153,36 @@ extension Samples {
 
                 session.endDate = clock
                 session.health = Session.HealthSummary(
-                    averageHeartRate: Double.random(in: 118 ... 132, using: &healthRandom) - 8 * progress,
-                    activeEnergy: clock.timeIntervalSince(session.startDate) / 60 * Double.random(in: 5.5 ... 7.5, using: &healthRandom)
+                    averageHeartRate: Double.random(in: 118 ... 132, using: &healthRandom) - 8 * progress
                 )
                 sessions.append(session)
             }
         }
 
         return sessions
+    }
+
+    /// A weigh-in every few days, with body fat on some of them, slowly going down.
+    fileprivate static func makeMeasurements(days: Int = historyDays, calendar: Calendar = .current) -> BodyMeasurements {
+        var random = SeededGenerator(seed: 3)
+        var measurements = BodyMeasurements()
+        let today = calendar.startOfDay(for: .now)
+
+        for offset in stride(from: days, through: 1, by: -3) {
+            guard let day = calendar.date(byAdding: .day, value: -offset, to: today) else {
+                continue
+            }
+
+            let date = day.addingTimeInterval(TimeInterval.random(in: 6.5 ... 8, using: &random) * 3600)
+            let progress = 1 - Double(offset) / Double(days)
+            measurements.weight.append(.init(date: date, value: 84 - 4 * progress + Double.random(in: -0.6 ... 0.6, using: &random)))
+
+            if offset.isMultiple(of: 2) {
+                measurements.bodyFat.append(.init(date: date, value: 0.22 - 0.03 * progress + Double.random(in: -0.004 ... 0.004, using: &random)))
+            }
+        }
+
+        return measurements
     }
 }
 

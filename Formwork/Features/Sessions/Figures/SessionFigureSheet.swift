@@ -27,7 +27,7 @@ struct SessionFigureSheet: View {
         let comparison = SessionComparison(kind, of: session, among: sessions)
         let points = comparison.points()
 
-        DetailSheet(definition.pictogram, title: definition.title, subtitle: session.title, info: definition.info) {
+        DetailSheet(definition, subtitle: session.title) {
             GroupBox {
                 ValueComparison(comparison)
             }

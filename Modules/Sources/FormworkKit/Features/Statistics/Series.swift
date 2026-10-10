@@ -7,7 +7,6 @@
 
 import Foundation
 
-/// One value per month of a year, for the months on record.
 public struct Series<Value> {
     public struct Bar {
         public let month: Date
@@ -20,6 +19,10 @@ public struct Series<Value> {
     public let bars: [Bar]
 
     public init(_ history: History, year: Int, value: (History.Window) -> Value) {
+        self.init(history, year: year, isOnRecord: { $0.interval.duration > 0 }, value: value)
+    }
+
+    init(_ history: History, year: Int, isOnRecord: (History.Window) -> Bool, value: (History.Window) -> Value) {
         let period = history.year(year).period
 
         self.period = period
@@ -27,7 +30,7 @@ public struct Series<Value> {
             .prefix { $0 < period.end }
             .compactMap { month in
                 let window = history.month(containing: month)
-                return window.interval.duration > 0 ? Bar(month: month, value: value(window)) : nil
+                return isOnRecord(window) ? Bar(month: month, value: value(window)) : nil
             }
     }
 }

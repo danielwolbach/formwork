@@ -11,17 +11,28 @@ import SwiftData
 import SwiftUI
 
 struct StatisticsScreen: View {
+    @Environment(\.scenePhase)
+    private var scenePhase: ScenePhase
+
     @Query(Session.finishedDescriptor)
     private var sessions: [Session]
 
     var body: some View {
         content
             .navigationTitle(.screenStatisticsTitle)
+            // Reread on return, since weigh-ins arrive in Health while the app is away.
+            .task(id: scenePhase) {
+                guard scenePhase == .active else {
+                    return
+                }
+
+                await Health.shared.refresh()
+            }
     }
 
     @ViewBuilder
     private var content: some View {
-        let history = History(.all, among: sessions)
+        let history = History(.all, among: sessions, measurements: Health.shared.measurements)
 
         if history.sessions.isEmpty {
             ContentUnavailableView {

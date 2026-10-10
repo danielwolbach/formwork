@@ -119,13 +119,7 @@ public struct NumberStepper: View {
             }
         }
         .sheet(isPresented: $showKeypad) {
-            NumberEntrySheet(
-                title: title,
-                suffix: suffix,
-                format: format,
-                range: range,
-                value: $value
-            )
+            NumberEntrySheet(title, value: $value, suffix: suffix, format: format, range: range)
         }
         .sensoryFeedback(trigger: value) { oldValue, newValue in
             newValue > oldValue ? .increase : .decrease
@@ -185,68 +179,7 @@ public struct NumberStepper: View {
     }
 }
 
-private struct NumberEntrySheet: View {
-    let title: String
-
-    let suffix: String?
-
-    let format: NumberFormat
-
-    let range: ClosedRange<Double>
-
-    @Binding
-    var value: Double
-
-    @Environment(\.dismiss)
-    private var dismiss: DismissAction
-
-    @State
-    private var draft = ""
-
-    var body: some View {
-        NavigationStack {
-            VStack(spacing: 32) {
-                ValueLabel(
-                    text: draft.isEmpty ? format.format(value) : draft,
-                    pendingDigits: format.pendingDigits(after: draft),
-                    suffix: suffix,
-                    value: value,
-                    isPlaceholder: draft.isEmpty
-                )
-
-                NumberKeypad(format: format, upperBound: range.upperBound, text: $draft)
-                    .padding(.horizontal)
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .navigationTitle(title)
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
-                    Button(.confirm) {
-                        confirm()
-                    }
-                }
-
-                ToolbarItem(placement: .cancellationAction) {
-                    Button(.cancel) {
-                        dismiss()
-                    }
-                }
-            }
-        }
-        .presentationDetents([.medium])
-    }
-
-    private func confirm() {
-        if let parsed = format.parse(draft) {
-            value = min(max(parsed, range.lowerBound), range.upperBound)
-        }
-
-        dismiss()
-    }
-}
-
-private struct ValueLabel: View {
+struct ValueLabel: View {
     let text: String
 
     var pendingDigits: String?

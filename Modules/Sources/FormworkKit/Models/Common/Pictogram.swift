@@ -80,7 +80,9 @@ extension Pictogram {
 
     public static let heartRate = Pictogram(image: "heart", tint: .red)
 
-    public static let energy = Pictogram(image: "bolt", tint: .yellow)
+    public static let bodyWeight = Pictogram(image: "figure.stand", tint: .purple)
+
+    public static let bodyFat = Pictogram(image: "percent", tint: .mint)
 
     public static let strength = Pictogram(image: "chevron.up.2", tint: .brown)
 

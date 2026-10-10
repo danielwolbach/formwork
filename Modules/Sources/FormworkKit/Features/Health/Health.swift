@@ -19,13 +19,15 @@ public final class Health: NSObject {
 
     static let store = HKHealthStore()
 
-    private static let sharedTypes: Set<HKSampleType> = [.workoutType(), HKQuantityType(.bodyMass)]
+    private static let sharedTypes: Set<HKSampleType> = [.workoutType(), HKQuantityType(.bodyMass), HKQuantityType(.bodyFatPercentage)]
 
-    private static let readTypes: Set<HKSampleType> = [HKQuantityType(.activeEnergyBurned), HKQuantityType(.heartRate), HKQuantityType(.bodyMass)]
+    private static let readTypes: Set<HKSampleType> = [HKQuantityType(.heartRate), HKQuantityType(.bodyMass), HKQuantityType(.bodyFatPercentage)]
 
     public private(set) var heartRate: Double?
 
-    public private(set) var activeEnergy: Double?
+    public private(set) var status: Status?
+
+    public private(set) var measurements = BodyMeasurements()
 
     @ObservationIgnored
     private var live: HKWorkoutSession?
@@ -72,6 +74,8 @@ extension Health {
             Logger.health.error("Requesting authorization failed: \(error, privacy: .public)")
             throw error
         }
+
+        await shared.refresh()
     }
 
     public static func delete(_ session: Session) {
@@ -92,16 +96,54 @@ extension Health {
             }
         }
     }
+
+    private static func samples(of kind: BodyMeasurements.Kind) async -> [BodyMeasurements.Sample] {
+        let query = HKSampleQueryDescriptor(predicates: [.quantitySample(type: kind.quantityType)], sortDescriptors: [SortDescriptor(\.startDate)])
+
+        do {
+            return try await query.result(for: store).map { BodyMeasurements.Sample(date: $0.startDate, value: $0.quantity.doubleValue(for: kind.healthUnit)) }
+        } catch {
+            Logger.health.error("Reading \(kind.quantityType.identifier, privacy: .public) samples failed: \(error, privacy: .public)")
+            return []
+        }
+    }
 }
 
 extension Health {
-    private nonisolated static func statistics(of builder: HKLiveWorkoutBuilder) -> (heartRate: Double?, activeEnergy: Double?) {
-        let heartRate = builder.statistics(for: HKQuantityType(.heartRate))?
+    private nonisolated static func latestHeartRate(of builder: HKLiveWorkoutBuilder) -> Double? {
+        builder.statistics(for: HKQuantityType(.heartRate))?
             .mostRecentQuantity()?.doubleValue(for: .count().unitDivided(by: .minute()))
-        let activeEnergy = builder.statistics(for: HKQuantityType(.activeEnergyBurned))?
-            .sumQuantity()?.doubleValue(for: .kilocalorie())
+    }
 
-        return (heartRate, activeEnergy)
+    public func refresh() async {
+        status = await Self.status()
+
+        guard Self.isAvailable else {
+            return
+        }
+
+        var measurements = BodyMeasurements()
+
+        for kind in BodyMeasurements.Kind.allCases {
+            measurements[kind] = await Self.samples(of: kind)
+        }
+
+        self.measurements = measurements
+    }
+
+    public func log(_ value: Double, as kind: BodyMeasurements.Kind) async {
+        let quantity = HKQuantity(unit: kind.healthUnit, doubleValue: value)
+        let sample = HKQuantitySample(type: kind.quantityType, quantity: quantity, start: .now, end: .now)
+
+        do {
+            try await Self.store.save(sample)
+            Logger.health.info("Logged \(kind.quantityType.identifier, privacy: .public) sample")
+        } catch {
+            Logger.health.error("Logging \(kind.quantityType.identifier, privacy: .public) sample failed: \(error, privacy: .public)")
+            return
+        }
+
+        await refresh()
     }
 
     public func sync(_ session: Session?) async {
@@ -127,7 +169,7 @@ extension Health {
                     builder.dataSource = HKLiveWorkoutDataSource(healthStore: Self.store, workoutConfiguration: recovered.workoutConfiguration)
 
                     attach(recovered, builder: builder, for: session)
-                    update(from: Self.statistics(of: builder))
+                    heartRate = Self.latestHeartRate(of: builder) ?? heartRate
                 } else {
                     Logger.health.info("No workout session to recover")
                 }
@@ -186,9 +228,7 @@ extension Health {
 
             session.health = Session.HealthSummary(
                 averageHeartRate: builder.statistics(for: HKQuantityType(.heartRate))?
-                    .averageQuantity()?.doubleValue(for: .count().unitDivided(by: .minute())),
-                activeEnergy: builder.statistics(for: HKQuantityType(.activeEnergyBurned))?
-                    .sumQuantity()?.doubleValue(for: .kilocalorie())
+                    .averageQuantity()?.doubleValue(for: .count().unitDivided(by: .minute()))
             )
 
             _ = try await builder.finishWorkout()
@@ -221,17 +261,11 @@ extension Health {
         tracked = session
     }
 
-    private func update(from statistics: (heartRate: Double?, activeEnergy: Double?)) {
-        heartRate = statistics.heartRate ?? heartRate
-        activeEnergy = statistics.activeEnergy ?? activeEnergy
-    }
-
     private func reset() {
         live = nil
         builder = nil
         tracked = nil
         heartRate = nil
-        activeEnergy = nil
     }
 
     private func isFinished(_ session: Session) -> Bool {
@@ -265,14 +299,30 @@ extension Health: HKLiveWorkoutBuilderDelegate {
 
     public nonisolated func workoutBuilder(_ workoutBuilder: HKLiveWorkoutBuilder, didCollectDataOf _: Set<HKSampleType>) {
         let id = ObjectIdentifier(workoutBuilder)
-        let statistics = Self.statistics(of: workoutBuilder)
+        let latest = Self.latestHeartRate(of: workoutBuilder)
 
         Task { @MainActor in
             guard let builder, ObjectIdentifier(builder) == id else {
                 return
             }
 
-            update(from: statistics)
+            heartRate = latest ?? heartRate
+        }
+    }
+}
+
+extension BodyMeasurements.Kind {
+    fileprivate var quantityType: HKQuantityType {
+        switch self {
+        case .weight: HKQuantityType(.bodyMass)
+        case .bodyFat: HKQuantityType(.bodyFatPercentage)
+        }
+    }
+
+    fileprivate var healthUnit: HKUnit {
+        switch self {
+        case .weight: .gramUnit(with: .kilo)
+        case .bodyFat: .percent()
         }
     }
 }

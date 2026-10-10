@@ -7,7 +7,6 @@
 
 import Foundation
 
-/// Raw values are meant to identify pinned statistics once pins come back, so keep them stable.
 public enum StatisticKind: String, Codable, CaseIterable, Sendable {
     case lastCompleted
     case weekStreak
@@ -27,58 +26,133 @@ public enum StatisticKind: String, Codable, CaseIterable, Sendable {
     case oneRepMax
     case typicalInterval
     case typicalHeartRate
-    case typicalActiveEnergy
+    case bodyWeight
+    case bodyFat
 
-    /// Everything a statistic brings of its own. Cards and sheets follow from its `value`.
-    public struct Definition {
-        enum Value {
-            /// A number that compares recent against before (unless `tolerance` is nil) and charts by month. `perSession`
-            /// says whether each session has a value of its own; weekly sessions or completions only exist across several.
-            case metric(Reading.Unit, tolerance: Double?, card: Period, perSession: Bool, (History.Window) -> Double?)
-            case indicator(card: Period, (History.Window) -> Reading?)
-            /// Draws its own card and sheet.
-            case chart
-        }
+    public struct Value {
+        var reading: (History.Window) -> Reading? = { _ in nil }
 
-        /// What a card shows without a label: habits read right over recent days, records over all time.
-        enum Period {
-            case recent
-            case allTime
-        }
+        let summary: (History) -> StatisticSummary
 
-        public let pictogram: Pictogram
+        let details: (History, _ title: String) -> StatisticDetails
 
-        let value: Value
+        var measurement: BodyMeasurements.Kind?
 
-        private let titleResource: LocalizedStringResource
+        var isChart = false
+    }
 
-        private let infoResource: LocalizedStringResource
-
-        init(title: LocalizedStringResource, info: LocalizedStringResource, pictogram: Pictogram, value: Value) {
-            self.pictogram = pictogram
-            self.value = value
-            self.titleResource = title
-            self.infoResource = info
-        }
+    enum Period {
+        case recent
+        case allTime
     }
 }
 
-extension StatisticKind.Definition {
-    public var title: String {
-        String(localized: titleResource)
-    }
-
-    public var info: String {
-        String(localized: infoResource)
-    }
-}
-
-extension StatisticKind.Definition.Period {
+extension StatisticKind.Period {
     func window(of history: History) -> History.Window {
         switch self {
         case .recent: history.recent
         case .allTime: history.allTime
         }
+    }
+}
+
+extension StatisticKind.Value {
+    static func metric(
+        _ unit: Reading.Unit,
+        tolerance: Double?,
+        card: StatisticKind.Period,
+        perSession: Bool,
+        _ value: @escaping (History.Window) -> Double?
+    ) -> Self {
+        let reading = { (window: History.Window) in
+            value(window).map { Reading($0, as: unit, of: window.history.subject.exercise?.kind) }
+        }
+
+        return Self(
+            reading: reading,
+            summary: { history in
+                switch card {
+                case .recent:
+                    let trend = Trend(history, tolerance: tolerance, perSession: perSession, value: value)
+                    return .reading(trend.recent.map { Reading($0, as: unit, of: history.subject.exercise?.kind) }, direction: trend.direction)
+                case .allTime:
+                    return .reading(reading(history.allTime), direction: nil)
+                }
+            },
+            details: { history, _ in
+                let read = { Reading($0, as: unit, of: history.subject.exercise?.kind) }
+                let trend = Trend(history, tolerance: tolerance, perSession: perSession, value: value)
+                let comparison: StatisticDetails.Value = if tolerance == nil {
+                    .recent(trend.recent.map(read))
+                } else {
+                    .trend(recent: trend.recent.map(read), before: trend.before.map(read), direction: trend.direction)
+                }
+
+                return StatisticDetails(
+                    values: [comparison, .overall(reading(history.allTime))],
+                    sessions: perSession ? StatisticDetails.Sessions(history, reading: read) { window in
+                        window.sessions.sorted { $0.startDate < $1.startDate }.map { ($0.startDate, value(history.session($0))) }
+                    } : nil,
+                    yearly: StatisticDetails.Yearly(history) { .monthly(Series(history, year: $0, value: value), reading: read) }
+                )
+            }
+        )
+    }
+
+    static func indicator(card: StatisticKind.Period, _ reading: @escaping (History.Window) -> Reading?) -> Self {
+        Self(
+            reading: reading,
+            summary: { .reading(reading(card.window(of: $0)), direction: nil) },
+            details: { history, title in
+                switch card {
+                case .recent: StatisticDetails(values: [.recent(reading(history.recent)), .overall(reading(history.allTime))])
+                case .allTime: StatisticDetails(values: [.named(title, reading(history.allTime))])
+                }
+            }
+        )
+    }
+
+    static func measurement(_ kind: BodyMeasurements.Kind, tolerance: Double) -> Self {
+        let read = { Reading($0, as: kind.unit) }
+        // Compares the median of the samples recently against the median of the ones before.
+        let trendOf = { (history: History) in
+            let before = history.baseline.measurements[kind].map(\.value)
+            return Trend(recent: history.recent.measurements[kind].map(\.value).median, before: before.median, values: before.count, tolerance: tolerance)
+        }
+
+        return Self(
+            reading: { $0.measurements[kind].last.map { read($0.value) } },
+            summary: { history in
+                let latest = history.measurements[kind].last { $0.date < history.interval.end }
+                return .reading(latest.map { read($0.value) }, direction: trendOf(history).direction)
+            },
+            details: { history, _ in
+                let trend = trendOf(history)
+                // From the year of the first sample, which may be before or after the first session, and only with one.
+                let current = history.years.upperBound
+                let yearly = history.measurements[kind].first.map { first in
+                    let years = min(history.calendar.component(.year, from: first.date), current) ... current
+
+                    return StatisticDetails.Yearly(history, years: years) { year in
+                        .monthly(
+                            Series(history, year: year, isOnRecord: { $0.measurementInterval.duration > 0 }) { $0.measurements[kind].map(\.value).median },
+                            reading: read
+                        )
+                    }
+                }
+
+                return StatisticDetails(
+                    values: [.trend(recent: trend.recent.map(read), before: trend.before.map(read), direction: trend.direction)],
+                    sessions: StatisticDetails.Sessions(history, reading: read) { $0.measurements[kind].map { ($0.date, $0.value) } },
+                    yearly: yearly
+                )
+            },
+            measurement: kind
+        )
+    }
+
+    static func chart(summary: @escaping (History) -> StatisticSummary, details: @escaping (History) -> StatisticDetails) -> Self {
+        Self(summary: summary, details: { history, _ in details(history) }, isChart: true)
     }
 }
 
@@ -89,7 +163,7 @@ extension StatisticKind: Identifiable {
 }
 
 extension StatisticKind {
-    public var definition: Definition {
+    public var definition: Definition<Value> {
         switch self {
         case .lastCompleted:
             Definition(
@@ -106,7 +180,22 @@ extension StatisticKind {
                 title: .statisticWeekStreakTitle,
                 info: .statisticWeekStreakInfo,
                 pictogram: .streak,
-                value: .indicator(card: .allTime) { .count($0.weekStreak.weeks) }
+                value: Value(
+                    reading: { .count($0.weekStreak.weeks) },
+                    summary: { .reading(.count($0.allTime.weekStreak.weeks), direction: nil) },
+                    details: { history, title in
+                        let streak = history.allTime.weekStreak
+
+                        return StatisticDetails(values: [
+                            .named(
+                                title,
+                                .count(streak.weeks),
+                                footnote: String(localized: streak.isCurrentWeekFulfilled ? .statisticWeekStreakFulfilledSubtitle : .statisticWeekStreakPendingSubtitle)
+                            ),
+                            .named(String(localized: .statisticLongestWeekStreakTitle), .count(history.allTime.longestWeekStreak)),
+                        ])
+                    }
+                )
             )
         case .weeklySessions:
             Definition(
@@ -178,21 +267,48 @@ extension StatisticKind {
                 title: .statisticActiveDaysTitle,
                 info: .statisticActiveDaysInfo,
                 pictogram: .activity,
-                value: .chart
+                value: .chart(
+                    summary: { .activeDays(ActiveDays($0.weeks(History.comparedWeeks))) },
+                    details: { history in
+                        StatisticDetails(yearly: StatisticDetails.Yearly(history) { .activeDays(ActiveDays(history.year($0))) })
+                    }
+                )
             )
         case .categories:
             Definition(
                 title: .statisticCategoriesTitle,
                 info: .statisticCategoriesInfo,
                 pictogram: .categories,
-                value: .chart
+                value: .chart(
+                    summary: { .categories(Categories($0.recent)) },
+                    details: { history in
+                        StatisticDetails(
+                            categories: (Categories(history.recent), Categories(history.allTime)),
+                            yearly: StatisticDetails.Yearly(history) { .categories(Series(history, year: $0, value: Categories.init)) }
+                        )
+                    }
+                )
             )
         case .progression:
             Definition(
                 title: .statisticProgressionTitle,
                 info: .statisticProgressionInfo,
                 pictogram: .progression,
-                value: .chart
+                value: .chart(
+                    summary: { .progression(Progression($0.weeks(History.comparedWeeks))) },
+                    details: { history in
+                        let read = { Reading(rank: $0, of: history.subject.exercise?.kind) }
+                        let trend = Trend(history, tolerance: 0.02, perSession: false) { $0.typicalBest?.rank }
+
+                        return StatisticDetails(
+                            values: [
+                                .trend(recent: trend.recent.map(read), before: trend.before.map(read), direction: trend.direction),
+                                .overall(StatisticKind.personalBest.reading(in: history.allTime)),
+                            ],
+                            yearly: StatisticDetails.Yearly(history) { .progression(Progression(history.year($0))) }
+                        )
+                    }
+                )
             )
         case .totalVolume:
             Definition(
@@ -222,30 +338,46 @@ extension StatisticKind {
                 pictogram: .heartRate,
                 value: .metric(.heartRate, tolerance: 0.05, card: .recent, perSession: true) { $0.typicalHeartRate }
             )
-        case .typicalActiveEnergy:
+        case .bodyWeight:
             Definition(
-                title: .statisticTypicalActiveEnergyTitle,
-                info: .statisticTypicalActiveEnergyInfo,
-                pictogram: .energy,
-                value: .metric(.energy, tolerance: 0.05, card: .recent, perSession: true) { $0.typicalActiveEnergy }
+                title: .statisticBodyWeightTitle,
+                info: .statisticBodyWeightInfo,
+                pictogram: .bodyWeight,
+                value: .measurement(.weight, tolerance: 0.01)
+            )
+        case .bodyFat:
+            Definition(
+                title: .statisticBodyFatTitle,
+                info: .statisticBodyFatInfo,
+                pictogram: .bodyFat,
+                value: .measurement(.bodyFat, tolerance: 0.03)
             )
         }
     }
 
     public var isChart: Bool {
-        if case .chart = definition.value {
-            return true
-        }
+        definition.value.isChart
+    }
 
-        return false
+    public var measurement: BodyMeasurements.Kind? {
+        definition.value.measurement
+    }
+
+    public func isShown(in history: History, isHealthConnected: Bool) -> Bool {
+        measurement.map { isHealthConnected || !history.measurements[$0].isEmpty } ?? true
+    }
+
+    public func summary(of history: History) -> StatisticSummary {
+        definition.value.summary(history)
+    }
+
+    public func details(of history: History) -> StatisticDetails {
+        let definition = definition
+        return definition.value.details(history, definition.title)
     }
 
     func reading(in window: History.Window) -> Reading? {
-        switch definition.value {
-        case let .metric(unit, _, _, _, value): value(window).map { Reading($0, as: unit, of: window.history.subject.exercise?.kind) }
-        case let .indicator(_, reading): reading(window)
-        case .chart: nil
-        }
+        definition.value.reading(window)
     }
 }
 
@@ -256,6 +388,8 @@ extension History.Subject {
             [
                 .weekStreak,
                 .lastCompleted,
+                .bodyWeight,
+                .bodyFat,
                 .activeDays,
                 .weeklySessions,
                 .completions,
@@ -264,6 +398,7 @@ extension History.Subject {
                 .categories,
                 .favoriteWorkout,
                 .favoriteExercise,
+                .mostSkippedExercise,
                 .totalVolume,
             ]
         case .workout:
@@ -278,7 +413,6 @@ extension History.Subject {
                 .typicalInterval,
                 .totalVolume,
                 .typicalHeartRate,
-                .typicalActiveEnergy,
                 .categories,
             ]
         case let .exercise(exercise):

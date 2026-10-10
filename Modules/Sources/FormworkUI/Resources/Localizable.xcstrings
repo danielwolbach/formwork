@@ -254,6 +254,17 @@
         }
       }
     },
+    "action.logMeasurement.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Log Measurement"
+          }
+        }
+      }
+    },
     "action.minimize.title" : {
       "extractionState" : "manual",
       "localizations" : {

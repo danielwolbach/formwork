@@ -33,7 +33,7 @@ struct StatisticCard: View {
     @ViewBuilder
     private var label: some View {
         switch kind.summary(of: history) {
-        case let .reading(reading, direction): ReadingCard(kind, reading: reading, direction: direction)
+        case let .reading(reading, direction): ReadingCard(kind.definition, reading: reading, direction: direction)
         case let .activeDays(activeDays): ActiveDaysCard(activeDays)
         case let .categories(categories): CategoriesCard(categories)
         case let .progression(progression): ProgressionCard(progression)
