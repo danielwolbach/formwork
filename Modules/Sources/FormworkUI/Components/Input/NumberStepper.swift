@@ -13,9 +13,9 @@ public struct NumberStepper: View {
 
     private let suffix: String?
 
-    private let stepSize: Double?
+    private let stepSize: ((Double) -> Double)?
 
-    private let fractionLength: Int
+    private let format: NumberFormat
 
     private let range: ClosedRange<Double>
 
@@ -33,12 +33,14 @@ public struct NumberStepper: View {
         fractionLength: Int = 1,
         range: ClosedRange<Double> = 0.0 ... 1000.0
     ) {
-        self._value = value
-        self.title = title
-        self.suffix = suffix
-        self.fractionLength = fractionLength
-        self.stepSize = stepSize
-        self.range = range
+        self.init(
+            title,
+            value: value,
+            suffix: suffix,
+            stepSize: stepSize.map { stepSize in { _ in stepSize } },
+            format: .number(fractionLength: fractionLength),
+            range: range
+        )
     }
 
     public init(
@@ -59,6 +61,22 @@ public struct NumberStepper: View {
     }
 
     public init(
+        _ title: String,
+        seconds: Binding<Int>,
+        stepSize: ((Int) -> Int)? = nil,
+        range: ClosedRange<Int>
+    ) {
+        self.init(
+            title,
+            value: Binding(get: { Double(seconds.wrappedValue) }, set: { seconds.wrappedValue = Int($0.rounded()) }),
+            suffix: nil,
+            stepSize: stepSize.map { stepSize in { Double(stepSize(Int($0.rounded(.down)))) } },
+            format: .time,
+            range: Double(range.lowerBound) ... Double(range.upperBound)
+        )
+    }
+
+    public init(
         _ title: LocalizedStringResource,
         value: Binding<Int>,
         suffix: String? = nil,
@@ -68,19 +86,35 @@ public struct NumberStepper: View {
         self.init(String(localized: title), value: value, suffix: suffix, stepSize: stepSize, range: range)
     }
 
+    init(
+        _ title: String,
+        value: Binding<Double>,
+        suffix: String?,
+        stepSize: ((Double) -> Double)?,
+        format: NumberFormat,
+        range: ClosedRange<Double>
+    ) {
+        self._value = value
+        self.title = title
+        self.suffix = suffix
+        self.format = format
+        self.stepSize = stepSize
+        self.range = range
+    }
+
     public var body: some View {
         VStack(spacing: 4) {
             titleLabel
 
             HStack(spacing: 16) {
-                if let stepSize {
-                    stepButton(.decrease, by: -stepSize)
+                if stepSize != nil {
+                    stepButton(.decrease, increases: false)
                 }
 
                 valueButton
 
-                if let stepSize {
-                    stepButton(.increase, by: stepSize)
+                if stepSize != nil {
+                    stepButton(.increase, increases: true)
                 }
             }
         }
@@ -88,7 +122,7 @@ public struct NumberStepper: View {
             NumberEntrySheet(
                 title: title,
                 suffix: suffix,
-                fractionLength: fractionLength,
+                format: format,
                 range: range,
                 value: $value
             )
@@ -98,15 +132,11 @@ public struct NumberStepper: View {
         }
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(title)
-        .accessibilityValue([text, suffix].compactMap(\.self).joined(separator: " "))
+        .accessibilityValue([format.spokenFormat(value), suffix].compactMap(\.self).joined(separator: " "))
         .accessibilityAdjustableAction { direction in
-            guard let stepSize else {
-                return
-            }
-
             switch direction {
-            case .increment: value = clamped(value + stepSize)
-            case .decrement: value = clamped(value - stepSize)
+            case .increment: step(increases: true)
+            case .decrement: step(increases: false)
             @unknown default: break
             }
         }
@@ -126,24 +156,28 @@ public struct NumberStepper: View {
         Button {
             showKeypad = true
         } label: {
-            ValueLabel(text: text, suffix: suffix, value: value)
+            ValueLabel(text: format.format(value), suffix: suffix, value: value)
         }
         .buttonStyle(.plain)
         .animation(.default, value: value)
     }
 
-    private var text: String {
-        value.formatted(.number.precision(.fractionLength(fractionLength)))
-    }
-
-    private func stepButton(_ descriptor: Action, by delta: Double) -> some View {
+    private func stepButton(_ descriptor: Action, increases: Bool) -> some View {
         Button(descriptor) {
-            value = clamped(value + delta)
+            step(increases: increases)
         }
         .labelStyle(.fixedIconOnly)
         .buttonStyle(.glass)
         .buttonBorderShape(.circle)
-        .disabled(delta < 0 ? value <= range.lowerBound : value >= range.upperBound)
+        .disabled(increases ? value >= range.upperBound : value <= range.lowerBound)
+    }
+
+    private func step(increases: Bool) {
+        guard let stepSize else {
+            return
+        }
+
+        value = clamped(increases ? value + stepSize(value) : value - stepSize(value.nextDown))
     }
 
     private func clamped(_ raw: Double) -> Double {
@@ -156,7 +190,7 @@ private struct NumberEntrySheet: View {
 
     let suffix: String?
 
-    let fractionLength: Int
+    let format: NumberFormat
 
     let range: ClosedRange<Double>
 
@@ -173,13 +207,14 @@ private struct NumberEntrySheet: View {
         NavigationStack {
             VStack(spacing: 32) {
                 ValueLabel(
-                    text: draft.isEmpty ? text : draft,
+                    text: draft.isEmpty ? format.format(value) : draft,
+                    pendingDigits: format.pendingDigits(after: draft),
                     suffix: suffix,
                     value: value,
                     isPlaceholder: draft.isEmpty
                 )
 
-                DecimalKeypad(fractionLength: fractionLength, upperBound: range.upperBound, text: $draft)
+                NumberKeypad(format: format, upperBound: range.upperBound, text: $draft)
                     .padding(.horizontal)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -202,12 +237,8 @@ private struct NumberEntrySheet: View {
         .presentationDetents([.medium])
     }
 
-    private var text: String {
-        value.formatted(.number.precision(.fractionLength(fractionLength)))
-    }
-
     private func confirm() {
-        if let parsed = try? Double(draft, format: .number) {
+        if let parsed = format.parse(draft) {
             value = min(max(parsed, range.lowerBound), range.upperBound)
         }
 
@@ -218,6 +249,8 @@ private struct NumberEntrySheet: View {
 private struct ValueLabel: View {
     let text: String
 
+    var pendingDigits: String?
+
     let suffix: String?
 
     let value: Double
@@ -226,12 +259,19 @@ private struct ValueLabel: View {
 
     var body: some View {
         HStack(alignment: .firstTextBaseline, spacing: 4) {
-            Text(text)
-                .font(.title)
-                .fontWeight(.semibold)
-                .foregroundStyle(isPlaceholder ? .secondary : .primary)
-                .contentTransition(.numericText(value: value))
-                .monospacedDigit()
+            HStack(alignment: .firstTextBaseline, spacing: 0) {
+                Text(text)
+                    .foregroundStyle(isPlaceholder ? .secondary : .primary)
+
+                if let pendingDigits {
+                    Text(pendingDigits)
+                        .foregroundStyle(.secondary)
+                }
+            }
+            .font(.title)
+            .fontWeight(.semibold)
+            .contentTransition(.numericText(value: value))
+            .monospacedDigit()
 
             if let suffix {
                 Text(suffix)
@@ -252,6 +292,14 @@ private struct ValueLabel: View {
     var value: Double = 0
 
     NumberStepper("Weight", value: $value, suffix: "kg", stepSize: 5)
+}
+
+#Preview("Time") {
+    @Previewable
+    @State
+    var seconds = 45
+
+    NumberStepper("Duration", seconds: $seconds, stepSize: { $0 < 120 ? 15 : 60 }, range: 5 ... 60 * 60)
 }
 
 #Preview("Integer") {

@@ -61,14 +61,7 @@ struct ExerciseTargetEditor: View {
 
     private var durationTargetEditor: some View {
         VStack(spacing: .sections) {
-            NumberStepper(
-                target.title,
-                value: minutes,
-                suffix: UnitDuration.minutes.symbol,
-                stepSize: minuteStep,
-                fractionLength: 0,
-                range: 0 ... 1440
-            )
+            NumberStepper(target.title, seconds: $target.seconds, stepSize: durationStep, range: 5 ... 60 * 1440)
 
             NumberStepper(.fieldSetsTitle, value: $target.sets, range: 1 ... 100)
         }
@@ -116,21 +109,6 @@ struct ExerciseTargetEditor: View {
         }
     }
 
-    private var minutes: Binding<Double> {
-        Binding(
-            get: {
-                Double(target.seconds) / 60
-            },
-            set: {
-                target.seconds = Int(($0 * 60).rounded())
-            }
-        )
-    }
-
-    private var minuteStep: Double {
-        target.seconds < 60 * 10 ? 1 : (target.seconds < 60 * 60 ? 5 : 15)
-    }
-
     private var distance: Binding<Double> {
         let factor = Measurement(value: 1, unit: units.distanceUnit).converted(to: .meters).value
 
@@ -149,6 +127,10 @@ struct ExerciseTargetEditor: View {
         case .metric: 0.1
         case .imperial: 0.25
         }
+    }
+
+    private func durationStep(from seconds: Int) -> Int {
+        seconds < 60 * 2 ? 15 : (seconds < 60 * 15 ? 60 : 60 * 5)
     }
 }
 

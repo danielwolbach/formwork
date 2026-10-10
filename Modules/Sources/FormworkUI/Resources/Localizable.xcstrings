@@ -507,6 +507,17 @@
         }
       }
     },
+    "keypad.timeSeparator.label" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Colon"
+          }
+        }
+      }
+    },
     "placeholder" : {
       "extractionState" : "manual",
       "localizations" : {

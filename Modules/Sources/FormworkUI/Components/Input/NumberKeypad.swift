@@ -1,5 +1,5 @@
 //
-//  DecimalKeypad.swift
+//  NumberKeypad.swift
 //  FormworkUI
 //
 //  Created by Daniel Wolbach on 09.09.26.
@@ -8,8 +8,8 @@
 import FormworkKit
 import SwiftUI
 
-struct DecimalKeypad: View {
-    let fractionLength: Int
+struct NumberKeypad: View {
+    let format: NumberFormat
 
     let upperBound: Double
 
@@ -24,11 +24,11 @@ struct DecimalKeypad: View {
                 }
             }
 
-            if fractionLength > 0 {
-                key(action: appendSeparator) {
-                    digitLabel(Locale.currentDecimalSeparator)
+            if let separator = format.separator {
+                key(action: { appendSeparator(separator) }) {
+                    digitLabel(separator)
                 }
-                .accessibilityLabel(Text(.keypadDecimalSeparatorLabel))
+                .accessibilityLabel(Text(separatorLabel))
             } else {
                 Color.clear.frame(height: 48)
             }
@@ -42,6 +42,13 @@ struct DecimalKeypad: View {
                     .font(.title3)
             }
             .accessibilityLabel(Text(Action.delete.title))
+        }
+    }
+
+    private var separatorLabel: LocalizedStringResource {
+        switch format {
+        case .number: .keypadDecimalSeparatorLabel
+        case .time: .keypadTimeSeparatorLabel
         }
     }
 
@@ -63,7 +70,7 @@ struct DecimalKeypad: View {
     private func appendDigit(_ digit: String) {
         let candidate = text == "0" ? digit : text + digit
 
-        guard withinFractionDigits(candidate), withinRange(candidate) else {
+        guard format.accepts(candidate), withinRange(candidate) else {
             return
         }
 
@@ -76,24 +83,16 @@ struct DecimalKeypad: View {
         }
     }
 
-    private func appendSeparator() {
-        guard fractionLength > 0, !text.contains(Locale.currentDecimalSeparator) else {
+    private func appendSeparator(_ separator: String) {
+        guard !text.contains(separator) else {
             return
         }
 
-        text += text.isEmpty ? "0\(Locale.currentDecimalSeparator)" : Locale.currentDecimalSeparator
-    }
-
-    private func withinFractionDigits(_ candidate: String) -> Bool {
-        guard let separatorRange = candidate.range(of: Locale.currentDecimalSeparator) else {
-            return true
-        }
-
-        return candidate[separatorRange.upperBound...].count <= fractionLength
+        text += text.isEmpty ? "0\(separator)" : separator
     }
 
     private func withinRange(_ candidate: String) -> Bool {
-        guard let value = try? Double(candidate, format: .number) else {
+        guard let value = format.parse(candidate) else {
             return true
         }
 
@@ -102,11 +101,16 @@ struct DecimalKeypad: View {
 }
 
 #Preview("Decimal") {
-    DecimalKeypad(fractionLength: 1, upperBound: 100, text: .constant(""))
+    NumberKeypad(format: .number(fractionLength: 1), upperBound: 100, text: .constant(""))
         .padding()
 }
 
 #Preview("Integer") {
-    DecimalKeypad(fractionLength: 0, upperBound: 100, text: .constant(""))
+    NumberKeypad(format: .number(fractionLength: 0), upperBound: 100, text: .constant(""))
+        .padding()
+}
+
+#Preview("Time") {
+    NumberKeypad(format: .time, upperBound: 60 * 60, text: .constant(""))
         .padding()
 }
