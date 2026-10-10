@@ -74,13 +74,26 @@ struct ReminderTests {
         #expect(try [store.workout].reminders(ReminderOptions(dailyMinute: 8 * 60, isUpcomingEnabled: true), now: date(day: 0, hour: 6), in: calendar).isEmpty)
     }
 
-    @Test(arguments: [(2, false), (3, true)])
-    func upcomingNeedsEnoughHistory(history: Int, expected: Bool) throws {
+    @Test(arguments: [(0, false), (1, true)])
+    func upcomingNeedsARecentSession(history: Int, expected: Bool) throws {
         let store = try store(history: history)
 
         let reminders = try [store.workout].reminders(ReminderOptions(dailyMinute: nil, isUpcomingEnabled: true), now: date(day: 0, hour: 6), in: calendar)
 
         #expect(try (reminders.first?.date == date(day: 0, hour: 17, minute: 30)) == expected)
+    }
+
+    @Test
+    func upcomingIgnoresSessionsBeforeTheRecentWeeks() throws {
+        let store = try store(history: 0)
+        let session = Session(workout: store.workout)
+        store.context.insert(session)
+        session.startDate = try date(day: -History.recentDays, hour: 18)
+        session.endDate = session.startDate
+
+        let reminders = try [store.workout].reminders(ReminderOptions(dailyMinute: nil, isUpcomingEnabled: true), now: date(day: 0, hour: 6), in: calendar)
+
+        #expect(reminders.isEmpty)
     }
 
     @Test

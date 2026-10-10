@@ -25,8 +25,6 @@ public struct ReminderOptions: Equatable, Sendable {
 
     public static let defaultDailyMinute = 8 * 60
 
-    static let minimumSessions = 3
-
     static let limit = 64
 
     public var dailyMinute: Int?
@@ -48,7 +46,6 @@ public enum Reminders {
         center.removeAllPendingNotificationRequests()
         center.removeAllDeliveredNotifications()
 
-        // Added even without permission, so they start firing once it is granted.
         for (index, reminder) in reminders.enumerated() {
             center.add(request(for: reminder, identifier: "\(index)")) { error in
                 if let error {
@@ -99,11 +96,7 @@ extension [Workout] {
     func reminders(_ options: ReminderOptions, now: Date = .now, in calendar: Calendar = .current) -> [Reminder] {
         let workouts = filter { !$0.isArchived }
         let lastSessions = workouts.reduce(into: [:]) { $0[$1] = $1.lastSession(in: calendar) }
-        let startMinutes = workouts.reduce(into: [Workout: Int]()) { result, workout in
-            if (workout.sessions ?? []).count(where: { !$0.isActive }) >= ReminderOptions.minimumSessions {
-                result[workout] = workout.typicalStartMinute(in: calendar)
-            }
-        }
+        let startMinutes = workouts.reduce(into: [:]) { $0[$1] = $1.typicalStartMinute(at: now, in: calendar) }
         let today = calendar.startOfDay(for: now)
         var reminders: [Reminder] = []
 
