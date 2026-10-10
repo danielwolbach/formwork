@@ -11,6 +11,8 @@ import SwiftData
 
 @Model
 public class Session {
+    public var id: UUID = UUID()
+
     public var workout: Workout?
 
     public var startDate: Date = Date.distantPast
@@ -20,16 +22,16 @@ public class Session {
     @Relationship(deleteRule: .cascade, inverse: \SessionEntry.session)
     public var entries: [SessionEntry]? = []
 
-    var timeZoneIdentifier: String = TimeZone.current.identifier
+    private var timeZoneIdentifier: String = TimeZone.current.identifier
 
     private var currentEntryID: UUID?
 
-    init(workout: Workout) {
+    init(workout: Workout, timeZone: TimeZone = .current) {
         self.workout = workout
         self.startDate = .now
         self.entries = (workout.entries ?? []).filter { !$0.isArchived }.map { .init(entry: $0) }
         self.currentEntryID = entries?.min { $0.order < $1.order }?.id
-        self.timeZoneIdentifier = TimeZone.current.identifier
+        self.timeZoneIdentifier = timeZone.identifier
     }
 }
 

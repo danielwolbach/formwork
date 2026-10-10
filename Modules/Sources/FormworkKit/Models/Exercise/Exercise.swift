@@ -18,6 +18,8 @@ public class Exercise {
         case arms, legs, chest, shoulders, core, back, cardio, flexibility, mindfulness, other
     }
 
+    public var id: UUID = UUID()
+
     public var name: String = ""
 
     public var kind: Kind = Kind.bodyweight

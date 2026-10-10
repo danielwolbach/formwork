@@ -40,11 +40,11 @@ extension TestStore {
         local.timeZone = try #require(TimeZone(identifier: zone))
         let started = try local.date(day, month: month, hour: hour, minute: minute)
 
-        let session = try startSession()
+        let session = Session(workout: workout, timeZone: local.timeZone)
+        context.insert(session)
         perform(session)
         session.startDate = started
         session.endDate = started.addingTimeInterval(TimeInterval(duration * 60))
-        session.timeZoneIdentifier = zone
         return session
     }
 
@@ -229,14 +229,6 @@ struct WallClockTests {
         let session = try store.session(14, hour: 8, minute: 30, zone: "America/New_York")
 
         #expect(session.startMinute(in: calendar) == 8 * 60 + 30)
-    }
-
-    @Test
-    func unknownTimeZoneFallsBackToTheCurrentOne() throws {
-        let session = try store.session(14)
-        session.timeZoneIdentifier = "Nowhere/Invalid"
-
-        #expect(session.localCalendar(from: calendar).timeZone == .current)
     }
 }
 

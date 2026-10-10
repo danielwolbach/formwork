@@ -131,21 +131,21 @@ private struct AppContent: View {
             NavigationRoot {
                 SessionPlayerScreen(session)
             }
-            .navigationTransition(.zoom(sourceID: session.persistentModelID, in: presentedSessionNamespace))
+            .navigationTransition(.zoom(sourceID: session.id, in: presentedSessionNamespace))
         }
         .tabBarMinimizeBehavior(activeSessions.isEmpty ? .automatic : .onScrollDown)
         .tabViewBottomAccessory(isEnabled: !activeSessions.isEmpty) {
             if let session = activeSessions.first {
                 // Keyed by session, so replacing it rebuilds the navigator instead of keeping the deleted one.
                 SessionMiniPlayer(session, namespace: presentedSessionNamespace)
-                    .id(session.persistentModelID)
+                    .id(session.id)
             }
         }
         .task(id: activityState) {
             await SessionActivity.sync(activityState)
         }
         // Not tied to activityState, which is nil without Premium.
-        .task(id: activeSessions.first?.persistentModelID) {
+        .task(id: activeSessions.first?.id) {
             await Health.shared.sync(activeSessions.first)
         }
         .onChange(of: scenePhase, initial: true) { _, phase in

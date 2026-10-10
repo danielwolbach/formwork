@@ -10,6 +10,8 @@ import SwiftData
 
 @Model
 public class WorkoutEntry {
+    public var id: UUID = UUID()
+
     public var order: Int = 0
 
     public var target: ExerciseTarget = ExerciseTarget.bodyweight()

@@ -58,7 +58,7 @@ struct SessionMiniPlayer: View {
             statusAction
                 .padding(.trailing)
         }
-        .matchedTransitionSource(id: session.persistentModelID, in: namespace)
+        .matchedTransitionSource(id: session.id, in: namespace)
         .sensoryFeedback(trigger: session.resolvedCount) { old, new in
             new > old ? .impact(weight: .medium) : nil
         }
