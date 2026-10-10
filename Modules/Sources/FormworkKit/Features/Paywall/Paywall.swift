@@ -6,6 +6,7 @@
 //
 
 import Observation
+import OSLog
 import StoreKit
 import SwiftData
 
@@ -50,19 +51,35 @@ public final class Paywall {
         isLoadingProducts = true
         defer { isLoadingProducts = false }
 
-        if let products = try? await Product.products(for: Self.productIDs) {
-            self.products = products.sorted { $0.price < $1.price }
+        do {
+            products = try await Product.products(for: Self.productIDs).sorted { $0.price < $1.price }
+            Logger.paywall.info("Loaded \(products.count) products")
+        } catch {
+            Logger.paywall.error("Loading products failed: \(error, privacy: .public)")
         }
     }
 
     public func handle(_ result: Product.PurchaseResult) async {
-        if case let .success(verification) = result {
+        switch result {
+        case let .success(verification):
             await handle(verification)
+        case .pending:
+            Logger.paywall.info("Purchase is pending")
+        case .userCancelled:
+            Logger.paywall.info("Purchase was cancelled")
+        @unknown default:
+            Logger.paywall.notice("Purchase ended with an unknown result")
         }
     }
 
     public func restore() async throws {
-        try await AppStore.sync()
+        do {
+            try await AppStore.sync()
+        } catch {
+            Logger.paywall.error("Restoring purchases failed: \(error, privacy: .public)")
+            throw error
+        }
+
         await refresh()
     }
 
@@ -76,8 +93,10 @@ public final class Paywall {
 
     private func handle(_ verification: VerificationResult<Transaction>) async {
         guard case let .verified(transaction) = verification else {
+            Logger.paywall.error("Transaction failed verification")
             return
         }
+        Logger.paywall.info("Finishing transaction for \(transaction.productID, privacy: .public)")
         await transaction.finish()
         await refresh()
     }
@@ -91,5 +110,7 @@ public final class Paywall {
         }
         isUnlocked = active
         hasCheckedEntitlements = true
+
+        Logger.paywall.info("Checked entitlements, unlocked: \(active)")
     }
 }

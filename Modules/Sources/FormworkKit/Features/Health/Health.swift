@@ -65,7 +65,13 @@ extension Health {
     }
 
     public static func connect() async throws {
-        try await store.requestAuthorization(toShare: sharedTypes, read: readTypes)
+        do {
+            try await store.requestAuthorization(toShare: sharedTypes, read: readTypes)
+            Logger.health.info("Requested authorization")
+        } catch {
+            Logger.health.error("Requesting authorization failed: \(error, privacy: .public)")
+            throw error
+        }
     }
 
     public static func delete(_ session: Session) {
@@ -77,7 +83,13 @@ extension Health {
 
         Task {
             let predicate = HKQuery.predicateForSamples(withStart: startDate, end: endDate)
-            _ = try? await store.deleteObjects(of: .workoutType(), predicate: predicate)
+
+            do {
+                let count = try await store.deleteObjects(of: .workoutType(), predicate: predicate)
+                Logger.health.info("Deleted \(count) workouts of a deleted session")
+            } catch {
+                Logger.health.error("Deleting workouts failed: \(error, privacy: .public)")
+            }
         }
     }
 }

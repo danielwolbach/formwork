@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import OSLog
 import SwiftData
 
 @Model
@@ -157,6 +158,10 @@ extension Session {
         }
 
         endDate = .now
+
+        let completed = (entries ?? []).count { $0.status.isCompleted }
+        let total = entries?.count ?? 0
+        Logger.session.info("Finished session with \(completed) of \(total) entries completed")
     }
 
     public func discard() {
@@ -165,6 +170,8 @@ extension Session {
         }
 
         modelContext.delete(self)
+
+        Logger.session.info("Discarded session")
     }
 
     public func moveToPrevious() {

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import OSLog
 import UserNotifications
 
 public struct Reminder: Hashable, Sendable {
@@ -49,8 +50,14 @@ public enum Reminders {
 
         // Added even without permission, so they start firing once it is granted.
         for (index, reminder) in reminders.enumerated() {
-            center.add(request(for: reminder, identifier: "\(index)"))
+            center.add(request(for: reminder, identifier: "\(index)")) { error in
+                if let error {
+                    Logger.reminders.error("Scheduling reminder failed: \(error, privacy: .public)")
+                }
+            }
         }
+
+        Logger.reminders.debug("Scheduled \(reminders.count) reminders")
 
         guard !reminders.isEmpty else {
             return
@@ -58,7 +65,12 @@ public enum Reminders {
 
         Task {
             if await center.notificationSettings().authorizationStatus == .notDetermined {
-                _ = try? await center.requestAuthorization(options: [.alert, .sound])
+                do {
+                    let granted = try await center.requestAuthorization(options: [.alert, .sound])
+                    Logger.reminders.info("Requested authorization, granted: \(granted)")
+                } catch {
+                    Logger.reminders.error("Requesting authorization failed: \(error, privacy: .public)")
+                }
             }
         }
     }

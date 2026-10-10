@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import OSLog
 import SwiftData
 
 @Model
@@ -86,19 +87,23 @@ extension Workout {
 
     public func startSession() -> Session? {
         guard let modelContext else {
-            // TODO: Log error.
+            Logger.session.fault("Starting session failed: workout has no model context")
             return nil
         }
 
         let runningDescriptor = FetchDescriptor<Session>(predicate: #Predicate { $0.endDate == nil })
 
+        let running: [Session]
+
         do {
-            for running in try modelContext.fetch(runningDescriptor) {
-                running.discard()
-            }
+            running = try modelContext.fetch(runningDescriptor)
         } catch {
-            // TODO: Log error.
+            Logger.session.error("Starting session failed while fetching running sessions: \(error, privacy: .public)")
             return nil
+        }
+
+        for session in running {
+            session.discard()
         }
 
         let session = Session(workout: self)
@@ -107,9 +112,12 @@ extension Workout {
         do {
             try modelContext.save()
         } catch {
-            // TODO: Log error.
+            Logger.session.error("Saving started session failed: \(error, privacy: .public)")
             return nil
         }
+
+        let count = session.entries?.count ?? 0
+        Logger.session.info("Started session with \(count) entries, replacing \(running.count) running")
 
         return session
     }

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import OSLog
 import SwiftData
 
 @MainActor
@@ -35,8 +36,10 @@ public enum Storage {
             for exercise in try modelContext.fetch(FetchDescriptor<Exercise>()) {
                 modelContext.delete(exercise)
             }
+
+            Logger.storage.info("Deleted everything")
         } catch {
-            // TODO: Log error
+            Logger.storage.error("Deleting everything failed: \(error, privacy: .public)")
         }
     }
 }

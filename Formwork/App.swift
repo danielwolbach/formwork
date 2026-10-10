@@ -8,6 +8,7 @@
 import AppIntents
 import FormworkKit
 import FormworkUI
+import OSLog
 import SwiftData
 import SwiftUI
 import WidgetKit
@@ -154,7 +155,12 @@ private struct AppContent: View {
                 syncReminders()
                 syncSpotlight()
             case .background:
-                try? modelContext.save()
+                do {
+                    try modelContext.save()
+                } catch {
+                    Logger.storage.error("Saving before entering the background failed: \(error, privacy: .public)")
+                }
+
                 WidgetCenter.shared.reloadAllTimelines()
             default:
                 break

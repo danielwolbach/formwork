@@ -7,6 +7,7 @@
 
 import FormworkKit
 import FormworkUI
+import OSLog
 import SwiftData
 import SwiftUI
 
@@ -105,7 +106,7 @@ struct OnboardingScreen: View {
         do {
             try StarterCatalog.seed(into: modelContext, units: units)
         } catch {
-            // TODO: Log error
+            Logger.storage.error("Seeding starter catalog failed: \(error, privacy: .public)")
         }
 
         onboardingPending = false

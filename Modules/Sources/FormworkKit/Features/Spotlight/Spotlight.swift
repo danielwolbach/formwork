@@ -6,6 +6,7 @@
 //
 
 import CoreSpotlight
+import OSLog
 
 @MainActor
 public enum Spotlight {
@@ -22,8 +23,10 @@ public enum Spotlight {
                 let index = CSSearchableIndex.default()
                 try await index.deleteAllSearchableItems()
                 try await index.indexAppEntities(entities)
+
+                Logger.spotlight.debug("Indexed \(entities.count) workouts")
             } catch {
-                // TODO: Log error.
+                Logger.spotlight.error("Indexing workouts failed: \(error, privacy: .public)")
             }
         }
     }

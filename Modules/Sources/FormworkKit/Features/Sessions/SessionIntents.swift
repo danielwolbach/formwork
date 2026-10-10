@@ -6,6 +6,7 @@
 //
 
 import AppIntents
+import OSLog
 import WidgetKit
 
 /// Titles resolve from the app's and the widgets' catalogs: the system reads intent strings from the main bundle, never this package's.
@@ -65,12 +66,27 @@ public struct SessionBackwardIntent: LiveActivityIntent {
 private func updateActiveSession(_ change: (Session) -> Void) async {
     let context = Storage.container.mainContext
 
-    guard let session = try? Session.active(in: context) else {
+    let session: Session?
+
+    do {
+        session = try Session.active(in: context)
+    } catch {
+        Logger.session.error("Fetching active session for intent failed: \(error, privacy: .public)")
+        return
+    }
+
+    guard let session else {
+        Logger.session.notice("Ignored intent without an active session")
         return
     }
 
     change(session)
-    try? context.save()
+
+    do {
+        try context.save()
+    } catch {
+        Logger.session.error("Saving session after intent failed: \(error, privacy: .public)")
+    }
 
     if !session.isActive {
         WidgetCenter.shared.reloadAllTimelines()

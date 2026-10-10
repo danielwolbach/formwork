@@ -6,6 +6,7 @@
 //
 
 import ActivityKit
+import OSLog
 
 public enum SessionActivity {
     public static func sync(_ state: SessionActivityAttributes.ContentState?) async {
@@ -14,6 +15,7 @@ public enum SessionActivity {
         guard let state else {
             for activity in activities {
                 await activity.end(nil, dismissalPolicy: .immediate)
+                Logger.session.info("Ended live activity")
             }
 
             return
@@ -24,7 +26,12 @@ public enum SessionActivity {
         if let activity = activities.first {
             await activity.update(content)
         } else {
-            _ = try? Activity.request(attributes: SessionActivityAttributes(), content: content)
+            do {
+                _ = try Activity.request(attributes: SessionActivityAttributes(), content: content)
+                Logger.session.info("Started live activity")
+            } catch {
+                Logger.session.error("Starting live activity failed: \(error, privacy: .public)")
+            }
         }
     }
 }
