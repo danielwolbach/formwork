@@ -14,15 +14,18 @@ struct TodaySection: View {
     @Environment(\.startSession)
     private var startSession: StartSessionAction
 
+    @Environment(\.statistics)
+    private var statistics: Statistics
+
     @Query(filter: #Predicate<Workout> { !$0.isArchived })
     private var workouts: [Workout]
 
     var body: some View {
-        let pending = workouts.pending()
+        let pending = statistics.pending(workouts)
 
         SectionView(.fieldTodayTitle, subtitle: Date.now.formatted(date: .abbreviated, time: .omitted)) {
             if pending.isEmpty {
-                if workouts.contains(where: { $0.isScheduled() }) {
+                if workouts.contains(where: { statistics.isScheduled($0) }) {
                     StateCard(
                         title: .emptyAllDoneTitle,
                         description: .emptyAllDoneMessage,

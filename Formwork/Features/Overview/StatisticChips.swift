@@ -8,20 +8,19 @@
 import Flow
 import FormworkKit
 import FormworkUI
-import SwiftData
 import SwiftUI
 
 struct StatisticChips: View {
     private static let statistics: [Statistic] = [.weekStreak, .lastCompleted]
 
-    @Query(Session.finishedDescriptor)
-    private var sessions: [Session]
+    @Environment(\.statistics)
+    private var statistics: Statistics
 
     @State
     private var selection: Statistic? = nil
 
     var body: some View {
-        let history = History(.all, among: sessions)
+        let history = statistics.history(.all)
 
         HFlow {
             ForEach(Self.statistics) { statistic in

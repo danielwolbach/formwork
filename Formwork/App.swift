@@ -20,6 +20,9 @@ struct App: SwiftUI.App {
     @State
     private var paywall = Paywall()
 
+    @State
+    private var statistics = Statistics()
+
     init() {
         UNUserNotificationCenter.current().delegate = notificationRouter
     }
@@ -31,6 +34,7 @@ struct App: SwiftUI.App {
                     await paywall.observe()
                 }
                 .environment(\.paywall, paywall)
+                .environment(\.statistics, statistics)
         }
         .modelContainer(Storage.container)
     }

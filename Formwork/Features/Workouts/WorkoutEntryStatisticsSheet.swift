@@ -7,7 +7,6 @@
 
 import FormworkKit
 import FormworkUI
-import SwiftData
 import SwiftUI
 
 struct WorkoutEntryStatisticsSheet: View {
@@ -20,8 +19,8 @@ struct WorkoutEntryStatisticsSheet: View {
     @Environment(\.dismiss)
     private var dismiss: DismissAction
 
-    @Query(Session.finishedDescriptor)
-    private var sessions: [Session]
+    @Environment(\.statistics)
+    private var statistics: Statistics
 
     @State
     private var viewMode: ViewMode
@@ -83,9 +82,9 @@ struct WorkoutEntryStatisticsSheet: View {
 
     private var history: History {
         if viewMode == .overall, let exercise = entry.exercise {
-            History(.exercise(exercise), among: sessions)
+            statistics.history(.exercise(exercise))
         } else {
-            History(.entry(entry), among: sessions)
+            statistics.history(.entry(entry))
         }
     }
 

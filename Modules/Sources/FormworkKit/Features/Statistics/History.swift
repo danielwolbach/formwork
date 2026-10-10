@@ -44,7 +44,7 @@ public struct History {
 
     public let interval: DateInterval
 
-    public let measurements: [BodyMeasurement: [BodyMeasurement.Sample]]
+    public internal(set) var measurements: [BodyMeasurement: [BodyMeasurement.Sample]]
 
     public init(
         _ subject: Subject,
@@ -88,13 +88,11 @@ extension History.Subject {
     }
 
     fileprivate func occurrences(of session: Session, in calendar: Calendar) -> [Occurrence] {
-        let entries = (session.entries ?? []).sorted()
-
-        return switch self {
+        switch self {
         case .all: [Occurrence(session, in: calendar)]
         case let .workout(workout): session.workout == workout ? [Occurrence(session, in: calendar)] : []
-        case let .exercise(exercise): entries.filter { $0.exercise == exercise }.map { Occurrence(session, entry: $0, in: calendar) }
-        case let .entry(slot): entries.filter { $0.workoutEntry == slot }.map { Occurrence(session, entry: $0, in: calendar) }
+        case let .exercise(exercise): (session.entries ?? []).filter { $0.exercise == exercise }.sorted().map { Occurrence(session, entry: $0, in: calendar) }
+        case let .entry(slot): (session.entries ?? []).filter { $0.workoutEntry == slot }.sorted().map { Occurrence(session, entry: $0, in: calendar) }
         }
     }
 }
@@ -135,6 +133,10 @@ extension History {
     public var years: ClosedRange<Int> {
         let current = calendar.component(.year, from: now)
         return min(calendar.component(.year, from: interval.start), current) ... current
+    }
+
+    var typicalStartMinute: Int? {
+        recent.value(.typical(.startTime)).map { Int($0) }
     }
 
     public func weeks(_ count: Int) -> Period {

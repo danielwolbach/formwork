@@ -116,7 +116,7 @@ extension Samples {
         return container
     }()
 
-    private static let historyDays = 400
+    private static let historyDays = 1000
 
     private static let historyStart = Calendar.current.date(byAdding: .day, value: -historyDays, to: .now) ?? .now
 

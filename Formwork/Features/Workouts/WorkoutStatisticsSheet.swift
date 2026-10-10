@@ -7,7 +7,6 @@
 
 import FormworkKit
 import FormworkUI
-import SwiftData
 import SwiftUI
 
 struct WorkoutStatisticsSheet: View {
@@ -16,15 +15,15 @@ struct WorkoutStatisticsSheet: View {
     @Environment(\.dismiss)
     private var dismiss: DismissAction
 
-    @Query(Session.finishedDescriptor)
-    private var sessions: [Session]
+    @Environment(\.statistics)
+    private var statistics: Statistics
 
     init(_ workout: Workout) {
         self.workout = workout
     }
 
     var body: some View {
-        let history = History(.workout(workout), among: sessions)
+        let history = statistics.history(.workout(workout))
 
         Group {
             if history.occurrences.isEmpty {

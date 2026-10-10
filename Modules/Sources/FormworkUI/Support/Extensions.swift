@@ -37,7 +37,12 @@ extension Pictogram.Tint {
 extension View {
     public func sampleData() -> some View {
         modelContainer(Samples.container)
+            .environment(\.statistics, .samples)
     }
+}
+
+extension Statistics {
+    fileprivate static let samples = Statistics(container: Samples.container)
 }
 
 extension Array where Element: Identifiable, Element.ID: Sendable {

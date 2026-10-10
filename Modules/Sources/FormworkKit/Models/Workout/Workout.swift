@@ -121,15 +121,24 @@ extension Workout {
     }
 
     func typicalStartMinute(at now: Date, in calendar: Calendar) -> Int? {
-        History(.workout(self), among: sessions ?? [], at: now, calendar: calendar).recent.value(.typical(.startTime)).map { Int($0) }
+        History(.workout(self), among: sessions ?? [], at: now, calendar: calendar).typicalStartMinute
     }
 }
 
 extension [Workout] {
     public func pending(on date: Date = .now, calendar: Calendar = .current) -> [Workout] {
-        filter { $0.isDue(on: date, now: date, in: calendar) }
+        pending(on: date, calendar: calendar) { $0.lastSession(in: calendar) } startMinute: { $0.typicalStartMinute(at: date, in: calendar) }
+    }
+
+    func pending(
+        on date: Date,
+        calendar: Calendar,
+        lastSession: (Workout) -> Date?,
+        startMinute: (Workout) -> Int?
+    ) -> [Workout] {
+        filter { $0.schedule.isDue(on: date, after: lastSession($0), now: date, in: calendar) }
             .map { workout in
-                (workout, workout.typicalStartMinute(at: date, in: calendar))
+                (workout, startMinute(workout))
             }
             .sorted { lhs, rhs in
                 switch (lhs.1, rhs.1) {

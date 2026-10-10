@@ -48,6 +48,10 @@ extension Paywall {
     fileprivate nonisolated static let fallback = Paywall(isUnlocked: true)
 }
 
+extension Statistics {
+    fileprivate nonisolated static let fallback = Statistics()
+}
+
 extension EnvironmentValues {
     @Entry
     public var presentSession = PresentSessionAction { _ in }
@@ -60,6 +64,9 @@ extension EnvironmentValues {
 
     @Entry
     public var paywall: Paywall = .fallback
+
+    @Entry
+    public var statistics: Statistics = .fallback
 
     @Entry
     public var units: Units = .current

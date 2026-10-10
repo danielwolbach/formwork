@@ -7,15 +7,14 @@
 
 import FormworkKit
 import FormworkUI
-import SwiftData
 import SwiftUI
 
 struct StatisticsScreen: View {
     @Environment(\.scenePhase)
     private var scenePhase: ScenePhase
 
-    @Query(Session.finishedDescriptor)
-    private var sessions: [Session]
+    @Environment(\.statistics)
+    private var statistics: Statistics
 
     var body: some View {
         content
@@ -32,7 +31,7 @@ struct StatisticsScreen: View {
 
     @ViewBuilder
     private var content: some View {
-        let history = History(.all, among: sessions, measurements: Health.shared.measurements)
+        let history = statistics.history(.all)
 
         if history.occurrences.isEmpty {
             ContentUnavailableView {
@@ -52,12 +51,12 @@ struct StatisticsScreen: View {
 
                 SectionView(.fieldRecentSessionsTitle) {
                     LazyVStack(spacing: 0) {
-                        ForEach(sessions.prefix(5)) { session in
+                        ForEach(statistics.sessions.prefix(5)) { session in
                             SessionRow(session)
                         }
                     }
                     .swipeActionsContainer()
-                    .animation(.snappy, value: sessions.count)
+                    .animation(.snappy, value: statistics.sessions.count)
                     .edgeToEdge()
                 } accessory: {
                     NavigationLink(value: Route.sessions) {

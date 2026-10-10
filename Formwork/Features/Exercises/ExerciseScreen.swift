@@ -25,8 +25,8 @@ struct ExerciseScreen: View {
     @Environment(\.presentPaywall)
     private var presentPaywall: PresentPaywallAction
 
-    @Query(Session.finishedDescriptor)
-    private var sessions: [Session]
+    @Environment(\.statistics)
+    private var statistics: Statistics
 
     @State
     private var sheet: Sheet? = nil
@@ -39,7 +39,7 @@ struct ExerciseScreen: View {
     }
 
     var body: some View {
-        let history = History(.exercise(exercise), among: sessions)
+        let history = statistics.history(.exercise(exercise))
         let badge = exercise.isArchived ? Pictogram.archivedBadge : nil
 
         ScrollView {

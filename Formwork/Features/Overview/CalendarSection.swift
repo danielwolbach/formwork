@@ -20,8 +20,8 @@ struct CalendarSection: View {
     @Environment(\.calendar)
     private var calendar: Calendar
 
-    @Query(Session.finishedDescriptor)
-    private var sessions: [Session]
+    @Environment(\.statistics)
+    private var statistics: Statistics
 
     @Query(filter: #Predicate<Workout> { !$0.isArchived })
     private var workouts: [Workout]
@@ -40,7 +40,7 @@ struct CalendarSection: View {
         let lastSessions = lastSessions
         let shownMonth = month ?? startOfMonth(.now)
         let selectedDay = calendar.startOfDay(for: selection)
-        let finished = sessionsByDay(inMonthOf: selection)[selectedDay] ?? []
+        let finished = statistics.sessions(on: selection)
 
         SectionView(.fieldCalendarTitle, subtitle: subtitle(for: shownMonth)) {
             GroupBox {
@@ -137,18 +137,17 @@ struct CalendarSection: View {
 
     private var months: [Date] {
         let current = startOfMonth(.now)
-        let first = sessions.map(\.startDate).min().map(startOfMonth).map { min($0, current) } ?? current
+        let first = statistics.sessions.last.map { startOfMonth($0.startDate) }.map { min($0, current) } ?? current
         let count = calendar.dateComponents([.month], from: first, to: current).month ?? 0
 
         return (0 ... count + Self.monthsAhead).compactMap { calendar.date(byAdding: .month, value: $0, to: first) }
     }
 
     private var lastSessions: [Workout: Date] {
-        workouts.reduce(into: [:]) { $0[$1] = $1.lastSession(in: calendar) }
+        workouts.reduce(into: [:]) { $0[$1] = statistics.lastSession(of: $1) }
     }
 
     private func monthGrid(_ month: Date, lastSessions: [Workout: Date]) -> some View {
-        let sessionsByDay = sessionsByDay(inMonthOf: month)
         let selected = sameDay(as: selection, in: month)
 
         return Grid(horizontalSpacing: Self.spacing, verticalSpacing: Self.spacing) {
@@ -156,7 +155,7 @@ struct CalendarSection: View {
                 GridRow {
                     ForEach(week, id: \.self) { day in
                         if calendar.isDate(day, equalTo: month, toGranularity: .month) {
-                            let completed = completed(among: sessionsByDay[day] ?? [])
+                            let completed = completed(among: statistics.sessions(on: day))
 
                             Button {
                                 selection = day
@@ -191,17 +190,6 @@ struct CalendarSection: View {
         let leading = (calendar.component(.weekday, from: month) - calendar.firstWeekday + 7) % 7
         let days = (0 ..< 42).compactMap { calendar.date(byAdding: .day, value: $0 - leading, to: month) }
         return stride(from: 0, to: days.count, by: 7).map { Array(days[$0 ..< min($0 + 7, days.count)]) }
-    }
-
-    private func sessionsByDay(inMonthOf date: Date) -> [Date: [Session]] {
-        guard let interval = calendar.dateInterval(of: .month, for: date) else {
-            return [:]
-        }
-
-        let sessions = sessions
-            .filter { $0.falls(into: interval, in: calendar) }
-            .sorted { $0.startDate < $1.startDate }
-        return Dictionary(grouping: sessions) { calendar.startOfDay(for: $0.localStartDate(in: calendar)) }
     }
 
     private func completed(among sessions: [Session]) -> [Workout] {

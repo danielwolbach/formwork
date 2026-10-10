@@ -7,6 +7,7 @@
 
 import FormworkKit
 import FormworkUI
+import OSLog
 import SwiftData
 import SwiftUI
 
@@ -84,6 +85,13 @@ struct SessionRow: View {
     private func delete() {
         Health.delete(session)
         context.delete(session)
+
+        // Statistics only rebuild on saves.
+        do {
+            try context.save()
+        } catch {
+            Logger.storage.error("Saving after deleting a session failed: \(error, privacy: .public)")
+        }
     }
 }
 
