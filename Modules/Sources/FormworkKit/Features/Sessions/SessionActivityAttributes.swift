@@ -10,6 +10,8 @@ import Foundation
 
 public struct SessionActivityAttributes: ActivityAttributes {
     public struct ContentState: Codable, Hashable, Sendable {
+        public var entryID: UUID
+
         public var title: String
 
         public var target: ExerciseTarget
@@ -31,6 +33,7 @@ public struct SessionActivityAttributes: ActivityAttributes {
         public var canMoveBackward: Bool
 
         public init(
+            entryID: UUID,
             title: String,
             target: ExerciseTarget,
             pictogram: Pictogram,
@@ -42,6 +45,7 @@ public struct SessionActivityAttributes: ActivityAttributes {
             canMoveForward: Bool,
             canMoveBackward: Bool
         ) {
+            self.entryID = entryID
             self.title = title
             self.target = target
             self.pictogram = pictogram
@@ -65,6 +69,7 @@ extension SessionActivityAttributes.ContentState {
         }
 
         self.init(
+            entryID: current.id,
             title: current.title,
             target: current.target,
             pictogram: current.pictogram,

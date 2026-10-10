@@ -15,10 +15,17 @@ public struct SessionCompleteIntent: LiveActivityIntent {
 
     public static let isDiscoverable = false
 
+    @Parameter
+    var entryID: String
+
     public init() {}
 
+    public init(entryID: UUID) {
+        self.entryID = entryID.uuidString
+    }
+
     public func perform() async throws -> some IntentResult {
-        await updateActiveSession { $0.completeAndAdvance() }
+        await updateActiveSession(expecting: entryID) { $0.completeAndAdvance() }
         return .result()
     }
 }
@@ -28,10 +35,17 @@ public struct SessionUndoIntent: LiveActivityIntent {
 
     public static let isDiscoverable = false
 
+    @Parameter
+    var entryID: String
+
     public init() {}
 
+    public init(entryID: UUID) {
+        self.entryID = entryID.uuidString
+    }
+
     public func perform() async throws -> some IntentResult {
-        await updateActiveSession { $0.undoCurrentStatus() }
+        await updateActiveSession(expecting: entryID) { $0.undoCurrentStatus() }
         return .result()
     }
 }
@@ -41,10 +55,17 @@ public struct SessionForwardIntent: LiveActivityIntent {
 
     public static let isDiscoverable = false
 
+    @Parameter
+    var entryID: String
+
     public init() {}
 
+    public init(entryID: UUID) {
+        self.entryID = entryID.uuidString
+    }
+
     public func perform() async throws -> some IntentResult {
-        await updateActiveSession { $0.moveToNext() }
+        await updateActiveSession(expecting: entryID) { $0.moveToNext() }
         return .result()
     }
 }
@@ -54,16 +75,23 @@ public struct SessionBackwardIntent: LiveActivityIntent {
 
     public static let isDiscoverable = false
 
+    @Parameter
+    var entryID: String
+
     public init() {}
 
+    public init(entryID: UUID) {
+        self.entryID = entryID.uuidString
+    }
+
     public func perform() async throws -> some IntentResult {
-        await updateActiveSession { $0.moveToPrevious() }
+        await updateActiveSession(expecting: entryID) { $0.moveToPrevious() }
         return .result()
     }
 }
 
 @MainActor
-private func updateActiveSession(_ change: (Session) -> Void) async {
+private func updateActiveSession(expecting entryID: String, _ change: (Session) -> Void) async {
     let context = Storage.container.mainContext
 
     let session: Session?
@@ -77,6 +105,11 @@ private func updateActiveSession(_ change: (Session) -> Void) async {
 
     guard let session else {
         Logger.session.notice("Ignored intent without an active session")
+        return
+    }
+
+    guard session.currentEntry?.id.uuidString == entryID else {
+        Logger.session.notice("Ignored intent for an entry that is no longer current")
         return
     }
 

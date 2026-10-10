@@ -144,7 +144,7 @@ struct SessionActivityWidget: Widget {
 
     private static func controls(for context: ActivityViewContext<SessionActivityAttributes>) -> some View {
         HStack {
-            Button(.backward, intent: SessionBackwardIntent())
+            Button(.backward, intent: SessionBackwardIntent(entryID: context.state.entryID))
                 .tint(.gray)
                 .buttonBorderShape(.circle)
                 .opacity(context.state.canMoveBackward ? 1 : 0.5)
@@ -152,7 +152,7 @@ struct SessionActivityWidget: Widget {
 
             primaryAction(for: context)
 
-            Button(.forward, intent: SessionForwardIntent())
+            Button(.forward, intent: SessionForwardIntent(entryID: context.state.entryID))
                 .tint(.gray)
                 .buttonBorderShape(.circle)
                 .opacity(context.state.canMoveForward ? 1 : 0.5)
@@ -171,11 +171,11 @@ struct SessionActivityWidget: Widget {
             .buttonStyle(.borderedProminent)
             .buttonBorderShape(.circle)
         } else if context.state.status == nil {
-            Button(.complete, intent: SessionCompleteIntent())
+            Button(.complete, intent: SessionCompleteIntent(entryID: context.state.entryID))
                 .tint(.green)
                 .buttonBorderShape(.circle)
         } else {
-            Button(.undo, intent: SessionUndoIntent())
+            Button(.undo, intent: SessionUndoIntent(entryID: context.state.entryID))
                 .tint(.gray)
                 .buttonBorderShape(.circle)
         }
@@ -199,6 +199,7 @@ private struct TargetSubtitle: View {
 extension SessionActivityAttributes.ContentState {
     fileprivate static var preview: Self {
         .init(
+            entryID: UUID(),
             title: "Barbell Squat",
             target: .weight(kilograms: 80, reps: 8, sets: 3),
             pictogram: Pictogram(image: "dumbbell", tint: .indigo),

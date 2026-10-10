@@ -53,7 +53,8 @@ public final class Paywall {
 
         do {
             products = try await Product.products(for: Self.productIDs).sorted { $0.price < $1.price }
-            Logger.paywall.info("Loaded \(products.count) products")
+            // swiftformat:disable:next redundantSelf
+            Logger.paywall.info("Loaded \(self.products.count) products")
         } catch {
             Logger.paywall.error("Loading products failed: \(error, privacy: .public)")
         }
