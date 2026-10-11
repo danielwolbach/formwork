@@ -137,20 +137,19 @@ struct FormatTests {
 
     @MainActor
     @Test
-    func workoutWithoutRecentSessionsShowsOnlyItsExercises() throws {
+    func workoutWithoutTypicalDurationShowsOnlyItsExercises() throws {
         let store = try TestStore()
 
-        #expect(try store.workout.formatted(WorkoutDetailsFormat(at: Calendar.berlin().date(10))) == "3 Exercises")
+        #expect(try store.workout.formatted(WorkoutDetailsFormat(typicalDuration: nil)) == "3 Exercises")
     }
 
     @MainActor
     @Test
     func workoutAddsHowLongItTypicallyTakes() throws {
         let store = try TestStore()
-        try store.session(7, minutes: 45)
 
         let expected = ["3 Exercises", Reading.duration(seconds: 45 * 60).formatted(.reading(units: .metric))].formatted(.dotList)
-        #expect(try store.workout.formatted(WorkoutDetailsFormat(at: Calendar.berlin().date(10))) == expected)
+        #expect(try store.workout.formatted(WorkoutDetailsFormat(typicalDuration: 45 * 60)) == expected)
     }
 
     @MainActor
@@ -159,31 +158,29 @@ struct FormatTests {
         let store = try TestStore()
         let session = try store.startSession()
 
-        #expect(session.formatted(SessionProgressFormat(at: session.startDate)) == "3 Pending")
+        #expect(session.formatted(SessionProgressFormat(typicalDuration: nil, at: session.startDate)) == "3 Pending")
     }
 
     @MainActor
     @Test
     func sessionProgressEstimatesWhenItFinishes() throws {
         let store = try TestStore()
-        try store.session(7, minutes: 45)
         let now = try Calendar.berlin().date(10)
         let session = try store.startSession()
         session.startDate = now.addingTimeInterval(-30 * 60)
 
         let finish = "→ " + session.startDate.addingTimeInterval(45 * 60).formatted(Calendar.current.formatStyle(time: .shortened))
-        #expect(session.formatted(SessionProgressFormat(at: now)) == "3 Pending \(finish)")
+        #expect(session.formatted(SessionProgressFormat(typicalDuration: 45 * 60, at: now)) == "3 Pending \(finish)")
     }
 
     @MainActor
     @Test
     func sessionProgressLeavesOutAFinishThatHasPassed() throws {
         let store = try TestStore()
-        try store.session(7, minutes: 45)
         let now = try Calendar.berlin().date(10)
         let session = try store.startSession()
         session.startDate = now.addingTimeInterval(-60 * 60)
 
-        #expect(session.formatted(SessionProgressFormat(at: now)) == "3 Pending")
+        #expect(session.formatted(SessionProgressFormat(typicalDuration: 45 * 60, at: now)) == "3 Pending")
     }
 }

@@ -28,6 +28,9 @@ struct WorkoutScreen: View {
     @Environment(\.presentPaywall)
     private var presentPaywall: PresentPaywallAction
 
+    @Environment(\.statistics)
+    private var statistics: Statistics
+
     @State
     private var sheet: Sheet? = nil
 
@@ -47,7 +50,7 @@ struct WorkoutScreen: View {
                 PictogramHeader(
                     workout.pictogram,
                     title: workout.title,
-                    subtitle: workout.formatted(.workoutDetails),
+                    subtitle: workout.formatted(.workoutDetails(typicalDuration: statistics.history(.workout(workout)).typicalDuration)),
                     badge: badge
                 )
 

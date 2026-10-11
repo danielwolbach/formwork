@@ -86,7 +86,6 @@ struct SessionRow: View {
         Health.delete(session)
         context.delete(session)
 
-        // Statistics only rebuild on saves.
         do {
             try context.save()
         } catch {

@@ -7,6 +7,8 @@
 
 import FormworkKit
 import FormworkUI
+import OSLog
+import SwiftData
 import SwiftUI
 
 struct SessionPlayerScreen: View {
@@ -14,6 +16,9 @@ struct SessionPlayerScreen: View {
 
     @Environment(\.dismiss)
     private var dismiss: DismissAction
+
+    @Environment(\.modelContext)
+    private var context: ModelContext
 
     @State
     private var finishAlert: Bool = false
@@ -235,6 +240,12 @@ struct SessionPlayerScreen: View {
     private func finish() {
         withAnimation(.smooth) {
             session.finish()
+        }
+
+        do {
+            try context.save()
+        } catch {
+            Logger.storage.error("Saving after finishing a session failed: \(error, privacy: .public)")
         }
     }
 

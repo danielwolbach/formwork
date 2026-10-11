@@ -19,6 +19,9 @@ struct ExerciseAddToWorkoutForm: View {
     @Environment(\.units)
     private var units: Units
 
+    @Environment(\.statistics)
+    private var statistics: Statistics
+
     @Query(filter: #Predicate<Workout> { !$0.isArchived })
     private var activeWorkouts: [Workout]
 
@@ -129,7 +132,7 @@ struct ExerciseAddToWorkoutForm: View {
             .pickerStyle(.inline)
         } label: {
             HStack {
-                PictogramRow(workout.pictogram, title: workout.title, subtitle: workout.formatted(.workoutDetails))
+                PictogramRow(workout.pictogram, title: workout.title, subtitle: workout.formatted(.workoutDetails(typicalDuration: statistics.history(.workout(workout)).typicalDuration)))
 
                 Image(systemName: "chevron.up.chevron.down")
                     .foregroundStyle(.tertiary)

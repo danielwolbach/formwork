@@ -7,14 +7,13 @@
 
 import FormworkKit
 import FormworkUI
-import SwiftData
 import SwiftUI
 
 struct SessionFigureGrid: View {
     private let session: Session
 
-    @Query(Session.finishedDescriptor)
-    private var sessions: [Session]
+    @Environment(\.statistics)
+    private var statistics: Statistics
 
     @State
     private var selection: Quantity? = nil
@@ -26,7 +25,7 @@ struct SessionFigureGrid: View {
     var body: some View {
         TileGrid {
             ForEach(Quantity.figures) { quantity in
-                SessionFigureCard(quantity, of: session, among: sessions) {
+                SessionFigureCard(quantity, of: session, among: statistics.sessions) {
                     // A tap above an open sheet also reaches the tiles behind it, so it may only close the sheet.
                     guard selection == nil else {
                         return
@@ -38,7 +37,7 @@ struct SessionFigureGrid: View {
         }
         .sheet(item: $selection) { quantity in
             NavigationRoot {
-                SessionFigureSheet(quantity, of: session, among: sessions)
+                SessionFigureSheet(quantity, of: session, among: statistics.sessions)
             }
             .presentationDetents([.medium, .large])
         }

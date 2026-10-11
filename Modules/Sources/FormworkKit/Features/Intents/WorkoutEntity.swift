@@ -28,7 +28,7 @@ public struct WorkoutEntity: IndexedEntity {
         self.id = workout.id
         self.image = workout.pictogram.image
         self.name = workout.name
-        self.details = workout.formatted(.workoutDetails)
+        self.details = workout.formatted(.workoutDetails(typicalDuration: History(.workout(workout), among: workout.sessions ?? []).typicalDuration))
     }
 
     public var displayRepresentation: DisplayRepresentation {

@@ -135,6 +135,10 @@ extension History {
         return min(calendar.component(.year, from: interval.start), current) ... current
     }
 
+    public var typicalDuration: TimeInterval? {
+        recent.value(.typical(.duration))
+    }
+
     var typicalStartMinute: Int? {
         recent.value(.typical(.startTime)).map { Int($0) }
     }

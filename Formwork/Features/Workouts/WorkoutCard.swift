@@ -32,6 +32,9 @@ struct WorkoutCard: View {
     @Environment(\.presentPaywall)
     private var presentPaywall: PresentPaywallAction
 
+    @Environment(\.statistics)
+    private var statistics: Statistics
+
     @State
     private var sheet: Sheet? = nil
 
@@ -161,7 +164,7 @@ struct WorkoutCard: View {
                         .lineLimit(1)
                         .font(.headline)
 
-                    Text(workout.formatted(.workoutDetails))
+                    Text(workout.formatted(.workoutDetails(typicalDuration: statistics.history(.workout(workout)).typicalDuration)))
                         .lineLimit(1)
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
@@ -187,7 +190,7 @@ struct WorkoutCard: View {
 
     private var row: some View {
         HStack {
-            PictogramRow(workout.pictogram, title: workout.title, subtitle: workout.formatted(.workoutDetails))
+            PictogramRow(workout.pictogram, title: workout.title, subtitle: workout.formatted(.workoutDetails(typicalDuration: statistics.history(.workout(workout)).typicalDuration)))
 
             Image(systemName: "chevron.forward")
                 .foregroundStyle(.tertiary)

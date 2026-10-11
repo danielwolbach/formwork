@@ -18,6 +18,9 @@ struct SessionProgressSheet: View {
     @Environment(\.units)
     private var units: Units
 
+    @Environment(\.statistics)
+    private var statistics: Statistics
+
     @State
     private var sheet: Sheet? = nil
 
@@ -35,7 +38,7 @@ struct SessionProgressSheet: View {
                         PictogramRow(
                             workout.pictogram,
                             title: workout.name,
-                            subtitle: session.formatted(.sessionProgress)
+                            subtitle: session.formatted(.sessionProgress(typicalDuration: statistics.history(.workout(workout)).typicalDuration))
                         )
                     }
 

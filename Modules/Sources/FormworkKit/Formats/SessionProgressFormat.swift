@@ -8,27 +8,28 @@
 import Foundation
 
 public struct SessionProgressFormat: FormatStyle {
+    let typicalDuration: TimeInterval?
+
     let now: Date
 
-    public init(at now: Date = .now) {
+    public init(typicalDuration: TimeInterval?, at now: Date = .now) {
+        self.typicalDuration = typicalDuration
         self.now = now
     }
 
     public func format(_ session: Session) -> String {
         let pending = String(localized: .formatPendingCountScheme(count: session.pendingEntries.count))
-        let finish = session.workout.flatMap { workout in
-            History(.workout(workout), among: workout.sessions ?? [], at: now).recent.value(.typical(.duration))
-                .map { session.startDate.addingTimeInterval($0) }
-                .flatMap { $0 > now ? "→ " + $0.formatted(Calendar.current.formatStyle(time: .shortened)) : nil }
-        }
+        let finish = typicalDuration
+            .map { session.startDate.addingTimeInterval($0) }
+            .flatMap { $0 > now ? "→ " + $0.formatted(Calendar.current.formatStyle(time: .shortened)) : nil }
 
         return [pending, finish].compactMap(\.self).joined(separator: " ")
     }
 }
 
 extension FormatStyle where Self == SessionProgressFormat {
-    public static var sessionProgress: SessionProgressFormat {
-        SessionProgressFormat()
+    public static func sessionProgress(typicalDuration: TimeInterval?) -> SessionProgressFormat {
+        SessionProgressFormat(typicalDuration: typicalDuration)
     }
 }
 

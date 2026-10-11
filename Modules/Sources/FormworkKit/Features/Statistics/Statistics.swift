@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import OSLog
 import SwiftData
 
 @MainActor
@@ -14,6 +15,15 @@ public final class Statistics {
     private let container: ModelContainer?
 
     private var revision = 0
+
+    @ObservationIgnored
+    private var observer: ResultsObserver<Session, Never>?
+
+    @ObservationIgnored
+    private var token: ObservationTracking.Token?
+
+    @ObservationIgnored
+    private var finishedIDs: [UUID] = []
 
     @ObservationIgnored
     private var finished: [Session]?
@@ -31,14 +41,14 @@ public final class Statistics {
     private var startMinutes: [Workout: Int?] = [:]
 
     @ObservationIgnored
-    private var observers: [any NSObjectProtocol] = []
+    private var dayObserver: (any NSObjectProtocol)?
 
     public nonisolated init(container: ModelContainer? = nil) {
         self.container = container
     }
 
     isolated deinit {
-        observers.forEach(NotificationCenter.default.removeObserver)
+        dayObserver.map(NotificationCenter.default.removeObserver)
     }
 }
 
@@ -52,7 +62,7 @@ extension Statistics {
 
         observe()
 
-        let sessions = (try? context.fetch(Session.finishedDescriptor)) ?? []
+        let sessions = observer.map { Array($0.results) } ?? []
         finished = sessions
         return sessions
     }
@@ -117,40 +127,45 @@ extension Statistics {
     }
 
     private func observe() {
-        guard observers.isEmpty else {
+        guard observer == nil else {
             return
         }
 
-        let center = NotificationCenter.default
-
-        observers = [
-            center.addObserver(forName: ModelContext.didSave, object: nil, queue: .main) { [weak self] notification in
-                let keys: [ModelContext.NotificationKey] = [.insertedIdentifiers, .updatedIdentifiers, .deletedIdentifiers]
-                let changed = keys.flatMap { notification.userInfo?[$0.rawValue] as? [PersistentIdentifier] ?? [] }
-
-                MainActor.assumeIsolated {
-                    self?.reload(after: changed)
-                }
-            },
-            // Histories are frozen at the moment they're built, so their days move at midnight.
-            center.addObserver(forName: .NSCalendarDayChanged, object: nil, queue: .main) { [weak self] _ in
-                MainActor.assumeIsolated {
-                    self?.reload()
-                }
-            },
-        ]
-    }
-
-    private func reload(after changed: [PersistentIdentifier]) {
-        if let active = try? Session.active(in: context) {
-            let ignored = Set([active.persistentModelID] + (active.entries ?? []).map(\.persistentModelID))
-
-            guard !changed.allSatisfy(ignored.contains) else {
-                return
-            }
+        do {
+            let observer = try ResultsObserver<Session, Never>(fetchDescriptor: Session.finishedDescriptor, modelContext: context)
+            self.observer = observer
+            finishedIDs = observer.results.map(\.id)
+            Logger.statistics.info("Observing \(self.finishedIDs.count) finished sessions")
+        } catch {
+            Logger.statistics.error("Observing finished sessions failed: \(error, privacy: .public)")
+            return
         }
 
-        reload()
+        // Changes to the active session can still notify, so only a different set of finished sessions reloads.
+        token = withContinuousObservation(options: [.didSet]) { [weak self] _ in
+            guard let self, let observer else {
+                return
+            }
+
+            let ids = observer.results.map(\.id)
+
+            guard ids != finishedIDs else {
+                Logger.statistics.debug("Ignored a change that kept the finished sessions")
+                return
+            }
+
+            Logger.statistics.info("Finished sessions changed from \(self.finishedIDs.count) to \(ids.count)")
+            finishedIDs = ids
+            reload()
+        }
+
+        // Histories are frozen at the moment they're built, so their days move at midnight.
+        dayObserver = NotificationCenter.default.addObserver(forName: .NSCalendarDayChanged, object: nil, queue: .main) { [weak self] _ in
+            MainActor.assumeIsolated {
+                Logger.statistics.info("Day changed")
+                self?.reload()
+            }
+        }
     }
 
     private func reload() {
@@ -160,5 +175,7 @@ extension Statistics {
         starts = nil
         startMinutes = [:]
         revision += 1
+
+        Logger.statistics.info("Reloaded statistics")
     }
 }

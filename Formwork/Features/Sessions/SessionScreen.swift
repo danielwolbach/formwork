@@ -80,7 +80,6 @@ struct SessionScreen: View {
         context.delete(session)
         Health.delete(session)
 
-        // Statistics only rebuild on saves.
         do {
             try context.save()
         } catch {

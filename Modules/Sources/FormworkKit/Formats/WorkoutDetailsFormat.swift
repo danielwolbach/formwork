@@ -8,23 +8,23 @@
 import Foundation
 
 public struct WorkoutDetailsFormat: FormatStyle {
-    let now: Date
+    let typicalDuration: TimeInterval?
 
-    public init(at now: Date = .now) {
-        self.now = now
+    public init(typicalDuration: TimeInterval?) {
+        self.typicalDuration = typicalDuration
     }
 
     public func format(_ workout: Workout) -> String {
         let count = (workout.entries ?? []).count { !$0.isArchived }.formatted(.exerciseCount)
-        let duration = History(.workout(workout), among: workout.sessions ?? [], at: now).recent.value(.typical(.duration)).map(DurationFormat().format)
+        let duration = typicalDuration.map(DurationFormat().format)
 
         return [count, duration].compactMap(\.self).formatted(.dotList)
     }
 }
 
 extension FormatStyle where Self == WorkoutDetailsFormat {
-    public static var workoutDetails: WorkoutDetailsFormat {
-        WorkoutDetailsFormat()
+    public static func workoutDetails(typicalDuration: TimeInterval?) -> WorkoutDetailsFormat {
+        WorkoutDetailsFormat(typicalDuration: typicalDuration)
     }
 }
 

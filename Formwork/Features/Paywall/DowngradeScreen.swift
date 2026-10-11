@@ -18,6 +18,9 @@ struct DowngradeScreen: View {
     @Environment(\.presentPaywall)
     private var presentPaywall: PresentPaywallAction
 
+    @Environment(\.statistics)
+    private var statistics: Statistics
+
     @Query(filter: #Predicate<Workout> { !$0.isArchived }, sort: \Workout.creationDate, order: .reverse)
     private var workouts: [Workout]
 
@@ -47,7 +50,7 @@ struct DowngradeScreen: View {
                     PictogramRow(
                         workout.pictogram,
                         title: workout.title,
-                        subtitle: workout.formatted(.workoutDetails)
+                        subtitle: workout.formatted(.workoutDetails(typicalDuration: statistics.history(.workout(workout)).typicalDuration))
                     )
                 }
 

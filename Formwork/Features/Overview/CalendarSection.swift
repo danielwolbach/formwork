@@ -349,6 +349,9 @@ private struct CalendarDayList: View {
 
     let planned: [Workout]
 
+    @Environment(\.statistics)
+    private var statistics: Statistics
+
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             Text(day, format: .dateTime.weekday(.wide).day().month(.wide))
@@ -377,7 +380,7 @@ private struct CalendarDayList: View {
 
             ForEach(planned) { workout in
                 row(linkingTo: workout) {
-                    PictogramRow(workout.pictogram, title: workout.title, subtitle: workout.formatted(.workoutDetails), badge: .pendingBadge)
+                    PictogramRow(workout.pictogram, title: workout.title, subtitle: workout.formatted(.workoutDetails(typicalDuration: statistics.history(.workout(workout)).typicalDuration)), badge: .pendingBadge)
                 }
             }
         }
