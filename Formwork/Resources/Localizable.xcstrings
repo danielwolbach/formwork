@@ -12,6 +12,28 @@
         }
       }
     },
+    "alert.changeExerciseKind.message" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The targets of this exercise in your workouts will be reset to the defaults of the new kind."
+          }
+        }
+      }
+    },
+    "alert.changeExerciseKind.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Change Kind?"
+          }
+        }
+      }
+    },
     "alert.deleteExercise.message" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -250,6 +272,39 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Restore Failed"
+          }
+        }
+      }
+    },
+    "alert.workoutNotStartable.archived.message" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This workout is archived. Unarchive it to start a session."
+          }
+        }
+      }
+    },
+    "alert.workoutNotStartable.empty.message" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This workout has no active exercises. Add some to start a session."
+          }
+        }
+      }
+    },
+    "alert.workoutNotStartable.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Can't Start Workout"
           }
         }
       }
@@ -1650,6 +1705,17 @@
         }
       }
     },
+    "paywall.price.scheme" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$(price)@ / %2$(period)@"
+          }
+        }
+      }
+    },
     "paywall.privacy.title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1694,6 +1760,17 @@
         }
       }
     },
+    "paywall.trial.scheme" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Free for %(period)@"
+          }
+        }
+      }
+    },
     "paywall.unlimited.title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1701,17 +1778,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Unlimited"
-          }
-        }
-      }
-    },
-    "placeholder" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Placeholder"
           }
         }
       }

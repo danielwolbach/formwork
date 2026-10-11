@@ -73,7 +73,11 @@ extension SessionEntry {
     }
 
     public var shouldSaveTargetToWorkout: Bool {
-        updatesWorkoutTarget ?? workoutEntry.map { target.isImprovement(over: $0.target) } ?? false
+        guard target.exerciseKind == exercise?.kind else {
+            return false
+        }
+
+        return updatesWorkoutTarget ?? workoutEntry.map { target.isImprovement(over: $0.target) } ?? false
     }
 
     public var duration: TimeInterval? {

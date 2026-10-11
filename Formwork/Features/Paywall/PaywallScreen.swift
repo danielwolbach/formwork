@@ -235,6 +235,9 @@ private struct ProductButton: View {
     let isSelected: Bool
     let action: () -> Void
 
+    @State
+    private var isEligibleForTrial: Bool = false
+
     var body: some View {
         Button(action: action) {
             HStack(spacing: 16) {
@@ -247,6 +250,13 @@ private struct ProductButton: View {
                         .font(.headline)
                         .foregroundStyle(.primary)
 
+                    if let trial {
+                        Text(trial)
+                            .font(.subheadline)
+                            .fontWeight(.medium)
+                            .foregroundStyle(.secondary)
+                    }
+
                     Text(product.description)
                         .font(.subheadline)
                         .fontWeight(.medium)
@@ -255,15 +265,46 @@ private struct ProductButton: View {
 
                 Spacer()
 
-                Text(product.displayPrice)
-                    .fontWeight(.semibold)
-                    .fontDesign(.rounded)
-                    .foregroundStyle(.primary)
+                Group {
+                    if let period {
+                        Text(.paywallPriceScheme(price: product.displayPrice, period: period))
+                    } else {
+                        Text(product.displayPrice)
+                    }
+                }
+                .fontWeight(.semibold)
+                .font(.footnote)
+                .fontDesign(.rounded)
+                .foregroundStyle(.primary)
             }
             .padding(8)
         }
         .buttonStyle(isSelected ? .cardSelected : .card)
         .buttonBorderShape(.roundedRectangle(radius: 16))
+        // StoreKit grants one introductory offer per subscription group, so the trial is only shown to those who still get it.
+        .task(id: product.id) {
+            isEligibleForTrial = await product.subscription?.isEligibleForIntroOffer ?? false
+        }
+    }
+
+    private var trial: String? {
+        guard isEligibleForTrial, let offer = product.subscription?.introductoryOffer, offer.paymentMode == .freeTrial else {
+            return nil
+        }
+
+        return String(localized: .paywallTrialScheme(period: offer.period.formatted(product.subscriptionPeriodFormatStyle)))
+    }
+
+    private var period: String? {
+        guard let period = product.subscription?.subscriptionPeriod else {
+            return nil
+        }
+
+        return if period.value == 1 {
+            period.unit.formatted(product.subscriptionPeriodUnitFormatStyle)
+        } else {
+            period.formatted(product.subscriptionPeriodFormatStyle)
+        }
     }
 }
 

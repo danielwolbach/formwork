@@ -17,7 +17,7 @@ struct WeekStreakWidget: Widget {
             WeekStreakWidgetView(entry: entry)
                 .containerBackground(for: .widget) {
                     LinearGradient(
-                        colors: [entry.tint, entry.tint.opacity(0.6)],
+                        colors: [entry.streak.pictogram.color, entry.streak.pictogram.color.opacity(0.6)],
                         startPoint: .bottomLeading,
                         endPoint: .topTrailing
                     )
@@ -47,7 +47,7 @@ struct WeekStreakWidgetView: View {
                         .lineLimit(1)
                         .foregroundStyle(.white.secondary)
 
-                    Text(verbatim: entry.streak.formatted())
+                    Text(verbatim: entry.streak.weeks.formatted())
                         .font(.title)
                         .fontWeight(.heavy)
                         .foregroundStyle(.white)
@@ -59,15 +59,15 @@ struct WeekStreakWidgetView: View {
 
             Spacer()
 
-            WeekRow(entry.week, today: entry.date, tint: entry.tint)
+            WeekRow(entry.week, today: entry.date, tint: entry.streak.pictogram.color)
         }
         .background {
             GeometryReader { geometry in
                 let side = min(geometry.size.height, geometry.size.width)
 
-                Image(systemName: entry.symbol)
+                Image(systemName: entry.streak.pictogram.image)
                     .font(.system(size: side))
-                    .foregroundStyle(entry.tint.opacity(0.5))
+                    .foregroundStyle(entry.streak.pictogram.color.opacity(0.5))
                     .offset(x: side * 0.25, y: -side * (1.0 / 3.0))
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
                     .accessibilityHidden(true)
@@ -120,9 +120,7 @@ private struct WeekRow: View {
 struct WeekStreakEntry: TimelineEntry {
     let date: Date
 
-    let streak: Int
-
-    let isStreakFulfilled: Bool
+    let streak: Streak
 
     let week: ActiveDays
 }
@@ -132,15 +130,7 @@ extension WeekStreakEntry {
         let week = StarterCatalog.Samples.activeWeek()
         let today = week.days.last { !$0.isAhead }?.date ?? .now
 
-        return WeekStreakEntry(date: today, streak: 7, isStreakFulfilled: true, week: week)
-    }
-
-    var symbol: String {
-        isStreakFulfilled ? "flame.fill" : "flame"
-    }
-
-    var tint: Color {
-        isStreakFulfilled ? Pictogram.streak.color : .gray
+        return WeekStreakEntry(date: today, streak: Streak(weeks: 7, longest: 7, isCurrentWeekFulfilled: true), week: week)
     }
 
     @MainActor
@@ -148,9 +138,7 @@ extension WeekStreakEntry {
         let context = ModelContext(Storage.container)
         let sessions = (try? context.fetch(FetchDescriptor<Session>())) ?? []
         let history = History(.all, among: sessions, at: date)
-        let streak = history.allTime.streak
-
-        return WeekStreakEntry(date: date, streak: streak.weeks, isStreakFulfilled: streak.isCurrentWeekFulfilled, week: ActiveDays(history.weeks(1)))
+        return WeekStreakEntry(date: date, streak: history.allTime.streak, week: ActiveDays(history.weeks(1)))
     }
 }
 

@@ -528,17 +528,6 @@
           }
         }
       }
-    },
-    "placeholder" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Placeholder"
-          }
-        }
-      }
     }
   },
   "version" : "1.3"

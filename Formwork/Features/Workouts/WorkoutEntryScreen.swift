@@ -20,12 +20,6 @@ struct WorkoutEntryScreen: View {
     @Environment(\.dismiss)
     private var dismiss: DismissAction
 
-    @Environment(\.paywall)
-    private var paywall: Paywall
-
-    @Environment(\.presentPaywall)
-    private var presentPaywall: PresentPaywallAction
-
     @State
     private var sheet: Sheet? = nil
 

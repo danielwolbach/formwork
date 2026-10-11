@@ -481,17 +481,6 @@
         }
       }
     },
-    "placeholder" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Placeholder"
-          }
-        }
-      }
-    },
     "quantity.best.info" : {
       "extractionState" : "manual",
       "localizations" : {

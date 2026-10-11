@@ -7,12 +7,24 @@
 
 import Foundation
 
-public struct Streak {
+public struct Streak: Sendable {
     public let weeks: Int
 
     public let longest: Int
 
     public let isCurrentWeekFulfilled: Bool
+
+    public init(weeks: Int, longest: Int, isCurrentWeekFulfilled: Bool) {
+        self.weeks = weeks
+        self.longest = longest
+        self.isCurrentWeekFulfilled = isCurrentWeekFulfilled
+    }
+}
+
+extension Streak {
+    public var pictogram: Pictogram {
+        isCurrentWeekFulfilled ? Pictogram(image: "flame", tint: Pictogram.streak.tint) : Pictogram(image: "flame", tint: .gray)
+    }
 }
 
 extension Period {

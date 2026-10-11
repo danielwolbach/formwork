@@ -14,12 +14,12 @@ struct ValueColumn: View {
 
     private let reading: Reading?
 
-    private let footnote: String
+    private let footnote: String?
 
     @Environment(\.units)
     private var units: Units
 
-    init(title: String, reading: Reading?, footnote: String) {
+    init(title: String, reading: Reading?, footnote: String?) {
         self.title = title
         self.reading = reading
         self.footnote = footnote
@@ -36,11 +36,13 @@ struct ValueColumn: View {
                 .lineLimit(1)
                 .minimumScaleFactor(0.5)
 
-            Text(footnote)
-                .font(.caption)
-                .foregroundStyle(.secondary)
-                .lineLimit(1)
-                .minimumScaleFactor(0.75)
+            if let footnote {
+                Text(footnote)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.75)
+            }
         }
         .multilineTextAlignment(.center)
         .frame(maxWidth: .infinity)

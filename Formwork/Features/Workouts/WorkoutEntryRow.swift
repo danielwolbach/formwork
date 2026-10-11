@@ -16,12 +16,6 @@ struct WorkoutEntryRow: View {
     @Environment(\.modelContext)
     private var context: ModelContext
 
-    @Environment(\.paywall)
-    private var paywall: Paywall
-
-    @Environment(\.presentPaywall)
-    private var presentPaywall: PresentPaywallAction
-
     @Environment(\.units)
     private var units: Units
 

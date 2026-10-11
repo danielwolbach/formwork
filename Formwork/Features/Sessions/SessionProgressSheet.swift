@@ -216,10 +216,6 @@ struct SessionProgressSheet: View {
     private func spoken(_ interval: TimeInterval) -> String {
         Duration.seconds(interval).formatted(.units(width: .wide))
     }
-
-    private func undo(_ entry: SessionEntry) {
-        session.undo(entry)
-    }
 }
 
 #Preview {

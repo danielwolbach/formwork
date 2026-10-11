@@ -65,6 +65,25 @@ extension Exercise {
             .max { $0.target.rank < $1.target.rank }?
             .target
     }
+
+    public func change(kind: Kind, in units: Units) {
+        guard kind != self.kind else {
+            return
+        }
+
+        self.kind = kind
+
+        let target = ExerciseTarget.initial(for: kind, in: units)
+
+        for entry in workoutEntries ?? [] {
+            entry.target = target
+        }
+
+        for entry in sessionEntries ?? [] where entry.status.isPending {
+            entry.target = target
+            entry.updatesWorkoutTarget = nil
+        }
+    }
 }
 
 extension Exercise: Hashable {

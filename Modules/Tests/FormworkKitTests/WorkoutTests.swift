@@ -95,4 +95,54 @@ struct WorkoutTests {
 
         #expect((store.workout.entries ?? []).sorted().last?.order == 8)
     }
+
+    @Test
+    func changingKindResetsWorkoutTargets() throws {
+        let entry = try #require((store.workout.entries ?? []).sorted().first)
+        let squat = try #require(entry.exercise)
+
+        squat.change(kind: .duration, in: .metric)
+
+        #expect(squat.kind == .duration)
+        #expect(entry.target.exerciseKind == .duration)
+        #expect(entry.target.rank == ExerciseTarget.initial(for: .duration, in: .metric).rank)
+    }
+
+    @Test
+    func changingKindToTheSameKindKeepsTargets() throws {
+        let entry = try #require((store.workout.entries ?? []).sorted().first)
+
+        entry.exercise?.change(kind: .bodyweight, in: .metric)
+
+        #expect(entry.target.bodyweightTarget == .init(sets: 3, reps: 10))
+    }
+
+    @Test
+    func changingKindResetsPendingSessionEntries() throws {
+        let session = try store.startSession()
+        let entry = try #require(session.orderedEntries.first)
+        entry.target = .bodyweight(reps: 20, sets: 3)
+        entry.updatesWorkoutTarget = true
+
+        entry.exercise?.change(kind: .duration, in: .metric)
+        session.finish()
+
+        #expect(entry.target.exerciseKind == .duration)
+        #expect(entry.updatesWorkoutTarget == nil)
+        #expect(entry.workoutEntry?.target.exerciseKind == .duration)
+    }
+
+    @Test
+    func resolvedEntriesKeepTheirKindAndDontSaveItBack() throws {
+        let session = try store.startSession()
+        let entry = try #require(session.orderedEntries.first)
+        entry.target = .bodyweight(reps: 20, sets: 3)
+        session.completeAndAdvance()
+
+        entry.exercise?.change(kind: .duration, in: .metric)
+        session.finish()
+
+        #expect(entry.target.bodyweightTarget == .init(sets: 3, reps: 20))
+        #expect(entry.workoutEntry?.target.exerciseKind == .duration)
+    }
 }

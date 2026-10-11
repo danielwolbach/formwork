@@ -44,12 +44,12 @@ struct OverviewWidgetView: View {
         VStack(alignment: .leading) {
             Label {
                 if isSmall {
-                    Text(verbatim: entry.streak.formatted())
+                    Text(verbatim: entry.streak.weeks.formatted())
                 } else {
-                    Text(.widgetOverviewStreakTitle(count: entry.streak))
+                    Text(.widgetOverviewStreakTitle(count: entry.streak.weeks))
                 }
             } icon: {
-                Image(systemName: entry.isStreakFulfilled ? "flame.fill" : "flame")
+                Image(systemName: entry.streak.pictogram.image)
             }
             .font(isSmall ? .headline : .title3)
             .fontWeight(.heavy)
@@ -57,7 +57,7 @@ struct OverviewWidgetView: View {
             // The small widget only shows the number.
             .accessibilityElement(children: .ignore)
             .accessibilityLabel(Text(.widgetWeekStreakTitle))
-            .accessibilityValue(Text(.widgetOverviewStreakTitle(count: entry.streak)))
+            .accessibilityValue(Text(.widgetOverviewStreakTitle(count: entry.streak.weeks)))
 
             Spacer()
 
@@ -96,9 +96,7 @@ struct OverviewWidgetView: View {
 struct OverviewEntry: TimelineEntry {
     let date: Date
 
-    let streak: Int
-
-    let isStreakFulfilled: Bool
+    let streak: Streak
 
     let title: String
 
@@ -115,8 +113,7 @@ extension OverviewEntry {
 
         return OverviewEntry(
             date: .now,
-            streak: 7,
-            isStreakFulfilled: true,
+            streak: Streak(weeks: 7, longest: 7, isCurrentWeekFulfilled: true),
             title: String(localized: workout.name),
             symbol: workout.pictogram.image,
             tint: workout.pictogram.color
@@ -134,8 +131,7 @@ extension OverviewEntry {
 
         return OverviewEntry(
             date: date,
-            streak: streak.weeks,
-            isStreakFulfilled: streak.isCurrentWeekFulfilled,
+            streak: streak,
             title: workout?.title ?? String(localized: isScheduled ? .widgetOverviewAllDoneTitle : .widgetOverviewRestDayTitle),
             symbol: workout?.pictogram.image ?? (isScheduled ? "checkmark.seal.fill" : "moon.zzz.fill"),
             tint: workout?.pictogram.color ?? (isScheduled ? .green : .purple)

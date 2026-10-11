@@ -27,6 +27,12 @@ private struct IntentHandler: ViewModifier {
     @State
     private var sheet: Sheet? = nil
 
+    @State
+    private var notStartableAlert: Bool = false
+
+    @State
+    private var unstartableWorkout: Workout? = nil
+
     func body(content: Content) -> some View {
         content
             .onAppIntentExecution(OpenWorkoutIntent.self) { intent in
@@ -35,12 +41,24 @@ private struct IntentHandler: ViewModifier {
                 }
             }
             .onAppIntentExecution(StartSessionIntent.self) { intent in
-                if let workout = workout(for: intent.workout), !workout.isArchived, workout.isStartable {
+                guard let workout = workout(for: intent.workout) else {
+                    return
+                }
+
+                if workout.isStartable {
                     startSession(workout)
+                } else {
+                    unstartableWorkout = workout
+                    notStartableAlert = true
                 }
             }
             .sheet(item: $sheet) { sheet in
                 sheet
+            }
+            .alert(.alertWorkoutNotStartableTitle, isPresented: $notStartableAlert, presenting: unstartableWorkout) { _ in
+                // OK is added automatically.
+            } message: { workout in
+                Text(workout.isArchived ? .alertWorkoutNotStartableArchivedMessage : .alertWorkoutNotStartableEmptyMessage)
             }
     }
 

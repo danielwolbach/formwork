@@ -30,11 +30,17 @@ struct ExerciseForm: View {
     @Environment(\.dismiss)
     private var dismiss: DismissAction
 
+    @Environment(\.units)
+    private var units: Units
+
     @State
     private var draft: Draft
 
     @State
     private var showNotesEditor: Bool = false
+
+    @State
+    private var changeKindAlert: Bool = false
 
     init(_ exercise: Exercise? = nil) {
         let draft = Draft(
@@ -113,10 +119,25 @@ struct ExerciseForm: View {
 
             ToolbarItem(placement: .confirmationAction) {
                 Button(.confirm) {
-                    commit()
+                    if resetsTargets {
+                        changeKindAlert = true
+                    } else {
+                        commit()
+                    }
                 }
                 .disabled(!valid)
             }
+        }
+        .alert(.alertChangeExerciseKindTitle, isPresented: $changeKindAlert) {
+            Button(.cancel) {
+                // Works automatically.
+            }
+
+            Button(.confirm) {
+                commit()
+            }
+        } message: {
+            Text(.alertChangeExerciseKindMessage)
         }
         .sheet(isPresented: $showNotesEditor) {
             NavigationRoot {
@@ -127,6 +148,14 @@ struct ExerciseForm: View {
 
     private var hasChanges: Bool {
         draft != original
+    }
+
+    private var resetsTargets: Bool {
+        guard let exercise, draft.kind != exercise.kind else {
+            return false
+        }
+
+        return !(exercise.workoutEntries ?? []).isEmpty || (exercise.sessionEntries ?? []).contains(where: \.status.isPending)
     }
 
     private var valid: Bool {
@@ -148,7 +177,7 @@ struct ExerciseForm: View {
 
         if let exercise {
             exercise.name = name
-            exercise.kind = draft.kind
+            exercise.change(kind: draft.kind, in: units)
             exercise.categories = categories
             exercise.link = url
             exercise.notes = notes

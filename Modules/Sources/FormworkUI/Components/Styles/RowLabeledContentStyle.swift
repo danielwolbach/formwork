@@ -29,7 +29,7 @@ public struct RowLabeledContentStyle: LabeledContentStyle {
 
             Spacer(minLength: 0)
 
-            configuration.content
+            configuration.content.padding(.leading, 2)
         }
     }
 }

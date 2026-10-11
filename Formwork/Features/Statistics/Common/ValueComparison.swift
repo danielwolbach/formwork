@@ -15,7 +15,7 @@ struct ValueComparison: View {
 
         let reading: Reading?
 
-        let footnote: String
+        let footnote: String?
     }
 
     private let before: Value?
@@ -43,7 +43,7 @@ struct ValueComparison: View {
         let after = Value(
             title: String(localized: .fieldLatestTitle),
             reading: comparison.current,
-            footnote: date?.formatted(date: .abbreviated, time: .omitted) ?? ""
+            footnote: date?.formatted(date: .abbreviated, time: .omitted)
         )
 
         self.init(before: before, after: after, direction: comparison.direction)
