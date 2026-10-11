@@ -16,7 +16,7 @@ public enum DeepLink {
 }
 
 public enum AppGroup {
-    public static let identifier = "group.de.danielwolbach.Formwork"
+    public static let identifier = "group.com.formworkfitness.Formwork"
 
     public static var defaults: UserDefaults {
         UserDefaults(suiteName: identifier)!
@@ -44,9 +44,9 @@ public enum WidgetKind {
 }
 
 public enum LegalLinks {
-    public static let terms = URL(string: "https://formworkfitness.com/terms-of-service")!
+    public static let terms = URL(string: "https://formworkfitness.com/legal/terms-of-service")!
 
-    public static let privacy = URL(string: "https://formworkfitness.com/privacy-policy")!
+    public static let privacy = URL(string: "https://formworkfitness.com/legal/privacy-policy")!
 }
 
 public enum AppMetadata {

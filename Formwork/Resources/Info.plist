@@ -8,7 +8,7 @@
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLName</key>
-			<string>de.danielwolbach.Formwork</string>
+			<string>com.formworkfitness.Formwork</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>formwork</string>

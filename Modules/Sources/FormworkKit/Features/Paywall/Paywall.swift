@@ -14,8 +14,8 @@ import SwiftData
 @Observable
 public final class Paywall {
     public static let productIDs = [
-        "de.danielwolbach.Formwork.premium.monthly",
-        "de.danielwolbach.Formwork.premium.yearly",
+        "com.formworkfitness.Formwork.premium.monthly",
+        "com.formworkfitness.Formwork.premium.yearly",
     ]
 
     public nonisolated static let workoutLimit = 2

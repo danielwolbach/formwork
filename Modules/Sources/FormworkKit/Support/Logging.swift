@@ -20,5 +20,5 @@ extension Logger {
 
     public static let reminders = Logger(subsystem: subsystem, category: "Reminders")
 
-    private static let subsystem = "de.danielwolbach.Formwork"
+    private static let subsystem = "com.formworkfitness.Formwork"
 }

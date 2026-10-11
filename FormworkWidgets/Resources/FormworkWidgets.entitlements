@@ -4,7 +4,7 @@
 <dict>
 	<key>com.apple.security.application-groups</key>
 	<array>
-		<string>group.de.danielwolbach.Formwork</string>
+		<string>group.com.formworkfitness.Formwork</string>
 	</array>
 </dict>
 </plist>

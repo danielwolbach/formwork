@@ -142,7 +142,7 @@
               "locale" : "en_US"
             }
           ],
-          "productID" : "de.danielwolbach.Formwork.premium.monthly",
+          "productID" : "com.formworkfitness.Formwork.premium.monthly",
           "recurringSubscriptionPeriod" : "P1M",
           "referenceName" : "Premium Monthly",
           "subscriptionGroupID" : "EB50B788",
@@ -181,7 +181,7 @@
               "locale" : "en_US"
             }
           ],
-          "productID" : "de.danielwolbach.Formwork.premium.yearly",
+          "productID" : "com.formworkfitness.Formwork.premium.yearly",
           "recurringSubscriptionPeriod" : "P1Y",
           "referenceName" : "Premium Yearly",
           "subscriptionGroupID" : "EB50B788",
