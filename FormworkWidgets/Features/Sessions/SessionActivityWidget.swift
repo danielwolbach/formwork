@@ -140,6 +140,8 @@ struct SessionActivityWidget: Widget {
                 .foregroundStyle(.secondary)
         }
         .monospacedDigit()
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(Text(.widgetSessionProgressLabel(resolved: context.state.resolved, total: context.state.total)))
     }
 
     private static func controls(for context: ActivityViewContext<SessionActivityAttributes>) -> some View {

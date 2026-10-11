@@ -28,6 +28,8 @@ struct ActiveDaysCard: View {
                     column(of: week)
                 }
             }
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(Text(Self.summary(of: days)))
 
             Spacer(minLength: 0)
         } label: {
@@ -51,6 +53,11 @@ struct ActiveDaysCard: View {
         }
         .font(.caption2)
         .foregroundStyle(.tertiary)
+    }
+
+    static func summary(of days: [ActiveDays.Day]) -> LocalizedStringResource {
+        let past = days.filter { !$0.isAhead }
+        return .activeDaysSummaryLabel(active: past.count { $0.sessionCount > 0 }, total: past.count)
     }
 
     private func cell(_ style: some ShapeStyle) -> some View {

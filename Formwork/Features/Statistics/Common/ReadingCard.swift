@@ -48,6 +48,7 @@ struct ReadingCard: View {
                     Image(systemName: direction.image)
                         .font(.caption.weight(.semibold))
                         .foregroundStyle(.secondary)
+                        .accessibilityLabel(direction.title)
                 }
             }
         }

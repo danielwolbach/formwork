@@ -1,6 +1,39 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "comparison.direction.down.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trending Down"
+          }
+        }
+      }
+    },
+    "comparison.direction.flat.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Steady"
+          }
+        }
+      }
+    },
+    "comparison.direction.up.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trending Up"
+          }
+        }
+      }
+    },
     "exercise.category.arms.title" : {
       "extractionState" : "manual",
       "localizations" : {

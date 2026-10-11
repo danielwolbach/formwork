@@ -54,6 +54,10 @@ struct OverviewWidgetView: View {
             .font(isSmall ? .headline : .title3)
             .fontWeight(.heavy)
             .foregroundStyle(.white.secondary)
+            // The small widget only shows the number.
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(Text(.widgetWeekStreakTitle))
+            .accessibilityValue(Text(.widgetOverviewStreakTitle(count: entry.streak)))
 
             Spacer()
 

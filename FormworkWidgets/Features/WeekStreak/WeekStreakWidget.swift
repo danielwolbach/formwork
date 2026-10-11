@@ -107,6 +107,13 @@ private struct WeekRow: View {
                     .frame(maxWidth: .infinity)
             }
         }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(Text(summary))
+    }
+
+    private var summary: LocalizedStringResource {
+        let past = week.days.filter { !$0.isAhead }
+        return .widgetWeekStreakDaysLabel(active: past.count { $0.sessionCount > 0 }, total: past.count)
     }
 }
 

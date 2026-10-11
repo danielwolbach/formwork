@@ -30,6 +30,9 @@ struct ActiveDaysYear: View {
 
                     page(of: days)
                 }
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel(Text(month, format: .dateTime.month(.wide)))
+                .accessibilityValue(Text(ActiveDaysCard.summary(of: days)))
             }
         }
     }

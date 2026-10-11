@@ -16,6 +16,9 @@ struct StatisticChips: View {
     @Environment(\.statistics)
     private var statistics: Statistics
 
+    @Environment(\.units)
+    private var units: Units
+
     @State
     private var selection: Statistic? = nil
 
@@ -24,6 +27,8 @@ struct StatisticChips: View {
 
         HFlow {
             ForEach(Self.statistics) { statistic in
+                let summary = text(of: statistic, in: history)
+
                 Button {
                     guard selection == nil else {
                         return
@@ -31,10 +36,12 @@ struct StatisticChips: View {
 
                     selection = statistic
                 } label: {
-                    StatisticChip(statistic, of: history)
+                    Label(summary, systemImage: statistic.pictogram.image)
+                        .labelStyle(.chip(tint: statistic.pictogram.color))
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel(statistic.title)
+                .accessibilityValue(statistic.isChart ? "" : summary)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -45,29 +52,8 @@ struct StatisticChips: View {
             .presentationDetents([.medium, .large])
         }
     }
-}
 
-private struct StatisticChip: View {
-    private let statistic: Statistic
-
-    private let history: History
-
-    @Environment(\.units)
-    private var units: Units
-
-    init(_ statistic: Statistic, of history: History) {
-        self.statistic = statistic
-        self.history = history
-    }
-
-    var body: some View {
-        let pictogram = statistic.pictogram
-
-        Label(text, systemImage: pictogram.image)
-            .labelStyle(.chip(tint: pictogram.color))
-    }
-
-    private var text: String {
+    private func text(of statistic: Statistic, in history: History) -> String {
         guard !statistic.isChart else {
             return statistic.title
         }

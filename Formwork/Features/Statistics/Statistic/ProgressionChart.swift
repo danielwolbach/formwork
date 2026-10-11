@@ -38,23 +38,29 @@ struct ProgressionChart: View {
                 AreaMark(x: .value(.chartDate, point.date, unit: .day), y: .value(.chartTarget, point.target.rank))
                     .interpolationMethod(.monotone)
                     .foregroundStyle(LinearGradient(colors: [color.opacity(0.35), color.opacity(0)], startPoint: .top, endPoint: .bottom))
+                    .accessibilityHidden(true)
 
                 LineMark(x: .value(.chartDate, point.date, unit: .day), y: .value(.chartTarget, point.target.rank))
                     .interpolationMethod(.monotone)
                     .lineStyle(StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round))
                     .foregroundStyle(color)
+                    // A smoothed trend; the recorded points below carry the values.
+                    .accessibilityHidden(true)
             }
 
             ForEach(progression.points) { point in
                 PointMark(x: .value(.chartDate, point.date, unit: .day), y: .value(.chartTarget, point.target.rank))
                     .symbolSize(16)
                     .foregroundStyle(color.opacity(0.35))
+                    .accessibilityLabel(Text(point.date, format: .dateTime.day().month(.wide)))
+                    .accessibilityValue(progression.reading(of: point.target.rank).formatted(.reading(units: units)))
             }
 
             if let selected {
                 RuleMark(x: .value(.chartDate, selected.date, unit: .day))
                     .foregroundStyle(color.secondary)
                     .lineStyle(StrokeStyle(lineWidth: 4))
+                    .accessibilityHidden(true)
                     .annotation(position: .top, spacing: 0, overflowResolution: .init(x: .fit(to: .chart), y: .disabled)) {
                         ChartSelectionLabel(progression.reading(of: selected.target.rank).formatted(.reading(units: units)))
                             .tint(color)

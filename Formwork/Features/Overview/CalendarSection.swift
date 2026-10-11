@@ -52,6 +52,8 @@ struct CalendarSection: View {
                             .frame(maxWidth: .infinity)
                     }
                 }
+                // Every day already reads its weekday.
+                .accessibilityHidden(true)
 
                 // A paging tab view doesn't size itself, so an empty six-week grid sets the height.
                 sizingGrid
@@ -295,6 +297,7 @@ private struct CalendarDay: View {
             .animation(.snappy(duration: 0.1), value: isSelected)
             .accessibilityElement(children: .ignore)
             .accessibilityLabel(Text(day, format: .dateTime.weekday(.wide).day().month(.wide)))
+            .accessibilityValue(accessibilityValue)
             .accessibilityAddTraits(isSelected ? .isSelected : [])
             .accessibilityHidden(isOutsideMonth)
     }
@@ -306,6 +309,14 @@ private struct CalendarDay: View {
 
     private var markers: [(workout: Workout, isCompleted: Bool)] {
         Array((completed.map { ($0, true) } + planned.map { ($0, false) }).prefix(3))
+    }
+
+    private var accessibilityValue: String {
+        let today = isToday ? [String(localized: .fieldTodayTitle)] : []
+        let completed = completed.map { String(localized: .calendarCompletedLabel(workout: $0.title)) }
+        let planned = planned.map { String(localized: .calendarPlannedLabel(workout: $0.title)) }
+
+        return (today + completed + planned).joined(separator: ", ")
     }
 
     private var isToday: Bool {
@@ -380,7 +391,12 @@ private struct CalendarDayList: View {
 
             ForEach(planned) { workout in
                 row(linkingTo: workout) {
-                    PictogramRow(workout.pictogram, title: workout.title, subtitle: workout.formatted(.workoutDetails(typicalDuration: statistics.history(.workout(workout)).typicalDuration)), badge: .pendingBadge)
+                    PictogramRow(
+                        workout.pictogram,
+                        title: workout.title,
+                        subtitle: workout.formatted(.workoutDetails(typicalDuration: statistics.history(.workout(workout)).typicalDuration)),
+                        badge: .pendingBadge
+                    )
                 }
             }
         }

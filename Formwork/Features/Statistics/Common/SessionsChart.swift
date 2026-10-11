@@ -35,12 +35,17 @@ struct SessionsChart: View {
                 if let value = point.value {
                     LineMark(x: .value(.chartDate, point.date), y: .value(title, value))
                         .foregroundStyle(.tint)
+                        .accessibilityLabel(Text(point.date, format: .dateTime.day().month(.wide)))
+                        .accessibilityValue(series.reading(of: value).formatted(.reading(units: units)))
+                        .accessibilityHidden(point.isCarried)
 
                     // A carried value only leads the line in, it wasn't recorded then.
                     if !point.isCarried {
                         PointMark(x: .value(.chartDate, point.date), y: .value(title, value))
                             .foregroundStyle(.tint)
                             .symbolSize(point.isHighlighted ? 120 : 30)
+                            // The line already reads this value.
+                            .accessibilityHidden(true)
                     }
                 }
             }
@@ -49,6 +54,7 @@ struct SessionsChart: View {
                 RuleMark(x: .value(.chartDate, selected.date))
                     .foregroundStyle(.tint.secondary)
                     .lineStyle(StrokeStyle(lineWidth: 4))
+                    .accessibilityHidden(true)
                     .annotation(position: .top, spacing: 0, overflowResolution: .init(x: .fit(to: .chart), y: .disabled)) {
                         ChartSelectionLabel(series.reading(of: value).formatted(.reading(units: units)))
                     }

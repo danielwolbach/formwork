@@ -123,6 +123,28 @@
         }
       }
     },
+    "widget.session.progress.label" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$(resolved)lld of %2$(total)lld done"
+          }
+        }
+      }
+    },
+    "widget.weekStreak.days.label" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$(active)lld of %2$(total)lld days trained"
+          }
+        }
+      }
+    },
     "widget.weekStreak.description" : {
       "extractionState" : "manual",
       "localizations" : {

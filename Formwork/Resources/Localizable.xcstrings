@@ -1,6 +1,17 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "activeDays.summary.label" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$(active)lld of %2$(total)lld days active"
+          }
+        }
+      }
+    },
     "alert.deleteExercise.message" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -239,6 +250,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Restore Failed"
+          }
+        }
+      }
+    },
+    "calendar.completed.label" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$(workout)@ completed"
+          }
+        }
+      }
+    },
+    "calendar.planned.label" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$(workout)@ planned"
           }
         }
       }
@@ -1426,6 +1459,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Manage Your Exercises"
+          }
+        }
+      }
+    },
+    "onboarding.page.label" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Page %1$(page)lld of %2$(count)lld"
           }
         }
       }

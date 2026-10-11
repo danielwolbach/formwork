@@ -135,7 +135,7 @@ extension Statistics {
             let observer = try ResultsObserver<Session, Never>(fetchDescriptor: Session.finishedDescriptor, modelContext: context)
             self.observer = observer
             finishedIDs = observer.results.map(\.id)
-            Logger.statistics.info("Observing \(self.finishedIDs.count) finished sessions")
+            Logger.statistics.info("Observing \(finishedIDs.count) finished sessions")
         } catch {
             Logger.statistics.error("Observing finished sessions failed: \(error, privacy: .public)")
             return
@@ -154,7 +154,7 @@ extension Statistics {
                 return
             }
 
-            Logger.statistics.info("Finished sessions changed from \(self.finishedIDs.count) to \(ids.count)")
+            Logger.statistics.info("Finished sessions changed from \(finishedIDs.count) to \(ids.count)")
             finishedIDs = ids
             reload()
         }

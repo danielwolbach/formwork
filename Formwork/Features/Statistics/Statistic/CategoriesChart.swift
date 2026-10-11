@@ -30,6 +30,8 @@ struct CategoriesChart: View {
                     y: .value(share.category.title, share.count)
                 )
                 .foregroundStyle(share.category.pictogram.color)
+                .accessibilityLabel(Text(month.span.start, format: .dateTime.month(.wide)))
+                .accessibilityValue(Text(verbatim: "\(share.category.title), \(share.count.formatted())"))
             }
         }
         .chartXScale(domain: span.start ... span.end)

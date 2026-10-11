@@ -278,6 +278,7 @@ private struct SessionEntryPage: View {
                     subtitle: entry.exercise?.categories.formatted(.exerciseCategories),
                     badge: entry.status.isPending ? nil : entry.status.pictogram
                 )
+                .accessibilityValue(entry.status.title)
 
                 VStack(spacing: .sections) {
                     ExerciseTargetEditor(target: target)
@@ -299,7 +300,6 @@ private struct SessionEntryPage: View {
 
             Spacer()
         }
-        .accessibilityValue(entry.status.title)
     }
 
     private var target: Binding<ExerciseTarget> {

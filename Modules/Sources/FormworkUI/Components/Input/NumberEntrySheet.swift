@@ -54,11 +54,18 @@ public struct NumberEntrySheet: View {
                     value: value,
                     isPlaceholder: draft.isEmpty
                 )
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel(title)
+                .accessibilityValue(spokenValue)
 
                 NumberKeypad(format: format, upperBound: range.upperBound, text: $draft)
                     .padding(.horizontal)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
+            // Focus stays on the keypad, so the entered number is announced as it changes.
+            .onChange(of: draft) {
+                AccessibilityNotification.Announcement(spokenValue).post()
+            }
             .navigationTitle(title)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -76,6 +83,10 @@ public struct NumberEntrySheet: View {
             }
         }
         .presentationDetents([.medium])
+    }
+
+    private var spokenValue: String {
+        [format.spokenFormat(format.parse(draft) ?? value), suffix].compactMap(\.self).joined(separator: " ")
     }
 
     private func confirm() {

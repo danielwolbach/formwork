@@ -90,6 +90,14 @@ extension Comparison.Direction {
         case .flat: "arrow.forward"
         }
     }
+
+    public var title: String {
+        switch self {
+        case .up: .init(localized: .comparisonDirectionUpTitle)
+        case .down: .init(localized: .comparisonDirectionDownTitle)
+        case .flat: .init(localized: .comparisonDirectionFlatTitle)
+        }
+    }
 }
 
 extension History {

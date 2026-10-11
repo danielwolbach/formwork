@@ -37,6 +37,8 @@ struct MonthlyChart: View {
                         y: .value(title, value)
                     )
                     .foregroundStyle(.tint)
+                    .accessibilityLabel(Text(bar.date, format: .dateTime.month(.wide)))
+                    .accessibilityValue(series.reading(of: value).formatted(.reading(units: units)))
                 }
             }
 
@@ -44,6 +46,7 @@ struct MonthlyChart: View {
                 RuleMark(x: .value(.chartMonth, selected.date, unit: .month))
                     .foregroundStyle(.tint.secondary)
                     .lineStyle(StrokeStyle(lineWidth: 4))
+                    .accessibilityHidden(true)
                     .annotation(position: .top, spacing: 0, overflowResolution: .init(x: .fit(to: .chart), y: .disabled)) {
                         ChartSelectionLabel(series.reading(of: value).formatted(.reading(units: units)))
                     }

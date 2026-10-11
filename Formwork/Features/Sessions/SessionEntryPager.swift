@@ -89,6 +89,9 @@ struct SessionEntryPager<Page: View>: View {
                         .frame(width: width, height: proxy.size.height)
                         .offset(x: CGFloat(position) * width + dragOffset)
                         .transition(transition(at: position, width: width))
+                        // Neighbours are only clipped, so VoiceOver would still reach them. Disabled rather than
+                        // false on the current page, since false would unhide what the page itself hides.
+                        .accessibilityHidden(true, isEnabled: position != 0)
                 }
             }
             .frame(width: width, height: proxy.size.height)
@@ -100,6 +103,11 @@ struct SessionEntryPager<Page: View>: View {
         }
         .clipped()
         .sensoryFeedback(.impact(flexibility: .soft), trigger: navigator.index)
+        .onChange(of: navigator.index) {
+            if let entry = navigator.session.currentEntry {
+                AccessibilityNotification.Announcement(entry.title).post()
+            }
+        }
     }
 
     private var slots: [Slot] {

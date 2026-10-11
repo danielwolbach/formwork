@@ -47,6 +47,7 @@ struct SessionStatus: View {
     private var elapsed: some View {
         if let ended = session.endDate {
             Text(formatted(ended.timeIntervalSince(session.startDate)))
+                .accessibilityLabel(spoken(ended.timeIntervalSince(session.startDate)))
         } else {
             TimelineView(.periodic(from: session.startDate, by: 1)) { context in
                 let text = formatted(context.date.timeIntervalSince(session.startDate))
@@ -54,6 +55,8 @@ struct SessionStatus: View {
                 Text(text)
                     .contentTransition(.numericText(countsDown: false))
                     .animation(.default, value: text)
+                    // Read as a time of day otherwise.
+                    .accessibilityLabel(spoken(context.date.timeIntervalSince(session.startDate)))
             }
         }
     }
@@ -66,6 +69,10 @@ struct SessionStatus: View {
         } else {
             duration.formatted(.time(pattern: .hourMinute(padHourToLength: 1, roundSeconds: .down)))
         }
+    }
+
+    private func spoken(_ interval: TimeInterval) -> String {
+        Duration.seconds(interval).formatted(.units(width: .wide))
     }
 }
 

@@ -83,9 +83,11 @@ struct ValueComparison: View {
                     .font(.title.weight(.semibold))
                     .foregroundStyle(.tint)
                     .frame(maxWidth: .infinity)
+                    .accessibilityLabel(direction.title)
 
                 ValueColumn(title: after.title, reading: after.reading, footnote: after.footnote)
             }
+            .accessibilityElement(children: .combine)
         } else {
             VStack(spacing: .groups) {
                 ValueRow(title: after.title, reading: after.reading, footnote: after.footnote)

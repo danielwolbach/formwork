@@ -144,6 +144,27 @@ struct SessionMiniPlayer: View {
         .accessibilityAction {
             presentSession(session)
         }
+        // Paging is a swipe, which VoiceOver takes for itself.
+        .accessibilityActions {
+            if session.previousEntry != nil {
+                Button(.backward) {
+                    navigator.backward()
+                }
+            }
+
+            if session.nextEntry != nil {
+                Button(.forward) {
+                    navigator.forward()
+                }
+            }
+        }
+        .accessibilityScrollAction { edge in
+            switch edge {
+            case .leading: navigator.backward()
+            case .trailing: navigator.forward()
+            default: break
+            }
+        }
     }
 }
 

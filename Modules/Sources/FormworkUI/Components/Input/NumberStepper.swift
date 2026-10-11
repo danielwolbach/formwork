@@ -167,9 +167,8 @@ public struct NumberStepper: View {
     }
 
     private func step(increases: Bool) {
-        guard let stepSize else {
-            return
-        }
+        // Without a step size there are no buttons, but VoiceOver can still adjust.
+        let stepSize = stepSize ?? { _ in 1 }
 
         value = clamped(increases ? value + stepSize(value) : value - stepSize(value.nextDown))
     }

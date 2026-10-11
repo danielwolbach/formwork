@@ -84,7 +84,8 @@ struct OnboardingScreen: View {
             }
         }
         .animation(.snappy, value: current)
-        .accessibilityHidden(true)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(Text(.onboardingPageLabel(page: current.rawValue + 1, count: Page.allCases.count)))
     }
 
     private var current: Page {
