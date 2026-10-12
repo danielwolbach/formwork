@@ -120,18 +120,19 @@ extension Samples {
 
     private static let historyStart = Calendar.current.date(byAdding: .day, value: -historyDays, to: .now) ?? .now
 
-    fileprivate static func makeSessions(for workouts: [Workout], days: Int = historyDays, calendar: Calendar = .current) -> [Session] {
+    fileprivate static func makeSessions(for workouts: [Workout]) -> [Session] {
+        let calendar = Calendar.current
         var random = SeededGenerator(seed: 42)
         var sessions: [Session] = []
         var lastSessions: [Workout: Date] = [:]
         let today = calendar.startOfDay(for: .now)
 
-        for offset in (1 ... days).reversed() {
+        for offset in (1 ... historyDays).reversed() {
             guard let day = calendar.date(byAdding: .day, value: -offset, to: today) else {
                 continue
             }
 
-            let progress = 1 - Double(offset) / Double(days)
+            let progress = 1 - Double(offset) / Double(historyDays)
 
             for workout in workouts where workout.schedule.isScheduled(on: day, after: lastSessions[workout], now: day, in: calendar) {
                 guard Double.random(in: 0 ..< 1, using: &random) < 0.8 else {
@@ -158,18 +159,19 @@ extension Samples {
     }
 
     /// A weigh-in every few days, with body fat on some of them, slowly going down.
-    fileprivate static func makeMeasurements(days: Int = historyDays, calendar: Calendar = .current) -> [BodyMeasurement: [BodyMeasurement.Sample]] {
+    fileprivate static func makeMeasurements() -> [BodyMeasurement: [BodyMeasurement.Sample]] {
+        let calendar = Calendar.current
         var random = SeededGenerator(seed: 3)
         var measurements: [BodyMeasurement: [BodyMeasurement.Sample]] = [:]
         let today = calendar.startOfDay(for: .now)
 
-        for offset in stride(from: days, through: 1, by: -3) {
+        for offset in stride(from: historyDays, through: 1, by: -3) {
             guard let day = calendar.date(byAdding: .day, value: -offset, to: today) else {
                 continue
             }
 
             let date = day.addingTimeInterval(TimeInterval.random(in: 6.5 ... 8, using: &random) * 3600)
-            let progress = 1 - Double(offset) / Double(days)
+            let progress = 1 - Double(offset) / Double(historyDays)
             measurements[.weight, default: []].append(.init(date: date, value: 84 - 4 * progress + Double.random(in: -0.6 ... 0.6, using: &random)))
 
             if offset.isMultiple(of: 2) {

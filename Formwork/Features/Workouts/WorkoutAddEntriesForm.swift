@@ -194,7 +194,7 @@ struct WorkoutAddEntriesForm: View {
 
     @ViewBuilder
     private func row(for exercise: Exercise) -> some View {
-        let selected = isSelected(exercise)
+        let selected = index(of: exercise) != nil
 
         SelectableRow(isSelected: selected) {
             searchPresented = false
@@ -217,10 +217,6 @@ struct WorkoutAddEntriesForm: View {
 
     private func index(of exercise: Exercise) -> Int? {
         selection.firstIndex { $0.exercise == exercise }
-    }
-
-    private func isSelected(_ exercise: Exercise) -> Bool {
-        index(of: exercise) != nil
     }
 
     private func toggle(_ exercise: Exercise) {

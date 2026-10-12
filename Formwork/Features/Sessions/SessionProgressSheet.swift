@@ -44,16 +44,20 @@ struct SessionProgressSheet: View {
 
                     Spacer()
 
-                    elapsed
+                    Label {
+                        SessionElapsedTime(session)
+                    } icon: {
+                        Image(systemName: "timer")
+                    }
+                    .monospacedDigit()
+                    .foregroundStyle(.secondary)
                 }
                 // Serves as a header for the row below.
                 .padding(.bottom, -1 * .groups)
 
-                Group(subviews: healthRows) { rows in
-                    if !rows.isEmpty {
-                        GroupBox {
-                            rows
-                        }
+                if let heartRate = Health.shared.heartRate {
+                    GroupBox {
+                        ValueRow(title: .init(localized: .fieldHeartRateTitle), reading: .heartRate(beatsPerMinute: heartRate))
                     }
                 }
 
@@ -135,7 +139,7 @@ struct SessionProgressSheet: View {
                                             entry.pictogram,
                                             title: entry.title,
                                             subtitle: entry.target.formatted(.exerciseTarget(units: units)),
-                                            badge: entry.status.isPending ? nil : entry.status.pictogram
+                                            badge: entry.status.badge
                                         )
                                     }
                                     .buttonStyle(.plain)
@@ -168,53 +172,6 @@ struct SessionProgressSheet: View {
         .sheet(item: $sheet) { sheet in
             sheet
         }
-    }
-
-    @ViewBuilder
-    private var healthRows: some View {
-        if let heartRate = Health.shared.heartRate {
-            ValueRow(title: .init(localized: .fieldHeartRateTitle), reading: .heartRate(beatsPerMinute: heartRate))
-        }
-    }
-
-    @ViewBuilder
-    private var elapsed: some View {
-        if let ended = session.endDate {
-            Text(formatted(ended.timeIntervalSince(session.startDate)))
-                .monospacedDigit()
-                .foregroundStyle(.secondary)
-                .accessibilityLabel(spoken(ended.timeIntervalSince(session.startDate)))
-        } else {
-            TimelineView(.periodic(from: session.startDate, by: 1)) { context in
-                let interval = context.date.timeIntervalSince(session.startDate)
-                let text = formatted(interval)
-
-                Label {
-                    Text(text)
-                        .contentTransition(.numericText(countsDown: false))
-                        .animation(.default, value: text)
-                        .monospacedDigit()
-                } icon: {
-                    Image(systemName: "timer")
-                }
-                .foregroundStyle(.secondary)
-                .accessibilityLabel(spoken(interval))
-            }
-        }
-    }
-
-    private func formatted(_ interval: TimeInterval) -> String {
-        let duration = Duration.seconds(interval)
-
-        return if duration < .seconds(3600) {
-            duration.formatted(.time(pattern: .minuteSecond))
-        } else {
-            duration.formatted(.time(pattern: .hourMinute(padHourToLength: 1, roundSeconds: .down)))
-        }
-    }
-
-    private func spoken(_ interval: TimeInterval) -> String {
-        Duration.seconds(interval).formatted(.units(width: .wide))
     }
 }
 

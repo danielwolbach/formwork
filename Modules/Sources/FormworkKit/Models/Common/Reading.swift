@@ -29,7 +29,6 @@ public enum Reading: Hashable, Sendable {
         case weight
         case duration
         case days
-        case heartRate
         /// A target's rank, read in an exercise's kind.
         case rank(Exercise.Kind?)
         /// Minutes since midnight.
@@ -56,7 +55,6 @@ extension Reading {
         case .weight: .weight(kilograms: value)
         case .duration: .duration(seconds: value)
         case .days: .days(value)
-        case .heartRate: .heartRate(beatsPerMinute: value)
         case let .rank(kind): Reading(rank: value, of: kind)
         case let .time(calendar): .time(calendar.date(from: DateComponents(hour: Int(value) / 60, minute: Int(value) % 60)) ?? .distantPast, calendar: calendar)
         }

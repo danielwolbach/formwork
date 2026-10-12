@@ -50,23 +50,6 @@ enum TestStoreError: Error {
     case sessionNotStarted
 }
 
-/// A bodyweight target's payload, since `ExerciseTarget` is not `Equatable`.
-struct BodyweightTarget: Equatable {
-    let sets: Int
-
-    let reps: Int
-}
-
-extension ExerciseTarget {
-    var bodyweightTarget: BodyweightTarget? {
-        if case let .bodyweight(reps, sets) = self {
-            BodyweightTarget(sets: sets, reps: reps)
-        } else {
-            nil
-        }
-    }
-}
-
 extension Units {
     static let metric = Units(weight: .metric, distance: .metric)
 }

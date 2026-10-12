@@ -35,15 +35,17 @@ public struct CardButtonStyle: ButtonStyle {
     public func makeBody(configuration: Configuration) -> some View {
         let active = style == .prominent || style == .selected
 
+        // VoiceOver skips views at opacity 0, so it reads whichever copy is showing.
         ZStack {
             configuration.label
                 .foregroundStyle(.secondary)
                 .opacity(active ? 0 : 1)
+                .accessibilityHidden(active)
 
             configuration.label
                 .foregroundStyle(.tint)
                 .opacity(active ? 1 : 0)
-                .accessibilityHidden(true)
+                .accessibilityHidden(!active)
         }
         .padding(padding)
         .font(controlSize == .small || controlSize == .mini ? .subheadline : .default)

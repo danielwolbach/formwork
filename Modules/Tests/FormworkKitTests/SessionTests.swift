@@ -66,7 +66,7 @@ struct SessionLifecycleTests {
 
         #expect(!session.isActive)
         #expect(session.duration != nil)
-        #expect((store.workout.entries ?? []).sorted().first?.target.bodyweightTarget == .init(sets: 5, reps: 12))
+        #expect((store.workout.entries ?? []).sorted().first?.target == .bodyweight(reps: 12, sets: 5))
         #expect(try Session.active(in: store.context) == nil)
     }
 
@@ -76,7 +76,7 @@ struct SessionLifecycleTests {
         session.currentEntry?.target = .bodyweight(reps: 7, sets: 3)
         session.finish()
 
-        #expect((store.workout.entries ?? []).sorted().first?.target.bodyweightTarget == .init(sets: 3, reps: 10))
+        #expect((store.workout.entries ?? []).sorted().first?.target == .bodyweight(reps: 10, sets: 3))
     }
 
     @Test(arguments: [(12, false, 10), (7, true, 7)])
@@ -86,7 +86,7 @@ struct SessionLifecycleTests {
         session.currentEntry?.updatesWorkoutTarget = saves
         session.finish()
 
-        #expect((store.workout.entries ?? []).sorted().first?.target.bodyweightTarget == .init(sets: 3, reps: expected))
+        #expect((store.workout.entries ?? []).sorted().first?.target == .bodyweight(reps: expected, sets: 3))
     }
 
     @Test(arguments: [
@@ -439,7 +439,7 @@ struct SessionActivityAttributesTests {
         let state = try #require(SessionActivityAttributes.ContentState(session: session))
 
         #expect(state.title == "Squat")
-        #expect(state.status == SessionEntry.Status.completed(date: .now).pictogram)
+        #expect(state.status == .completedBadge)
         #expect(state.resolved == 1)
     }
 

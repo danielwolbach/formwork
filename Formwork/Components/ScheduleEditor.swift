@@ -73,11 +73,25 @@ struct ScheduleEditor: View {
 
     private var dailyScheduleEditor: some View {
         VStack(spacing: .groups) {
-            stepper(
-                Text(.fieldRhythmDailyIntervalTitle(count: schedule.days)),
-                value: $schedule.days,
-                range: Self.dayIntervals
-            )
+            LabeledContent {
+                Button(.decrease) {
+                    schedule.days -= 1
+                }
+                .buttonStyle(.card)
+                .labelStyle(.fixedIconOnly)
+                .disabled(schedule.days <= Self.dayIntervals.lowerBound)
+
+                Button(.increase) {
+                    schedule.days += 1
+                }
+                .buttonStyle(.card)
+                .labelStyle(.fixedIconOnly)
+                .disabled(schedule.days >= Self.dayIntervals.upperBound)
+            } label: {
+                Text(.fieldRhythmDailyIntervalTitle(count: schedule.days))
+                    .contentTransition(.opacity)
+            }
+            .sensoryFeedback(.selection, trigger: schedule.days)
 
             Divider()
 
@@ -138,28 +152,6 @@ struct ScheduleEditor: View {
         case .daily: .daily
         }
     }
-
-    private func stepper(_ title: Text, value: Binding<Int>, range: ClosedRange<Int>) -> some View {
-        LabeledContent {
-            Button(.decrease) {
-                value.wrappedValue -= 1
-            }
-            .buttonStyle(.card)
-            .labelStyle(.fixedIconOnly)
-            .disabled(value.wrappedValue <= range.lowerBound)
-
-            Button(.increase) {
-                value.wrappedValue += 1
-            }
-            .buttonStyle(.card)
-            .labelStyle(.fixedIconOnly)
-            .disabled(value.wrappedValue >= range.upperBound)
-        } label: {
-            title
-                .contentTransition(.opacity)
-        }
-        .sensoryFeedback(.selection, trigger: value.wrappedValue)
-    }
 }
 
 private struct WeekdayPicker: View {
@@ -188,7 +180,6 @@ private struct WeekdayPicker: View {
                 .buttonBorderShape(.circle)
                 .aspectRatio(1, contentMode: .fit)
                 .accessibilityLabel(calendar.standaloneWeekdaySymbols[weekday - 1])
-                .accessibilityAddTraits(weekdays.contains(option) ? [.isSelected] : [])
             }
         }
         .sensoryFeedback(.selection, trigger: weekdays)

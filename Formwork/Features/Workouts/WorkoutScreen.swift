@@ -95,7 +95,7 @@ struct WorkoutScreen: View {
                     }
                 } else {
                     LazyVStack(spacing: 0) {
-                        ForEach(entries.sorted()) { entry in
+                        ForEach(entries) { entry in
                             WorkoutEntryRow(entry)
                         }
                     }

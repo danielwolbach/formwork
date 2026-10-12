@@ -98,25 +98,15 @@ extension History.Subject {
 }
 
 extension History {
-    public static var recentWeeks: Int {
-        4
-    }
+    public static let recentWeeks = 4
 
-    public static var baselineWeeks: Int {
-        12
-    }
+    public static let baselineWeeks = 12
 
-    public static var chartedWeeks: Int {
-        recentWeeks + baselineWeeks
-    }
+    public static let chartedWeeks = recentWeeks + baselineWeeks
 
-    public static var chartedSessions: Int {
-        20
-    }
+    public static let chartedSessions = 20
 
-    static var minimumValues: Int {
-        3
-    }
+    static let minimumValues = 3
 
     public var allTime: Period {
         Period(self, span: interval)

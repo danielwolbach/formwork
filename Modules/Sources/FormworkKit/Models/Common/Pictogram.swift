@@ -78,8 +78,6 @@ extension Pictogram {
 
     public static let volume = Pictogram(image: "scalemass", tint: .indigo)
 
-    public static let heartRate = Pictogram(image: "heart", tint: .red)
-
     public static let bodyWeight = Pictogram(image: "figure.stand", tint: .purple)
 
     public static let bodyFat = Pictogram(image: "percent", tint: .mint)
@@ -91,10 +89,6 @@ extension Pictogram {
     public static let activity = Pictogram(image: "square.grid.3x3", tint: .red)
 
     public static let categories = Pictogram(image: "chart.pie", tint: .gray)
-
-    public static let instructions = Pictogram(image: "link", tint: .blue)
-
-    public static let notes = Pictogram(image: "note.text", tint: .yellow)
 
     public static let pendingBadge = Pictogram(image: "ellipsis.circle.fill", tint: .gray)
 

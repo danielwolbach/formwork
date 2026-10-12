@@ -164,7 +164,7 @@ struct WorkoutCard: View {
                         .lineLimit(1)
                         .font(.headline)
 
-                    Text(workout.formatted(.workoutDetails(typicalDuration: statistics.history(.workout(workout)).typicalDuration)))
+                    Text(details)
                         .lineLimit(1)
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
@@ -190,12 +190,16 @@ struct WorkoutCard: View {
 
     private var row: some View {
         HStack {
-            PictogramRow(workout.pictogram, title: workout.title, subtitle: workout.formatted(.workoutDetails(typicalDuration: statistics.history(.workout(workout)).typicalDuration)))
+            PictogramRow(workout.pictogram, title: workout.title, subtitle: details)
 
             Image(systemName: "chevron.forward")
                 .foregroundStyle(.tertiary)
                 .accessibilityHidden(true)
         }
+    }
+
+    private var details: String {
+        workout.formatted(.workoutDetails(typicalDuration: statistics.history(.workout(workout)).typicalDuration))
     }
 
     private func archive() {

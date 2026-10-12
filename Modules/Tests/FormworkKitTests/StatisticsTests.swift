@@ -1729,7 +1729,7 @@ struct ExerciseCurrentHighestTargetTests {
         try workout("Light", reps: 5)
 
         // The squat sits at 10 reps in the store's own workout, so 15 is the one to beat.
-        #expect(squat.currentHighestTarget?.bodyweightTarget == .init(sets: 3, reps: 15))
+        #expect(squat.currentHighestTarget == .bodyweight(reps: 15, sets: 3))
     }
 
     @Test
@@ -1737,7 +1737,7 @@ struct ExerciseCurrentHighestTargetTests {
         try workout("Planned", reps: 15)
 
         // No session has ever touched it, but it is what the exercise is programmed at.
-        #expect(squat.currentHighestTarget?.bodyweightTarget == .init(sets: 3, reps: 15))
+        #expect(squat.currentHighestTarget == .bodyweight(reps: 15, sets: 3))
     }
 
     @Test
@@ -1749,21 +1749,21 @@ struct ExerciseCurrentHighestTargetTests {
         session.finish()
 
         // `finish` writes targets back to their slots, so the workout now holds what was actually done.
-        #expect(squat.currentHighestTarget?.bodyweightTarget == .init(sets: 3, reps: 20))
+        #expect(squat.currentHighestTarget == .bodyweight(reps: 20, sets: 3))
     }
 
     @Test
     func deletingAWorkoutTakesItsNumbersWithIt() throws {
         let heavy = try workout("Heavy", reps: 15)
 
-        #expect(squat.currentHighestTarget?.bodyweightTarget == .init(sets: 3, reps: 15))
+        #expect(squat.currentHighestTarget == .bodyweight(reps: 15, sets: 3))
 
         store.context.delete(heavy)
         // The `.cascade` rule only reaches the workout's entries once the deletion is processed.
         try store.context.save()
 
         // Giving the heavy workout up drops its numbers, which is what keeps stale weights from coming back.
-        #expect(squat.currentHighestTarget?.bodyweightTarget == .init(sets: 3, reps: 10))
+        #expect(squat.currentHighestTarget == .bodyweight(reps: 10, sets: 3))
     }
 
     @Test
@@ -1900,7 +1900,7 @@ struct ProgressionTests {
 
         let allTime = try history().allTime
 
-        #expect(allTime.typicalBest?.bodyweightTarget?.reps == 12)
+        #expect(allTime.typicalBest?.rank == 12)
         #expect(allTime.value(.maximum(.best)) == 20)
     }
 
@@ -1915,8 +1915,8 @@ struct ProgressionTests {
         let last = try #require(Progression(history.allTime).curve.last)
 
         #expect(try last.date == calendar.date(16, month: 10, hour: 0))
-        #expect(last.target.bodyweightTarget?.reps == history.recent.typicalBest?.bodyweightTarget?.reps)
-        #expect(last.target.bodyweightTarget?.reps == 12)
+        #expect(last.target.rank == history.recent.typicalBest?.rank)
+        #expect(last.target.rank == 12)
     }
 
     @Test
@@ -1928,7 +1928,7 @@ struct ProgressionTests {
 
         // October's first week still has September's day to go on, though it isn't one of October's points.
         #expect(october.points.map(\.target.rank) == [14])
-        #expect(october.curve.first?.target.bodyweightTarget?.reps == 10)
+        #expect(october.curve.first?.target.rank == 10)
     }
 
     @Test

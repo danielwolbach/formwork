@@ -35,21 +35,17 @@ public class SessionEntry {
     public var creationDate: Date = Date.distantPast
 
     init(entry: WorkoutEntry) {
-        self.id = UUID()
         self.order = entry.order
         self.exercise = entry.exercise
         self.target = entry.target
-        self.status = .pending
         self.workoutEntry = entry
         self.creationDate = .now
     }
 
     init(exercise: Exercise, target: ExerciseTarget, order: Int) {
-        self.id = UUID()
         self.order = order
         self.exercise = exercise
         self.target = target
-        self.status = .pending
         self.creationDate = .now
     }
 }
@@ -167,11 +163,11 @@ extension SessionEntry.Status {
 }
 
 extension SessionEntry.Status {
-    public var pictogram: Pictogram {
+    public var badge: Pictogram? {
         switch self {
-        case .pending: Pictogram(image: "ellipsis.circle.fill", tint: .gray)
-        case .completed: Pictogram(image: "checkmark.circle.fill", tint: .green)
-        case .skipped: Pictogram(image: "arrowtriangle.forward.circle.fill", tint: .orange)
+        case .pending: nil
+        case .completed: .completedBadge
+        case .skipped: .skippedBadge
         }
     }
 

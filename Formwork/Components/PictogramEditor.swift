@@ -30,7 +30,7 @@ struct PictogramEditor: View {
         .accessibilityLabel(Text(.screenPictogramTitle))
         .accessibilityValue(pictogram.tint.title)
         .sheet(isPresented: $showEditor) {
-            NavigationStack {
+            NavigationRoot {
                 PictogramSheet(pictogram: $pictogram)
             }
         }
@@ -38,6 +38,33 @@ struct PictogramEditor: View {
 }
 
 private struct PictogramSheet: View {
+    private static let imageOptions: [String] = [
+        Pictogram.workout.image,
+        "figure",
+        "figure.walk",
+        "figure.run",
+        "figure.barre",
+        "figure.boxing",
+        "figure.cooldown",
+        "figure.dance",
+        "figure.flexibility",
+        "figure.gymnastics",
+        "figure.jumprope",
+        "figure.pilates",
+        "figure.play",
+        "figure.rolling",
+        "figure.yoga",
+        "figure.cross.training",
+        "figure.strengthtraining.functional",
+        "figure.highintensity.intervaltraining",
+        "figure.martial.arts",
+        "figure.indoor.rowing",
+        "figure.step.training",
+        "figure.run.treadmill",
+        "figure.indoor.cycle",
+        "figure.stair.stepper",
+    ]
+
     @Binding
     var pictogram: Pictogram
 
@@ -61,13 +88,35 @@ private struct PictogramSheet: View {
 
                 SectionView(.fieldColorTitle) {
                     GroupBox {
-                        PictogramColorPicker(selection: $draft.tint)
+                        TileGrid(columns: 6, aspectRatio: 1) {
+                            ForEach(Pictogram.Tint.allCases) { tint in
+                                PictogramSwatch(
+                                    fill: AnyShapeStyle(tint.color),
+                                    ring: AnyShapeStyle(tint.color),
+                                    isSelected: tint == draft.tint
+                                ) {
+                                    draft.tint = tint
+                                }
+                                .accessibilityLabel(tint.title)
+                            }
+                        }
                     }
                 }
 
                 SectionView(.fieldImageTitle) {
                     GroupBox {
-                        PictogramImagePicker(selection: $draft.image)
+                        TileGrid(columns: 6, aspectRatio: 1) {
+                            ForEach(Self.imageOptions, id: \.self) { option in
+                                PictogramSwatch(
+                                    fill: AnyShapeStyle(Color.gray.quinary),
+                                    ring: AnyShapeStyle(Color.gray.secondary),
+                                    isSelected: option == draft.image,
+                                    image: option
+                                ) {
+                                    draft.image = option
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -89,46 +138,6 @@ private struct PictogramSheet: View {
             ToolbarItem(placement: .cancellationAction) {
                 Button(.cancel) {
                     dismiss()
-                }
-            }
-        }
-    }
-}
-
-private struct PictogramColorPicker: View {
-    @Binding
-    var selection: Pictogram.Tint
-
-    var body: some View {
-        TileGrid(columns: 6, aspectRatio: 1) {
-            ForEach(Pictogram.Tint.allCases) { tint in
-                PictogramSwatch(
-                    fill: AnyShapeStyle(tint.color),
-                    ring: AnyShapeStyle(tint.color),
-                    isSelected: tint == selection
-                ) {
-                    selection = tint
-                }
-                .accessibilityLabel(tint.title)
-            }
-        }
-    }
-}
-
-private struct PictogramImagePicker: View {
-    @Binding
-    var selection: String
-
-    var body: some View {
-        TileGrid(columns: 6, aspectRatio: 1) {
-            ForEach(PictogramEditor.imageOptions, id: \.self) { option in
-                PictogramSwatch(
-                    fill: AnyShapeStyle(Color.gray.quinary),
-                    ring: AnyShapeStyle(Color.gray.secondary),
-                    isSelected: option == selection,
-                    image: option
-                ) {
-                    selection = option
                 }
             }
         }
@@ -167,35 +176,6 @@ private struct PictogramSwatch: View {
         .buttonStyle(.plain)
         .accessibilityAddTraits(isSelected ? [.isSelected] : [])
     }
-}
-
-extension PictogramEditor {
-    fileprivate static let imageOptions: [String] = [
-        Pictogram.workout.image,
-        "figure",
-        "figure.walk",
-        "figure.run",
-        "figure.barre",
-        "figure.boxing",
-        "figure.cooldown",
-        "figure.dance",
-        "figure.flexibility",
-        "figure.gymnastics",
-        "figure.jumprope",
-        "figure.pilates",
-        "figure.play",
-        "figure.rolling",
-        "figure.yoga",
-        "figure.cross.training",
-        "figure.strengthtraining.functional",
-        "figure.highintensity.intervaltraining",
-        "figure.martial.arts",
-        "figure.indoor.rowing",
-        "figure.step.training",
-        "figure.run.treadmill",
-        "figure.indoor.cycle",
-        "figure.stair.stepper",
-    ]
 }
 
 #Preview {

@@ -27,9 +27,6 @@ struct OnboardingScreen: View {
     @State
     private var page: Page? = .welcome
 
-    @State
-    private var finished: Bool = false
-
     var body: some View {
         ScrollView(.horizontal) {
             HStack(spacing: 0) {
@@ -44,7 +41,6 @@ struct OnboardingScreen: View {
         .scrollPosition(id: $page)
         .scrollIndicators(.hidden)
         .sensoryFeedback(.impact(flexibility: .soft), trigger: page)
-        .sensoryFeedback(.success, trigger: finished)
         .safeAreaBar(edge: .bottom) {
             controls
         }
@@ -59,19 +55,15 @@ struct OnboardingScreen: View {
         VStack(spacing: 32) {
             indicator
 
-            primaryAction
-                .fontWeight(.semibold)
-                .labelStyle(.fixedTitleAndIcon)
-                .buttonStyle(.glassProminent)
-                .controlSize(.large)
+            Button(.continue) {
+                advance()
+            }
+            .fontWeight(.semibold)
+            .labelStyle(.fixedTitleAndIcon)
+            .buttonStyle(.glassProminent)
+            .controlSize(.large)
         }
         .padding(.horizontal)
-    }
-
-    private var primaryAction: some View {
-        Button(.continue) {
-            advance()
-        }
     }
 
     private var indicator: some View {

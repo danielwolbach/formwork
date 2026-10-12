@@ -12,9 +12,6 @@ import SwiftUI
 struct ExerciseGuide: View {
     private let exercise: Exercise
 
-    @Environment(\.openURL)
-    private var openURL: OpenURLAction
-
     @State
     private var sheet: Sheet?
 

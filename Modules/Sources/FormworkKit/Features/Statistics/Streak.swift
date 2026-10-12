@@ -23,7 +23,7 @@ public struct Streak: Sendable {
 
 extension Streak {
     public var pictogram: Pictogram {
-        isCurrentWeekFulfilled ? Pictogram(image: "flame", tint: Pictogram.streak.tint) : Pictogram(image: "flame", tint: .gray)
+        isCurrentWeekFulfilled ? .streak : Pictogram(image: Pictogram.streak.image, tint: .gray)
     }
 }
 

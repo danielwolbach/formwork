@@ -114,7 +114,7 @@ struct WorkoutTests {
 
         entry.exercise?.change(kind: .bodyweight, in: .metric)
 
-        #expect(entry.target.bodyweightTarget == .init(sets: 3, reps: 10))
+        #expect(entry.target == .bodyweight(reps: 10, sets: 3))
     }
 
     @Test
@@ -142,7 +142,7 @@ struct WorkoutTests {
         entry.exercise?.change(kind: .duration, in: .metric)
         session.finish()
 
-        #expect(entry.target.bodyweightTarget == .init(sets: 3, reps: 20))
+        #expect(entry.target == .bodyweight(reps: 20, sets: 3))
         #expect(entry.workoutEntry?.target.exerciseKind == .duration)
     }
 }

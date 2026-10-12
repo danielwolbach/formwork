@@ -13,11 +13,11 @@ import SwiftUI
 
 struct ExerciseForm: View {
     private struct Draft: Equatable {
-        var name: String = ""
-        var kind: Exercise.Kind = .weight
-        var categories: Set<Exercise.Category> = []
-        var link: String = ""
-        var notes: String = ""
+        var name: String
+        var kind: Exercise.Kind
+        var categories: Set<Exercise.Category>
+        var link: String
+        var notes: String
     }
 
     private let exercise: Exercise?
@@ -42,24 +42,16 @@ struct ExerciseForm: View {
     @State
     private var changeKindAlert: Bool = false
 
-    init(_ exercise: Exercise? = nil) {
+    init(_ exercise: Exercise? = nil, categories: Set<Exercise.Category> = []) {
         let draft = Draft(
             name: exercise?.name ?? "",
             kind: exercise?.kind ?? .weight,
-            categories: exercise?.categories ?? [],
+            categories: exercise?.categories ?? categories,
             link: exercise?.link?.absoluteString ?? "",
             notes: exercise?.notes ?? ""
         )
 
         self.exercise = exercise
-        self.original = draft
-        self._draft = .init(initialValue: draft)
-    }
-
-    init(categories: Set<Exercise.Category>) {
-        let draft = Draft(categories: categories)
-
-        self.exercise = nil
         self.original = draft
         self._draft = .init(initialValue: draft)
     }
@@ -217,7 +209,6 @@ private struct ExerciseKindPicker: View {
                 }
                 .buttonStyle(CardButtonStyle(style: kind == candidate ? .selected : .bordered))
                 .tint(candidate.pictogram.color)
-                .accessibilityAddTraits(kind == candidate ? [.isSelected] : [])
             }
         }
         .buttonBorderShape(.roundedRectangle(radius: 8))
@@ -244,7 +235,6 @@ private struct ExerciseCategoryPicker: View {
                 .buttonStyle(CardButtonStyle(style: categories.contains(candidate) ? .selected : .bordered))
                 .tint(candidate.pictogram.color)
                 .labelStyle(.fixedTitleAndIcon)
-                .accessibilityAddTraits(categories.contains(candidate) ? [.isSelected] : [])
             }
         }
         .frame(maxWidth: .infinity)

@@ -17,9 +17,6 @@ struct PaywallScreen: View {
     @Environment(\.purchase)
     private var purchase: PurchaseAction
 
-    @Environment(\.openURL)
-    private var openURL: OpenURLAction
-
     @Environment(\.paywall)
     private var paywall: Paywall
 

@@ -131,14 +131,12 @@ struct SessionActivityWidget: Widget {
     private static func remaining(for context: ActivityViewContext<SessionActivityAttributes>, compact: Bool = false) -> some View {
         HStack(alignment: .bottom, spacing: 0) {
             Text(verbatim: "\(context.state.resolved)")
-                .font(compact ? .caption2 : .footnote)
-                .fontWeight(.semibold)
 
             Text(verbatim: "/\(context.state.total)")
-                .font(compact ? .caption2 : .footnote)
-                .fontWeight(.semibold)
                 .foregroundStyle(.secondary)
         }
+        .font(compact ? .caption2 : .footnote)
+        .fontWeight(.semibold)
         .monospacedDigit()
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text(.widgetSessionProgressLabel(resolved: context.state.resolved, total: context.state.total)))
@@ -217,7 +215,7 @@ extension SessionActivityAttributes.ContentState {
 
     fileprivate static var completed: Self {
         var state = Self.preview
-        state.status = Pictogram(image: "checkmark.circle.fill", tint: .green)
+        state.status = .completedBadge
         state.resolved = 3
         return state
     }
@@ -238,7 +236,7 @@ extension SessionActivityAttributes.ContentState {
 
     fileprivate static var finished: Self {
         var state = Self.preview
-        state.status = Pictogram(image: "checkmark.circle.fill", tint: .green)
+        state.status = .completedBadge
         state.canMoveForward = false
         state.resolved = 5
         return state

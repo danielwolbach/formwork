@@ -13,14 +13,17 @@ import SwiftData
 public enum Storage {
     public static let schema = Schema(versionedSchema: CurrentSchema.self)
 
-    public static let container: ModelContainer = if ProcessInfo.processInfo.arguments.contains("--sample-data") {
-        Samples.container
-    } else {
-        try unwrap(
-            ModelContainer(for: schema, migrationPlan: Migrations.self, configurations: [ModelConfiguration(schema: schema, groupContainer: .identifier(AppGroup.identifier))]),
-            "Failed to initialize storage"
-        )
-    }
+    public static let container: ModelContainer = {
+        if ProcessInfo.processInfo.arguments.contains("--sample-data") {
+            return Samples.container
+        }
+
+        do {
+            return try ModelContainer(for: schema, migrationPlan: Migrations.self, configurations: [ModelConfiguration(schema: schema, groupContainer: .identifier(AppGroup.identifier))])
+        } catch {
+            fatalError("Failed to initialize storage: \(error)")
+        }
+    }()
 
     public static func deleteEverything(in modelContext: ModelContext) {
         do {
@@ -41,13 +44,5 @@ public enum Storage {
         } catch {
             Logger.storage.error("Deleting everything failed: \(error, privacy: .public)")
         }
-    }
-}
-
-private func unwrap<T>(_ expression: @autoclosure () throws -> T, _ message: String) -> T {
-    do {
-        return try expression()
-    } catch {
-        fatalError("\(message): \(error)")
     }
 }

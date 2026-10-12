@@ -7,18 +7,8 @@
 
 import Foundation
 
-public struct HeartRateFormat: FormatStyle {
-    public init() {
-        // Nothing to initialize.
-    }
-
-    public func format(_ beatsPerMinute: Double) -> String {
+struct HeartRateFormat: FormatStyle {
+    func format(_ beatsPerMinute: Double) -> String {
         .init(localized: .formatHeartRateScheme(bpm: Int(beatsPerMinute.rounded())))
-    }
-}
-
-extension FormatStyle where Self == HeartRateFormat {
-    public static var heartRate: HeartRateFormat {
-        HeartRateFormat()
     }
 }

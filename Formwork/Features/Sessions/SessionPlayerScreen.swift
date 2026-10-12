@@ -276,7 +276,7 @@ private struct SessionEntryPage: View {
                     entry.pictogram,
                     title: entry.title,
                     subtitle: entry.exercise?.categories.formatted(.exerciseCategories),
-                    badge: entry.status.isPending ? nil : entry.status.pictogram
+                    badge: entry.status.badge
                 )
                 .accessibilityValue(entry.status.title)
 

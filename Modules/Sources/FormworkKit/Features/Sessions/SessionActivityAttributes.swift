@@ -74,7 +74,7 @@ extension SessionActivityAttributes.ContentState {
             target: current.target,
             pictogram: current.pictogram,
             workout: session.workout?.pictogram ?? .workout,
-            status: current.status.isPending ? nil : current.status.pictogram,
+            status: current.status.badge,
             startDate: session.startDate,
             resolved: session.resolvedCount,
             total: (session.entries ?? []).count,

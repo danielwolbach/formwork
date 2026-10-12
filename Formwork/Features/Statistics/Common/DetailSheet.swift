@@ -18,7 +18,6 @@ struct DetailSheet<Content: View>: View {
 
     private let info: String
 
-    @ViewBuilder
     private let content: Content
 
     init(_ item: some Describable, subtitle: String?, @ViewBuilder content: () -> Content) {

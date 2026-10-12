@@ -7,9 +7,6 @@
 
 import AppIntents
 import FormworkKit
-import FormworkUI
-import SwiftData
-import SwiftUI
 
 struct OpenWorkoutIntent: OpenIntent, TargetContentProvidingIntent {
     static let title: LocalizedStringResource = "intent.openWorkout.title"

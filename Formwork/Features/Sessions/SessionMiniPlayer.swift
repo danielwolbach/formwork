@@ -117,12 +117,9 @@ struct SessionMiniPlayer: View {
             .accessibilityLabel(Text(.sessionProgressLabel(resolved: session.resolvedCount, total: (session.entries ?? []).count)))
     }
 
-    @ViewBuilder
     private func row(for entry: SessionEntry) -> some View {
-        let badge = entry.status.isPending ? nil : entry.status.pictogram
-
         HStack {
-            PictogramView(entry.pictogram, badge: badge)
+            PictogramView(entry.pictogram, badge: entry.status.badge)
                 .frame(width: 32)
 
             VStack(alignment: .leading, spacing: 0) {

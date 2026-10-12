@@ -33,7 +33,7 @@ struct SessionStatus: View {
                 Divider()
                     .frame(height: 12)
 
-                elapsed
+                SessionElapsedTime(session)
             }
             .font(.caption2)
             .monospacedDigit()
@@ -41,38 +41,6 @@ struct SessionStatus: View {
         }
         .accessibilityElement(children: .combine)
         .accessibilityAddTraits(.updatesFrequently)
-    }
-
-    @ViewBuilder
-    private var elapsed: some View {
-        if let ended = session.endDate {
-            Text(formatted(ended.timeIntervalSince(session.startDate)))
-                .accessibilityLabel(spoken(ended.timeIntervalSince(session.startDate)))
-        } else {
-            TimelineView(.periodic(from: session.startDate, by: 1)) { context in
-                let text = formatted(context.date.timeIntervalSince(session.startDate))
-
-                Text(text)
-                    .contentTransition(.numericText(countsDown: false))
-                    .animation(.default, value: text)
-                    // Read as a time of day otherwise.
-                    .accessibilityLabel(spoken(context.date.timeIntervalSince(session.startDate)))
-            }
-        }
-    }
-
-    private func formatted(_ interval: TimeInterval) -> String {
-        let duration = Duration.seconds(interval)
-
-        return if duration < .seconds(3600) {
-            duration.formatted(.time(pattern: .minuteSecond))
-        } else {
-            duration.formatted(.time(pattern: .hourMinute(padHourToLength: 1, roundSeconds: .down)))
-        }
-    }
-
-    private func spoken(_ interval: TimeInterval) -> String {
-        Duration.seconds(interval).formatted(.units(width: .wide))
     }
 }
 

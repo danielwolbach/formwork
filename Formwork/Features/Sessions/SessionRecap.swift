@@ -103,8 +103,8 @@ private struct SessionEntryRow: View {
         .contentShape(.rect)
     }
 
-    private var badge: Pictogram {
-        entry.isBest ? .recordBadge : entry.status.pictogram
+    private var badge: Pictogram? {
+        entry.isBest ? .recordBadge : entry.status.badge
     }
 
     private var details: [Detail] {

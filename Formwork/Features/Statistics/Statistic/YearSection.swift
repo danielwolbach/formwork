@@ -12,7 +12,6 @@ import SwiftUI
 struct YearSection<Content: View>: View {
     private let years: ClosedRange<Int>
 
-    @ViewBuilder
     private let content: (Int) -> Content
 
     @State

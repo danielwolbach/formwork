@@ -214,7 +214,7 @@ extension Session {
 
         entry.status = .pending
         currentEntry = entry
-        renumber([entry] + pendingEntries.filter { $0 !== entry })
+        reorderPending([entry] + pendingEntries.filter { $0 !== entry })
     }
 
     public func remove(_ entry: SessionEntry) {
@@ -231,7 +231,9 @@ extension Session {
     }
 
     public func reorderPending(_ entries: [SessionEntry]) {
-        renumber(entries)
+        for (order, entry) in entries.enumerated() {
+            entry.order = order
+        }
     }
 
     public func add(_ exercises: [(exercise: Exercise, target: ExerciseTarget)]) {
@@ -293,12 +295,6 @@ extension Session {
             return nil
         }
         return hour * 60 + minute
-    }
-
-    private func renumber(_ entries: [SessionEntry]) {
-        for (order, entry) in entries.enumerated() {
-            entry.order = order
-        }
     }
 
     private func advance(as status: SessionEntry.Status) {
