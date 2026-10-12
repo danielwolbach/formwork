@@ -1,35 +1,47 @@
 {
+  "features" : [
+    "refractivity",
+    "specular-location"
+  ],
   "fill" : {
-    "linear-gradient" : [
-      "srgb:0.20638,0.53835,1.00000,1.00000",
-      "srgb:0.21190,0.33359,1.00000,1.00000"
-    ]
+    "automatic-gradient" : "srgb:0.00000,0.30914,0.74546,1.00000"
   },
   "groups" : [
     {
+      "blur-material" : 0.5,
       "layers" : [
         {
+          "glass" : true,
           "image-name" : "person.svg",
           "name" : "Person",
           "position" : {
             "scale" : 1,
             "translation-in-points" : [
-              -22,
-              144
+              -8.496699392457572,
+              32
             ]
           }
         }
       ],
+      "lighting" : "individual",
+      "name" : "Person",
+      "refractivity" : {
+        "depth" : 0.5,
+        "enabled" : true,
+        "strength" : 0
+      },
       "shadow" : {
         "kind" : "neutral",
         "opacity" : 0.5
       },
+      "specular" : "inside",
       "translucency" : {
         "enabled" : true,
         "value" : 0.3
       }
     },
     {
+      "blur-material" : null,
       "layers" : [
         {
           "image-name" : "dumbbell.svg",
@@ -37,19 +49,27 @@
           "position" : {
             "scale" : 1,
             "translation-in-points" : [
-              269,
-              -54
+              -8.496699392457572,
+              32
             ]
           }
         }
       ],
+      "lighting" : "combined",
+      "name" : "Dumbbell",
+      "refractivity" : {
+        "depth" : 0.5,
+        "enabled" : true,
+        "strength" : 0
+      },
       "shadow" : {
         "kind" : "neutral",
         "opacity" : 0.5
       },
+      "specular" : "inside",
       "translucency" : {
         "enabled" : true,
-        "value" : 0.3
+        "value" : 0.4
       }
     }
   ],
