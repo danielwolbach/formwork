@@ -79,7 +79,11 @@ extension Action {
 
     public static let keepEditing = Action(title: .actionKeepEditingTitle, image: "pencil", role: .cancel)
 
+    public static let allow = Action(title: .actionAllowTitle, image: "checkmark")
+
     public static let openSettings = Action(title: .actionOpenSettingsTitle, image: "gear")
+
+    public static let allowNotifications = Action(title: .actionAllowNotificationsTitle, image: "bell")
 
     public static let connectToHealth = Action(title: .actionConnectToHealthTitle, image: "heart")
 

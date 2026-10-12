@@ -808,7 +808,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Connect to Apple Health to sync your workouts and get more statistics insights."
+            "value" : "Connect to Apple Health to save your sessions as workouts and track your body weight and body fat."
           }
         }
       }
@@ -1072,7 +1072,18 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Notifications are turned off for this app."
+            "value" : "Notifications are turned off for Formwork, so reminders can't be delivered."
+          }
+        }
+      }
+    },
+    "field.remindersNotDetermined.message" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Allow notifications to get reminders when a scheduled workout is due."
           }
         }
       }
@@ -1778,6 +1789,50 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Unlimited"
+          }
+        }
+      }
+    },
+    "permissions.health.message" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save your sessions as workouts in Apple Health and track your body weight and body fat in Formwork."
+          }
+        }
+      }
+    },
+    "permissions.health.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Health"
+          }
+        }
+      }
+    },
+    "permissions.reminders.message" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Get a reminder on days a workout is planned, and another shortly before you usually start."
+          }
+        }
+      }
+    },
+    "permissions.reminders.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reminders"
           }
         }
       }

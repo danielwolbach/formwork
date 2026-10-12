@@ -15,46 +15,35 @@ struct OnboardingScreen: View {
     @Environment(\.modelContext)
     private var modelContext: ModelContext
 
-    @Environment(\.dismiss)
-    private var dismiss: DismissAction
-
     @Environment(\.units)
     private var units: Units
 
-    @AppStorage(StorageKeys.onboardingPending)
-    private var onboardingPending: Bool = true
+    @State
+    private var page: Page = .welcome
 
     @State
-    private var page: Page? = .welcome
+    private var showsPermissions: Bool = false
 
     var body: some View {
-        ScrollView(.horizontal) {
-            HStack(spacing: 0) {
-                ForEach(Page.allCases, id: \.self) { page in
-                    PageView(page: page)
-                        .containerRelativeFrame(.horizontal)
-                }
-            }
-            .scrollTargetLayout()
-        }
-        .scrollTargetBehavior(.viewAligned)
-        .scrollPosition(id: $page)
-        .scrollIndicators(.hidden)
-        .sensoryFeedback(.impact(flexibility: .soft), trigger: page)
-        .safeAreaBar(edge: .bottom) {
-            controls
-        }
-        .background {
-            LinearGradient(colors: [current.tint.color.opacity(0.25), .clear], startPoint: .top, endPoint: .center)
-                .animation(.smooth, value: current)
-                .ignoresSafeArea()
+        if showsPermissions {
+            PermissionsScreen()
+                .transition(.push(from: .trailing))
+        } else {
+            pages
+                .transition(.push(from: .trailing))
         }
     }
 
-    private var controls: some View {
-        VStack(spacing: 32) {
-            indicator
-
+    private var pages: some View {
+        OnboardingPager(selection: $page) { page in
+            switch page {
+            case .welcome: WelcomePreview()
+            case .catalog: CatalogPreview()
+            case .workouts: WorkoutPreview()
+            case .sessions: SessionPreview()
+            case .statistics: StatisticsPreview()
+            }
+        } controls: {
             Button(.continue) {
                 advance()
             }
@@ -63,29 +52,10 @@ struct OnboardingScreen: View {
             .buttonStyle(.glassProminent)
             .controlSize(.large)
         }
-        .padding(.horizontal)
-    }
-
-    private var indicator: some View {
-        HStack(spacing: 6) {
-            ForEach(Page.allCases, id: \.rawValue) { page in
-                Capsule()
-                    .fill(.tint)
-                    .opacity(page == current ? 1 : 0.2)
-                    .frame(width: page == current ? 20 : 6, height: 6)
-            }
-        }
-        .animation(.snappy, value: current)
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel(Text(.onboardingPageLabel(page: current.rawValue + 1, count: Page.allCases.count)))
-    }
-
-    private var current: Page {
-        page ?? .welcome
     }
 
     private func advance() {
-        guard let next = Page(rawValue: current.rawValue + 1) else {
+        guard let next = page.next else {
             finish()
             return
         }
@@ -102,12 +72,13 @@ struct OnboardingScreen: View {
             Logger.storage.error("Seeding starter catalog failed: \(error, privacy: .public)")
         }
 
-        onboardingPending = false
-        dismiss()
+        withAnimation(.snappy) {
+            showsPermissions = true
+        }
     }
 }
 
-private enum Page: Int, CaseIterable {
+private enum Page: @MainActor OnboardingPage {
     case welcome, catalog, workouts, sessions, statistics
 
     var tint: Pictogram.Tint {
@@ -137,55 +108,6 @@ private enum Page: Int, CaseIterable {
         case .workouts: .onboardingWorkoutsMessage
         case .sessions: .onboardingSessionsMessage
         case .statistics: .onboardingStatisticsMessage
-        }
-    }
-}
-
-private struct PageView: View {
-    let page: Page
-
-    var body: some View {
-        ViewThatFits(in: .vertical) {
-            content
-
-            ScrollView {
-                content
-            }
-        }
-    }
-
-    var content: some View {
-        VStack(spacing: 0) {
-            preview
-                .frame(maxHeight: .infinity)
-                .accessibilityHidden(true)
-
-            VStack(spacing: 16) {
-                Text(page.title)
-                    .font(.title)
-                    .fontWeight(.bold)
-                    .accessibilityAddTraits(.isHeader)
-
-                Text(page.message)
-                    .font(.body)
-                    .foregroundStyle(.secondary)
-            }
-            .multilineTextAlignment(.center)
-            .padding(.horizontal, 16)
-            .frame(maxHeight: .infinity)
-        }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 64)
-    }
-
-    @ViewBuilder
-    private var preview: some View {
-        switch page {
-        case .welcome: WelcomePreview()
-        case .catalog: CatalogPreview()
-        case .workouts: WorkoutPreview()
-        case .sessions: SessionPreview()
-        case .statistics: StatisticsPreview()
         }
     }
 }

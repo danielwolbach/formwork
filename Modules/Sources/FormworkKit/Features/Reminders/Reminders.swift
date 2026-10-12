@@ -20,6 +20,22 @@ public struct Reminder: Hashable, Sendable {
     public let kind: Kind
 }
 
+extension Reminder {
+    public var title: String {
+        switch kind {
+        case .daily: String(localized: .reminderDailyTitle)
+        case let .upcoming(workout): workout
+        }
+    }
+
+    public var message: String {
+        switch kind {
+        case let .daily(workouts): workouts.formatted(.list(type: .and))
+        case .upcoming: String(localized: .reminderUpcomingMessage(minutes: ReminderOptions.lead))
+        }
+    }
+}
+
 public struct ReminderOptions: Equatable, Sendable {
     public static let lead = 30
 
@@ -55,35 +71,22 @@ public enum Reminders {
         }
 
         Logger.reminders.debug("Scheduled \(reminders.count) reminders")
+    }
 
-        guard !reminders.isEmpty else {
-            return
-        }
-
-        Task {
-            if await center.notificationSettings().authorizationStatus == .notDetermined {
-                do {
-                    let granted = try await center.requestAuthorization(options: [.alert, .sound])
-                    Logger.reminders.info("Requested authorization, granted: \(granted)")
-                } catch {
-                    Logger.reminders.error("Requesting authorization failed: \(error, privacy: .public)")
-                }
-            }
+    public static func requestAuthorization() async {
+        do {
+            let granted = try await UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound])
+            Logger.reminders.info("Requested authorization, granted: \(granted)")
+        } catch {
+            Logger.reminders.error("Requesting authorization failed: \(error, privacy: .public)")
         }
     }
 
     private static func request(for reminder: Reminder, identifier: String) -> UNNotificationRequest {
         let content = UNMutableNotificationContent()
+        content.title = reminder.title
+        content.body = reminder.message
         content.sound = .default
-
-        switch reminder.kind {
-        case let .daily(workouts):
-            content.title = String(localized: .reminderDailyTitle)
-            content.body = workouts.formatted(.list(type: .and))
-        case let .upcoming(workout):
-            content.title = workout
-            content.body = String(localized: .reminderUpcomingMessage(minutes: ReminderOptions.lead))
-        }
 
         let components = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: reminder.date)
         let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: false)

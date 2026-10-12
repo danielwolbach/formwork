@@ -117,12 +117,35 @@ extension StarterCatalog.Samples {
         .rate(2.8)
     }
 
+    public static var bodyFat: Reading {
+        .percent(0.18)
+    }
+
     public static func personalBest(in units: Units) -> Reading {
         .weight(kilograms: kilograms(metric: 90, imperial: 200, in: units))
     }
 
     public static func totalVolume(in units: Units) -> Reading {
         .weight(kilograms: kilograms(metric: 12480, imperial: 27500, in: units))
+    }
+
+    public static func bodyWeight(in units: Units) -> Reading {
+        .weight(kilograms: kilograms(metric: 78.4, imperial: 173, in: units))
+    }
+
+    public static func reminders(calendar: Calendar = .current) -> [Reminder] {
+        guard let workout = StarterCatalog.workouts(in: .current).first.map({ String(localized: $0.name) }) else {
+            preconditionFailure("The starter catalog has no workout.")
+        }
+
+        let today = calendar.startOfDay(for: .now)
+        let upcoming = calendar.date(bySettingHour: 17, minute: 30, second: 0, of: today) ?? today
+        let daily = calendar.date(byAdding: .minute, value: ReminderOptions.defaultDailyMinute, to: today) ?? today
+
+        return [
+            Reminder(date: upcoming, kind: .upcoming(workout: workout)),
+            Reminder(date: daily, kind: .daily(workouts: [workout])),
+        ]
     }
 
     public static func weightTarget(in units: Units) -> ExerciseTarget {

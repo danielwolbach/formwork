@@ -176,6 +176,13 @@ struct SettingsSheet: View {
                                 openURL(url)
                             }
                         }
+                    } else if notificationStatus == .notDetermined {
+                        callToAction(.fieldRemindersNotDeterminedMessage, action: .allowNotifications) {
+                            Task {
+                                await Reminders.requestAuthorization()
+                                notificationStatus = await UNUserNotificationCenter.current().notificationSettings().authorizationStatus
+                            }
+                        }
                     } else {
                         Toggle(isOn: $isDailyReminderEnabled) {
                             Text(.fieldDailyReminderTitle)
