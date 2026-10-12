@@ -1502,7 +1502,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Organize your exercises in the catalog and add notes and guides."
+            "value" : "Build your personal catalog of exercises that match your training goals."
           }
         }
       }
@@ -1513,7 +1513,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Manage Your Exercises"
+            "value" : "Create Your Exercises"
           }
         }
       }
@@ -1535,7 +1535,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Follow your workout set by set while you train."
+            "value" : "Start a session at the gym and log every exercise as you go. The live tracker shows your target and what's next."
           }
         }
       }
@@ -1546,7 +1546,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Train Live"
+            "value" : "Track Your Session"
           }
         }
       }
@@ -1557,7 +1557,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Track your progress and insights from your past sessions."
+            "value" : "Every finished session feeds your statistics, so you can see how your training develops over time and where you're getting stronger."
           }
         }
       }
@@ -1579,7 +1579,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Your companion for every workout."
+            "value" : "Your fast and straightforward workout tracker that gets out of the way."
           }
         }
       }
@@ -1590,7 +1590,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Welcome to Formwork"
+            "value" : "Meet Formwork"
           }
         }
       }
@@ -1601,7 +1601,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Create workouts to plan exercises and set goals."
+            "value" : "Combine exercises into workouts and give each one a target, so you always know what you're aiming for."
           }
         }
       }
