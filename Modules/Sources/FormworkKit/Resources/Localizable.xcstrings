@@ -4,6 +4,12 @@
     "comparison.direction.down.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abwärtstrend"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -15,6 +21,12 @@
     "comparison.direction.flat.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Konstant"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -26,6 +38,12 @@
     "comparison.direction.up.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aufwärtstrend"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -37,6 +55,12 @@
     "exercise.category.arms.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arme"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -48,6 +72,12 @@
     "exercise.category.back.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rücken"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -59,6 +89,12 @@
     "exercise.category.cardio.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cardio"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -70,6 +106,12 @@
     "exercise.category.chest.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Brust"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -81,6 +123,12 @@
     "exercise.category.core.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Core"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -92,6 +140,12 @@
     "exercise.category.flexibility.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Flexibilität"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -103,6 +157,12 @@
     "exercise.category.legs.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beine"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -114,6 +174,12 @@
     "exercise.category.mindfulness.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Achtsamkeit"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -125,6 +191,12 @@
     "exercise.category.other.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sonstige"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -136,6 +208,12 @@
     "exercise.category.shoulders.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schultern"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -147,6 +225,12 @@
     "exercise.deleted.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gelöschte Übung"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -158,6 +242,12 @@
     "exercise.kind.bodyweight.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Körpergewicht"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -169,6 +259,12 @@
     "exercise.kind.distance.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Distanz"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -180,6 +276,12 @@
     "exercise.kind.duration.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dauer"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -191,6 +293,12 @@
     "exercise.kind.weight.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gewicht"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -202,6 +310,24 @@
     "exercise.target.bodyweight.rank" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%1$(count)lld Wdh."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%1$(count)lld Wdh."
+                }
+              }
+            }
+          }
+        },
         "en" : {
           "variations" : {
             "plural" : {
@@ -225,6 +351,12 @@
     "exercise.target.bodyweight.scheme" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$(sets)lld × %2$(reps)lld"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -236,6 +368,12 @@
     "exercise.target.distance.scheme" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$(sets)lld × %2$(distance)@"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -247,6 +385,12 @@
     "exercise.target.duration.scheme" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$(sets)lld × %2$(duration)@"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -258,6 +402,12 @@
     "exercise.target.weight.scheme" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$(sets)lld × %2$(reps)lld"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -269,6 +419,24 @@
     "format.exerciseCount.scheme" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%1$(count)lld Übung"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%1$(count)lld Übungen"
+                }
+              }
+            }
+          }
+        },
         "en" : {
           "variations" : {
             "plural" : {
@@ -292,6 +460,12 @@
     "format.heartRate.scheme" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%(bpm)lld S/min"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -303,6 +477,24 @@
     "format.pendingCount.scheme" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%1$(count)lld ausstehend"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%1$(count)lld ausstehend"
+                }
+              }
+            }
+          }
+        },
         "en" : {
           "variations" : {
             "plural" : {
@@ -326,6 +518,12 @@
     "format.plusMore.scheme" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%(count)lld weitere"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -335,23 +533,98 @@
       }
     },
     "intent.backward.title" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zurück"
+          }
+        }
+      }
     },
     "intent.complete.title" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abschließen"
+          }
+        }
+      }
     },
     "intent.forward.title" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weiter"
+          }
+        }
+      }
     },
     "intent.undo.title" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rückgängig"
+          }
+        }
+      }
     },
     "intent.workout.title" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Workout"
+          }
+        }
+      }
+    },
+    "link.legal.privacy" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "https://www.formworkfitness.com/de/legal/privacy-policy"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "https://www.formworkfitness.com/legal/privacy-policy"
+          }
+        }
+      }
+    },
+    "link.legal.terms" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "https://www.formworkfitness.com/de/legal/terms-of-service"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "https://www.formworkfitness.com/legal/terms-of-service"
+          }
+        }
+      }
     },
     "pictogram.tint.blue.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Blau"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -363,6 +636,12 @@
     "pictogram.tint.brown.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Braun"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -374,6 +653,12 @@
     "pictogram.tint.cyan.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cyan"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -385,6 +670,12 @@
     "pictogram.tint.gray.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grau"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -396,6 +687,12 @@
     "pictogram.tint.green.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grün"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -407,6 +704,12 @@
     "pictogram.tint.indigo.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Indigo"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -418,6 +721,12 @@
     "pictogram.tint.mint.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mint"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -429,6 +738,12 @@
     "pictogram.tint.orange.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Orange"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -440,6 +755,12 @@
     "pictogram.tint.pink.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pink"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -451,6 +772,12 @@
     "pictogram.tint.purple.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Violett"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -462,6 +789,12 @@
     "pictogram.tint.red.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rot"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -473,6 +806,12 @@
     "pictogram.tint.yellow.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gelb"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -484,6 +823,12 @@
     "quantity.best.info" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das beste Ergebnis, das du bei der Übung erreicht hast."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -495,6 +840,12 @@
     "quantity.best.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beste"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -506,6 +857,12 @@
     "quantity.completedExercises.info" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wie viele Übungen du in dieser Session abgeschlossen hast."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -517,6 +874,12 @@
     "quantity.completedExercises.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abgeschlossene Übungen"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -528,6 +891,12 @@
     "quantity.completionRate.info" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Anteil der Übungen in dieser Session, die du abgeschlossen statt übersprungen hast."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -539,6 +908,12 @@
     "quantity.completionRate.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abschlussrate"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -550,6 +925,12 @@
     "quantity.duration.info" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wie lange die Session von Anfang bis Ende gedauert hat."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -561,6 +942,12 @@
     "quantity.duration.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dauer"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -572,6 +959,12 @@
     "quantity.endTime.info" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Uhrzeit, zu der du die Session abgeschlossen hast."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -583,6 +976,12 @@
     "quantity.endTime.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Endzeit"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -594,6 +993,12 @@
     "quantity.exerciseDuration.info" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wie lange eine Übung in dieser Session üblicherweise gedauert hat."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -605,6 +1010,12 @@
     "quantity.exerciseDuration.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dauer pro Übung"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -616,6 +1027,12 @@
     "quantity.oneRepMax.info" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eine Schätzung des höchsten Gewichts, das du für eine einzige Wiederholung heben könntest."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -627,6 +1044,12 @@
     "quantity.oneRepMax.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "One Rep Max"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -638,6 +1061,12 @@
     "quantity.plannedExercises.info" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wie viele Übungen die Session hatte, egal ob abgeschlossen oder übersprungen."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -649,6 +1078,12 @@
     "quantity.plannedExercises.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geplante Übungen"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -660,6 +1095,12 @@
     "quantity.startTime.info" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Uhrzeit, zu der du die Session gestartet hast."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -671,6 +1112,12 @@
     "quantity.startTime.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Startzeit"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -682,6 +1129,12 @@
     "quantity.volume.info" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das Gesamtgewicht, das du in dieser Session bewegt hast: Gewicht × Wiederholungen × Sätze aller abgeschlossenen Übungen."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -693,6 +1146,12 @@
     "quantity.volume.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gesamtvolumen"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -704,6 +1163,12 @@
     "reminder.daily.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Workout für heute"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -715,6 +1180,12 @@
     "reminder.upcoming.message" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Startet üblicherweise in %(minutes)lld Minuten."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -726,6 +1197,12 @@
     "sessionEntry.status.completed.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abgeschlossen"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -737,6 +1214,12 @@
     "sessionEntry.status.pending.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ausstehend"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -748,6 +1231,12 @@
     "sessionEntry.status.skipped.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Übersprungen"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -759,6 +1248,12 @@
     "statistic.activeDays.info" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Tage, an denen du trainiert hast, sind hervorgehoben."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -770,6 +1265,12 @@
     "statistic.activeDays.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktive Tage"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -781,6 +1282,12 @@
     "statistic.bodyFat.info" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dein Körperfettanteil, wie in Health erfasst."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -792,6 +1299,12 @@
     "statistic.bodyFat.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Körperfettanteil"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -803,6 +1316,12 @@
     "statistic.bodyWeight.info" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dein Körpergewicht, wie in Health erfasst."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -814,6 +1333,12 @@
     "statistic.bodyWeight.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Körpergewicht"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -825,6 +1350,12 @@
     "statistic.categories.info" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wie sich deine abgeschlossenen Übungen auf die Kategorien verteilen. Eine Übung zählt für jede ihrer Kategorien."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -836,6 +1367,12 @@
     "statistic.categories.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kategorien"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -847,6 +1384,12 @@
     "statistic.completionRate.info" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Anteil der Übungen, die du abgeschlossen statt übersprungen hast."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -858,6 +1401,12 @@
     "statistic.completionRate.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abschlussrate"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -869,6 +1418,12 @@
     "statistic.completions.info" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wie oft du abgeschlossen hast."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -880,6 +1435,12 @@
     "statistic.completions.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abschlüsse"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -891,6 +1452,12 @@
     "statistic.favoriteExercise.info" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Übung, die du am häufigsten abgeschlossen hast. Bei Gleichstand gewinnt die, die du zuletzt gemacht hast."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -902,6 +1469,12 @@
     "statistic.favoriteExercise.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lieblingsübung"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -913,6 +1486,12 @@
     "statistic.favoriteWorkout.info" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das Workout, das du am häufigsten abgeschlossen hast. Bei Gleichstand gewinnt das, das du zuletzt gemacht hast."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -924,6 +1503,12 @@
     "statistic.favoriteWorkout.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lieblingsworkout"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -935,6 +1520,12 @@
     "statistic.lastCompleted.info" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Tag deines letzten Abschlusses."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -946,6 +1537,12 @@
     "statistic.lastCompleted.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zuletzt abgeschlossen"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -957,6 +1554,12 @@
     "statistic.mostSkippedExercise.info" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Übung, die du am häufigsten übersprungen hast. Vielleicht lohnt es sich, sie anzupassen oder zu ersetzen."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -968,6 +1571,12 @@
     "statistic.mostSkippedExercise.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Am häufigsten übersprungen"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -979,6 +1588,12 @@
     "statistic.oneRepMax.info" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eine Schätzung des höchsten Gewichts, das du für eine einzige Wiederholung heben könntest, basierend auf deinen abgeschlossenen Sätzen."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -990,6 +1605,12 @@
     "statistic.oneRepMax.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "One Rep Max"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1001,6 +1622,12 @@
     "statistic.personalBest.info" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das beste Ergebnis, das du jemals bei dieser Übung erreicht hast."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1012,6 +1639,12 @@
     "statistic.personalBest.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bestleistung"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1023,6 +1656,12 @@
     "statistic.progression.info" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dein bestes Ergebnis an jedem Trainingstag. Die Linie zeigt dein übliches Bestergebnis in den Wochen vor jedem Punkt."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1034,6 +1673,12 @@
     "statistic.progression.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entwicklung"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1045,6 +1690,12 @@
     "statistic.totalVolume.info" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das Gesamtgewicht, das du bewegt hast: Gewicht × Wiederholungen × Sätze aller abgeschlossenen Übungen."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1056,6 +1707,12 @@
     "statistic.totalVolume.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gesamtvolumen"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1067,6 +1724,12 @@
     "statistic.typicalDuration.info" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wie lange es üblicherweise dauert. Eine einzelne ungewöhnlich lange oder kurze Session verändert den Wert kaum."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1078,6 +1741,12 @@
     "statistic.typicalDuration.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Übliche Dauer"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1089,6 +1758,12 @@
     "statistic.typicalInterval.info" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wie viele Tage üblicherweise zwischen zwei Trainingstagen vergehen."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1100,6 +1775,12 @@
     "statistic.typicalInterval.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Übliches Intervall"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1111,6 +1792,12 @@
     "statistic.typicalStartTime.info" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Uhrzeit, zu der du üblicherweise startest. Es ist immer eine Startzeit, die du tatsächlich erfasst hast."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1122,6 +1809,12 @@
     "statistic.typicalStartTime.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Übliche Startzeit"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1133,6 +1826,12 @@
     "statistic.weeklySessions.info" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wie viele Sessions du im Schnitt pro Woche abschließt."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1144,6 +1843,12 @@
     "statistic.weeklySessions.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wöchentliche Sessions"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1155,6 +1860,12 @@
     "statistic.weekStreak.info" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wie viele Wochen in Folge du mindestens einmal trainiert hast. Die laufende Woche zählt so lange zu deiner Serie, bis sie vorbei ist."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1166,6 +1877,12 @@
     "statistic.weekStreak.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wochenserie"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1177,6 +1894,12 @@
     "unitSystem.imperial.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Imperial"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1188,6 +1911,12 @@
     "unitSystem.metric.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Metrisch"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1199,6 +1928,12 @@
     "workout.deleted.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gelöschtes Workout"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",

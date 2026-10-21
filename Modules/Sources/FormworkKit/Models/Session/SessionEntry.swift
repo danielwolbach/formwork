@@ -59,7 +59,6 @@ extension SessionEntry {
         exercise?.title ?? .init(localized: .exerciseDeletedTitle)
     }
 
-    /// Added during the session rather than planned by the workout, so it's removed instead of skipped.
     public var isAddedWithoutWorkout: Bool {
         workoutEntry == nil
     }

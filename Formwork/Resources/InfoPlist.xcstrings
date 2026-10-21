@@ -5,6 +5,12 @@
       "comment" : "Bundle display name",
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Formwork"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "new",
@@ -17,6 +23,12 @@
       "comment" : "Bundle name",
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Formwork"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "new",
@@ -28,6 +40,12 @@
     "NSCameraUsageDescription" : {
       "comment" : "Privacy - Camera Usage Description",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Formwork nutzt die Kamera, um QR-Codes an Trainingsgeräten zu scannen und Übungen mit ihrer Anleitung zu verknüpfen."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
@@ -40,6 +58,12 @@
       "comment" : "Privacy - Health Share Usage Description",
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Formwork zeigt deine Herzfrequenz während und nach einer Session an und stellt den Verlauf deines Körpergewichts dar."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "new",
@@ -52,6 +76,12 @@
       "comment" : "Privacy - Health Update Usage Description",
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Formwork speichert deine Sessions als Workouts und erfasst das Körpergewicht und den Körperfettanteil, die du einträgst."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "new",

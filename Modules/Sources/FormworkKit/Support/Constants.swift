@@ -44,9 +44,9 @@ public enum WidgetKind {
 }
 
 public enum LegalLinks {
-    public static let terms = URL(string: "https://formworkfitness.com/legal/terms-of-service")!
+    public static let terms = URL(string: String(localized: .linkLegalTerms))!
 
-    public static let privacy = URL(string: "https://formworkfitness.com/legal/privacy-policy")!
+    public static let privacy = URL(string: String(localized: .linkLegalPrivacy))!
 }
 
 public enum AppMetadata {

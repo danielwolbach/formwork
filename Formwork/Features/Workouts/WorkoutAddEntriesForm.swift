@@ -108,7 +108,7 @@ struct WorkoutAddEntriesForm: View {
                 }
             }
         }
-        .navigationTitle(.screenAddExerciseTitle)
+        .navigationTitle(.screenAddExercisesTitle)
         .navigationBarTitleDisplayMode(.inline)
         .searchable(text: $searchText, isPresented: $searchPresented)
         .animation(.snappy, value: searchText)

@@ -150,10 +150,8 @@ struct SessionEntryPager<Page: View>: View {
             if session.nextEntry != nil {
                 navigator.forward()
             }
-        } else if predicted > width / 2 {
-            if session.previousEntry != nil {
-                navigator.backward()
-            }
+        } else if predicted > width / 2, session.previousEntry != nil {
+            navigator.backward()
         }
 
         withAnimation(.snappy) {

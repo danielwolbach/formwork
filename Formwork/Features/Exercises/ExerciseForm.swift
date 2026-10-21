@@ -71,7 +71,7 @@ struct ExerciseForm: View {
                     }
                 }
 
-                SectionView(.fieldCategoryTitle) {
+                SectionView(.fieldCategoriesTitle) {
                     GroupBox {
                         ExerciseCategoryPicker(categories: $draft.categories)
                     }
