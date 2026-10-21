@@ -94,6 +94,22 @@ struct WorkoutCard: View {
                     deleteAlert = true
                 }
             }
+        } preview: {
+            ContentStack(spacing: .groups) {
+                PictogramRow(workout.pictogram, title: workout.title, subtitle: details)
+
+                if !workout.exerciseCategories.isEmpty {
+                    HFlow {
+                        ForEach(workout.exerciseCategories) { category in
+                            Label(category.title, systemImage: category.pictogram.image)
+                                .labelStyle(.chip(tint: category.pictogram.color))
+                        }
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                }
+            }
+            .frame(width: 360)
+            .padding(.vertical)
         }
         .swipeActions(edge: .leading) {
             if workout.isArchived {

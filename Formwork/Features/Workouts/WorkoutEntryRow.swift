@@ -19,6 +19,9 @@ struct WorkoutEntryRow: View {
     @Environment(\.units)
     private var units: Units
 
+    @Environment(\.statistics)
+    private var statistics: Statistics
+
     @State
     private var removeAlert: Bool = false
 
@@ -69,6 +72,18 @@ struct WorkoutEntryRow: View {
                     removeAlert = true
                 }
             }
+        } preview: {
+            let history = statistics.history(.entry(entry))
+
+            ContentStack(spacing: .groups) {
+                PictogramRow(entry.pictogram, title: entry.title, subtitle: entry.target.formatted(.exerciseTarget(units: units)), badge: badge)
+
+                if !history.occurrences.isEmpty {
+                    StatisticGrid(history, includesCharts: false)
+                }
+            }
+            .frame(width: 360)
+            .padding(.vertical)
         }
         .swipeActions(edge: .leading) {
             Button(.viewStatistics) {

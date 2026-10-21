@@ -22,6 +22,9 @@ struct ExerciseRow: View {
     @Environment(\.presentPaywall)
     private var presentPaywall: PresentPaywallAction
 
+    @Environment(\.statistics)
+    private var statistics: Statistics
+
     @State
     private var deleteAlert: Bool = false
 
@@ -75,6 +78,18 @@ struct ExerciseRow: View {
                     deleteAlert = true
                 }
             }
+        } preview: {
+            let history = statistics.history(.exercise(exercise))
+
+            ContentStack(spacing: .groups) {
+                PictogramRow(exercise.pictogram, title: exercise.title, subtitle: exercise.categories.formatted(.exerciseCategories))
+
+                if !history.occurrences.isEmpty {
+                    StatisticGrid(history, includesCharts: false)
+                }
+            }
+            .frame(width: 360)
+            .padding(.vertical)
         }
         .swipeActions(edge: .leading) {
             if exercise.isArchived {
