@@ -201,7 +201,7 @@ private struct StatisticsPreview: View {
     private var units: Units
 
     var body: some View {
-        TileGrid {
+        TileGrid(columns: 2) {
             ReadingCard(Statistic.weekStreak, reading: StarterCatalog.Samples.weekStreak)
             ReadingCard(Statistic.weeklySessions, reading: StarterCatalog.Samples.weeklySessions)
             ReadingCard(Statistic.personalBest, reading: StarterCatalog.Samples.personalBest(in: units))

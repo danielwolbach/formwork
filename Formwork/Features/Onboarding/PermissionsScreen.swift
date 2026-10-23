@@ -188,7 +188,7 @@ private struct HealthPreview: View {
                     .frame(width: 72, height: 72)
             }
 
-            TileGrid {
+            TileGrid(columns: 2) {
                 ReadingCard(Statistic.bodyWeight, reading: StarterCatalog.Samples.bodyWeight(in: units))
                 ReadingCard(Statistic.bodyFat, reading: StarterCatalog.Samples.bodyFat)
             }

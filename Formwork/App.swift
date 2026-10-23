@@ -101,15 +101,11 @@ private struct AppContent: View {
             }
 
             Tab(.screenWorkoutsTitle, systemImage: "clipboard", value: .workouts) {
-                NavigationRoot {
-                    WorkoutIndexScreen()
-                }
+                WorkoutIndexScreen()
             }
 
             Tab(.screenCatalogTitle, systemImage: "magazine", value: .catalog) {
-                NavigationRoot {
-                    CatalogScreen()
-                }
+                CatalogScreen()
             }
 
             Tab(.screenStatisticsTitle, systemImage: "flame", value: .statistics) {

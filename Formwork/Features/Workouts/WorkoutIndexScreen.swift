@@ -22,6 +22,9 @@ struct WorkoutIndexScreen: View {
         }
     }
 
+    @Environment(\.horizontalSizeClass)
+    private var horizontalSizeClass: UserInterfaceSizeClass?
+
     @Environment(\.modelContext)
     private var context: ModelContext
 
@@ -43,61 +46,89 @@ struct WorkoutIndexScreen: View {
     @State
     private var sheet: Sheet? = nil
 
+    @State
+    private var selection: Workout.ID?
+
+    @State
+    private var detailIdentity = UUID()
+
+    @State
+    private var compactColumn: NavigationSplitViewColumn = .sidebar
+
     var body: some View {
         let matching = matchingWorkouts
 
-        Group {
-            if workouts.isEmpty {
-                emptyState
-            } else {
-                ScrollView {
-                    ContentStack {
-                        LazyVStack(spacing: 0) {
-                            ForEach(matching) { workout in
-                                WorkoutCard(workout)
+        NavigationSplitView(preferredCompactColumn: $compactColumn) {
+            Group {
+                if workouts.isEmpty {
+                    emptyState
+                } else {
+                    ScrollView {
+                        ContentStack {
+                            LazyVStack(spacing: 0) {
+                                ForEach(matching) { workout in
+                                    Button {
+                                        select(workout.id)
+                                    } label: {
+                                        WorkoutCard(workout, isSelected: isShownSelected(workout.id))
+                                    }
+                                    .buttonStyle(.plain)
+                                }
+                            }
+                            .swipeActionsContainer()
+                            .animation(.snappy, value: workouts.count)
+                            .edgeToEdge()
+                        }
+                    }
+                    .overlay {
+                        if !trimmedSearchText.isEmpty, matching.isEmpty {
+                            ContentUnavailableView.search(text: trimmedSearchText)
+                        }
+                    }
+                    .contentMargins(.bottom, .sections, for: .scrollContent)
+                    .searchable(text: $searchText)
+                }
+            }
+            .navigationTitle(.screenWorkoutsTitle)
+            .toolbar {
+                Menu(.more) {
+                    Section {
+                        Button(.createWorkout) {
+                            createWorkout()
+                        }
+                    }
+
+                    Section {
+                        Menu(.sort) {
+                            Picker(.fieldSortTitle, selection: $sort) {
+                                Label(.fieldSortNameTitle, systemImage: "character")
+                                    .tag(Sort.name)
+
+                                Label(.fieldSortNewestTitle, systemImage: "clock")
+                                    .tag(Sort.newest)
                             }
                         }
-                        .swipeActionsContainer()
-                        .animation(.snappy, value: matching.count)
-                        .edgeToEdge()
                     }
                 }
-                .contentMargins(.bottom, .sections, for: .scrollContent)
-                .overlay {
-                    if !trimmedSearchText.isEmpty, matching.isEmpty {
-                        ContentUnavailableView.search(text: trimmedSearchText)
-                    }
-                }
-                .searchable(text: $searchText)
             }
-        }
-        .navigationTitle(.screenWorkoutsTitle)
-        .toolbar {
-            Menu(.more) {
-                Section {
-                    Button(.createWorkout) {
-                        createWorkout()
+            .animation(.snappy, value: searchText)
+            .animation(.snappy, value: sort)
+        } detail: {
+            ZStack {
+                NavigationRoot {
+                    if let id = selection, let workout = workouts.first(where: { $0.id == id }) {
+                        WorkoutScreen(workout)
+                    } else {
+                        ContentUnavailableView(.emptyWorkoutSelectionTitle, systemImage: "clipboard")
                     }
                 }
-
-                Section {
-                    Menu(.sort) {
-                        Picker(.fieldSortTitle, selection: $sort) {
-                            Label(.fieldSortNameTitle, systemImage: "character")
-                                .tag(Sort.name)
-
-                            Label(.fieldSortNewestTitle, systemImage: "clock")
-                                .tag(Sort.newest)
-                        }
-                    }
-                }
+                // A fresh stack pops whatever was pushed, even when the same workout is tapped again.
+                .id(detailIdentity)
             }
         }
         .sheet(item: $sheet) { sheet in
             sheet
         }
-        .animation(.snappy, value: searchText)
-        .animation(.snappy, value: sort)
     }
 
     private var emptyState: some View {
@@ -126,6 +157,18 @@ struct WorkoutIndexScreen: View {
             .sorted(using: sort.descriptor)
     }
 
+    /// A collapsed split view keeps the selection after going back, so it is only shown side by side with the detail.
+    private func isShownSelected(_ workout: Workout.ID) -> Bool {
+        horizontalSizeClass == .regular && selection == workout
+    }
+
+    private func select(_ workout: Workout.ID) {
+        selection = workout
+        detailIdentity = UUID()
+        // Buttons don't drive a collapsed split view the way list selection does, so it has to be told to show the detail.
+        compactColumn = .detail
+    }
+
     private func createWorkout() {
         if paywall.canAddWorkout(in: context) {
             sheet = .createWorkout
@@ -136,8 +179,6 @@ struct WorkoutIndexScreen: View {
 }
 
 #Preview {
-    NavigationRoot {
-        WorkoutIndexScreen()
-    }
-    .sampleData()
+    WorkoutIndexScreen()
+        .sampleData()
 }

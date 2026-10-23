@@ -9,12 +9,10 @@ import FormworkKit
 import SwiftUI
 
 enum Route: Hashable, View {
-    case sessions
     case archive
 
     var body: some View {
         switch self {
-        case .sessions: SessionListScreen()
         case .archive: ArchiveScreen()
         }
     }

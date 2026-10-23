@@ -14,29 +14,36 @@ import SwiftUI
 struct SessionRow: View {
     private let session: Session
 
+    private let isSelected: Bool
+
     @Environment(\.modelContext)
     private var context: ModelContext
 
     @State
     private var deleteAlert: Bool = false
 
-    init(_ session: Session) {
+    init(_ session: Session, isSelected: Bool = false) {
         self.session = session
+        self.isSelected = isSelected
     }
 
     var body: some View {
-        NavigationLink(value: session) {
-            HStack {
-                summary
+        HStack {
+            summary
 
-                Image(systemName: "chevron.forward")
-                    .foregroundStyle(.tertiary)
-                    .accessibilityHidden(true)
-            }
-            .padding(8)
-            .contentShape(.rect)
+            Image(systemName: "chevron.forward")
+                .foregroundStyle(.tertiary)
+                .accessibilityHidden(true)
         }
-        .buttonStyle(.plain)
+        .padding(8)
+        .contentShape(.rect)
+        .background {
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                .fill(.ultraThinMaterial)
+                .opacity(isSelected ? 1 : 0)
+                .animation(.snappy(duration: 0.1), value: isSelected)
+        }
+        .accessibilityAddTraits(isSelected ? [.isSelected] : [])
         .swipeActions {
             // No destructive role: it makes SwiftUI expect the row to disappear, so cancelling the alert leaves the button stuck.
             Button(Action.delete.title, systemImage: Action.delete.image) {
@@ -96,7 +103,7 @@ struct SessionRow: View {
 
 #Preview {
     NavigationRoot {
-        SessionRow(Samples.sessions.first!)
+        SessionRow(Samples.sessions.first!, isSelected: true)
     }
     .sampleData()
 }

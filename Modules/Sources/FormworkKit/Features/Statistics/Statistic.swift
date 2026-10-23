@@ -190,11 +190,11 @@ extension History.Subject {
                 .completions,
                 .typicalDuration,
                 .typicalStartTime,
+                .mostSkippedExercise,
+                .totalVolume,
                 .categories,
                 .favoriteWorkout,
                 .favoriteExercise,
-                .mostSkippedExercise,
-                .totalVolume,
             ]
         case .workout:
             [
@@ -205,9 +205,9 @@ extension History.Subject {
                 .activeDays,
                 .typicalStartTime,
                 .completions,
+                .categories,
                 .typicalInterval,
                 .totalVolume,
-                .categories,
             ]
         case let .exercise(exercise):
             Self.exerciseStatistics(for: exercise)
@@ -219,6 +219,6 @@ extension History.Subject {
     private static func exerciseStatistics(for exercise: Exercise?) -> [Statistic] {
         let weight: [Statistic] = exercise?.kind == .weight ? [.oneRepMax, .totalVolume] : []
 
-        return [.lastCompleted, .completionRate, .personalBest, .completions, .typicalDuration, .typicalInterval] + weight + [.progression, .activeDays]
+        return [.lastCompleted, .completionRate, .personalBest, .completions, .progression, .activeDays, .typicalDuration, .typicalInterval] + weight
     }
 }

@@ -10,6 +10,8 @@ import FormworkUI
 import SwiftUI
 
 struct ActiveDaysCard: View {
+    private static let spacing: CGFloat = 2
+
     private let activeDays: ActiveDays
 
     init(_ activeDays: ActiveDays) {
@@ -21,29 +23,52 @@ struct ActiveDaysCard: View {
         let weeks = stride(from: 0, to: days.count, by: 7).map { Array(days[$0 ..< min($0 + 7, days.count)]) }
 
         GroupBox {
-            HStack(spacing: 2) {
-                weekdays
+            GeometryReader { proxy in
+                let layout = Self.layout(in: proxy.size, weeks: weeks.count)
+                let visible = weeks.suffix(layout.weeks)
 
-                ForEach(weeks, id: \.first?.date) { week in
-                    column(of: week)
+                HStack(alignment: .top, spacing: Self.spacing) {
+                    weekdays(cell: layout.cell)
+
+                    ForEach(visible, id: \.first?.date) { week in
+                        column(of: week, cell: layout.cell)
+                    }
                 }
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel(Text(Self.summary(of: visible.flatMap(\.self))))
             }
-            .accessibilityElement(children: .ignore)
-            .accessibilityLabel(Text(Self.summary(of: days)))
-
-            Spacer(minLength: 0)
         } label: {
             Label(Statistic.activeDays.title, systemImage: Statistic.activeDays.pictogram.image)
         }
         .groupBoxStyle(.card)
     }
 
-    private var weekdays: some View {
+    static func summary(of days: [ActiveDays.Day]) -> LocalizedStringResource {
+        let past = days.filter { !$0.isAhead }
+        return .activeDaysSummaryLabel(active: past.count { $0.sessionCount > 0 }, total: past.count)
+    }
+
+    /// Cells shrink only as far as the charted weeks and the height require; any width left over shows more weeks.
+    private static func layout(in size: CGSize, weeks available: Int) -> (cell: CGFloat, weeks: Int) {
+        let minimumWeeks = CGFloat(min(History.chartedWeeks, available))
+        let fittingHeight = (size.height - 6 * spacing) / 7
+        let fittingWidth = (size.width - minimumWeeks * spacing) / (minimumWeeks + 1)
+        let cell = min(fittingHeight, fittingWidth)
+
+        guard cell > 0 else {
+            return (0, 0)
+        }
+
+        let columns = Int((size.width + spacing) / (cell + spacing))
+        return (cell, min(max(columns - 1, 0), available))
+    }
+
+    private func weekdays(cell size: CGFloat) -> some View {
         let symbols = activeDays.weekdaySymbols
 
-        return VStack(spacing: 2) {
+        return VStack(spacing: Self.spacing) {
             ForEach(symbols.indices, id: \.self) { index in
-                cell(.clear)
+                cell(.clear, size: size)
                     .overlay {
                         Text(verbatim: symbols[index])
                             .lineLimit(1)
@@ -55,21 +80,16 @@ struct ActiveDaysCard: View {
         .foregroundStyle(.tertiary)
     }
 
-    static func summary(of days: [ActiveDays.Day]) -> LocalizedStringResource {
-        let past = days.filter { !$0.isAhead }
-        return .activeDaysSummaryLabel(active: past.count { $0.sessionCount > 0 }, total: past.count)
-    }
-
-    private func cell(_ style: some ShapeStyle) -> some View {
+    private func cell(_ style: some ShapeStyle, size: CGFloat) -> some View {
         RoundedRectangle(cornerRadius: 4, style: .continuous)
             .fill(style)
-            .aspectRatio(1, contentMode: .fit)
+            .frame(width: size, height: size)
     }
 
-    private func column(of week: [ActiveDays.Day]) -> some View {
-        VStack(spacing: 2) {
+    private func column(of week: [ActiveDays.Day], cell size: CGFloat) -> some View {
+        VStack(spacing: Self.spacing) {
             ForEach(week) { day in
-                cell(fill(of: day))
+                cell(fill(of: day), size: size)
             }
         }
     }
@@ -89,7 +109,7 @@ struct ActiveDaysCard: View {
     let history = History(.all, among: Samples.sessions)
 
     TileGrid {
-        ActiveDaysCard(ActiveDays(history.weeks(16)))
+        ActiveDaysCard(ActiveDays(history.weeks(History.activeDaysWeeks)))
             .tileSpan(rows: 2, columns: 2)
     }
     .padding()

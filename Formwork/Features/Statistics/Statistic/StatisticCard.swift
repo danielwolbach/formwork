@@ -34,7 +34,7 @@ struct StatisticCard: View {
     private var label: some View {
         switch statistic.kind {
         case .formula, .measurement, .streak: ReadingCard(statistic, reading: statistic.reading(in: history), direction: statistic.direction(in: history))
-        case .activeDays: ActiveDaysCard(ActiveDays(history.weeks(History.chartedWeeks)))
+        case .activeDays: ActiveDaysCard(ActiveDays(history.weeks(History.activeDaysWeeks)))
         case .categories: CategoriesCard(Categories(history.recent))
         case .progression: ProgressionCard(Progression(history.weeks(History.chartedWeeks)))
         }

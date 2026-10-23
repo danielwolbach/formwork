@@ -23,12 +23,20 @@ enum Sheet: Identifiable, Hashable, View {
     case exerciseGuide(_ exercise: Exercise)
     case sessionProgress(_ session: Session)
     case sessionAddEntries(_ session: Session)
+    case sessions
     case settings
 
     var body: some View {
         // Outside the stack: pushed screens take the stack's environment, not its root view's, so a presenter inside would never reach them.
-        NavigationRoot {
-            content
+        Group {
+            if self == .sessions {
+                // A split view brings its own stacks, so it can't sit inside one.
+                content
+            } else {
+                NavigationRoot {
+                    content
+                }
+            }
         }
         .paywallPresenter()
         .sessionStarter()
@@ -51,6 +59,7 @@ enum Sheet: Identifiable, Hashable, View {
         case let .exerciseGuide(exercise): ExerciseGuideSheet(exercise)
         case let .sessionProgress(session): SessionProgressSheet(session)
         case let .sessionAddEntries(session): WorkoutAddEntriesForm(session: session)
+        case .sessions: SessionListScreen()
         case .settings: SettingsSheet()
         }
     }

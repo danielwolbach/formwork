@@ -16,6 +16,9 @@ struct StatisticsScreen: View {
     @Environment(\.statistics)
     private var statistics: Statistics
 
+    @State
+    private var sheet: Sheet?
+
     var body: some View {
         content
             .navigationTitle(.screenStatisticsTitle)
@@ -26,6 +29,9 @@ struct StatisticsScreen: View {
                 }
 
                 await Health.shared.refresh()
+            }
+            .sheet(item: $sheet) { sheet in
+                sheet
             }
     }
 
@@ -52,14 +58,19 @@ struct StatisticsScreen: View {
                 SectionView(.fieldRecentSessionsTitle) {
                     LazyVStack(spacing: 0) {
                         ForEach(statistics.sessions.prefix(5)) { session in
-                            SessionRow(session)
+                            NavigationLink(value: session) {
+                                SessionRow(session)
+                            }
+                            .buttonStyle(.plain)
                         }
                     }
                     .swipeActionsContainer()
                     .animation(.snappy, value: statistics.sessions.count)
                     .edgeToEdge()
                 } accessory: {
-                    NavigationLink(value: Route.sessions) {
+                    Button {
+                        sheet = .sessions
+                    } label: {
                         Label(.viewAll)
                     }
                     .labelStyle(.fixedTitleAndIcon)

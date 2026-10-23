@@ -9,6 +9,8 @@ import FormworkKit
 import SwiftUI
 
 struct NumberKeypad: View {
+    private static let keyHeights: ClosedRange<CGFloat> = 44 ... 64
+
     let format: NumberFormat
 
     let upperBound: Double
@@ -17,31 +19,38 @@ struct NumberKeypad: View {
     var text: String
 
     var body: some View {
-        TileGrid(columns: 3) {
-            ForEach(1 ... 9, id: \.self) { digit in
-                key(action: { appendDigit(String(digit)) }) {
-                    digitLabel(String(digit))
+        // Rows share the height they're offered within the key height range, so the keypad fits short sheets.
+        VStack(spacing: .items) {
+            ForEach([1, 4, 7], id: \.self) { first in
+                row {
+                    ForEach(first ..< first + 3, id: \.self) { digit in
+                        key(action: { appendDigit(String(digit)) }) {
+                            digitLabel(String(digit))
+                        }
+                    }
                 }
             }
 
-            if let separator = format.separator {
-                key(action: { appendSeparator(separator) }) {
-                    digitLabel(separator)
+            row {
+                if let separator = format.separator {
+                    key(action: { appendSeparator(separator) }) {
+                        digitLabel(separator)
+                    }
+                    .accessibilityLabel(Text(separatorLabel))
+                } else {
+                    Color.clear
                 }
-                .accessibilityLabel(Text(separatorLabel))
-            } else {
-                Color.clear.frame(height: 48)
-            }
 
-            key(action: { appendDigit("0") }) {
-                digitLabel("0")
-            }
+                key(action: { appendDigit("0") }) {
+                    digitLabel("0")
+                }
 
-            key(action: deleteLast) {
-                Image(systemName: "delete.backward")
-                    .font(.title3)
+                key(action: deleteLast) {
+                    Image(systemName: "delete.backward")
+                        .font(.title3)
+                }
+                .accessibilityLabel(Text(Action.delete.title))
             }
-            .accessibilityLabel(Text(Action.delete.title))
         }
     }
 
@@ -56,6 +65,13 @@ struct NumberKeypad: View {
         Text(label)
             .font(.title2)
             .fontWeight(.medium)
+    }
+
+    private func row(@ViewBuilder keys: () -> some View) -> some View {
+        HStack(spacing: .items) {
+            keys()
+        }
+        .frame(minHeight: Self.keyHeights.lowerBound, maxHeight: Self.keyHeights.upperBound)
     }
 
     private func key(action: @escaping () -> Void, @ViewBuilder label: () -> some View) -> some View {

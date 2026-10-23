@@ -101,7 +101,16 @@ struct SessionEntryPager<Page: View>: View {
                 onEnded: { predicted in dragEnded(predicted: predicted, width: width) }
             ))
         }
-        .clipped()
+        // Clips like clipped(), but pages fade in and out at the edges instead of being cut off.
+        .mask {
+            HStack(spacing: 0) {
+                LinearGradient(colors: [.clear, .black], startPoint: .leading, endPoint: .trailing).frame(width: 16)
+
+                Rectangle()
+
+                LinearGradient(colors: [.black, .clear], startPoint: .leading, endPoint: .trailing).frame(width: 16)
+            }
+        }
         .sensoryFeedback(.impact(flexibility: .soft), trigger: navigator.index)
         .onChange(of: navigator.index) {
             if let entry = navigator.session.currentEntry {

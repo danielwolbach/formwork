@@ -13,6 +13,8 @@ import SwiftUI
 struct ExerciseRow: View {
     private let exercise: Exercise
 
+    private let isSelected: Bool
+
     @Environment(\.modelContext)
     private var context: ModelContext
 
@@ -31,23 +33,28 @@ struct ExerciseRow: View {
     @State
     private var sheet: Sheet? = nil
 
-    init(_ exercise: Exercise) {
+    init(_ exercise: Exercise, isSelected: Bool = false) {
         self.exercise = exercise
+        self.isSelected = isSelected
     }
 
     var body: some View {
-        NavigationLink(value: exercise) {
-            HStack {
-                PictogramRow(exercise.pictogram, title: exercise.title, subtitle: exercise.categories.formatted(.exerciseCategories))
+        HStack {
+            PictogramRow(exercise.pictogram, title: exercise.title, subtitle: exercise.categories.formatted(.exerciseCategories))
 
-                Image(systemName: "chevron.forward")
-                    .foregroundStyle(.tertiary)
-                    .accessibilityHidden(true)
-            }
-            .contentShape(.rect)
+            Image(systemName: "chevron.forward")
+                .foregroundStyle(.tertiary)
+                .accessibilityHidden(true)
         }
-        .buttonStyle(.plain)
+        .contentShape(.rect)
         .padding(8)
+        .background {
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                .fill(.ultraThinMaterial)
+                .opacity(isSelected ? 1 : 0)
+                .animation(.snappy(duration: 0.1), value: isSelected)
+        }
+        .accessibilityAddTraits(isSelected ? [.isSelected] : [])
         .contextMenu {
             if !exercise.isArchived {
                 Section {
@@ -155,7 +162,7 @@ struct ExerciseRow: View {
 
 #Preview {
     NavigationRoot {
-        ExerciseRow(Samples.exercises.first!)
+        ExerciseRow(Samples.exercises.first!, isSelected: true)
     }
     .sampleData()
 }

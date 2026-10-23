@@ -35,43 +35,31 @@ struct SessionPlayerScreen: View {
     @State
     private var completions: Int = 0
 
+    @State
+    private var pageFrame: CGRect = .zero
+
+    @State
+    private var controlsFrame: CGRect = .zero
+
     init(_ session: Session) {
         self.session = session
         self._navigator = State(initialValue: SessionNavigator(session: session))
     }
 
     var body: some View {
-        // The ScrollView stays the permanent root because the navigation bar and scroll
-        // edge effects only detect a root-level ScrollView. Transitions need a container,
-        // and one above the ScrollView would hide it, so the swap happens in a ZStack
-        // inside it. Both branches are pinned to full width so the ZStack doesn't
-        // resize and slide the content mid-transition.
-        ScrollView {
-            ZStack {
-                if session.isActive {
-                    SessionEntryPager(navigator: navigator) { entry in
-                        SessionEntryPage(entry)
-                    }
-                    .containerRelativeFrame([.horizontal, .vertical], alignment: .top)
+        Group {
+            if #available(anyAppleOS 27.1, *), session.isActive {
+                arrangement
                     .transition(.blurReplace)
-                } else {
-                    SessionRecap(session)
-                        .frame(maxWidth: .infinity)
-                        .transition(.blurReplace)
-                }
+            } else {
+                player
+                    .transition(.blurReplace)
             }
         }
-        .contentMargins(.bottom, .sections, for: .scrollContent)
-        .scrollDisabled(session.isActive)
         .animation(.smooth, value: session.isActive)
         .navigationBarTitleDisplayMode(.inline)
         .sensoryFeedback(.impact(weight: .medium), trigger: completions)
         .sensoryFeedback(.success, trigger: session.isActive) { _, new in !new }
-        .safeAreaBar(edge: .bottom) {
-            if session.isActive {
-                controls
-            }
-        }
         .toolbar {
             // Declared once and faded rather than moved between the branches below: the
             // principal item is the bar's own title view, so removing it makes the bar
@@ -143,6 +131,57 @@ struct SessionPlayerScreen: View {
             }
         } message: {
             Text(.alertDiscardSessionMessage)
+        }
+    }
+
+    /// Not inside the ScrollView, since an arrangement must not sit in a scrolling container. The controls float
+    /// over the page on a flat display and move beside it on a folded one, so the page clears only the overlap.
+    @available(anyAppleOS 27.1, *)
+    private var arrangement: some View {
+        ArrangementView {
+            VStack(spacing: 0) {
+                Spacer(minLength: 0)
+
+                controls
+                    .onGeometryChange(for: CGRect.self) { $0.frame(in: .global) } action: { controlsFrame = $0 }
+            }
+        } secondary: {
+            SessionEntryPager(navigator: navigator) { entry in
+                SessionEntryPage(entry)
+            }
+            .safeAreaPadding(.bottom, controlsOverlap)
+            .onGeometryChange(for: CGRect.self) { $0.frame(in: .global) } action: { pageFrame = $0 }
+        }
+        .arrangementViewStyle(.overlay)
+    }
+
+    private var player: some View {
+        // The ScrollView stays the permanent root because the navigation bar and scroll
+        // edge effects only detect a root-level ScrollView. Transitions need a container,
+        // and one above the ScrollView would hide it, so the swap happens in a ZStack
+        // inside it. Both branches are pinned to full width so the ZStack doesn't
+        // resize and slide the content mid-transition.
+        ScrollView {
+            ZStack {
+                if session.isActive {
+                    SessionEntryPager(navigator: navigator) { entry in
+                        SessionEntryPage(entry)
+                    }
+                    .containerRelativeFrame([.horizontal, .vertical], alignment: .top)
+                    .transition(.blurReplace)
+                } else {
+                    SessionRecap(session)
+                        .frame(maxWidth: .infinity)
+                        .transition(.blurReplace)
+                }
+            }
+        }
+        .contentMargins(.bottom, .sections, for: .scrollContent)
+        .scrollDisabled(session.isActive)
+        .safeAreaBar(edge: .bottom) {
+            if session.isActive {
+                controls
+            }
         }
     }
 
@@ -226,6 +265,10 @@ struct SessionPlayerScreen: View {
                 }
             }
         }
+    }
+
+    private var controlsOverlap: CGFloat {
+        pageFrame.intersects(controlsFrame) ? max(0, pageFrame.maxY - controlsFrame.minY) : 0
     }
 
     private func stepButton(_ descriptor: Action, isEnabled: Bool, action: @escaping () -> Void) -> some View {

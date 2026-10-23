@@ -799,6 +799,23 @@
         }
       }
     },
+    "empty.exerciseSelection.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keine Übung ausgewählt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No Exercise Selected"
+          }
+        }
+      }
+    },
     "empty.products.message" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -901,6 +918,23 @@
         }
       }
     },
+    "empty.sessionSelection.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keine Session ausgewählt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No Session Selected"
+          }
+        }
+      }
+    },
     "empty.statistics.message" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -999,6 +1033,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "No Workouts"
+          }
+        }
+      }
+    },
+    "empty.workoutSelection.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kein Workout ausgewählt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No Workout Selected"
           }
         }
       }

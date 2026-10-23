@@ -121,9 +121,9 @@ private struct PageView<Page: OnboardingPage, Preview: View>: View {
     }
 
     private var content: some View {
-        VStack(spacing: 0) {
+        VStack(spacing: 16) {
             preview
-                .frame(maxHeight: .infinity)
+                .frame(maxWidth: 256 + 128, maxHeight: .infinity)
                 .accessibilityHidden(true)
 
             VStack(spacing: 16) {

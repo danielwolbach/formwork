@@ -26,8 +26,12 @@ public struct PictogramHeader: View {
 
     public var body: some View {
         VStack(spacing: 16) {
-            PictogramView(pictogram, badge: badge)
-                .frame(width: 128 + 64, height: 128 + 64)
+            ViewThatFits(in: .vertical) {
+                ForEach([192, 128, 64, 32] as [CGFloat], id: \.self) { side in
+                    PictogramView(pictogram, badge: badge)
+                        .frame(width: side, height: side)
+                }
+            }
 
             VStack {
                 Text(title)

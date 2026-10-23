@@ -49,7 +49,9 @@ public struct SectionView<Content: View, Accessory: View>: View {
 
                 Spacer(minLength: 0)
 
+                // Sized before the title, so its buttons keep their labels on one line and the title truncates instead.
                 accessory
+                    .layoutPriority(1)
             }
             // Optical alignment with rounded cards.
             .padding(.horizontal, 2)

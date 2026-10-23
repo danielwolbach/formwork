@@ -60,7 +60,10 @@ struct ExerciseCategoryScreen: View {
                 ScrollView {
                     LazyVStack(spacing: 0) {
                         ForEach(matching) { exercise in
-                            ExerciseRow(exercise)
+                            NavigationLink(value: exercise) {
+                                ExerciseRow(exercise)
+                            }
+                            .buttonStyle(.plain)
                         }
                     }
                     .swipeActionsContainer()

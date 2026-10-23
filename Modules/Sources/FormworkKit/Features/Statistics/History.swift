@@ -106,6 +106,9 @@ extension History {
 
     public static let chartedSessions = 20
 
+    /// A year of active days, so a wide card fills up with weeks instead of growing its cells.
+    public static let activeDaysWeeks = 52
+
     static let minimumValues = 3
 
     public var allTime: Period {

@@ -32,7 +32,10 @@ struct ArchiveScreen: View {
                             SectionView(.fieldWorkoutsTitle) {
                                 LazyVStack(spacing: 0) {
                                     ForEach(archivedWorkouts) { workout in
-                                        WorkoutCard(workout, style: .row)
+                                        NavigationLink(value: workout) {
+                                            WorkoutCard(workout, style: .row)
+                                        }
+                                        .buttonStyle(.plain)
                                     }
                                 }
                                 .swipeActionsContainer()
@@ -44,7 +47,10 @@ struct ArchiveScreen: View {
                             SectionView(.fieldExercisesTitle) {
                                 LazyVStack(spacing: 0) {
                                     ForEach(archivedExercises) { exercise in
-                                        ExerciseRow(exercise)
+                                        NavigationLink(value: exercise) {
+                                            ExerciseRow(exercise)
+                                        }
+                                        .buttonStyle(.plain)
                                     }
                                 }
                                 .swipeActionsContainer()

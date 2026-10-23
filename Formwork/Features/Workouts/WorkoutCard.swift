@@ -20,6 +20,8 @@ struct WorkoutCard: View {
 
     private let style: Style
 
+    private let isSelected: Bool
+
     @Environment(\.modelContext)
     private var context: ModelContext
 
@@ -41,20 +43,27 @@ struct WorkoutCard: View {
     @State
     private var deleteAlert: Bool = false
 
-    init(_ workout: Workout, style: Style = .card) {
+    init(_ workout: Workout, style: Style = .card, isSelected: Bool = false) {
         self.workout = workout
         self.style = style
+        self.isSelected = isSelected
     }
 
     var body: some View {
-        NavigationLink(value: workout) {
+        Group {
             switch style {
             case .card: card
             case .row: row
             }
         }
-        .buttonStyle(.plain)
         .padding(8)
+        .background {
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                .fill(.ultraThinMaterial)
+                .opacity(style == .row && isSelected ? 1 : 0)
+                .animation(.snappy(duration: 0.1), value: isSelected)
+        }
+        .accessibilityAddTraits(isSelected ? [.isSelected] : [])
         .contextMenu {
             Section {
                 if !workout.isArchived {
@@ -202,6 +211,13 @@ struct WorkoutCard: View {
         }
         .background(.ultraThinMaterial)
         .clipShape(.rect(cornerRadius: 16, style: .continuous))
+        .overlay {
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                .strokeBorder(workout.pictogram.color, lineWidth: 2)
+                .opacity(isSelected ? 1 : 0)
+                .animation(.snappy(duration: 0.1), value: isSelected)
+                .padding(-4)
+        }
     }
 
     private var row: some View {

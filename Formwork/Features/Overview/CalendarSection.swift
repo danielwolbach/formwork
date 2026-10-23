@@ -17,6 +17,8 @@ struct CalendarSection: View {
 
     private static let monthsAhead = 12
 
+    private static let sideBySideWidth: CGFloat = 600
+
     @Environment(\.calendar)
     private var calendar: Calendar
 
@@ -35,6 +37,9 @@ struct CalendarSection: View {
     @State
     private var isTurningPage: Bool = false
 
+    @State
+    private var isSideBySide: Bool = false
+
     var body: some View {
         let months = months
         let lastSessions = lastSessions
@@ -44,44 +49,55 @@ struct CalendarSection: View {
 
         SectionView(.fieldCalendarTitle, subtitle: subtitle(for: shownMonth)) {
             GroupBox {
-                HStack(spacing: Self.spacing) {
-                    ForEach(calendar.orderedWeekdays, id: \.self) { weekday in
-                        Text(calendar.veryShortWeekdaySymbols[weekday - 1])
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                            .frame(maxWidth: .infinity)
-                    }
-                }
-                // Every day already reads its weekday.
-                .accessibilityHidden(true)
+                // One layout that changes axis, so the month pager keeps its page when the card crosses the width.
+                let layout = isSideBySide
+                    ? AnyLayout(HStackLayout(alignment: .top, spacing: Self.cardPadding))
+                    : AnyLayout(VStackLayout(alignment: .leading, spacing: .items))
 
-                // A paging tab view doesn't size itself, so an empty six-week grid sets the height.
-                sizingGrid
-                    .hidden()
-                    .overlay {
-                        TabView(selection: $month) {
-                            ForEach(months, id: \.self) { month in
-                                monthGrid(month, lastSessions: lastSessions)
-                                    .padding(.horizontal, Self.cardPadding)
-                                    .tag(Optional(month))
+                layout {
+                    VStack(spacing: .items) {
+                        HStack(spacing: Self.spacing) {
+                            ForEach(calendar.orderedWeekdays, id: \.self) { weekday in
+                                Text(calendar.veryShortWeekdaySymbols[weekday - 1])
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                                    .frame(maxWidth: .infinity)
                             }
                         }
-                        .tabViewStyle(.page(indexDisplayMode: .never))
-                        // Reaches out to the card's edges, so months slide out there instead of at the content's inset.
-                        .padding(.horizontal, -Self.cardPadding)
+                        // Every day already reads its weekday.
+                        .accessibilityHidden(true)
+
+                        // A paging tab view doesn't size itself, so an empty six-week grid sets the height.
+                        sizingGrid
+                            .hidden()
+                            .overlay {
+                                TabView(selection: $month) {
+                                    ForEach(months, id: \.self) { month in
+                                        monthGrid(month, lastSessions: lastSessions)
+                                            .padding(.horizontal, Self.cardPadding)
+                                            .tag(Optional(month))
+                                    }
+                                }
+                                .tabViewStyle(.page(indexDisplayMode: .never))
+                                // Reaches out to the card's edges, so months slide out there instead of at the content's inset.
+                                .padding(.horizontal, -Self.cardPadding)
+                            }
+                            .sensoryFeedback(.selection, trigger: selection)
                     }
-                    .sensoryFeedback(.selection, trigger: selection)
 
-                Divider()
+                    Divider()
 
-                // Stacked, so the outgoing and incoming day crossfade in place instead of sitting below each other.
-                ZStack(alignment: .top) {
-                    CalendarDayList(day: selection, sessions: finished, planned: planned(on: selection, after: lastSessions))
-                        .id(selectedDay)
-                        .transition(.blurReplace)
+                    // Stacked, so the outgoing and incoming day crossfade in place instead of sitting below each other.
+                    ZStack(alignment: .top) {
+                        CalendarDayList(day: selection, sessions: finished, planned: planned(on: selection, after: lastSessions))
+                            .id(selectedDay)
+                            .transition(.blurReplace)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .top)
+                    .animation(.snappy, value: selectedDay)
                 }
-                .animation(.snappy, value: selectedDay)
             }
+            .onGeometryChange(for: Bool.self) { $0.size.width >= Self.sideBySideWidth } action: { isSideBySide = $0 }
             .groupBoxStyle(.card)
         } accessory: {
             HStack {

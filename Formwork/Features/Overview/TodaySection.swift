@@ -43,7 +43,10 @@ struct TodaySection: View {
             } else {
                 VStack(spacing: .items) {
                     ForEach(pending) { workout in
-                        WorkoutCard(workout)
+                        NavigationLink(value: workout) {
+                            WorkoutCard(workout)
+                        }
+                        .buttonStyle(.plain)
                     }
                 }
                 .swipeActionsContainer()
@@ -90,9 +93,8 @@ private struct StateCard: View {
                     .foregroundStyle(.secondary)
             }
         }
-        .padding()
+        .padding(.sections)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .aspectRatio(1.8, contentMode: .fit)
         .background(tint.quinary, in: .rect(cornerRadius: 16, style: .continuous))
         .accessibilityElement(children: .combine)
     }

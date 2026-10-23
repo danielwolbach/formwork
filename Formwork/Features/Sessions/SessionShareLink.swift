@@ -88,7 +88,7 @@ private struct SessionShareCard: View {
     }
 
     private var summary: some View {
-        TileGrid(aspectRatio: 2) {
+        TileGrid(columns: 2, aspectRatio: 2) {
             ForEach([Quantity.duration, .volume, .completedExercises, .exerciseDuration]) { quantity in
                 ReadingCard(quantity, reading: quantity.reading(of: session))
             }

@@ -21,10 +21,25 @@ public struct TileGrid: Layout {
         func clamped(toColumns limit: Int) -> Span {
             Span(rows: rows, columns: min(columns, limit))
         }
+
+        /// Wide tiles take half the row or all of it, so they never leave a gap that only narrower tiles could fill.
+        func expanded(toColumns limit: Int) -> Span {
+            guard columns > 1 else {
+                return self
+            }
+
+            let half = limit >= 4 && limit.isMultiple(of: 2) ? limit / 2 : limit
+            return Span(rows: rows, columns: columns <= half ? half : min(columns, limit))
+        }
     }
 
     fileprivate struct SpanKey: LayoutValueKey {
         static let defaultValue = Span(rows: 1, columns: 1)
+    }
+
+    private enum ColumnMode {
+        case fixed(Int)
+        case adaptive(minimumWidth: CGFloat)
     }
 
     private struct Slot {
@@ -35,29 +50,37 @@ public struct TileGrid: Layout {
         let span: Span
     }
 
-    private let columns: Int
+    private let columnMode: ColumnMode
 
     private let spacing: CGFloat
 
     private let aspectRatio: CGFloat
 
-    public init(columns: Int = 2, spacing: CGFloat = .items, aspectRatio: CGFloat = 1.7) {
-        self.columns = max(1, columns)
+    public init(minimumWidth: CGFloat = 160, spacing: CGFloat = .items, aspectRatio: CGFloat = 1.7) {
+        self.columnMode = .adaptive(minimumWidth: minimumWidth)
+        self.spacing = spacing
+        self.aspectRatio = aspectRatio
+    }
+
+    public init(columns: Int, spacing: CGFloat = .items, aspectRatio: CGFloat = 1.7) {
+        self.columnMode = .fixed(max(1, columns))
         self.spacing = spacing
         self.aspectRatio = aspectRatio
     }
 
     public func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache _: inout ()) -> CGSize {
         let width = proposal.replacingUnspecifiedDimensions().width
-        let cell = cellSize(forWidth: width)
-        let grid = grid(forWidth: width, subviews: subviews)
+        let columns = columnCount(forWidth: width)
+        let cell = cellSize(forWidth: width, columns: columns)
+        let grid = grid(columns: columns, cell: cell, subviews: subviews)
         return CGSize(width: width, height: grid.rows > 0 ? length(ofCells: grid.rows, cell: cell.height) : 0)
     }
 
     public func placeSubviews(in bounds: CGRect, proposal _: ProposedViewSize, subviews: Subviews, cache _: inout ()) {
-        let cell = cellSize(forWidth: bounds.width)
+        let columns = columnCount(forWidth: bounds.width)
+        let cell = cellSize(forWidth: bounds.width, columns: columns)
 
-        for (subview, slot) in zip(subviews, grid(forWidth: bounds.width, subviews: subviews).slots) {
+        for (subview, slot) in zip(subviews, grid(columns: columns, cell: cell, subviews: subviews).slots) {
             let origin = CGPoint(
                 x: bounds.minX + CGFloat(slot.column) * (cell.width + spacing),
                 y: bounds.minY + CGFloat(slot.row) * (cell.height + spacing)
@@ -70,19 +93,21 @@ public struct TileGrid: Layout {
         }
     }
 
-    private func grid(forWidth width: CGFloat, subviews: Subviews) -> (slots: [Slot], rows: Int) {
-        let cell = cellSize(forWidth: width)
+    private func grid(columns: Int, cell: CGSize, subviews: Subviews) -> (slots: [Slot], rows: Int) {
         var occupancy: [[Bool]] = []
         var slots: [Slot] = []
 
         for subview in subviews {
-            let span = subview[SpanKey.self].clamped(toColumns: columns)
+            let span = switch columnMode {
+            case .fixed: subview[SpanKey.self].clamped(toColumns: columns)
+            case .adaptive: subview[SpanKey.self].expanded(toColumns: columns)
+            }
             let tileWidth = length(ofCells: span.columns, cell: cell.width)
             let tileHeight = length(ofCells: span.rows, cell: cell.height)
             let needed = subview.sizeThatFits(ProposedViewSize(width: tileWidth, height: tileHeight)).height
             let rows = max(span.rows, rows(forHeight: needed, cell: cell.height))
 
-            slots.append(pack(Span(rows: rows, columns: span.columns), into: &occupancy))
+            slots.append(pack(Span(rows: rows, columns: span.columns), columns: columns, into: &occupancy))
         }
 
         return (slots, occupancy.count)
@@ -96,8 +121,8 @@ public struct TileGrid: Layout {
         return max(1, Int(((height + spacing) / (cell + spacing) - 0.001).rounded(.up)))
     }
 
-    private func pack(_ span: Span, into occupancy: inout [[Bool]]) -> Slot {
-        let slot = firstFit(for: span, in: occupancy)
+    private func pack(_ span: Span, columns: Int, into occupancy: inout [[Bool]]) -> Slot {
+        let slot = firstFit(for: span, columns: columns, in: occupancy)
 
         while occupancy.count < slot.row + span.rows {
             occupancy.append(Array(repeating: false, count: columns))
@@ -107,7 +132,7 @@ public struct TileGrid: Layout {
         return slot
     }
 
-    private func firstFit(for span: Span, in occupancy: [[Bool]]) -> Slot {
+    private func firstFit(for span: Span, columns: Int, in occupancy: [[Bool]]) -> Slot {
         for row in 0 ..< occupancy.count {
             for column in 0 ... (columns - span.columns) where isFree(row: row, column: column, span: span, in: occupancy) {
                 return Slot(row: row, column: column, span: span)
@@ -129,7 +154,14 @@ public struct TileGrid: Layout {
         }
     }
 
-    private func cellSize(forWidth width: CGFloat) -> CGSize {
+    private func columnCount(forWidth width: CGFloat) -> Int {
+        switch columnMode {
+        case let .fixed(count): count
+        case let .adaptive(minimumWidth): width.isFinite ? max(1, Int((width + spacing) / (minimumWidth + spacing))) : 1
+        }
+    }
+
+    private func cellSize(forWidth width: CGFloat, columns: Int) -> CGSize {
         let cellWidth = (width - spacing * CGFloat(columns - 1)) / CGFloat(columns)
         return CGSize(width: cellWidth, height: cellWidth / aspectRatio)
     }
