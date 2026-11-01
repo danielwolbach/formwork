@@ -1,0 +1,58 @@
+---
+import { links } from "@/config";
+import type { Translations } from "@/i18n/en";
+import ThemedImage from "@/components/ThemedImage.astro";
+import appIconLight from "@/assets/images/icons/app-icon-light.png";
+import appIconDark from "@/assets/images/icons/app-icon-dark.png";
+
+type Props = Translations["header"];
+
+const { home, appIcon, download, switchTo } = Astro.props;
+
+const routes = new Set(
+    Object.keys(import.meta.glob("/src/pages/**/*.{astro,md}")).map((file) =>
+        file.replace(/^\/src\/pages/, "").replace(/(index)?\.(astro|md)$/, ""),
+    ),
+);
+
+const path = Astro.url.pathname.slice(home.length).replace(/\/$/, "");
+const translated = switchTo.home + path;
+const switchHref = routes.has(translated) ? translated : switchTo.home;
+---
+
+<header class="sticky top-0 z-50 w-full border-b border-primary/60 bg-secondary/70 backdrop-blur-md">
+    <nav class="mx-auto flex w-full max-w-5xl items-center justify-between p-4">
+        <a href={home} class="flex items-center gap-2 font-semibold">
+            <ThemedImage
+                light={appIconLight}
+                dark={appIconDark}
+                alt={appIcon}
+                width={32}
+                class="size-8"
+                loading="eager"
+            />
+            <span>Formwork</span>
+        </a>
+
+        <ul class="flex items-center gap-4 text-sm">
+            <li>
+                <a
+                    href={switchHref}
+                    hreflang={switchTo.lang}
+                    lang={switchTo.lang}
+                    class="font-semibold text-secondary hover:text-primary"
+                >
+                    {switchTo.lang.toUpperCase()}
+                </a>
+            </li>
+            <li>
+                <a
+                    href={links.appStore}
+                    class="block rounded-full bg-inverse px-6 py-2 font-semibold text-inverse hover:bg-inverse/85"
+                >
+                    {download}
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>

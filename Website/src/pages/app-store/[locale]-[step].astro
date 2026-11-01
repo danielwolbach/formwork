@@ -1,0 +1,50 @@
+---
+import "@/styles/global.css";
+import PhoneFrame from "@/components/PhoneFrame.astro";
+import { getAppStorePages } from "@/data/app-store";
+import { locales } from "@/data/steps";
+
+/**
+ * One App Store screenshot (see getAppStorePages), captured by scripts/screenshots.ts.
+ * Designed for a 440×956 viewport at 3× (1320×2868, the 6.9" iPhone size). Only exists in dev.
+ */
+export function getStaticPaths() {
+    if (import.meta.env.PROD) return [];
+
+    return locales.flatMap((locale) =>
+        getAppStorePages(locale).map((_, index) => ({ params: { locale, step: String(index + 1) } })),
+    );
+}
+
+const { locale, step } = Astro.params;
+const { title, screenshot, color } = getAppStorePages(locale)[Number(step) - 1];
+
+// Top-to-bottom gradient in the step's accent color. Spelled out so Tailwind picks up the classes.
+const gradients = {
+    zinc: "from-zinc-200 to-zinc-50 dark:from-zinc-700 dark:to-zinc-900",
+    orange: "from-orange-200 to-orange-50 dark:from-orange-900 dark:to-zinc-900",
+    blue: "from-blue-200 to-blue-50 dark:from-blue-900 dark:to-zinc-900",
+    green: "from-green-200 to-green-50 dark:from-green-900 dark:to-zinc-900",
+    purple: "from-purple-200 to-purple-50 dark:from-purple-900 dark:to-zinc-900",
+};
+---
+
+<html lang={locale}>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>{title}</title>
+    </head>
+
+    <body
+        class:list={[
+            "flex h-screen flex-col items-center justify-center gap-10 overflow-hidden bg-linear-to-b p-8 text-primary",
+            gradients[color],
+        ]}
+    >
+        <h1 class="text-center text-[2.75rem] leading-tight font-bold tracking-tight text-balance">{title}</h1>
+
+        <!-- Sized so a two-line heading and the whole phone fit, with even space above and below. -->
+        <PhoneFrame {...screenshot} width={320} class="w-80" />
+    </body>
+</html>

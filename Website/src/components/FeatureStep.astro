@@ -1,0 +1,41 @@
+---
+import ThemedImage from "@/components/ThemedImage.astro";
+import Paragraph from "@/components/Paragraph.astro";
+import { getTranslations } from "@/i18n";
+
+interface Screenshot {
+    light: ImageMetadata;
+    dark: ImageMetadata;
+}
+
+interface Props {
+    step: number;
+    title: string;
+    description: string;
+    front: Screenshot;
+    back: Screenshot;
+    flipped?: boolean;
+}
+
+const { step, title, description, front, back, flipped = false } = Astro.props;
+const t = getTranslations(Astro.currentLocale);
+const tile = "shrink-0 overflow-hidden border-2 border-primary shadow-2xl ring-1 ring-black/10 dark:ring-white/10";
+---
+
+<li class="grid items-center gap-8 overflow-hidden rounded-3xl bg-secondary p-8 md:grid-cols-2 md:p-12">
+    <div class:list={["flex flex-col gap-3", flipped && "md:order-last"]}>
+        <span class="text-sm font-semibold tracking-widest text-tertiary uppercase">{t.featureStep.step} {step}</span>
+        <h3 class="text-2xl font-bold tracking-tight text-balance">{title}</h3>
+        <Paragraph class="max-w-sm">{description}</Paragraph>
+    </div>
+
+    <!-- The back tile tucks behind the front one, on the side facing away from the text. -->
+    <div class:list={["flex items-center justify-center", flipped ? "flex-row" : "flex-row-reverse"]}>
+        <div class:list={[tile, "translate-y-4 rounded-[1.25rem]", flipped ? "-mr-16 -rotate-3" : "-ml-16 rotate-3"]}>
+            <ThemedImage {...back} alt={title} width={170} class="block" />
+        </div>
+        <div class:list={[tile, "relative rounded-[1.5rem]"]}>
+            <ThemedImage {...front} alt={title} width={200} class="block" />
+        </div>
+    </div>
+</li>

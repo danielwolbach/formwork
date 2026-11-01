@@ -1,0 +1,30 @@
+---
+import type { Translations } from "@/i18n/en";
+
+type Props = Translations["footer"];
+
+const { sections, rights, trademarks } = Astro.props;
+const year = new Date().getFullYear();
+---
+
+<footer class="w-full border-t border-primary/60 bg-secondary/70">
+    <div class="mx-auto w-full max-w-5xl grid grid-cols-1 md:grid-cols-3 p-8 gap-12">
+        {sections.map(({ title, links }) => (
+            <section class="flex flex-col gap-2 text-sm">
+                <h2 class="font-semibold text-secondary pb-2 border-b-1 border-primary">{title}</h2>
+                {links.map(({ label, href }) => (
+                    <a href={href} class="text-tertiary hover:text-secondary">
+                        {label}
+                    </a>
+                ))}
+            </section>
+        ))}
+    </div>
+
+    <div class="mx-auto flex w-full max-w-5xl flex-col gap-2 p-8 text-sm text-tertiary">
+        <p>
+            © {year} Formwork. {rights}
+        </p>
+        <p>{trademarks}</p>
+    </div>
+</footer>

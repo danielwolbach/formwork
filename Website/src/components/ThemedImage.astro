@@ -1,0 +1,34 @@
+---
+import { getImage } from "astro:assets";
+import type { HTMLAttributes } from "astro/types";
+
+type Props = Omit<HTMLAttributes<"img">, "src" | "width" | "height"> & {
+    light: ImageMetadata;
+    dark: ImageMetadata;
+    alt: string;
+    width: number;
+};
+
+const { light, dark, width, ...attrs } = Astro.props;
+
+// AVIF keeps full color resolution (sharp's default 4:4:4), which keeps colored UI text crisp.
+// WebP is the fallback for browsers without AVIF support.
+const formats = [
+    { format: "avif", type: "image/avif", quality: 70 },
+    { format: "webp", type: "image/webp", quality: 90 },
+] as const;
+
+const variants = async (src: ImageMetadata) =>
+    Promise.all(formats.map(({ format, quality }) => getImage({ src, width, densities: [1, 2, 3], format, quality })));
+
+const [lightImages, darkImages] = await Promise.all([variants(light), variants(dark)]);
+const [lightAvif, lightWebp] = lightImages;
+---
+
+<picture class="">
+    {darkImages.map((image, index) => (
+        <source type={formats[index].type} srcset={image.srcSet.attribute} media="(prefers-color-scheme: dark)" />
+    ))}
+    <source type="image/avif" srcset={lightAvif.srcSet.attribute} />
+    <img src={lightWebp.src} srcset={lightWebp.srcSet.attribute} {...{ ...lightWebp.attributes, ...attrs }} />
+</picture>

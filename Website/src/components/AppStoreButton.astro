@@ -1,0 +1,13 @@
+---
+import { links } from "@/config";
+import { getTranslations } from "@/i18n";
+
+const { alt, light, dark } = getTranslations(Astro.currentLocale).appStore;
+---
+
+<a href={links.appStore}>
+    <picture>
+        <source srcset={dark} media="(prefers-color-scheme: dark)" />
+        <img src={light} alt={alt} width="150" height="50" />
+    </picture>
+</a>

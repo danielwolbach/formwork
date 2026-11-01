@@ -1,0 +1,55 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Section from "@/components/Section.astro";
+import Paragraph from "@/components/Paragraph.astro";
+import RoadmapItem from "@/components/RoadmapItem.astro";
+import Watch from "@lucide/astro/icons/watch";
+import PaintBrush from "@lucide/astro/icons/paintbrush";
+import Music from "@lucide/astro/icons/music";
+import Rocket from "@lucide/astro/icons/rocket";
+
+const features = [
+    {
+        icon: Rocket,
+        title: "Initial release",
+        description:
+            "The first version of Formwork is now available on the App Store! It includes the ability to create exercises, plan workouts, track sessions, and view statistics.",
+        done: true,
+    },
+    {
+        icon: Watch,
+        title: "Watch App",
+        description:
+            "Use your Apple watch to track your session right from your wrist. Log exercises and see your target and what's next, without reaching for your phone.",
+        done: false,
+    },
+    {
+        icon: Music,
+        title: "Music Integration",
+        description:
+            "Use Apple Music to select and play your gym playlist during your workout sessions and control it directly from the app.",
+        done: false,
+    },
+    {
+        icon: PaintBrush,
+        title: "Customization",
+        description:
+            "Make Formwork your own with choices of app icons and statistics that can be reordered or pinned to the overview.",
+        done: false,
+    },
+];
+---
+
+<Layout title="Roadmap">
+    <Section title="Roadmap">
+        <Paragraph class="text-left w-full max-w-xl mx-auto">
+            The following features are planned for future releases of Formwork. We are constantly working to improve the
+            app and add new functionality, so stay tuned for updates!
+        </Paragraph>
+        <ol class="flex flex-col gap-4">
+            {features.map((feature) => (
+                <RoadmapItem {...feature} />
+            ))}
+        </ol>
+    </Section>
+</Layout>

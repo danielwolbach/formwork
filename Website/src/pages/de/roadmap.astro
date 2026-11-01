@@ -1,0 +1,55 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Section from "@/components/Section.astro";
+import Paragraph from "@/components/Paragraph.astro";
+import RoadmapItem from "@/components/RoadmapItem.astro";
+import Watch from "@lucide/astro/icons/watch";
+import PaintBrush from "@lucide/astro/icons/paintbrush";
+import Music from "@lucide/astro/icons/music";
+import Rocket from "@lucide/astro/icons/rocket";
+
+const features = [
+    {
+        icon: Rocket,
+        title: "Veröffentlichung",
+        description:
+            "Die erste Version von Formwork ist jetzt im App Store verfügbar! Sie beinhaltet die Möglichkeit, Übungen zu erstellen, Workouts zu planen, Sessions zu verfolgen und Statistiken anzuzeigen.",
+        done: true,
+    },
+    {
+        icon: Watch,
+        title: "Watch App",
+        description:
+            "Verwende deine Apple Watch, um deine Session direkt am Handgelenk zu verfolgen. Logge Übungen und sieh dir dein Ziel und das Nächste an, ohne deine Handy herauszunehmen.",
+        done: false,
+    },
+    {
+        icon: Music,
+        title: "Musikintegration",
+        description:
+            "Verwende Apple Music, um deine Gym-Playlist auszuwählen und abzuspielen, während du deine Workout-Sessions durchführst, und steuere sie direkt aus der App.",
+        done: false,
+    },
+    {
+        icon: PaintBrush,
+        title: "Individualisierung",
+        description:
+            "Mache Formwork zu deinem eigenen mit den Auswahlmöglichkeiten für App-Icons und Statistiken, die neu geordnet oder an die Übersicht gepinnt werden können.",
+        done: false,
+    },
+];
+---
+
+<Layout title="Roadmap">
+    <Section title="Roadmap">
+        <Paragraph class="text-left w-full max-w-xl mx-auto">
+            Die folgenden Funktionen sind für zukünftige Versionen von Formwork geplant. Wir arbeiten ständig daran, die
+            App zu verbessern und neue Funktionen hinzuzufügen, also bleib dran für Updates!
+        </Paragraph>
+        <ol class="flex flex-col gap-4">
+            {features.map((feature) => (
+                <RoadmapItem {...feature} />
+            ))}
+        </ol>
+    </Section>
+</Layout>

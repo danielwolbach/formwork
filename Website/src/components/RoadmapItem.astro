@@ -1,0 +1,32 @@
+---
+import type { ComponentProps } from "astro/types";
+import Check from "@lucide/astro/icons/check";
+import FeatureCard from "@/components/FeatureCard.astro";
+import { getTranslations } from "@/i18n";
+
+type Props = ComponentProps<typeof FeatureCard> & {
+    done: boolean;
+};
+
+const { done, ...feature } = Astro.props;
+const t = getTranslations(Astro.currentLocale);
+---
+
+<li class="group relative flex gap-4">
+    <span
+        class="absolute top-14 -bottom-18 left-3.5 -translate-x-1/2 border-l-2 border-dashed border-(--text-color-tertiary) group-last:hidden"
+        aria-hidden="true"
+    ></span>
+    <span
+        class:list={[
+            "relative mt-10.5 flex size-7 shrink-0 items-center justify-center rounded-full border-2",
+            done
+                ? "border-(--background-color-inverse) bg-inverse text-inverse"
+                : "border-(--text-color-tertiary) bg-primary",
+        ]}
+    >
+        {done && <Check class="size-4" stroke-width={3} aria-hidden="true" />}
+        <span class="sr-only">{done ? t.roadmap.done : t.roadmap.planned}</span>
+    </span>
+    <FeatureCard {...feature} class="flex-1" />
+</li>

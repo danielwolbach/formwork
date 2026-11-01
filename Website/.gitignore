@@ -1,0 +1,14 @@
+.vscode/
+.astro/
+.env
+.env.production
+.DS_Store
+
+dist/
+node_modules/
+app-store-screenshots/
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*

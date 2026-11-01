@@ -1,0 +1,32 @@
+---
+import type { AstroComponent } from "@lucide/astro";
+import Paragraph from "@/components/Paragraph.astro";
+
+const colorClasses = {
+    none: "bg-inverse text-inverse",
+    green: "bg-green-200 text-green-600",
+    red: "bg-red-200 text-red-600",
+    blue: "bg-blue-200 text-blue-600",
+    purple: "bg-purple-200 text-purple-600",
+    orange: "bg-orange-200 text-orange-600",
+    teal: "bg-teal-200 text-teal-600",
+};
+
+interface Props {
+    icon: AstroComponent;
+    title: string;
+    description: string;
+    color?: keyof typeof colorClasses;
+    class?: string;
+}
+
+const { icon: Icon, title, description, color = "none", class: className } = Astro.props;
+---
+
+<div class:list={["flex flex-col gap-3 rounded-3xl bg-secondary p-8", className]}>
+    <span class:list={["mb-2 flex size-12 items-center justify-center rounded-2xl", colorClasses[color]]}>
+        <Icon class="size-6" aria-hidden="true" />
+    </span>
+    <h3 class="text-xl font-bold">{title}</h3>
+    <Paragraph>{description}</Paragraph>
+</div>

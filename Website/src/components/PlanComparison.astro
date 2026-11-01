@@ -1,0 +1,36 @@
+---
+import CircleCheck from "@lucide/astro/icons/circle-check";
+
+interface Plan {
+    name: string;
+    price: string;
+}
+
+interface Props {
+    free: Plan;
+    premium: Plan;
+    rows: { feature: string; free: string | boolean; premium: string | boolean }[];
+}
+
+const { free, premium, rows } = Astro.props;
+---
+
+<div class="mx-auto grid w-full max-w-xl grid-cols-3 items-center justify-items-center gap-4">
+    <div class="px-4 py-2"></div>
+    <div class="px-4 py-2 font-semibold">{free.name}</div>
+    <div class="rounded-full bg-inverse px-4 py-2 font-semibold text-inverse">{premium.name}</div>
+    <div class="col-span-3 justify-self-stretch border-b border-primary"></div>
+
+    {rows.map((row) => (
+        <>
+            <div class="justify-self-start text-secondary">{row.feature}</div>
+            <div class="text-secondary">{row.free === true ? <CircleCheck /> : row.free}</div>
+            <div>{row.premium === true ? <CircleCheck /> : row.premium}</div>
+        </>
+    ))}
+
+    <div class="col-span-3 justify-self-stretch border-b border-primary"></div>
+    <div></div>
+    <div class="text-secondary font-medium">{free.price}</div>
+    <div class="font-medium">{premium.price}</div>
+</div>

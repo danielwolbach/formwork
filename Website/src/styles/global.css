@@ -1,0 +1,70 @@
+@import "tailwindcss";
+@import "@fontsource/montserrat/400.css";
+@import "@fontsource/montserrat/500.css";
+@import "@fontsource/montserrat/600.css";
+@import "@fontsource/montserrat/700.css";
+
+@plugin "@tailwindcss/typography";
+
+/*
+ * Semantic colors. Namespaced so each token only generates the matching utility:
+ * --text-color-*       → text-primary, text-secondary, ...
+ * --background-color-* → bg-primary, bg-secondary, ...
+ * --border-color-*     → border-primary, ...
+ * "inverse" is the opposite end of the brightness spectrum (e.g. high-contrast buttons).
+ */
+@theme {
+    --text-color-primary: var(--color-zinc-900);
+    --text-color-secondary: var(--color-zinc-700);
+    --text-color-tertiary: var(--color-zinc-500);
+    --text-color-inverse: var(--color-zinc-50);
+
+    --background-color-primary: var(--color-white);
+    --background-color-secondary: var(--color-zinc-100);
+    --background-color-inverse: var(--color-zinc-900);
+
+    --border-color-primary: var(--color-zinc-200);
+}
+
+@layer base {
+    :root {
+        @variant dark {
+            --text-color-primary: var(--color-zinc-50);
+            --text-color-secondary: var(--color-zinc-300);
+            --text-color-tertiary: var(--color-zinc-500);
+            --text-color-inverse: var(--color-zinc-900);
+
+            --background-color-primary: var(--color-zinc-900);
+            --background-color-secondary: var(--color-zinc-800);
+            --background-color-inverse: var(--color-zinc-50);
+
+            --border-color-primary: var(--color-zinc-700);
+        }
+    }
+
+    body {
+        font-family: "Montserrat", sans-serif;
+    }
+
+    address {
+        font-style: normal;
+    }
+}
+
+/* Typography (prose) colors mapped to the semantic tokens, so they follow the color scheme without prose-invert. */
+@utility prose-theme {
+    --tw-prose-body: var(--text-color-secondary);
+    --tw-prose-headings: var(--text-color-primary);
+    --tw-prose-lead: var(--text-color-secondary);
+    --tw-prose-links: var(--text-color-primary);
+    --tw-prose-bold: var(--text-color-primary);
+    --tw-prose-counters: var(--text-color-tertiary);
+    --tw-prose-bullets: var(--text-color-tertiary);
+    --tw-prose-hr: var(--border-color-primary);
+    --tw-prose-quotes: var(--text-color-primary);
+    --tw-prose-quote-borders: var(--border-color-primary);
+    --tw-prose-captions: var(--text-color-tertiary);
+    --tw-prose-code: var(--text-color-primary);
+    --tw-prose-th-borders: var(--border-color-primary);
+    --tw-prose-td-borders: var(--border-color-primary);
+}

@@ -1,0 +1,36 @@
+---
+import PhoneFrame from "@/components/PhoneFrame.astro";
+import AppStoreButton from "@/components/AppStoreButton.astro";
+import Paragraph from "@/components/Paragraph.astro";
+
+interface Props {
+    title: string;
+    screenshot: { light: ImageMetadata; dark: ImageMetadata; alt: string };
+}
+
+const { title, screenshot } = Astro.props;
+---
+
+<div class="grid items-center gap-8 md:grid-cols-2">
+    <div class="flex flex-col justify-center gap-12 text-center md:text-left">
+        <div class="flex flex-col gap-4">
+            <h1 class="text-6xl font-bold">{title}</h1>
+            <Paragraph>
+                <slot />
+            </Paragraph>
+        </div>
+
+        <div class="hidden flex-col items-center gap-4 md:flex md:flex-row md:items-start">
+            <AppStoreButton />
+        </div>
+    </div>
+
+    <div class="flex justify-center md:justify-end">
+        <div class="flex flex-col items-center justify-center gap-12">
+            <PhoneFrame {...screenshot} />
+            <div class="md:hidden">
+                <AppStoreButton />
+            </div>
+        </div>
+    </div>
+</div>

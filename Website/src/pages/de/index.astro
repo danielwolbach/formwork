@@ -1,0 +1,113 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Hero from "@/components/Hero.astro";
+import FeatureStep from "@/components/FeatureStep.astro";
+import PlanComparison from "@/components/PlanComparison.astro";
+import FeatureCard from "@/components/FeatureCard.astro";
+import Section from "@/components/Section.astro";
+import { getHero } from "@/data/hero";
+import { getSteps } from "@/data/steps";
+import Activity from "@lucide/astro/icons/activity";
+import HeartPulse from "@lucide/astro/icons/heart-pulse";
+import CalendarClock from "@lucide/astro/icons/calendar-clock";
+import Star from "@lucide/astro/icons/star";
+import LayoutGrid from "@lucide/astro/icons/layout-grid";
+import Wrench from "@lucide/astro/icons/wrench";
+
+const hero = getHero(Astro.currentLocale);
+const steps = getSteps(Astro.currentLocale);
+
+const features = [
+    {
+        icon: Activity,
+        title: "Live Activities",
+        description:
+            "Halte deine Laufsession auf dem Sperrbildschirm, damit du deinen Fortschritt überprüfen kannst, ohne die App zu öffnen.",
+        color: "green",
+    },
+    {
+        icon: HeartPulse,
+        title: "Integration mit Health",
+        description:
+            "Speichere deine Sessions als Workouts in Apple Health, mit deiner Herzfrequenz und aktiver Energie, die während des Trainings aufgezeichnet werden.",
+        color: "red",
+    },
+    {
+        icon: CalendarClock,
+        title: "Workout-Planung",
+        description:
+            "Plane, wann du trainierst und erhalte intelligente Benachrichtigungen, wenn es Zeit für dein nächstes Workout ist.",
+        color: "blue",
+    },
+    {
+        icon: Star,
+        title: "Schönes Design",
+        description:
+            "Formwork ist so gestaltet, dass es einfach zu bedienen ist und eine Freude für das Auge ist, mit einem Fokus auf Klarheit und Einfachheit.",
+        color: "purple",
+    },
+    {
+        icon: LayoutGrid,
+        title: "Widgets",
+        description:
+            "Sieh dein nächstes Workout, deinen Fortschritt und deine Statistiken mit einem Blick auf den Home Screen, ohne die App öffnen zu müssen.",
+        color: "orange",
+    },
+    {
+        icon: Wrench,
+        title: "Weiterentwicklung",
+        description: "Formwork wird kontinuierlich verbessert und mit neuen Funktionen und Enhancements versehen.",
+        color: "teal",
+    },
+] as const;
+
+const planRows = [
+    {
+        feature: "Aktive Übungen",
+        free: "10",
+        premium: "Unbegrenzt",
+    },
+    {
+        feature: "Aktive Workouts",
+        free: "2",
+        premium: "Unbegrenzt",
+    },
+    {
+        feature: "Live Activity",
+        free: false,
+        premium: true,
+    },
+];
+---
+
+<Layout>
+    <Hero title={hero.title} screenshot={hero.screenshot}>
+        {hero.description}
+    </Hero>
+
+    <Section title="So funktioniert es">
+        <ol class="flex flex-col gap-4">
+            {steps.map((step, index) => (
+                <FeatureStep {...step} step={index + 1} flipped={index % 2 === 1} />
+            ))}
+        </ol>
+    </Section>
+
+    <Section title="Und es gibt noch mehr">
+        <ul class="grid gap-4 md:grid-cols-3">
+            {features.map((feature) => (
+                <li class="grid">
+                    <FeatureCard {...feature} />
+                </li>
+            ))}
+        </ul>
+    </Section>
+
+    <Section title="Vergleiche die Pläne">
+        <PlanComparison
+            free={{ name: "Kostenlos", price: "0€" }}
+            premium={{ name: "Premium", price: "1,99€ / Monat" }}
+            rows={planRows}
+        />
+    </Section>
+</Layout>

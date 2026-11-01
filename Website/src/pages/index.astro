@@ -1,0 +1,111 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Hero from "@/components/Hero.astro";
+import FeatureStep from "@/components/FeatureStep.astro";
+import PlanComparison from "@/components/PlanComparison.astro";
+import FeatureCard from "@/components/FeatureCard.astro";
+import Section from "@/components/Section.astro";
+import { getHero } from "@/data/hero";
+import { getSteps } from "@/data/steps";
+import Activity from "@lucide/astro/icons/activity";
+import HeartPulse from "@lucide/astro/icons/heart-pulse";
+import CalendarClock from "@lucide/astro/icons/calendar-clock";
+import Star from "@lucide/astro/icons/star";
+import LayoutGrid from "@lucide/astro/icons/layout-grid";
+import Wrench from "@lucide/astro/icons/wrench";
+
+const hero = getHero(Astro.currentLocale);
+const steps = getSteps(Astro.currentLocale);
+
+const features = [
+    {
+        icon: Activity,
+        title: "Live Activities",
+        description:
+            "Keep your running session on the Lock Screen, so you can check your progress without opening the app.",
+        color: "green",
+    },
+    {
+        icon: HeartPulse,
+        title: "Health Integration",
+        description:
+            "Save your sessions as workouts in Apple Health, with your heart rate and active energy recorded while you train.",
+        color: "red",
+    },
+    {
+        icon: CalendarClock,
+        title: "Workout Scheduling",
+        description: "Plan when you train and get smart notifications when it's time for your next workout.",
+        color: "blue",
+    },
+    {
+        icon: Star,
+        title: "Beautiful Design",
+        description:
+            "Formwork is designed to be easy to use and a pleasure to look at, with a focus on clarity and simplicity.",
+        color: "purple",
+    },
+    {
+        icon: LayoutGrid,
+        title: "Widgets",
+        description: "See your next workout, your progress and your statistics at a glance, without opening the app.",
+        color: "orange",
+    },
+    {
+        icon: Wrench,
+        title: "Future Updates",
+        description: "Formwork is constantly being tweaked and improved with new features and enhancements.",
+        color: "teal",
+    },
+] as const;
+
+const planRows = [
+    {
+        feature: "Active Exercises",
+        free: "10",
+        premium: "Unlimited",
+    },
+    {
+        feature: "Active Workouts",
+        free: "2",
+        premium: "Unlimited",
+    },
+    {
+        feature: "Live Activity",
+        free: false,
+        premium: true,
+    },
+];
+---
+
+<Layout>
+    <Hero title={hero.title} screenshot={hero.screenshot}>
+        {hero.description}
+    </Hero>
+
+    <Section title="How It Works">
+        <ol class="flex flex-col gap-4">
+            {steps.map((step, index) => (
+                <FeatureStep {...step} step={index + 1} flipped={index % 2 === 1} />
+            ))}
+        </ol>
+    </Section>
+
+    <Section title="And There's More">
+        <ul class="grid gap-4 md:grid-cols-3">
+            {features.map((feature) => (
+                <li class="grid">
+                    <FeatureCard {...feature} />
+                </li>
+            ))}
+        </ul>
+    </Section>
+
+    <Section title="Compare Plans">
+        <PlanComparison
+            free={{ name: "Free", price: "$0" }}
+            premium={{ name: "Premium", price: "$1.99 / month" }}
+            rows={planRows}
+        />
+    </Section>
+</Layout>

@@ -1,0 +1,42 @@
+---
+import ThemedImage from "@/components/ThemedImage.astro";
+
+interface Props {
+    light: ImageMetadata;
+    dark: ImageMetadata;
+    alt?: string;
+    class?: string;
+    /** Rendered width of the screenshot in CSS pixels, used to pick the image resolution. */
+    width?: number;
+}
+
+const { light, dark, alt = "", class: className = "w-75", width = 300 } = Astro.props;
+---
+
+<!--
+    Sizes are in container query units (cqw, % of the frame's width), so the frame scales as a whole.
+    The screen takes the screenshot's aspect ratio and the body wraps it, so nothing gets cropped.
+-->
+<div class:list={["@container relative shrink-0", className]}>
+    <!-- Side buttons -->
+    <div class="absolute top-[18%] -left-[1cqw] h-[4%] w-[1cqw] rounded-l bg-zinc-700"></div>
+    <div class="absolute top-[26%] -left-[1cqw] h-[8%] w-[1cqw] rounded-l bg-zinc-700"></div>
+    <div class="absolute top-[36%] -left-[1cqw] h-[8%] w-[1cqw] rounded-l bg-zinc-700"></div>
+    <div class="absolute top-[30%] -right-[1cqw] h-[12%] w-[1cqw] rounded-r bg-zinc-700"></div>
+
+    <!-- Body -->
+    <div class="relative rounded-[16cqw] bg-zinc-900 p-[3cqw] shadow-2xl ring-2 ring-zinc-700">
+        <!-- Screen (corner radius is the body's minus the bezel, so the corners stay concentric) -->
+        <div
+            class="relative overflow-hidden rounded-[13cqw] bg-black"
+            style={{ aspectRatio: `${light.width} / ${light.height}` }}
+        >
+            <ThemedImage light={light} dark={dark} alt={alt} width={width} class="size-full object-cover" />
+
+            <!-- Dynamic Island -->
+            <div class="pointer-events-none absolute top-[2.6cqw] left-1/2 z-10 flex h-[8.6cqw] w-[29cqw] -translate-x-1/2 items-center justify-end rounded-full bg-black pr-[3cqw]">
+                <div class="size-[3cqw] rounded-full bg-zinc-800 ring-1 ring-zinc-700/60"></div>
+            </div>
+        </div>
+    </div>
+</div>
