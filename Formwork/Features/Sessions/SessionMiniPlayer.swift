@@ -42,6 +42,16 @@ struct SessionMiniPlayer: View {
             SessionEntryPager(navigator: navigator) { entry in
                 row(for: entry)
             }
+            // Clips like clipped(), but pages fade in and out at the edges instead of being cut off.
+            .mask {
+                HStack(spacing: 0) {
+                    LinearGradient(colors: [.clear, .black], startPoint: .leading, endPoint: .trailing).frame(width: 16)
+
+                    Rectangle()
+
+                    LinearGradient(colors: [.black, .clear], startPoint: .leading, endPoint: .trailing).frame(width: 16)
+                }
+            }
 
             sessionProgress
                 .padding(.trailing)

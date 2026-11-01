@@ -134,8 +134,6 @@ struct SessionPlayerScreen: View {
         }
     }
 
-    /// Not inside the ScrollView, since an arrangement must not sit in a scrolling container. The controls float
-    /// over the page on a flat display and move beside it on a folded one, so the page clears only the overlap.
     @available(anyAppleOS 27.1, *)
     private var arrangement: some View {
         ArrangementView {
