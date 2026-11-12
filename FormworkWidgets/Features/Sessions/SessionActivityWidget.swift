@@ -57,6 +57,7 @@ struct SessionActivityWidget: Widget {
             Content(context: context)
                 .widgetURL(DeepLink.session)
                 .activityBackgroundTint(context.state.workout.color.mix(with: .black, by: 0.5).opacity(0.9))
+                .foregroundStyle(.white)
         } dynamicIsland: { context in
             DynamicIsland {
                 DynamicIslandExpandedRegion(.leading) {
