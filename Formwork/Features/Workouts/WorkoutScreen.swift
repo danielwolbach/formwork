@@ -54,32 +54,34 @@ struct WorkoutScreen: View {
                     badge: badge
                 )
 
-                HStack {
-                    Button(.addExercises) {
-                        sheet = .workoutAddEntries(workout)
+                GlassEffectContainer {
+                    HStack {
+                        Button(.addExercises) {
+                            sheet = .workoutAddEntries(workout)
+                        }
+                        .labelStyle(.fixedIconOnly)
+                        .buttonStyle(.glass)
+                        .buttonBorderShape(.circle)
+                        .disabled(workout.isArchived)
+                        
+                        Button(.startSession) {
+                            startSession(workout)
+                        }
+                        .labelStyle(.fixedTitleAndIcon)
+                        .buttonStyle(.glassProminent)
+                        .fontWeight(.medium)
+                        .tint(.green)
+                        .disabled(!workout.isStartable)
+                        
+                        Button(.viewStatistics) {
+                            sheet = .workoutStatistics(workout)
+                        }
+                        .labelStyle(.fixedIconOnly)
+                        .buttonStyle(.glass)
+                        .buttonBorderShape(.circle)
                     }
-                    .labelStyle(.fixedIconOnly)
-                    .buttonStyle(.glass)
-                    .buttonBorderShape(.circle)
-                    .disabled(workout.isArchived)
-
-                    Button(.startSession) {
-                        startSession(workout)
-                    }
-                    .labelStyle(.fixedTitleAndIcon)
-                    .buttonStyle(.glassProminent)
-                    .fontWeight(.medium)
-                    .tint(.green)
-                    .disabled(!workout.isStartable)
-
-                    Button(.viewStatistics) {
-                        sheet = .workoutStatistics(workout)
-                    }
-                    .labelStyle(.fixedIconOnly)
-                    .buttonStyle(.glass)
-                    .buttonBorderShape(.circle)
+                    .controlSize(.large)
                 }
-                .controlSize(.large)
 
                 if entries.isEmpty {
                     ContentUnavailableView {
